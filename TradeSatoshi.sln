@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi", "TradeSatoshi\TradeSatoshi.csproj", "{75DB6B86-0251-4A36-AA70-580B224213E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Core", "TradeSatoshi.Core\TradeSatoshi.Core.csproj", "{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Common", "TradeSatoshi.Common\TradeSatoshi.Common.csproj", "{A2747885-1DF5-46A7-8037-4B9AADEB642F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75DB6B86-0251-4A36-AA70-580B224213E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75DB6B86-0251-4A36-AA70-580B224213E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75DB6B86-0251-4A36-AA70-580B224213E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75DB6B86-0251-4A36-AA70-580B224213E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
