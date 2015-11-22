@@ -9,7 +9,7 @@
 	{
 		<div id="alert" class="alert alert-dismissable shadow text-center @(ViewData.ModelState["Success"] != null ? "alert-success" : "alert-warning")">
 			<button class="close" type="button" data-dismiss="alert">×</button>
-			<h4>@ViewData.ModelState.FirstError()</h4>
+			<h4>@ViewData.ModelState</h4>
 		</div>
 	}
 
@@ -61,7 +61,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (var item in Model.VoteItems.OrderByDescending(x => (x.UserVotes + x.DotVotes)))
+								@foreach (var item in Model.VoteItems.OrderByDescending(x => (x.UserVotes + x.CoinVotes)))
 								{
 									<tr class="@(item.Status) voterow" >
 										<td class="search-data">@item.Name</td>

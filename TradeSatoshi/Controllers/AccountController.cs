@@ -7,26 +7,23 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using hbehr.recaptcha;
 using System.Data.Entity.Validation;
+using TradeSatoshi.Common.Services.EmailService;
+using TradeSatoshi.Helpers;
+using System;
 
 namespace TradeSatoshi.Controllers
 {
 	[Authorize]
-	public class AccountController : Controller
+	public class AccountController : BaseController
 	{
-		public AccountController()
-			: this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
-		{
-		}
+		#region Properties
 
-		public AccountController(UserManager<ApplicationUser> userManager)
-		{
-			UserManager = userManager;
-		}
+		public IEmailService EmailService { get; set; }
 
-		public UserManager<ApplicationUser> UserManager { get; private set; }
+		#endregion
 
-		//
-		// GET: /Account/Login
+		#region Login
+
 		[AllowAnonymous]
 		public ActionResult Login(string returnUrl)
 		{
@@ -34,41 +31,78 @@ namespace TradeSatoshi.Controllers
 			return View();
 		}
 
-		//
-		// POST: /Account/Login
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
 		{
-			if (ModelState.IsValid)
+			if (!ModelState.IsValid)
+				return View(model);
+
+			//does user exist
+			var user = await UserManager.FindByNameAsync(model.UserName);
+			if (user == null)
 			{
-				var user = await UserManager.FindAsync(model.UserName, model.Password);
-				if (user != null)
-				{
-					await SignInAsync(user, model.RememberMe);
-					return RedirectToLocal(returnUrl);
-				}
-				else
-				{
-					ModelState.AddModelError("", this.Resource("Invalid username or password."));
-				}
+				ModelState.AddModelError("", this.Resource("Invalid username or password."));
+				return View(model);
 			}
 
-			// If we got this far, something failed, redisplay form
-			return View(model);
+			//is the users email confirmed
+			if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+			{
+				ModelState.AddModelError("", "An email has been sent to your registered email address with a confirmation link.");
+				return View(model);
+			}
+
+			// is the user locked out
+			if (await UserManager.IsLockedOutAsync(user.Id))
+			{
+				ModelState.AddModelError("", "Your account is locked.");
+				return View(model);
+			}
+
+			// is the password correct
+			var lockoutLink = Url.Action("LockAccount", "Account", new { username = user.UserName, lockoutToken = await UserManager.GenerateUserTokenAsync("LockAccount", user.Id) }, protocol: Request.Url.Scheme);
+			if (await UserManager.CheckPasswordAsync(user, model.Password))
+			{
+				await UserManager.ResetAccessFailedCountAsync(user.Id);
+				await SignInAsync(user, model.RememberMe);
+				await EmailService.SendAsync(EmailTemplate.Logon, model.UserName, Request.GetIPAddress(), lockoutLink);
+				return RedirectToLocal(returnUrl);
+			}
+			else
+			{
+				await UserManager.AccessFailedAsync(user.Id);
+				if (await UserManager.IsLockedOutAsync(user.Id))
+				{
+					await EmailService.SendAsync(EmailTemplate.PasswordLockout, model.UserName, Request.GetIPAddress());
+					return View(model);
+				}
+				ModelState.AddModelError("", string.Format("Email or password was invalid.", UserManager.MaxFailedAccessAttemptsBeforeLockout - user.AccessFailedCount));
+				await EmailService.SendAsync(EmailTemplate.FailedLogon, model.UserName, Request.GetIPAddress(), lockoutLink);
+				ViewBag.Lockout = lockoutLink;
+				return View(model);
+			}
 		}
 
-		//
-		// GET: /Account/Register
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult LogOff()
+		{
+			AuthenticationManager.SignOut();
+			return RedirectToAction("Index", "Home");
+		}
+
+		#endregion
+
+		#region Register
+
 		[AllowAnonymous]
 		public ActionResult Register()
 		{
 			return View();
 		}
 
-		//
-		// POST: /Account/Register
 		[HttpPost]
 		[AllowAnonymous]
 		[ValidateAntiForgeryToken]
@@ -94,7 +128,14 @@ namespace TradeSatoshi.Controllers
 				var result = await UserManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
-					await SignInAsync(user, isPersistent: false);
+					string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
+					if (await EmailService.SendAsync(EmailTemplate.Registration, user.UserName, Request.GetIPAddress()))
+					{
+						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
+					}
+
+					ModelState.AddModelError("", "Failed to send registration confirmation email, if problem persists please contact Support.");
 					return RedirectToAction("Index", "Home");
 				}
 				else
@@ -107,14 +148,63 @@ namespace TradeSatoshi.Controllers
 			return View(model);
 		}
 
-		//
-		// GET: /Account/Manage
+		[HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult> RegisterConfirmEmail(string username, string confirmationToken)
+		{
+			if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(confirmationToken))
+				return Unauthorized();
+
+			var user = await UserManager.FindByNameAsync(username);
+			if (user == null)
+				return Unauthorized();
+
+			var result = await UserManager.ConfirmEmailAsync(user.Id, confirmationToken);
+			if (result.Succeeded)
+			{
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Success, "Email Succesfully Confirmed.", string.Format("Thank you for confirming your email address, your registration is now complete, please <a href='{0}'>click here to login</a>.", Url.Action("Login"))));
+			}
+
+			return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Activation Link.", ""));
+		}
+
+		#endregion
+
+		#region LockAccount
+
+		[HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult> LockAccount(string username, string lockoutToken)
+		{
+			if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(lockoutToken))
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Lockout Token", "The secure lockout token is invalid or has expired."));
+
+			var user = await UserManager.FindByNameAsync(username);
+			if (user == null)
+				return Unauthorized();
+
+			if (!await UserManager.VerifyUserTokenAsync(user.Id, "LockAccount", lockoutToken))
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Lockout Token", "The secure lockout token is invalid or has expired."));
+
+			if (await UserManager.IsLockedOutAsync(user.Id))
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Account Locked", "Your account has already been locked.."));
+
+			await UserManager.SetLockoutEndDateAsync(user.Id, DateTime.UtcNow.AddYears(1));
+			await UserManager.UpdateSecurityStampAsync(user.Id);
+			await EmailService.SendAsync(EmailTemplate.UserLockout, user.UserName, Request.GetIPAddress());
+			return ViewMessage(new ViewMessageModel(ViewMessageType.Warning, "Account Lockdown!", "Your account has been locked at your request,"));
+		}
+
+		#endregion
+
+		#region Manage
+
+		[HttpGet]
 		public ActionResult Manage(ManageMessageId? message)
 		{
 			var user = UserManager.FindById(User.Identity.GetUserId());
 			ViewBag.StatusMessage =
 				message == ManageMessageId.ChangePasswordSuccess ? this.Resource("Your password has been changed.")
-				: message == ManageMessageId.RemoveLoginSuccess ? this.Resource("The external login was removed.")
 				: message == ManageMessageId.Error ? this.Resource("An error has occurred.")
 				: "";
 			ViewBag.ReturnUrl = Url.Action("Manage");
@@ -135,8 +225,6 @@ namespace TradeSatoshi.Controllers
 			});
 		}
 
-		//
-		// POST: /Account/Manage
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Manage(ManageUserViewModel model)
@@ -161,14 +249,14 @@ namespace TradeSatoshi.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Profile(UserProfileModel model)
+		public async Task<ActionResult> UserProfile(UserProfileModel model)
 		{
 			if (!ModelState.IsValid)
 			{
 				return View("Manage", new ManageUserViewModel { Profile = model });
 			}
 
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 			if (user.Profile.CanUpdate())
 			{
 				user.Profile.Address = model.Address;
@@ -187,32 +275,9 @@ namespace TradeSatoshi.Controllers
 			return View("Manage", new ManageUserViewModel { Profile = model });
 		}
 
-		//
-		// POST: /Account/LogOff
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult LogOff()
-		{
-			AuthenticationManager.SignOut();
-			return RedirectToAction("Index", "Home");
-		}
-
-
-
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && UserManager != null)
-			{
-				UserManager.Dispose();
-				UserManager = null;
-			}
-			base.Dispose(disposing);
-		}
+		#endregion
 
 		#region Helpers
-		// Used for XSRF protection when adding external logins
-		private const string XsrfKey = "XsrfId";
 
 		private IAuthenticationManager AuthenticationManager
 		{
@@ -237,11 +302,9 @@ namespace TradeSatoshi.Controllers
 			}
 		}
 
-
 		public enum ManageMessageId
 		{
 			ChangePasswordSuccess,
-			RemoveLoginSuccess,
 			Error
 		}
 

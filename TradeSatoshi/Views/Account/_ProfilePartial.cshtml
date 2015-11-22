@@ -5,7 +5,7 @@
 		: (object)new { @class = "form-control", @readonly = "readonly" };
 }
 
-@using (Html.BeginForm("Profile", "Account"))
+@using (Html.BeginForm("UserProfile", "Account"))
 {
 	@Html.AntiForgeryToken()
 	@Html.HiddenFor(m => m.CanUpdate)
