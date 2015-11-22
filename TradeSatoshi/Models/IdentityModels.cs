@@ -54,6 +54,11 @@ namespace TradeSatoshi.Models
 
 		[MaxLength(50)]
 		public string PostCode { get; set; }
+
+		public bool CanUpdate()
+		{
+			return string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName);
+		}
 	}
 
 	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

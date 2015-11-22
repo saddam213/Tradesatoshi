@@ -36,5 +36,7 @@ namespace TradeSatoshi.Models
 
 		[Required]
 		public string PostCode { get; set; }
+
+		public bool CanUpdate { get; set; }
 	}
 }

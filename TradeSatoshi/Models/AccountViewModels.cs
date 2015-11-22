@@ -63,5 +63,9 @@ namespace TradeSatoshi.Models
 
 		[RequiredToBeTrue(ErrorMessage = "You must accept the terms and conditions to register.")]
 		public bool AcceptTerms { get; set; }
+
+		[RequiredToBeTrue(ErrorMessage = "You must be at least 18 years of age to register.")]
+		[Display(Name = "I am older that 18 years of age.")]
+		public bool AgeRestriction { get; set; }
 	}
 }

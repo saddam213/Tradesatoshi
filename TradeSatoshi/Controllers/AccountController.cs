@@ -84,30 +84,22 @@ namespace TradeSatoshi.Controllers
 					return View(model);
 				}
 
-				try
+				var user = new ApplicationUser()
 				{
-					var user = new ApplicationUser()
-					{
-						UserName = model.UserName,
-						Email = model.EmailAddress
-					};
-					user.Profile = new UserProfile { Id = user.Id };
-					user.Settings = new UserSettings { Id = user.Id };
-					var result = await UserManager.CreateAsync(user, model.Password);
-					if (result.Succeeded)
-					{
-						await SignInAsync(user, isPersistent: false);
-						return RedirectToAction("Index", "Home");
-					}
-					else
-					{
-						AddErrors(result);
-					}
+					UserName = model.UserName,
+					Email = model.EmailAddress
+				};
+				user.Profile = new UserProfile { Id = user.Id };
+				user.Settings = new UserSettings { Id = user.Id };
+				var result = await UserManager.CreateAsync(user, model.Password);
+				if (result.Succeeded)
+				{
+					await SignInAsync(user, isPersistent: false);
+					return RedirectToAction("Index", "Home");
 				}
-				catch (DbEntityValidationException ex)
+				else
 				{
-
-					throw;
+					AddErrors(result);
 				}
 			}
 
@@ -137,7 +129,8 @@ namespace TradeSatoshi.Controllers
 					FirstName = user.Profile.FirstName,
 					LastName = user.Profile.LastName,
 					PostCode = user.Profile.PostCode,
-					State = user.Profile.State
+					State = user.Profile.State,
+					CanUpdate = user.Profile.CanUpdate()
 				}
 			});
 		}
@@ -176,15 +169,20 @@ namespace TradeSatoshi.Controllers
 			}
 
 			var user = UserManager.FindById(User.Identity.GetUserId());
-			user.Profile.Address = model.Address;
-			user.Profile.BirthDate = model.BirthDate;
-			user.Profile.City = model.City;
-			user.Profile.Country = model.Country;
-			user.Profile.FirstName = model.FirstName;
-			user.Profile.LastName = model.LastName;
-			user.Profile.PostCode = model.PostCode;
-			user.Profile.State = model.State;
-			await UserManager.UpdateAsync(user);
+			if (user.Profile.CanUpdate())
+			{
+				user.Profile.Address = model.Address;
+				user.Profile.BirthDate = model.BirthDate;
+				user.Profile.City = model.City;
+				user.Profile.Country = model.Country;
+				user.Profile.FirstName = model.FirstName;
+				user.Profile.LastName = model.LastName;
+				user.Profile.PostCode = model.PostCode;
+				user.Profile.State = model.State;
+
+				await UserManager.UpdateAsync(user);
+				model.CanUpdate = user.Profile.CanUpdate();
+			}
 
 			return View("Manage", new ManageUserViewModel { Profile = model });
 		}
