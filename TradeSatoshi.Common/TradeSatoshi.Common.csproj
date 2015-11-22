@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\EmailService\EmailTemplate.cs" />
+    <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

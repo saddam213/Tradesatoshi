@@ -11,7 +11,7 @@ namespace TradeSatoshi.Common.Services.EmailService
 		Logon = 0,
 		FailedLogon = 1,
 		PasswordLockout = 2,
-		UserLockout = 2,
+		UserLockout = 3,
 		Registration = 4,
 	}
 }
