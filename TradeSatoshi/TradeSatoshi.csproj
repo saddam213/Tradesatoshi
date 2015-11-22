@@ -238,17 +238,7 @@
     </Compile>
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
-    <Compile Include="Migrations\201511200633406_Initial.cs" />
-    <Compile Include="Migrations\201511200633406_Initial.Designer.cs">
-      <DependentUpon>201511200633406_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201511210924203_UserProfileAndSettings.cs" />
-    <Compile Include="Migrations\201511210924203_UserProfileAndSettings.Designer.cs">
-      <DependentUpon>201511210924203_UserProfileAndSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\UserProfileModel.cs" />
     <Compile Include="Models\VotingModel.cs" />
     <Compile Include="Models\ViewMessageModel.cs" />
@@ -292,14 +282,10 @@
       <Project>{4bfa8c93-d3e3-4d93-9b2a-e2cba4223895}</Project>
       <Name>TradeSatoshi.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201511200633406_Initial.resx">
-      <DependentUpon>201511200633406_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201511210924203_UserProfileAndSettings.resx">
-      <DependentUpon>201511210924203_UserProfileAndSettings.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\TradeSatoshi.Data\TradeSatoshi.Data.csproj">
+      <Project>{8b1ed66c-ff3d-40f3-8ec0-d5e95a9b5573}</Project>
+      <Name>TradeSatoshi.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

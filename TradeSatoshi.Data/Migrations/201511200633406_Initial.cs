@@ -1,4 +1,4 @@
-namespace TradeSatoshi.Migrations
+namespace TradeSatoshi.Data.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

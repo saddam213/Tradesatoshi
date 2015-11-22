@@ -3,6 +3,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using TradeSatoshi.App_Start;
+using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Models;
 
 namespace TradeSatoshi

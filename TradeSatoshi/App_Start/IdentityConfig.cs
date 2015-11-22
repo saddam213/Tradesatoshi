@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Models;
 
 namespace TradeSatoshi.App_Start

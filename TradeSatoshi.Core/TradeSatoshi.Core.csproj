@@ -48,6 +48,10 @@
       <Project>{a2747885-1df5-46a7-8037-4b9aadeb642f}</Project>
       <Name>TradeSatoshi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TradeSatoshi.Data\TradeSatoshi.Data.csproj">
+      <Project>{8b1ed66c-ff3d-40f3-8ec0-d5e95a9b5573}</Project>
+      <Name>TradeSatoshi.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

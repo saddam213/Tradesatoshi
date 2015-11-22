@@ -10,6 +10,7 @@ using System.Data.Entity.Validation;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Helpers;
 using System;
+using TradeSatoshi.Data.Entities;
 
 namespace TradeSatoshi.Controllers
 {

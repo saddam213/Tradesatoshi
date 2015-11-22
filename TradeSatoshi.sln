@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Core", "TradeS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Common", "TradeSatoshi.Common\TradeSatoshi.Common.csproj", "{A2747885-1DF5-46A7-8037-4B9AADEB642F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Data", "TradeSatoshi.Data\TradeSatoshi.Data.csproj", "{8B1ED66C-FF3D-40F3-8EC0-D5E95A9B5573}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2747885-1DF5-46A7-8037-4B9AADEB642F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1ED66C-FF3D-40F3-8EC0-D5E95A9B5573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1ED66C-FF3D-40F3-8EC0-D5E95A9B5573}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1ED66C-FF3D-40F3-8EC0-D5E95A9B5573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1ED66C-FF3D-40F3-8EC0-D5E95A9B5573}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
