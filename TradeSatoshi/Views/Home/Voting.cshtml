@@ -1,0 +1,258 @@
+﻿@model TradeSatoshi.Models.VotingModel
+@{
+	ViewBag.Title = "Coin Voting";
+}
+
+<div class="col-lg-12">
+
+	@if (!ViewData.ModelState.IsValid)
+	{
+		<div id="alert" class="alert alert-dismissable shadow text-center @(ViewData.ModelState["Success"] != null ? "alert-success" : "alert-warning")">
+			<button class="close" type="button" data-dismiss="alert">×</button>
+			<h4>@ViewData.ModelState.FirstError()</h4>
+		</div>
+	}
+
+	<div class="row">
+		<div class="col-xs-12">
+			<h3>Voting Information</h3>
+			<hr style="margin-top: 3px" />
+			<span>Something something coin voting rules and info.</span>
+			<br />
+			<span>If you would like to add a coin to the vote list please submit a <a href="#requestform">coin request form</a>.</span>
+			<br />
+			<br />
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-lg-10 col-xs-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" style="padding: 5px">
+					<span><i class="fa fa-list-ol panel-icon"></i>Coin Vote List</span>
+				</div>
+				<div class="panel-body" style="">
+					<div style="float: left; width: 250px; padding-right: 25px">
+						<div>This Round's Countdown:</div>
+						<div id="votingcountdown" style="height: 50px;"></div>
+					</div>
+					<div style="float: left;">
+						<div>Last Round's Winners:</div>
+						<div style="font-size: 18px">User vote winner: <b>Coin1(CN1) </b><small class="text-danger"></small></div>
+						<div style="font-size: 18px">Coin vote winner: <b>Coin2(CN2) </b><small class="text-danger"></small></div>
+					</div>
+					<div style="float: right;">
+						<div>Search:</div>
+						<input id="search" class="form-control input-sm" style="max-width: 150px;" />
+					</div>
+					<div class="clearfix"></div>
+					<hr style="margin-bottom: 0px" />
+					<div style="overflow-x: auto">
+						<table id="votetable" class="table table-striped table-condensed" style="min-width: 800px;">
+							<thead>
+								<tr>
+									<th>Coin</th>
+									<th>User Votes</th>
+									<th>Coin Votes</th>
+									<th>Previous Votes</th>
+									<th>Total Votes</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in Model.VoteItems.OrderByDescending(x => (x.UserVotes + x.DotVotes)))
+								{
+									<tr class="@(item.Status) voterow" >
+										<td class="search-data">@item.Name</td>
+										<td>@item.UserVotes</td>
+										<td>@item.CoinVotes</td>
+										<td>@item.PreviousVotes</td>
+										<td>@item.TotalVotes</td>
+										<td style="width: 250px">
+											<div class="pull-left">
+												<div style="display: inline-block">
+													@using (Html.BeginForm("SubmitVote", "Home", new { voteItemId = item.VoteItemId }, FormMethod.Post, new { role = "form" }))
+													{
+														@Html.AntiForgeryToken()
+														<input value="Free Vote!" type="submit" class="vote btn btn-info btn-xs" style="min-width: 100px;" />
+													}
+												</div>
+												<div style="display: inline-block; padding-left: 10px">
+													@if (User.Identity.IsAuthenticated)
+													{
+														<a data-id="@item.VoteItemId" data-name="@item.Name" class="vote dotvote btn btn-info btn-xs"  style="min-width: 100px;" >
+															<img style="vertical-align: top; margin-right: 5px" height="20" src="/Content/Images/Coins/COIN-small.png" />Coin Vote!</a>
+													}
+													else
+													{
+														<a href="/Login?ReturnUrl=%2FHome%2FVoting" class="vote btn btn-info btn-xs" style="min-width: 100px;">
+															<img style="vertical-align: top; margin-right: 5px" height="20" src="/Content/Images/Coins/COIN-small.png" />Coin Vote!</a>
+													}
+												</div>
+											</div>
+										</td>
+									</tr> 
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<small class="text-center" style="font-style: italic; padding-left: 10px">Potential disclaimer here. Reserve the rights to blah blah blah</small>
+			</div>
+		</div>
+	</div>
+
+	<a name="requestform"></a>
+	<div class="row">
+		<div class="col-xs-12">
+			<hr />
+			<h3>Coin Submission</h3>
+			<span>Something something voting list.</span>
+			<br />
+			<br />
+			<span>Something something listing requirements:</span>
+			<ol>
+				<li>Something.</li>
+				<li>Something else.</li>
+				<li>No ponies.</li>
+				<li>John Travolta.</li>
+				<li>...</li>
+			</ol>
+
+			@if (User.Identity.IsAuthenticated)
+			{
+				<button class="btn btn-info" onclick="createVoteItem();">Submit Coin Request</button>
+			}
+			else
+			{
+				<a class="btn btn-info" href="/Login?ReturnUrl=%2FHome%2FVoting">Submit Coin Request</a>
+			}
+			<br />
+			<br />
+		</div>
+	</div>
+
+
+	<div class="row">
+
+		<div class="col-lg-5 col-md-6 col-xs-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" style="padding: 5px">
+					<span><i class="fa fa-bars panel-icon"></i>Pending requests</span>
+				</div>
+				<div class="panel-body" style="padding-top: 0px;">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Message</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.PendingVoteItems)
+							{
+								<tr>
+									<td>@item.Name</td>
+									<td>Awaiting moderator review...</td>
+								</tr> 
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-5 col-md-6 col-xs-12">
+			<div class="panel panel-primary">
+				<div class="panel-heading" style="padding: 5px">
+					<span><i class="fa fa-thumbs-down panel-icon"></i>Rejected coins</span>
+				</div>
+				<div class="panel-body" style="padding-top: 0px;">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Reason</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							@foreach (var item in Model.RejectedVoteItems.OrderBy(x => x.Name))
+							{
+								<tr>
+									<td>@item.Name</td>
+									<td class="cell-ellipsis">@item.Status</td>
+								</tr> 
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+
+
+
+</div>
+<div class="clearfix"></div>
+
+@*@Scripts.Render("~/bundles/msajax")*@
+<link href="~/Content/jquery.countdown.css" rel="stylesheet">
+<script src="~/Scripts/jquery.plugin.js"></script>
+<script src="~/Scripts/jquery.countdown.js"></script>
+
+<script type="text/javascript">
+
+    function createVoteItem() {
+        openModal('/Home/CreateVoteItem', 'Loading...');
+    }
+
+    $(document).ready(function () {
+
+        $("#search").keyup(function () {
+            var _this = $(this);
+            $.each($("#votetable tbody").find(".voterow"), function () {
+                if ($(this).find('.search-data').text().toLowerCase().indexOf($(_this).val().toLowerCase()) == -1)
+                    $(this).hide();
+                else
+                    $(this).show();
+            });
+        });
+
+        if ($('#alert').css('display') != 'none') {
+            setTimeout(function () { $('#alert').fadeTo(500, 0).slideUp(500, function () { $('#alert').hide() }); }, 8000);
+        }
+
+        $('.dotvote').on('click', function () {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            if (id) {
+                openModal('@Url.Action("CoinVote", "Balance")', 'Loading...', { id: id, name: name }, function () {
+                    location.reload();
+                });
+            }
+        });
+
+        var austDay = new Date();
+        austDay = new Date(austDay.getFullYear(), 11, 21, 20, 0, 0, 0);
+        $('#votingcountdown').countdown({
+            until: austDay, timezone: +12, onTick: function (periods) {
+                if ($.countdown.periodsToSeconds(periods) < (60 * 60)) {
+                    $(this).addClass('text-danger');
+                }
+                if ($.countdown.periodsToSeconds(periods) === 0) {
+                    $('.vote').addClass('disabled');
+                }
+            }
+        });
+        var periods = $('#votingcountdown').countdown('getTimes');
+        if ($.countdown.periodsToSeconds(periods) === 0) {
+            $('.vote').addClass('disabled');
+        }
+    });
+
+</script>
