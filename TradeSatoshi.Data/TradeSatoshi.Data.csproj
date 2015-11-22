@@ -60,7 +60,6 @@
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\UserSettings.cs" />
     <Compile Include="Entities\UserProfile.cs" />
-    <Compile Include="Entities\IdentityModels.cs" />
     <Compile Include="Migrations\201511200633406_Initial.cs" />
     <Compile Include="Migrations\201511200633406_Initial.Designer.cs">
       <DependentUpon>201511200633406_Initial.cs</DependentUpon>
