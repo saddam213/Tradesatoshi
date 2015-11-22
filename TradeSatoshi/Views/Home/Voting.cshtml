@@ -61,7 +61,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (var item in Model.VoteItems.OrderByDescending(x => (x.UserVotes + x.CoinVotes)))
+								@*@foreach (var item in Model.VoteItems.OrderByDescending(x => (x.UserVotes + x.CoinVotes)))
 								{
 									<tr class="@(item.Status) voterow" >
 										<td class="search-data">@item.Name</td>
@@ -81,7 +81,7 @@
 												<div style="display: inline-block; padding-left: 10px">
 													@if (User.Identity.IsAuthenticated)
 													{
-														<a data-id="@item.VoteItemId" data-name="@item.Name" class="vote dotvote btn btn-info btn-xs"  style="min-width: 100px;" >
+														<a data-id="@item.VoteItemId" data-name="@item.Name" class="vote coinvote btn btn-info btn-xs"  style="min-width: 100px;" >
 															<img style="vertical-align: top; margin-right: 5px" height="20" src="/Content/Images/Coins/COIN-small.png" />Coin Vote!</a>
 													}
 													else
@@ -93,7 +93,25 @@
 											</div>
 										</td>
 									</tr> 
-								}
+								}*@
+<tr class="voterow" >
+										<td class="search-data">Coin7</td>
+										<td>1</td>
+										<td>6</td>
+										<td>0</td>
+										<td>7</td>
+										<td style="width: 250px">
+											<div class="pull-left">
+												<div style="display: inline-block">
+														<input value="Free Vote!" type="submit" class="vote btn btn-info btn-xs" style="min-width: 100px;" />
+												</div>
+												<div style="display: inline-block; padding-left: 10px">
+														<a data-id="" data-name="" class="vote coinvote btn btn-info btn-xs"  style="min-width: 100px;" >
+															<img style="vertical-align: top; margin-right: 5px" height="20" src="/Content/Images/Coins/COIN-small.png" />Coin Vote!</a>
+												</div>
+											</div>
+										</td>
+									</tr>
 							</tbody>
 						</table>
 					</div>
@@ -150,13 +168,25 @@
 							</tr>
 						</thead>
 						<tbody>
-							@foreach (var item in Model.PendingVoteItems)
+@*							@foreach (var item in Model.PendingVoteItems)
 							{
 								<tr>
 									<td>@item.Name</td>
 									<td>Awaiting moderator review...</td>
 								</tr> 
-							}
+							}*@
+								<tr>
+									<td>Coin4</td>
+									<td>Awaiting moderator review...</td>
+								</tr>
+								<tr>
+									<td>Coin5</td>
+									<td>Awaiting moderator review...</td>
+								</tr>
+								<tr>
+									<td>Coin6</td>
+									<td>Awaiting moderator review...</td>
+								</tr>
 						</tbody>
 					</table>
 				</div>
@@ -178,13 +208,25 @@
 						</thead>
 						<tbody>
 
-							@foreach (var item in Model.RejectedVoteItems.OrderBy(x => x.Name))
+@*							@foreach (var item in Model.RejectedVoteItems.OrderBy(x => x.Name))
 							{
 								<tr>
 									<td>@item.Name</td>
 									<td class="cell-ellipsis">@item.Status</td>
 								</tr> 
-							}
+							}*@
+								<tr>
+									<td>Coin1</td>
+									<td class="cell-ellipsis">Stupid/td>
+								</tr> 
+								<tr>
+									<td>Coin2</td>
+									<td class="cell-ellipsis">Tried to get listed on a tuesday</td>
+								</tr> 
+								<tr>
+									<td>Coin3</td>
+									<td class="cell-ellipsis">Too fat</td>
+								</tr> 
 						</tbody>
 					</table>
 				</div>
@@ -227,7 +269,7 @@
             setTimeout(function () { $('#alert').fadeTo(500, 0).slideUp(500, function () { $('#alert').hide() }); }, 8000);
         }
 
-        $('.dotvote').on('click', function () {
+        $('.coinvote').on('click', function () {
             var id = $(this).data('id');
             var name = $(this).data('name');
             if (id) {
