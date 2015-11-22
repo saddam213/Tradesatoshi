@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace TradeSatoshi.Common.Services.EmailService
 {
 	public interface IEmailService
 	{
-		bool Send(EmailTemplate template, params object[] formatParameters);
-		Task<bool> SendAsync(EmailTemplate template, params object[] formatParameters);
+		bool Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters);
+		Task<bool> SendAsync(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters);
 	}
 }

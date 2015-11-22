@@ -25,6 +25,12 @@ namespace TradeSatoshi.DependencyInjection
 				.DefaultInterfaces()
 				.LifestyleTransient()
 			);
+			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Data")
+				.Pick()
+				.WithService
+				.DefaultInterfaces()
+				.LifestyleTransient()
+			);
 		}
 	}
 

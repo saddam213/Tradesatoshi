@@ -9,7 +9,6 @@ namespace TradeSatoshi.Data.Entities
 {
 	public class ApplicationUser : IdentityUser
 	{
-
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }
 	}

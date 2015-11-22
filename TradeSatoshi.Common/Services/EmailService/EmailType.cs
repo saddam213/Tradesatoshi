@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Services.EmailService
 {
-	public enum EmailTemplate
+	public enum EmailType
 	{
 		Logon = 0,
 		FailedLogon = 1,

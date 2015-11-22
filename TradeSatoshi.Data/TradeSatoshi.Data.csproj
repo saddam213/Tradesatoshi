@@ -57,7 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext\ApplicationDbContext.cs" />
+    <Compile Include="DataContext\IApplicationDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
+    <Compile Include="Entities\EmailTemplate.cs" />
     <Compile Include="Entities\UserSettings.cs" />
     <Compile Include="Entities\UserProfile.cs" />
     <Compile Include="Migrations\201511200633406_Initial.cs" />
@@ -67,6 +69,10 @@
     <Compile Include="Migrations\201511210924203_UserProfileAndSettings.cs" />
     <Compile Include="Migrations\201511210924203_UserProfileAndSettings.Designer.cs">
       <DependentUpon>201511210924203_UserProfileAndSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511221028289_EmailTemplates.cs" />
+    <Compile Include="Migrations\201511221028289_EmailTemplates.Designer.cs">
+      <DependentUpon>201511221028289_EmailTemplates.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,10 +84,19 @@
     <EmbeddedResource Include="Migrations\201511210924203_UserProfileAndSettings.resx">
       <DependentUpon>201511210924203_UserProfileAndSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511221028289_EmailTemplates.resx">
+      <DependentUpon>201511221028289_EmailTemplates.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">
+      <Project>{a2747885-1df5-46a7-8037-4b9aadeb642f}</Project>
+      <Name>TradeSatoshi.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

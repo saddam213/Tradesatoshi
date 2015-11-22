@@ -68,7 +68,7 @@ namespace TradeSatoshi.Controllers
 			{
 				await UserManager.ResetAccessFailedCountAsync(user.Id);
 				await SignInAsync(user, model.RememberMe);
-				await EmailService.SendAsync(EmailTemplate.Logon, model.UserName, Request.GetIPAddress(), lockoutLink);
+				await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), lockoutLink);
 				return RedirectToLocal(returnUrl);
 			}
 			else
@@ -76,11 +76,11 @@ namespace TradeSatoshi.Controllers
 				await UserManager.AccessFailedAsync(user.Id);
 				if (await UserManager.IsLockedOutAsync(user.Id))
 				{
-					await EmailService.SendAsync(EmailTemplate.PasswordLockout, model.UserName, Request.GetIPAddress());
+					await EmailService.SendAsync(EmailType.PasswordLockout, user, Request.GetIPAddress());
 					return View(model);
 				}
 				ModelState.AddModelError("", string.Format("Email or password was invalid.", UserManager.MaxFailedAccessAttemptsBeforeLockout - user.AccessFailedCount));
-				await EmailService.SendAsync(EmailTemplate.FailedLogon, model.UserName, Request.GetIPAddress(), lockoutLink);
+				await EmailService.SendAsync(EmailType.FailedLogon, user, Request.GetIPAddress(), lockoutLink);
 				ViewBag.Lockout = lockoutLink;
 				return View(model);
 			}
@@ -131,7 +131,7 @@ namespace TradeSatoshi.Controllers
 				{
 					string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
-					if (await EmailService.SendAsync(EmailTemplate.Registration, user.UserName, Request.GetIPAddress()))
+					if (await EmailService.SendAsync(EmailType.Registration, user, Request.GetIPAddress(), callbackUrl))
 					{
 						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
 					}
@@ -192,7 +192,7 @@ namespace TradeSatoshi.Controllers
 
 			await UserManager.SetLockoutEndDateAsync(user.Id, DateTime.UtcNow.AddYears(1));
 			await UserManager.UpdateSecurityStampAsync(user.Id);
-			await EmailService.SendAsync(EmailTemplate.UserLockout, user.UserName, Request.GetIPAddress());
+			await EmailService.SendAsync(EmailType.UserLockout, user, Request.GetIPAddress());
 			return ViewMessage(new ViewMessageModel(ViewMessageType.Warning, "Account Lockdown!", "Your account has been locked at your request,"));
 		}
 
