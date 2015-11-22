@@ -51,7 +51,7 @@ namespace TradeSatoshi.Controllers
 				}
 				else
 				{
-					ModelState.AddModelError("", "Invalid username or password.");
+					ModelState.AddModelError("", this.Resource("Invalid username or password."));
 				}
 			}
 
@@ -80,7 +80,7 @@ namespace TradeSatoshi.Controllers
 				bool validCaptcha = ReCaptcha.ValidateCaptcha(userResponse);
 				if (!validCaptcha)
 				{
-					ModelState.AddModelError("", "Invalid reCaptcha");
+					ModelState.AddModelError("", this.Resource("Invalid reCaptcha"));
 					return View(model);
 				}
 
@@ -121,9 +121,9 @@ namespace TradeSatoshi.Controllers
 		{
 			var user = UserManager.FindById(User.Identity.GetUserId());
 			ViewBag.StatusMessage =
-				message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-				: message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-				: message == ManageMessageId.Error ? "An error has occurred."
+				message == ManageMessageId.ChangePasswordSuccess ? this.Resource("Your password has been changed.")
+				: message == ManageMessageId.RemoveLoginSuccess ? this.Resource("The external login was removed.")
+				: message == ManageMessageId.Error ? this.Resource("An error has occurred.")
 				: "";
 			ViewBag.ReturnUrl = Url.Action("Manage");
 			return View(new ManageUserViewModel

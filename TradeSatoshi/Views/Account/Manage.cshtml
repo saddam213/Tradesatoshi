@@ -2,7 +2,7 @@
 @using Microsoft.AspNet.Identity;
 @model TradeSatoshi.Models.ManageUserViewModel
 @{
-	ViewBag.Title = "Manage Account";
+	ViewBag.Title = Html.Resource("Manage Account");
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -10,7 +10,7 @@
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
 	<div class="col-xs-12">
-		<p>You're logged in as <strong>@User.Identity.GetUserName()</strong>.</p>
+		<p>@Html.Resource("You're logged in as ")<strong>@User.Identity.GetUserName()</strong>.</p>
 	</div>
 
 	<div class="col-md-6 col-lg-4">

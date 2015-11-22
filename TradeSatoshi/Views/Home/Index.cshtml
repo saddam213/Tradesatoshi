@@ -1,25 +1,25 @@
 ﻿@{
-    ViewBag.Title = "Home";
+    ViewBag.Title = Html.Resource("Home");
 }
 
 <div class="jumbotron">
-    <h1>Tradesatoshi</h1>
-    <p class="lead">The Fastest, most secure way to trade your crypto-currency</p>
+    <h1>@Html.Resource("Tradesatoshi")</h1>
+    <p class="lead">@Html.Resource("The Fastest, most secure way to trade your crypto-currency")</p>
 </div>
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Exchange</h2>
+        <h2>@Html.Resource("Exchange")</h2>
         <p>
-            Trade you crypto accoss many trade pairs instantly...
+            @Html.Resource("Trade you crypto accoss many trade pairs instantly...")
         </p>
     </div>
     <div class="col-md-4">
-        <h2>Security</h2>
-        <p>Secure TFA authentication keeps you coins safe from the dick weeds.</p>
+        <h2>@Html.Resource("Security")</h2>
+        <p>@Html.Resource("Secure TFA authentication keeps you coins safe from the dick weeds.")</p>
     </div>
     <div class="col-md-4">
-        <h2>Voting</h2>
-        <p>Vote for the coins you want to see on Tradesatoshi.</p>
+        <h2>@Html.Resource("Voting")</h2>
+        <p>@Html.Resource("Vote for the coins you want to see on Tradesatoshi.")</p>
     </div>
 </div>
