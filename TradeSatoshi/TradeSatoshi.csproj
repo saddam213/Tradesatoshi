@@ -42,6 +42,10 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Base32, Version=1.0.0.26, Culture=neutral, PublicKeyToken=3427d4dc8cee30c6, processorArchitecture=MSIL">
+      <HintPath>..\packages\Base32.1.0.0.26\lib\portable-net40+sl40+win+wp80\Base32.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
@@ -113,6 +117,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OtpSharp, Version=1.3.0.4, Culture=neutral, PublicKeyToken=1ec2a4a54aeffc1e, processorArchitecture=MSIL">
+      <HintPath>..\packages\OtpSharp.1.3.0.4\lib\net40\OtpSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin">
@@ -215,6 +223,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\Account\VerifyTwoFactor.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <None Include="Views\Home\Voting.cshtml" />
     <Content Include="Web.config">
@@ -229,6 +238,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\TwoFactorController.cs" />
     <Compile Include="Controllers\ExchangeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DependencyInjection\ControllerFactory.cs" />
@@ -236,15 +246,24 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\GoogleHelper.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\UserProfileModel.cs" />
-    <Compile Include="Models\VotingModel.cs" />
+    <Compile Include="Models\Account\RegisterViewModel.cs" />
+    <Compile Include="Models\Account\LoginViewModel.cs" />
+    <Compile Include="Models\Account\ManageUserViewModel.cs" />
+    <Compile Include="Models\TwoFactor\CreateTwoFactorModel.cs" />
+    <Compile Include="Models\TwoFactor\RemoveTwoFactorModel.cs" />
+    <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
+    <Compile Include="Models\Account\UserProfileModel.cs" />
+    <Compile Include="Models\Account\VerifyTwoFactorModel.cs" />
+    <Compile Include="Models\Vote\VotingModel.cs" />
     <Compile Include="Models\ViewMessageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Validation\RequiredIfAttribute.cs" />
     <Compile Include="Validation\RequiredToBeTrueAttribute.cs" />
+    <Compile Include="Validation\ValidationHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -263,6 +282,9 @@
     <Content Include="Views\Account\_ProfilePartial.cshtml" />
     <Content Include="Views\Shared\Unauthorized.cshtml" />
     <Content Include="Views\Shared\ViewMessage.cshtml" />
+    <Content Include="Views\TwoFactor\_ViewPartial.cshtml" />
+    <Content Include="Views\TwoFactor\Remove.cshtml" />
+    <Content Include="Views\TwoFactor\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

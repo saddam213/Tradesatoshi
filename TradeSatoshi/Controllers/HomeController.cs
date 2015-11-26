@@ -1,13 +1,38 @@
 ﻿using System.Web.Mvc;
 using System.Threading.Tasks;
 using TradeSatoshi.Models;
+using TradeSatoshi.Data.DataContext;
+using System.Linq;
+using System.Collections.Generic;
+using TradeSatoshi.Data.Entities;
+using System;
+using System.Data.Entity.Validation;
+using TradeSatoshi.Models.Vote;
 
 namespace TradeSatoshi.Controllers
 {
 	public class HomeController : Controller
 	{
+		public IDataContext DataContext { get; set; }
+
 		public ActionResult Index()
 		{
+			using (var context = DataContext.CreateContext())
+			{
+				try
+				{
+					//var users = context.Users.FirstOrDefault(x => x.UserName == "test2");
+					//users.EmailConfirmed = true;
+					//context.UserTwoFactor.RemoveRange(users.TwoFactor);
+					//context.SaveChanges();
+				}
+				catch (DbEntityValidationException ex)
+				{
+					
+					
+				}
+			}
+
 			return View();
 		}
 
@@ -16,50 +41,50 @@ namespace TradeSatoshi.Controllers
 			return View();
 		}
 
-        public ActionResult Terms()
-        {
-            return View();
-        }
+		public ActionResult Terms()
+		{
+			return View();
+		}
 
-        #region Coin Voting
+		#region Coin Voting
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult> Voting()
-        {
-            return View();
-        }
+		[HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult> Voting()
+		{
+			return View();
+		}
 
-        [HttpGet]
-        [Authorize]
-        public ActionResult SubmitVote()
-        {
-            return RedirectToAction("Voting");
-        }
+		[HttpGet]
+		[Authorize]
+		public ActionResult SubmitVote()
+		{
+			return RedirectToAction("Voting");
+		}
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SubmitVote(int voteItemId)
-        {
-                return RedirectToAction("Voting");
-        }
+		[HttpPost]
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> SubmitVote(int voteItemId)
+		{
+			return RedirectToAction("Voting");
+		}
 
-        [HttpPost]
-        [Authorize]
-        public ActionResult CreateVoteItem()
-        {
-            return View(new CreateItemModel());
-        }
+		[HttpPost]
+		[Authorize]
+		public ActionResult CreateVoteItem()
+		{
+			return View(new CreateItemModel());
+		}
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SubmitVoteItem(CreateItemModel model)
-        {
-            return RedirectToAction("Voting");
-        }
+		[HttpPost]
+		[Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> SubmitVoteItem(CreateItemModel model)
+		{
+			return RedirectToAction("Voting");
+		}
 
-        #endregion
+		#endregion
 	}
 }

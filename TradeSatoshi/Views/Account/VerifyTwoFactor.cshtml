@@ -1,0 +1,41 @@
+﻿@model TradeSatoshi.Models.Account.VerifyTwoFactorModel
+@{
+	ViewBag.Title = "Verify";
+}
+
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-8 ">
+		<section>
+			@using (Html.BeginForm("VerifyTwoFactor", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(m => m.TwoFactorType)
+				<h4>@Html.Resource("Please enter your secure TFA details.")</h4>
+				<hr />
+				<div class="row">
+					<div class="col-md-2 ">
+						@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+					</div>
+				</div>
+				
+				<div class="form-group">
+					@Html.ResourceLabel(Model.UnlockSummary, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.PasswordFor(m => m.Data, new { @class = "form-control  input-sm" })
+						@Html.ValidationMessageFor(model => model.Data, "", new { @class = "text-danger" })
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="@Html.Resource("Verify")" class="btn btn-default" />
+					</div>
+				</div>
+			}
+		</section>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

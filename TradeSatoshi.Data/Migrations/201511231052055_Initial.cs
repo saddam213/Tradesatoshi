@@ -8,6 +8,19 @@ namespace TradeSatoshi.Data.Migrations
         public override void Up()
         {
             CreateTable(
+                "dbo.EmailTemplate",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Type = c.Int(nullable: false),
+                        Subject = c.String(maxLength: 256),
+                        Template = c.String(maxLength: 4000),
+                        IsHtml = c.Boolean(nullable: false),
+                        IsEnabled = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.AspNetRoles",
                 c => new
                     {
@@ -31,6 +44,22 @@ namespace TradeSatoshi.Data.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
+                "dbo.UserProfile",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                        FirstName = c.String(maxLength: 50),
+                        LastName = c.String(maxLength: 50),
+                        BirthDate = c.DateTime(nullable: false),
+                        Address = c.String(maxLength: 256),
+                        City = c.String(maxLength: 256),
+                        State = c.String(maxLength: 256),
+                        Country = c.String(maxLength: 256),
+                        PostCode = c.String(maxLength: 50),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
                 "dbo.AspNetUsers",
                 c => new
                     {
@@ -48,6 +77,9 @@ namespace TradeSatoshi.Data.Migrations
                         UserName = c.String(nullable: false, maxLength: 256),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.UserProfile", t => t.Id)
+                .ForeignKey("dbo.UserSettings", t => t.Id)
+                .Index(t => t.Id)
                 .Index(t => t.UserName, unique: true, name: "UserNameIndex");
             
             CreateTable(
@@ -75,25 +107,63 @@ namespace TradeSatoshi.Data.Migrations
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
             
+            CreateTable(
+                "dbo.UserSettings",
+                c => new
+                    {
+                        Id = c.String(nullable: false, maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.UserTwoFactor",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        UserId = c.String(nullable: false, maxLength: 128),
+                        Component = c.Byte(nullable: false),
+                        Type = c.Byte(nullable: false),
+                        Data = c.String(maxLength: 256),
+                        Data2 = c.String(maxLength: 256),
+                        Data3 = c.String(maxLength: 256),
+                        Data4 = c.String(maxLength: 256),
+                        Data5 = c.String(maxLength: 256),
+                        Updated = c.DateTime(nullable: false),
+                        Created = c.DateTime(nullable: false),
+                        IsEnabled = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.UserTwoFactor", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUsers", "Id", "dbo.UserSettings");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUsers", "Id", "dbo.UserProfile");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropIndex("dbo.UserTwoFactor", new[] { "UserId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.AspNetUsers", new[] { "Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropTable("dbo.UserTwoFactor");
+            DropTable("dbo.UserSettings");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
+            DropTable("dbo.UserProfile");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.EmailTemplate");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace TradeSatoshi.Controllers
 
 		public BaseController(ApplicationUserManager userManager)
 		{
-			UserManager = userManager;
+			//UserManager = userManager;
 		}
 
 		public ApplicationUserManager UserManager
@@ -52,14 +52,14 @@ namespace TradeSatoshi.Controllers
 			return View("Unauthorized");
 		}
 
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && UserManager != null)
-			{
-				UserManager.Dispose();
-				UserManager = null;
-			}
-			base.Dispose(disposing);
-		}
+		//protected override void Dispose(bool disposing)
+		//{
+		//	if (disposing && UserManager != null)
+		//	{
+		//		UserManager.Dispose();
+		//		UserManager = null;
+		//	}
+		//	base.Dispose(disposing);
+		//}
 	}
 }

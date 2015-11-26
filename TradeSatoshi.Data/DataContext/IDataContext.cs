@@ -10,14 +10,15 @@ using TradeSatoshi.Data.Entities;
 
 namespace TradeSatoshi.Data.DataContext
 {
-	public interface IApplicationDbContext : IDisposable
+	public interface IDataContext : IDisposable
 	{
-		IApplicationDbContext CreateContext();
-		//DbSet<ApplicationUser> Users { get; set; }
-		//IDbSet<IdentityRole> ApplicationRoles { get; }
+		IDataContext CreateContext();
+		DbSet<ApplicationUser> Users { get; set; }
+		DbSet<IdentityRole> Roles { get; }
 		DbSet<UserProfile> UserProfiles { get; set; }
 		DbSet<UserSettings> UserSettings { get; set; }
 		DbSet<EmailTemplate> EmailTemplates { get; set; }
+		DbSet<UserTwoFactor> UserTwoFactor { get; set; }
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
 	}

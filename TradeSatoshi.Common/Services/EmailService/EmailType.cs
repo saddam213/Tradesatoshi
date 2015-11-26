@@ -13,5 +13,7 @@ namespace TradeSatoshi.Common.Services.EmailService
 		PasswordLockout = 2,
 		UserLockout = 3,
 		Registration = 4,
+		TwoFactorLogin = 5,
+		TwoFactorUnlockCode = 6,
 	}
 }

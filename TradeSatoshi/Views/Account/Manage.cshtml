@@ -1,6 +1,6 @@
 ﻿@using TradeSatoshi.Models;
 @using Microsoft.AspNet.Identity;
-@model TradeSatoshi.Models.ManageUserViewModel
+@model TradeSatoshi.Models.Account.ManageUserViewModel
 @{
 	ViewBag.Title = Html.Resource("Manage Account");
 }
@@ -18,6 +18,14 @@
 	</div>
 	<div class="col-md-6 col-lg-4">
 		@Html.Partial("_ProfilePartial", Model.Profile)
+	</div>
+	<div class="col-md-6 col-lg-4">
+		<div class="col-md-12">
+			@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Data.Entities.TwoFactorComponentType.Login });}
+		</div>
+		<div class="col-md-12">
+			@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Data.Entities.TwoFactorComponentType.Withdraw });}
+		</div>
 	</div>
 </div>
 @section Scripts {

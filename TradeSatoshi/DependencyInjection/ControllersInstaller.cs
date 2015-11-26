@@ -1,12 +1,16 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Core;
+using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Data.Entities;
 
 namespace TradeSatoshi.DependencyInjection
 {
@@ -31,6 +35,10 @@ namespace TradeSatoshi.DependencyInjection
 				.DefaultInterfaces()
 				.LifestyleTransient()
 			);
+
+			
+
+			
 		}
 	}
 

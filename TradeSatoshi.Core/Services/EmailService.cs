@@ -24,7 +24,7 @@ namespace TradeSatoshi.Core.Services
 		private readonly string EmailServer = ConfigurationManager.AppSettings["SMTP_Server"];
 		private readonly int EmailPort = int.Parse(ConfigurationManager.AppSettings["SMTP_Port"]);
 
-		public IApplicationDbContext ApplicationDbContext { get; set; }
+		public IDataContext ApplicationDbContext { get; set; }
 		
 		public bool Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{

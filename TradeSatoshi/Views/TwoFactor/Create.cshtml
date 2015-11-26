@@ -1,0 +1,238 @@
+﻿@model TradeSatoshi.Models.TwoFactor.CreateTwoFactorModel
+@{
+	ViewBag.Title = Html.Resource("Create TFA");
+}
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-8 ">
+		<section>
+			@using (Html.BeginForm("Create", "TwoFactor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(m => m.ComponentType)
+				@Html.HiddenFor(m => m.GoogleData.PrivateKey)
+				@Html.HiddenFor(m => m.GoogleData.PublicKey)
+				<h4>@Html.Resource("Add " + Model.ComponentType.ToString() + " TwoFactor Authentication.")</h4>
+				<hr />
+				<div class="row">
+					<div class="col-md-7 ">
+						@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center", id = "validationMessage" })
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-7 ">
+						<div id="successMessage" class="alert alert-success text-center hidden">
+							<h5></h5>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-7 ">
+						<div id="errorMessage" class="alert alert-danger text-center hidden">
+							<h5></h5>
+						</div>
+					</div>
+				</div>
+			
+				<div class="form-group">
+					@Html.ResourceLabelFor(m => m.Type, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.EnumDropDownListFor(m => m.Type, new { @class = "form-control" })
+					</div>
+				</div>
+
+				<div class="form-group data-input-none">
+					<div class="row">
+						<div class="col-md-7 ">
+							<div class="alert alert-warning text-center">
+								<h4>You currently have no @Model.ComponentType TFA setup</h4>
+								<h5>It is highly reccommended that you use Two factor authentication for @Model.ComponentType.</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="form-group data-input-google">
+					<div class="col-md-offset-2  col-md-10">
+						<div>
+							<small>Please scan or enter your Google Authentication code below.</small>
+						</div>
+						<img width="280" src="http://qrcode.kaywa.com/img.php?s=4&d=@(Model.GoogleData.PublicKey)" />
+					</div>
+					<div class="col-md-offset-2  col-md-10">@Model.GoogleData.PrivateKey</div>
+				</div>
+				<hr class="data-input-google" />
+				<div class="form-group data-input-google">
+					@Html.ResourceLabel("Verify Code", new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						<small>Verify your Google Authentication code.</small>
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button id="verify-google" class="btn btn-default" style="width: 100px" type="button">Verify Code</button>
+							</span>
+							@Html.TextBox("GoogleCode", "", new { id = "code-google", @class = "form-control data-input", style = "width:180px" })
+						</div>
+					</div>
+				</div>
+				<hr class="data-input-google" />
+
+
+				<div class="form-group data-input-pincode">
+					@Html.ResourceLabelFor(m => m.DataPin, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						<small>Please enter a 4 to 8 digit pin number.</small>
+						@Html.TextBoxFor(m => m.DataPin, new { @class = "form-control data-input", @type = "number" })
+					</div>
+				</div>
+
+
+
+				<div class="form-group data-input-email">
+					@Html.ResourceLabelFor(m => m.DataEmail, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						<small>Please enter the email you would like to use for TFA then click 'Send Code'.</small>
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button id="send-email" class="btn btn-default" style="width: 100px" type="button">Send Code</button>
+							</span>
+							@Html.TextBoxFor(m => m.DataEmail, new { @class = "form-control data-input", style = "width:180px" })
+						</div>
+					</div>
+				</div>
+				<hr class="data-input-email" />
+				<div class="form-group data-input-email">
+					@Html.ResourceLabel("Verify Code", new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						<small>Verify the code sent yo the email you entered above.</small>
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button id="verify-email" class="btn btn-default" style="width: 100px" type="button">Verify Code</button>
+							</span>
+							@Html.TextBox("EmailCode", "", new { @class = "form-control data-input", style = "width:180px", id = "code-email" })
+						</div>
+					</div>
+				</div>
+				<hr class="data-input-email" />
+				
+
+
+				<div class="form-group ">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="@Html.Resource("Add TwoFactor")" class="btn btn-primary input-submit" />
+						<a class="btn btn-default" href="@Url.Action("Manage", "Account")">@Html.Resource("Cancel")</a>
+					</div>
+				</div>
+			}
+		</section>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$("#Type").on('change', function () {
+			var _this = $(this);
+			clearMessages();
+			$('.input-submit').show();
+			$(".data-input-email, .data-input-google, .data-input-pincode, .data-input-none").hide();
+			var selection = _this.val();
+			if (selection === '0') { $(".data-input-none").show(); $('.input-submit').hide(); }
+			if (selection === '1') { $(".data-input-email").show(); }
+			if (selection === '2') { $(".data-input-google").show(); }
+			if (selection === '3') { $(".data-input-pincode").show(); }
+		}).trigger('change');
+
+
+		$("#send-email").on('click', function () {
+			clearMessages();
+			var valid = $('.form-horizontal').valid();
+			var email = $("#DataEmail").val();
+			if (email && valid) {
+				postJson('@Url.Action("SendEmailCode")', { componentType: '@Model.ComponentType', dataEmail: email }, function (data) {
+					if (data.Success) {
+						$('#send-email').removeClass('btn-danger').addClass('btn-success');
+						showSuccess('@Html.Resource("Your verification code has been sent to your registered TFA email address")')
+						return;
+					}
+					$('#send-email').removeClass('btn-success').addClass('btn-danger');
+					showError('@Html.Resource("Failed to send TFA email code to the email address provided.")')
+				});
+			}
+		});
+
+		$("#verify-email").on('click', function () {
+			clearMessages();
+			var code = $("#code-email").val();
+			if (code) {
+				postJson('@Url.Action("VerifyEmailCode")', { componentType: '@Model.ComponentType', code: code }, function (data) {
+					if (data.Success) {
+						$('#verify-email').removeClass('btn-danger').addClass('btn-success');
+						showSuccess('@Html.Resource("Successfully verified your email TFA code.")')
+						return;
+					}
+					$('#verify-email').removeClass('btn-success').addClass('btn-danger');
+					showError('@Html.Resource("Failed to validate your email TFA code.")')
+				});
+			}
+		});
+
+		$("#verify-google").on('click', function () {
+			clearMessages();
+			var code = $("#code-google").val();
+			if (code) {
+				postJson('@Url.Action("VerifyGoogleCode")', { key: '@Model.GoogleData.PrivateKey', code: code }, function (data) {
+					if (data.Success) {
+						$('#verify-google').removeClass('btn-danger').addClass('btn-success');
+						showSuccess('@Html.Resource("Successfully verified your Google Authentication code.")')
+						return;
+					}
+					$('#verify-google').removeClass('btn-success').addClass('btn-danger');
+					showError('@Html.Resource("Failed to verifiy your Google Authentication code.")')
+				});
+			}
+		});
+
+		function clearMessages() {
+			$('button').removeClass('btn-success btn-danger');
+			$('#validationMessage').addClass('validation-summary-valid');
+			$('#validationMessage').removeClass('validation-summary-errors')
+			$('#errorMessage').addClass('hidden');
+			$('#successMessage').addClass('hidden');
+			$('#EmailCode, #GoogleCode').removeClass('has-success');
+		}
+
+		function showError(message) {
+			$('#errorMessage').removeClass('hidden');;
+			$('#successMessage').addClass('hidden');
+			$('#errorMessage > h5').text(message);
+		}
+
+		function showSuccess(message) {
+			$('#errorMessage').addClass('hidden');
+			$('#successMessage').removeClass('hidden');
+			$('#successMessage > h5').text(message);
+		}
+
+
+
+		function postJson(url, vars, callback) {
+			$.ajax({
+				url: url,
+				cache: false,
+				async: true,
+				type: "post",
+				dataType: 'json',
+				data: vars,
+				success: function (response, textStatus, jqXHR) {
+					if (callback) {
+						callback(response);
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+				}
+			});
+		}
+	</script>
+}

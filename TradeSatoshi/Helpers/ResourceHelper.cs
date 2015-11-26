@@ -22,7 +22,7 @@ namespace TradeSatoshi
 			return string.Format(expression, args);
 		}
 
-		public static MvcHtmlString ResourceLabel<TValue>(this HtmlHelper helper, string label, object htmlAttributes = null)
+		public static MvcHtmlString ResourceLabel(this HtmlHelper helper, string label, object htmlAttributes = null)
 		{
 			return helper.Label(label, htmlAttributes);
 		}

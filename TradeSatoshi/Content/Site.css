@@ -40,3 +40,7 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+.validation-summary-errors ul {
+    list-style-type: none;
+}

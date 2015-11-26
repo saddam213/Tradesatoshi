@@ -11,6 +11,10 @@ using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Helpers;
 using System;
 using TradeSatoshi.Data.Entities;
+using TradeSatoshi.Data;
+using System.Linq;
+using System.Security.Claims;
+using TradeSatoshi.Models.Account;
 
 namespace TradeSatoshi.Controllers
 {
@@ -63,10 +67,27 @@ namespace TradeSatoshi.Controllers
 			}
 
 			// is the password correct
-			var lockoutLink = Url.Action("LockAccount", "Account", new { username = user.UserName, lockoutToken = await UserManager.GenerateUserTokenAsync("LockAccount", user.Id) }, protocol: Request.Url.Scheme);
+			var lockoutLink = Url.Action("LockAccount", "Account", new { username = user.UserName, lockoutToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.LockAccount, user.Id) }, protocol: Request.Url.Scheme);
 			if (await UserManager.CheckPasswordAsync(user, model.Password))
 			{
 				await UserManager.ResetAccessFailedCountAsync(user.Id);
+
+				// Does the user have TFA
+				var loginTwoFactor = await UserManager.GetUserTwoFactorTypeAsync(user.Id, TwoFactorComponentType.Login);
+				if (loginTwoFactor != TwoFactorType.None)
+				{
+					SetTwoFactorLoginAuthCookie(user.Id);
+					if (loginTwoFactor == TwoFactorType.EmailCode)
+					{
+						var emailCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, user.Id);
+						await EmailService.SendAsync(EmailType.TwoFactorLogin, user, Request.GetIPAddress(), emailCode);
+					}
+
+					// Redirect to code verification page
+					return RedirectToAction("VerifyTwoFactor");
+				}
+
+				// Sign them in
 				await SignInAsync(user, model.RememberMe);
 				await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), lockoutLink);
 				return RedirectToLocal(returnUrl);
@@ -184,7 +205,7 @@ namespace TradeSatoshi.Controllers
 			if (user == null)
 				return Unauthorized();
 
-			if (!await UserManager.VerifyUserTokenAsync(user.Id, "LockAccount", lockoutToken))
+			if (!await UserManager.VerifyUserTwoFactorTokenAsync(TwoFactorTokenType.LockAccount, user.Id, lockoutToken))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Lockout Token", "The secure lockout token is invalid or has expired."));
 
 			if (await UserManager.IsLockedOutAsync(user.Id))
@@ -209,6 +230,7 @@ namespace TradeSatoshi.Controllers
 				: message == ManageMessageId.Error ? this.Resource("An error has occurred.")
 				: "";
 			ViewBag.ReturnUrl = Url.Action("Manage");
+			var loginTfa = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login) ?? new UserTwoFactor{ Type = TwoFactorType.None};
 			return View(new ManageUserViewModel
 			{
 				Profile = new UserProfileModel
@@ -222,6 +244,10 @@ namespace TradeSatoshi.Controllers
 					PostCode = user.Profile.PostCode,
 					State = user.Profile.State,
 					CanUpdate = user.Profile.CanUpdate()
+				},
+				TwoFactorModel = new VerifyTwoFactorModel
+				{
+					TwoFactorType = loginTfa.Type
 				}
 			});
 		}
@@ -278,7 +304,98 @@ namespace TradeSatoshi.Controllers
 
 		#endregion
 
+
+		/// <summary>
+		/// GET: Verifies the login two factor code.
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult> VerifyTwoFactor()
+		{
+			var userid = await GetTwoFactorLoginUserIdAsync();
+			if (string.IsNullOrEmpty(userid))
+				return Unauthorized();
+
+			var user = await UserManager.FindByIdAsync(userid);
+			if (user == null)
+				return Unauthorized();
+
+			var logonTwoFactor = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login);
+			if (logonTwoFactor == null)
+				return Unauthorized();
+
+			return View("VerifyTwoFactor", new VerifyTwoFactorModel { TwoFactorType = logonTwoFactor.Type });
+		}
+
+
+		/// <summary>
+		/// POST: Verifies the login two factor code.
+		/// </summary>
+		/// <param name="model">The model.</param>
+		[HttpPost]
+		[AllowAnonymous]
+		public async Task<ActionResult> VerifyTwoFactor(VerifyTwoFactorModel model)
+		{
+			if (!ModelState.IsValid)
+				return View("VerifyTwoFactor", model);
+
+			string userId = await GetTwoFactorLoginUserIdAsync();
+			if (userId == null)
+				return Unauthorized();
+
+			var user = await UserManager.FindByIdAsync(userId);
+			if (user == null)
+				return Unauthorized();
+
+			var logonTwoFactor = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login);
+			if (logonTwoFactor == null)
+				return Unauthorized();
+
+			if (await UserManager.VerifyUserTwoFactorCodeAsync(logonTwoFactor.Component, userId, model.Data))
+			{
+				await SignInAsync(user, false);
+				return RedirectToLocal("Home");
+			}
+
+			await UserManager.AccessFailedAsync(user.Id);
+			if (await UserManager.IsLockedOutAsync(user.Id))
+			{
+				await EmailService.SendAsync(EmailType.PasswordLockout, user, Request.GetIPAddress());
+				ModelState.AddModelError("", "Your account is locked.");
+				return View("Login");
+			}
+
+			ModelState.AddModelError("", "Invalid code");
+			return View("VerifyTwoFactor", model);
+		}
+
 		#region Helpers
+
+		/// <summary>
+		/// Sets the two factor login authentication cookie.
+		/// </summary>
+		/// <param name="userId">The user identifier.</param>
+		private void SetTwoFactorLoginAuthCookie(string userId)
+		{
+			var identity = new ClaimsIdentity(DefaultAuthenticationTypes.TwoFactorCookie);
+			identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
+			AuthenticationManager.SignIn(identity);
+		}
+
+		/// <summary>
+		/// Gets the two factor login user identifier asynchronous.
+		/// </summary>
+		/// <returns></returns>
+		private async Task<string> GetTwoFactorLoginUserIdAsync()
+		{
+			var result = await AuthenticationManager.AuthenticateAsync(DefaultAuthenticationTypes.TwoFactorCookie);
+			if (result != null && result.Identity != null && !string.IsNullOrEmpty(result.Identity.GetUserId()))
+			{
+				return result.Identity.GetUserId();
+			}
+			return null;
+		}
 
 		private IAuthenticationManager AuthenticationManager
 		{

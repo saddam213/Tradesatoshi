@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace TradeSatoshi.Models
+namespace TradeSatoshi.Models.Account
 {
 	public class UserProfileModel
 	{

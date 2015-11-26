@@ -1,4 +1,4 @@
-﻿@model TradeSatoshi.Models.LoginViewModel
+﻿@model TradeSatoshi.Models.Account.LoginViewModel
 
 @{
 	ViewBag.Title = Html.Resource("Log in");
@@ -13,7 +13,11 @@
 				@Html.AntiForgeryToken()
 				<h4>@Html.Resource("Use a local account to log in.")</h4>
 				<hr />
-				@Html.ValidationSummary(true)
+				<div class="row">
+					<div class="col-md-7 ">
+						@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+					</div>
+				</div>
 				<div class="form-group">
 					@Html.ResourceLabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
 					<div class="col-md-10">

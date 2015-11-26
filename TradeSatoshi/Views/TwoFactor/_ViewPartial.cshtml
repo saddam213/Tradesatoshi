@@ -1,0 +1,29 @@
+﻿@model TradeSatoshi.Models.TwoFactor.ViewTwoFactorModel
+@{
+	var action = Model.Type == TradeSatoshi.Data.Entities.TwoFactorType.None
+		? "Create"
+		: "Remove";
+	var button = Model.Type == TradeSatoshi.Data.Entities.TwoFactorType.None
+		? Html.Resource("Create TwoFactor")
+		: Html.Resource("Remove TwoFactor");
+}
+
+@using (Html.BeginForm(action, "TwoFactor", new { ComponentType  = Model.ComponentType}, FormMethod.Get, new { @class = "form-horizontal", role = "form", @method = "get" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.ComponentType)
+	<h4>@Html.Resource(Model.ComponentType + " TwoFactor")</h4>
+	<hr />
+	@Html.ValidationSummary()
+	<div class="form-group">
+		@Html.ResourceLabel("TFA Type", new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Type, new { @class = "form-control", @readonly = "readonly", disabled = "disabled" })
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="@Html.Resource(button)" class="btn btn-default" />
+		</div>
+	</div>
+}
