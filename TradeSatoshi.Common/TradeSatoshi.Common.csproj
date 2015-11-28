@@ -46,6 +46,9 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Mvc.JQuery.DataTables.Core">
+      <HintPath>..\..\mvc.jquery.datatables\Mvc.JQuery.Datatables.Core\bin\Debug\Mvc.JQuery.DataTables.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -56,6 +59,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\IUserWriter.cs" />
+    <Compile Include="Admin\UpdateUserModel.cs" />
+    <Compile Include="Admin\UserModel.cs" />
+    <Compile Include="Admin\IUserReader.cs" />
+    <Compile Include="Admin\ILogonReader.cs" />
+    <Compile Include="Admin\LogonModel.cs" />
+    <Compile Include="DataTables\DataTablesResponse.cs" />
+    <Compile Include="DataTables\DataTableModel.cs" />
     <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -56,7 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Entities\UserLogon.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\DataContext.cs" />
     <Compile Include="DataContext\IDataContext.cs" />
@@ -72,6 +73,14 @@
     <Compile Include="Migrations\201511241041139_TFAUniqueConstraint.cs" />
     <Compile Include="Migrations\201511241041139_TFAUniqueConstraint.Designer.cs">
       <DependentUpon>201511241041139_TFAUniqueConstraint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511270855075_UserSecurityOptions.cs" />
+    <Compile Include="Migrations\201511270855075_UserSecurityOptions.Designer.cs">
+      <DependentUpon>201511270855075_UserSecurityOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511280028079_LogonIsValid.cs" />
+    <Compile Include="Migrations\201511280028079_LogonIsValid.Designer.cs">
+      <DependentUpon>201511280028079_LogonIsValid.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +101,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511241041139_TFAUniqueConstraint.resx">
       <DependentUpon>201511241041139_TFAUniqueConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511270855075_UserSecurityOptions.resx">
+      <DependentUpon>201511270855075_UserSecurityOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511280028079_LogonIsValid.resx">
+      <DependentUpon>201511280028079_LogonIsValid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

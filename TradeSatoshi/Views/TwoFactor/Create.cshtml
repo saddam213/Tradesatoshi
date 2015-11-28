@@ -70,7 +70,7 @@
 						<small>Verify your Google Authentication code.</small>
 						<div class="input-group">
 							<span class="input-group-btn">
-								<button id="verify-google" class="btn btn-default" style="width: 100px" type="button">Verify Code</button>
+								<button id="verify-google" class="btn btn-default" style="width: 100px" type="button" data-key="@Model.GoogleData.PrivateKey" data-action="@Url.Action("VerifyGoogleCode")" data-success="@Html.Resource("Successfully verified your Google Authentication code.")" data-error="@Html.Resource("Failed to verifiy your Google Authentication code.")">Verify Code</button>
 							</span>
 							@Html.TextBox("GoogleCode", "", new { id = "code-google", @class = "form-control data-input", style = "width:180px" })
 						</div>
@@ -95,7 +95,7 @@
 						<small>Please enter the email you would like to use for TFA then click 'Send Code'.</small>
 						<div class="input-group">
 							<span class="input-group-btn">
-								<button id="send-email" class="btn btn-default" style="width: 100px" type="button">Send Code</button>
+								<button id="send-email" class="btn btn-default" style="width: 100px" type="button"  data-component="@Model.ComponentType" data-action="@Url.Action("SendEmailCode")" data-success="@Html.Resource("Your verification code has been sent to your registered TFA email address")" data-error="@Html.Resource("Failed to send TFA email code to the email address provided.")">Send Code</button>
 							</span>
 							@Html.TextBoxFor(m => m.DataEmail, new { @class = "form-control data-input", style = "width:180px" })
 						</div>
@@ -108,7 +108,7 @@
 						<small>Verify the code sent yo the email you entered above.</small>
 						<div class="input-group">
 							<span class="input-group-btn">
-								<button id="verify-email" class="btn btn-default" style="width: 100px" type="button">Verify Code</button>
+								<button id="verify-email" class="btn btn-default" style="width: 100px" type="button" data-component="@Model.ComponentType" data-action="@Url.Action("VerifyEmailCode")" data-success="@Html.Resource("Successfully verified your email TFA code.")" data-error="@Html.Resource("Failed to validate your email TFA code.")">Verify Code</button>
 							</span>
 							@Html.TextBox("EmailCode", "", new { @class = "form-control data-input", style = "width:180px", id = "code-email" })
 						</div>
@@ -131,108 +131,5 @@
 
 @section Scripts {
 	@Scripts.Render("~/bundles/jqueryval")
-	<script>
-		$("#Type").on('change', function () {
-			var _this = $(this);
-			clearMessages();
-			$('.input-submit').show();
-			$(".data-input-email, .data-input-google, .data-input-pincode, .data-input-none").hide();
-			var selection = _this.val();
-			if (selection === '0') { $(".data-input-none").show(); $('.input-submit').hide(); }
-			if (selection === '1') { $(".data-input-email").show(); }
-			if (selection === '2') { $(".data-input-google").show(); }
-			if (selection === '3') { $(".data-input-pincode").show(); }
-		}).trigger('change');
-
-
-		$("#send-email").on('click', function () {
-			clearMessages();
-			var valid = $('.form-horizontal').valid();
-			var email = $("#DataEmail").val();
-			if (email && valid) {
-				postJson('@Url.Action("SendEmailCode")', { componentType: '@Model.ComponentType', dataEmail: email }, function (data) {
-					if (data.Success) {
-						$('#send-email').removeClass('btn-danger').addClass('btn-success');
-						showSuccess('@Html.Resource("Your verification code has been sent to your registered TFA email address")')
-						return;
-					}
-					$('#send-email').removeClass('btn-success').addClass('btn-danger');
-					showError('@Html.Resource("Failed to send TFA email code to the email address provided.")')
-				});
-			}
-		});
-
-		$("#verify-email").on('click', function () {
-			clearMessages();
-			var code = $("#code-email").val();
-			if (code) {
-				postJson('@Url.Action("VerifyEmailCode")', { componentType: '@Model.ComponentType', code: code }, function (data) {
-					if (data.Success) {
-						$('#verify-email').removeClass('btn-danger').addClass('btn-success');
-						showSuccess('@Html.Resource("Successfully verified your email TFA code.")')
-						return;
-					}
-					$('#verify-email').removeClass('btn-success').addClass('btn-danger');
-					showError('@Html.Resource("Failed to validate your email TFA code.")')
-				});
-			}
-		});
-
-		$("#verify-google").on('click', function () {
-			clearMessages();
-			var code = $("#code-google").val();
-			if (code) {
-				postJson('@Url.Action("VerifyGoogleCode")', { key: '@Model.GoogleData.PrivateKey', code: code }, function (data) {
-					if (data.Success) {
-						$('#verify-google').removeClass('btn-danger').addClass('btn-success');
-						showSuccess('@Html.Resource("Successfully verified your Google Authentication code.")')
-						return;
-					}
-					$('#verify-google').removeClass('btn-success').addClass('btn-danger');
-					showError('@Html.Resource("Failed to verifiy your Google Authentication code.")')
-				});
-			}
-		});
-
-		function clearMessages() {
-			$('button').removeClass('btn-success btn-danger');
-			$('#validationMessage').addClass('validation-summary-valid');
-			$('#validationMessage').removeClass('validation-summary-errors')
-			$('#errorMessage').addClass('hidden');
-			$('#successMessage').addClass('hidden');
-			$('#EmailCode, #GoogleCode').removeClass('has-success');
-		}
-
-		function showError(message) {
-			$('#errorMessage').removeClass('hidden');;
-			$('#successMessage').addClass('hidden');
-			$('#errorMessage > h5').text(message);
-		}
-
-		function showSuccess(message) {
-			$('#errorMessage').addClass('hidden');
-			$('#successMessage').removeClass('hidden');
-			$('#successMessage > h5').text(message);
-		}
-
-
-
-		function postJson(url, vars, callback) {
-			$.ajax({
-				url: url,
-				cache: false,
-				async: true,
-				type: "post",
-				dataType: 'json',
-				data: vars,
-				success: function (response, textStatus, jqXHR) {
-					if (callback) {
-						callback(response);
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-				}
-			});
-		}
-	</script>
+	@Scripts.Render("~/Scripts/Project/TwoFactor/twoFactorCreate.js")
 }

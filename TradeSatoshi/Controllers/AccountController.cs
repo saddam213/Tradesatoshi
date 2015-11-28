@@ -67,7 +67,6 @@ namespace TradeSatoshi.Controllers
 			}
 
 			// is the password correct
-			var lockoutLink = Url.Action("LockAccount", "Account", new { username = user.UserName, lockoutToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.LockAccount, user.Id) }, protocol: Request.Url.Scheme);
 			if (await UserManager.CheckPasswordAsync(user, model.Password))
 			{
 				await UserManager.ResetAccessFailedCountAsync(user.Id);
@@ -88,8 +87,7 @@ namespace TradeSatoshi.Controllers
 				}
 
 				// Sign them in
-				await SignInAsync(user, model.RememberMe);
-				await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), lockoutLink);
+				await SignInAsync(user);
 				return RedirectToLocal(returnUrl);
 			}
 			else
@@ -97,12 +95,13 @@ namespace TradeSatoshi.Controllers
 				await UserManager.AccessFailedAsync(user.Id);
 				if (await UserManager.IsLockedOutAsync(user.Id))
 				{
+					await UserManager.AddUserLogon(user, Request.GetIPAddress(), false);
 					await EmailService.SendAsync(EmailType.PasswordLockout, user, Request.GetIPAddress());
 					return View(model);
 				}
 				ModelState.AddModelError("", string.Format("Email or password was invalid.", UserManager.MaxFailedAccessAttemptsBeforeLockout - user.AccessFailedCount));
-				await EmailService.SendAsync(EmailType.FailedLogon, user, Request.GetIPAddress(), lockoutLink);
-				ViewBag.Lockout = lockoutLink;
+				await UserManager.AddUserLogon(user, Request.GetIPAddress(), false);
+				await EmailService.SendAsync(EmailType.FailedLogon, user, Request.GetIPAddress(), GetLockoutLink(user));
 				return View(model);
 			}
 		}
@@ -143,7 +142,10 @@ namespace TradeSatoshi.Controllers
 				var user = new ApplicationUser()
 				{
 					UserName = model.UserName,
-					Email = model.EmailAddress
+					Email = model.EmailAddress,
+					IsEnabled = true,
+					IsTradeEnabled = true,
+					IsWithdrawEnabled = true
 				};
 				user.Profile = new UserProfile { Id = user.Id };
 				user.Settings = new UserSettings { Id = user.Id };
@@ -154,11 +156,11 @@ namespace TradeSatoshi.Controllers
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
 					if (await EmailService.SendAsync(EmailType.Registration, user, Request.GetIPAddress(), callbackUrl))
 					{
-						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
+						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
 					}
 
 					ModelState.AddModelError("", "Failed to send registration confirmation email, if problem persists please contact Support.");
-					return RedirectToAction("Index", "Home");
+					return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Email Send Failed.", string.Format("Failed to send email to {0}, please contact <a href='/Support'>Support</a>. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
 				}
 				else
 				{
@@ -230,7 +232,7 @@ namespace TradeSatoshi.Controllers
 				: message == ManageMessageId.Error ? this.Resource("An error has occurred.")
 				: "";
 			ViewBag.ReturnUrl = Url.Action("Manage");
-			var loginTfa = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login) ?? new UserTwoFactor{ Type = TwoFactorType.None};
+			var loginTfa = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login) ?? new UserTwoFactor { Type = TwoFactorType.None };
 			return View(new ManageUserViewModel
 			{
 				Profile = new UserProfileModel
@@ -354,7 +356,7 @@ namespace TradeSatoshi.Controllers
 
 			if (await UserManager.VerifyUserTwoFactorCodeAsync(logonTwoFactor.Component, userId, model.Data))
 			{
-				await SignInAsync(user, false);
+				await SignInAsync(user);
 				return RedirectToLocal("Home");
 			}
 
@@ -405,11 +407,14 @@ namespace TradeSatoshi.Controllers
 			}
 		}
 
-		private async Task SignInAsync(ApplicationUser user, bool isPersistent)
+		private async Task SignInAsync(ApplicationUser user)
 		{
 			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 			var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false,  }, identity);
+
+			await UserManager.AddUserLogon(user, Request.GetIPAddress(), true);
+			await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));
 		}
 
 		private void AddErrors(IdentityResult result)

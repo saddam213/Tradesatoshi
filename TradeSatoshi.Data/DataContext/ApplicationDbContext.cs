@@ -17,7 +17,8 @@ namespace TradeSatoshi.Data.DataContext
 			: base("DefaultConnection")
 		{
 		}
-		
+
+		public DbSet<UserLogon> UserLogons { get; set; }
 		public DbSet<UserProfile> UserProfiles { get; set; }
 		public DbSet<UserSettings> UserSettings { get; set; }
 		public DbSet<EmailTemplate> EmailTemplates { get; set; }
@@ -26,6 +27,7 @@ namespace TradeSatoshi.Data.DataContext
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+			modelBuilder.Entity<UserLogon>().HasRequired(p => p.User).WithMany(b => b.Logons).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Settings).WithRequiredDependent();
 			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Profile).WithRequiredDependent();
 			modelBuilder.Entity<UserTwoFactor>().HasRequired(p => p.User).WithMany(b => b.TwoFactor).HasForeignKey(p => p.UserId);

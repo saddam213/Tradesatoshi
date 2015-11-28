@@ -1,0 +1,94 @@
+﻿@{
+	ViewBag.Title = "Admin";
+}
+
+<div class="row" style="padding-top: 20px">
+	<div class="col-md-2">
+		<ul class="nav nav-pills nav-pills-primary nav-stacked" id="tabcontrol-main" style="padding-top: 1px">
+			<li>
+				<a href="#tabcontrol-main-tab1" data-toggle="tab" data-div="#sitestatusTarget" data-action="@Url.Action("Status")">Status
+					<i id="sitestatusTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab2" data-toggle="tab" data-div="#accountTarget" data-action="@Url.Action("Accounts")">Accounts
+					<i id="accountTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab3" data-toggle="tab" data-div="#securityTarget" data-action="@Url.Action("Security")">Security 
+					<i id="securityTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<hr />
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab10" data-toggle="tab" data-div="#depositTarget" data-action="@Url.Action("Deposits")">Deposits
+					<i id="depositTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab11" data-toggle="tab" data-div="#withdrawTarget" data-action="@Url.Action("Withdrawals")">Withdrawals
+					<i id="withdrawTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<hr />
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab20" data-toggle="tab" data-div="#statisticsTarget" data-action="@Url.Action("Statistics")">Statistics
+					<i id="statisticsTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#tabcontrol-main-tab21" data-toggle="tab" data-div="#votingTarget" data-action="@Url.Action("Voting")">Voting
+					<i id="votingTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-md-10">
+		<div class="tab-content">
+
+			<!--Site Status -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab1">
+				<div id="sitestatusTarget"></div>
+			</div>
+
+			<!--Account -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab2">
+				<div id="accountTarget"></div>
+			</div>
+
+			<!--Security -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab3">
+				<div id="securityTarget"></div>
+			</div>
+
+			<!--Deposits -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab10">
+				<div id="depositTarget"></div>
+			</div>
+
+			<!--Withdrawals -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab11">
+				<div id="withdrawTarget"></div>
+			</div>
+
+			<!--Statistics -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab20">
+				<div id="statisticsTarget"></div>
+			</div>
+
+			<!--Voting -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab21">
+				<div id="votingTarget"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/Admin/admin.js")
+}

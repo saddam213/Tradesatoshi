@@ -151,6 +151,16 @@ namespace TradeSatoshi.App_Start
 				? TwoFactorType.None
 				: twofactorMethod.Type;
 		}
+
+		public async Task<bool> AddUserLogon(ApplicationUser user, string ipaddress, bool isvalid)
+		{
+			if (user == null)
+				throw new UnauthorizedAccessException();
+
+			user.Logons.Add(new UserLogon(ipaddress, isvalid));
+			var result = await UpdateAsync(user);
+			return result.Succeeded;
+		}
 	}
 
 

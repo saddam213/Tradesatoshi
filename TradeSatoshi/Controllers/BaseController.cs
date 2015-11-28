@@ -6,6 +6,11 @@ using TradeSatoshi.Common;
 using TradeSatoshi.Models;
 using Microsoft.AspNet.Identity.Owin;
 using System.Web;
+using TradeSatoshi.Data.Entities;
+using System.Threading.Tasks;
+using TradeSatoshi.Data;
+using TradeSatoshi.ActionResults;
+using TradeSatoshi.Common.DataTables;
 
 namespace TradeSatoshi.Controllers
 {
@@ -42,14 +47,38 @@ namespace TradeSatoshi.Controllers
 			return View("ViewMessage", model);
 		}
 
-		protected PartialViewResult PartialViewMessage(ViewMessageModel model)
+		protected ViewResult ViewMessageModal(ViewMessageModel model)
 		{
-			return PartialView("ViewMessage", model);
+			return View("ViewMessageModal", model);
+		}
+
+		protected PartialViewResult ViewMessagePartial(ViewMessageModel model)
+		{
+			return PartialView("ViewMessagePartial", model);
 		}
 
 		protected ViewResult Unauthorized()
 		{
 			return View("Unauthorized");
+		}
+
+		protected CloseModalResult CloseModal()
+		{
+			return new CloseModalResult();
+		}
+
+		protected DataTablesResult DataTable(DataTablesResponse dataTablesResponse)
+		{
+			return new DataTablesResult(dataTablesResponse);
+		}
+
+		protected async Task<string> GetLockoutLink(ApplicationUser user)
+		{
+			return Url.Action("LockAccount", "Account", new
+			{
+				username = user.UserName,
+				lockoutToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.LockAccount, user.Id)
+			}, protocol: Request.Url.Scheme);
 		}
 
 		//protected override void Dispose(bool disposing)

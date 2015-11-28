@@ -11,7 +11,7 @@ using TradeSatoshi.Models.Vote;
 
 namespace TradeSatoshi.Controllers
 {
-	public class HomeController : Controller
+	public class HomeController : BaseController
 	{
 		public IDataContext DataContext { get; set; }
 
@@ -44,6 +44,22 @@ namespace TradeSatoshi.Controllers
 		public ActionResult Terms()
 		{
 			return View();
+		}
+
+		public ActionResult Test()
+		{
+			return View();
+		}
+
+		public ActionResult Test2()
+		{
+			return ViewMessageModal(new ViewMessageModel( ViewMessageType.Danger, "Danger", "Danger! Will Robertson, Danger!"));
+		}
+
+		[HttpPost]
+		public ActionResult Test3()
+		{
+			return CloseModal();
 		}
 
 		#region Coin Voting
@@ -87,4 +103,8 @@ namespace TradeSatoshi.Controllers
 
 		#endregion
 	}
+
+
+
+
 }

@@ -1,46 +1,85 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+	padding-top: 50px;
+	padding-bottom: 20px;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
 textarea {
-    max-width: 280px;
+	max-width: 280px;
 }
 
 /* styles for validation helpers */
 .field-validation-error {
-    color: #b94a48;
+	color: #b94a48;
 }
 
 .field-validation-valid {
-    display: none;
+	display: none;
 }
 
 input.input-validation-error {
-    border: 1px solid #b94a48;
+	border: 1px solid #b94a48;
 }
 
 input[type="checkbox"].input-validation-error {
-    border: 0 none;
+	border: 0 none;
 }
 
 .validation-summary-errors {
-    color: #b94a48;
+	color: #b94a48;
 }
 
 .validation-summary-valid {
-    display: none;
+	display: none;
 }
 
 .validation-summary-errors ul {
-    list-style-type: none;
+	list-style-type: none;
 }
+
+.nav-pills-primary > li.active > a,
+.nav-pills-primary > li.active > a:hover,
+.nav-pills-primary > li.active > a:focus {
+	color: #fff;
+	background-color: #333;
+	border-color: #101010;
+}
+
+.panel-default > .panel-heading {
+	color: #fff;
+	background-color: #333;
+	border-color: #101010;
+}
+
+.tab-content .tab-pane {
+	position: relative;
+}
+
+.fa-spin-tab {
+	display: none;
+	font-size: 20px;
+}
+
+.fa-table-cell {
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.modal-dialog {
+	overflow: hidden !important;
+}
+
+#simplemodal-overlay {
+	background-color: #000;
+	cursor: not-allowed;
+}
+
+

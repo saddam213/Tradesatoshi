@@ -1,0 +1,10 @@
+﻿@model TradeSatoshi.Models.ViewMessageModel
+@{
+	ViewBag.Title = Model.Type.ToString();
+}
+
+<div class="alert alert-@Model.Type.ToString().ToLower()" style="margin: 5%;">
+	<h4 class="nopad" style="margin: 0px"><strong class="nopad">@Model.Title</strong></h4>
+	<hr />
+	<h5>@Html.Raw(Model.Message)</h5>
+</div>

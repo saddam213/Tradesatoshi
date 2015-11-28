@@ -1,0 +1,116 @@
+﻿@model TradeSatoshi.Common.Admin.UpdateUserModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>Update User</h3>
+			<small>Update user settings</small>
+		</div>
+		@using (Ajax.BeginForm("UpdateUser", "Admin", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.UserId)
+			@Html.ValidationSummary(true)
+			<div class="modal-body">
+				<div class="row">
+
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.Email, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+						@Html.ValidationMessageFor(model => model.Email)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.UserName, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.UserName, new { @class = "form-control col-md-6" })
+						@Html.ValidationMessageFor(model => model.UserName)
+					</div>
+
+					<div class="col-md-12">
+						<div class="checkbox" style="display: inline-block; padding-right: 10px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsEnabled)
+								@Html.Resource("Enabled")
+							</label>
+						</div>
+						<div class="checkbox" style="display: inline-block; padding-right: 10px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsLocked)
+								@Html.Resource("Locked")
+							</label>
+						</div>
+						<div class="checkbox" style="display: inline-block; padding-right: 10px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsWithdrawEnabled)
+								@Html.Resource("Withdraw Enabled")
+							</label>
+						</div>
+						<div class="checkbox" style="display: inline-block; padding-right: 10px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsTradeEnabled)
+								@Html.Resource("Trading Enabled")
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.FirstName, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+						@Html.ValidationMessageFor(model => model.FirstName)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.LastName, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.LastName, new { @class = "form-control col-md-6" })
+						@Html.ValidationMessageFor(model => model.LastName)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.BirthDate, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control" })
+						@Html.ValidationMessageFor(model => model.BirthDate)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.Address, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.Address, new { @class = "form-control col-md-6" })
+						@Html.ValidationMessageFor(model => model.Address)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.City, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+						@Html.ValidationMessageFor(model => model.City)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.State, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.State, new { @class = "form-control col-md-6" })
+						@Html.ValidationMessageFor(model => model.State)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.Country, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.Country, new { @class = "form-control" })
+						@Html.ValidationMessageFor(model => model.Country)
+					</div>
+					<div class="col-md-6">
+						@Html.ResourceLabelFor(model => model.PostCode, new { @class = "control-label" })
+						@Html.TextBoxFor(model => model.PostCode, new { @class = "form-control col-md-6" })
+						@Html.ValidationMessageFor(model => model.PostCode)
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Save Changes</button>
+				<button class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+	
+
+

@@ -13,6 +13,7 @@ namespace TradeSatoshi.Data.DataContext
 	public interface IDataContext : IDisposable
 	{
 		IDataContext CreateContext();
+		DbSet<UserLogon> UserLogons { get; set; }
 		DbSet<ApplicationUser> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
 		DbSet<UserProfile> UserProfiles { get; set; }

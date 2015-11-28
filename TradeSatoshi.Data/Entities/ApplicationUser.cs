@@ -11,8 +11,13 @@ namespace TradeSatoshi.Data.Entities
 {
 	public class ApplicationUser : IdentityUser
 	{
+		public bool IsEnabled { get; set; }
+		public bool IsTradeEnabled { get; set; }
+		public bool IsWithdrawEnabled { get; set; }
+		
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }
+		public virtual ICollection<UserLogon> Logons { get; set; }
 		public virtual ICollection<UserTwoFactor> TwoFactor { get; set; }
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)

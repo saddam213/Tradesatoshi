@@ -1,47 +1,50 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Html.Resource("Tradesatoshi") - @ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@Html.Resource("Tradesatoshi") - @ViewBag.Title</title>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-			<img style="padding-top:5px" height="40" src="../../Content/Images/TradeSatoshi_Badge.png" alt="" />
-              @*  @Html.ResourceActionLink("Tradesatoshi", "Index", "Home", null, new { @class = "navbar-brand" })*@
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ResourceActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ResourceActionLink("Exchange", "Index", "Exchange")</li>
-                    <li>@Html.ResourceActionLink("Contact", "Contact", "Home")</li>
-                    <li>@Html.ResourceActionLink("Terms of Service", "Terms", "Home")</li>
-                    <li>@Html.ResourceActionLink("Voting", "Voting", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Cryptopia Ltd.</p>
-        </footer>
-    </div>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<img style="padding-top: 5px" height="40" src="../../Content/Images/TradeSatoshi_Badge.png" alt="" />
+				@*  @Html.ResourceActionLink("Tradesatoshi", "Index", "Home", null, new { @class = "navbar-brand" })*@
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li>@Html.ResourceActionLink("Home", "Index", "Home")</li>
+					<li>@Html.ResourceActionLink("Exchange", "Index", "Exchange")</li>
+					<li>@Html.ResourceActionLink("Contact", "Contact", "Home")</li>
+					<li>@Html.ResourceActionLink("Terms of Service", "Terms", "Home")</li>
+					<li>@Html.ResourceActionLink("Voting", "Voting", "Home")</li>
+					<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
+					
+				</ul>
+				@Html.Partial("_LoginPartial")
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - Cryptopia Ltd.</p>
+		</footer>
+	</div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
 </body>
 </html>
