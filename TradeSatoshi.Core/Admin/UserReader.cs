@@ -8,6 +8,11 @@ using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Core.Heplers;
+using TradeSatoshi.Common;
+using System.Threading;
+using System.Security.Claims;
+using System.Security.Permissions;
+using TradeSatoshi.Common.Security;
 
 namespace TradeSatoshi.Core.Admin
 {
@@ -15,6 +20,7 @@ namespace TradeSatoshi.Core.Admin
 	{
 		public IDataContext DataContext { get; set; }
 
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public DataTablesResponse GetUserDataTable(DataTablesModel model)
 		{
 			using (var context = DataContext.CreateContext())
@@ -35,6 +41,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public UserModel GetUser(string userId)
 		{
 			using (var context = DataContext.CreateContext())
@@ -55,6 +62,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<UserModel> GetUserAsync(string userId)
 		{
 			using (var context = DataContext.CreateContext())
@@ -75,7 +83,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
-
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public UpdateUserModel GetUserUpdate(string userId)
 		{
 			using (var context = DataContext.CreateContext())
@@ -105,6 +113,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<UpdateUserModel> GetUserUpdateAsync(string userId)
 		{
 			using (var context = DataContext.CreateContext())
@@ -131,6 +140,44 @@ namespace TradeSatoshi.Core.Admin
 						}).FirstOrDefaultAsync(x => x.UserId == userId);
 
 				return query;
+			}
+		}
+
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		public DataTablesResponse GetLogonDataTable(DataTablesModel model)
+		{
+			using (var context = DataContext.CreateContext())
+			{
+				var query = context.UserLogons
+						.Include(u => u.User)
+						.Select(x => new LogonModel
+						{
+							IPAddress = x.IPAddress,
+							Timestamp = x.Timestamp,
+							UserName = x.User.UserName,
+							IsValid = x.IsValid ? "Success" : "Failed"
+						});
+
+				return query.GetDataTableResult(model);
+			}
+		}
+
+		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		public DataTablesResponse GetRolesDataTable(DataTablesModel model, SecurityRole securityRole)
+		{
+			using (var context = DataContext.CreateContext())
+			{
+				var users = context.UserRoles
+						.Include(x => x.User)
+						.Include(x => x.Role)
+						.Where(x => x.Role.Name == securityRole.ToString())
+						.Select(x => new RoleModel
+						{
+							RoleName = x.Role.Name,
+							UserName = x.User.UserName
+						});
+
+				return users.GetDataTableResult(model);
 			}
 		}
 	}

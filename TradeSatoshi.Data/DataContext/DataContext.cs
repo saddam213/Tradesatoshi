@@ -24,15 +24,23 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<UserSettings> UserSettings { get; set; }
 		public DbSet<EmailTemplate> EmailTemplates { get; set; }
 		public DbSet<UserTwoFactor> UserTwoFactor { get; set; }
+		public DbSet<UserRole> UserRoles { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 			modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers");
+			modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles");
+			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasKey(r => new { r.RoleId, r.UserId }).HasRequired(p => p.User);
+			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasRequired(p => p.Role);
+
+
 			modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
 			modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);
 			modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId });
 			modelBuilder.Entity<UserLogon>().HasRequired(p => p.User).WithMany(b => b.Logons).HasForeignKey(p => p.UserId);
+
+			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Settings).WithRequiredDependent();
 			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Settings).WithRequiredDependent();
 			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Profile).WithRequiredDependent();
 			modelBuilder.Entity<UserTwoFactor>().HasRequired(p => p.User).WithMany(b => b.TwoFactor).HasForeignKey(p => p.UserId);

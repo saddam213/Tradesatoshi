@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Validation\IWriterResult.cs</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -59,17 +62,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\RoleModel.cs" />
     <Compile Include="Admin\IUserWriter.cs" />
     <Compile Include="Admin\UpdateUserModel.cs" />
+    <Compile Include="Admin\UpdateUserRoleModel.cs" />
     <Compile Include="Admin\UserModel.cs" />
     <Compile Include="Admin\IUserReader.cs" />
-    <Compile Include="Admin\ILogonReader.cs" />
     <Compile Include="Admin\LogonModel.cs" />
+    <Compile Include="Admin\UserRoleModel.cs" />
     <Compile Include="DataTables\DataTablesResponse.cs" />
     <Compile Include="DataTables\DataTableModel.cs" />
+    <Compile Include="DataTables\IDataTablesModel.cs" />
+    <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\IWriterResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

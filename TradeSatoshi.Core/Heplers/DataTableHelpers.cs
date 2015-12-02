@@ -56,6 +56,17 @@ namespace TradeSatoshi.Core.Heplers
 			return dataTablesResponseData.ToDataTablesResponse();
 		}
 
+		public static DataTablesResponse GetEmptyDataTableResult(DataTablesModel param)
+		{
+			return new DataTablesResponse
+			{
+				sEcho = param.sEcho,
+				aaData = new object[]{},
+				iTotalDisplayRecords = 0,
+				iTotalRecords = 0
+			};
+		}
+
 		private static DataTablesResponseData ApplyOutputRules<TSource>(DataTablesResponseData sourceData, ResponseOptions<TSource> responseOptions)
 		{
 			responseOptions = responseOptions ?? new ResponseOptions<TSource>() { ArrayOutputType = ArrayOutputType.BiDimensionalArray };

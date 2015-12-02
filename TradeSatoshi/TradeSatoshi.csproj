@@ -265,6 +265,7 @@
     <Content Include="Views\Admin\_StatisticsPartial.cshtml" />
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Admin\UpdateUserModal.cshtml" />
+    <Content Include="Views\Admin\UpdateRoleModal.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <None Include="Views\Home\Voting.cshtml" />
     <Content Include="Web.config">

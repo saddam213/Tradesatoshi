@@ -20,6 +20,7 @@ namespace TradeSatoshi.Data.DataContext
 		DbSet<UserSettings> UserSettings { get; set; }
 		DbSet<EmailTemplate> EmailTemplates { get; set; }
 		DbSet<UserTwoFactor> UserTwoFactor { get; set; }
+		DbSet<UserRole> UserRoles { get; set; }
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
 	}

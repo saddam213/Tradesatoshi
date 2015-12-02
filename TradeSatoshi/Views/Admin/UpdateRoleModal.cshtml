@@ -1,0 +1,45 @@
+﻿@model TradeSatoshi.Common.Admin.UpdateUserRoleModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>@Model.ButtonName</h3>
+			<small>@Model.Description</small>
+		</div>
+		@using (Ajax.BeginForm(Model.ActionMethod, "Admin", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.UserName)
+			@Html.HiddenFor(m => m.ActionMethod)
+			@Html.HiddenFor(m => m.ButtonName)
+			<div class="row">
+					<div class="col-md-12 ">
+						@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center"})
+					</div>
+				</div>
+			<div class="modal-body">
+				
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							@Html.LabelFor(m => m.SecurityRole, new { @class = "control-label" })
+							@Html.EnumDropDownListFor(m => m.SecurityRole, new { @class = "form-control" })
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">@Model.ButtonName</button>
+				<button type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

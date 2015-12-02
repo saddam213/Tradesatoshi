@@ -1,12 +1,12 @@
 ﻿@model TradeSatoshi.Models.Admin.AdminSecurityModel
 <div class="row">
 	<div class="col-md-5">
-		<div class="panel panel-default">
+		<div id="p1" class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Logons</h3>
 			</div>
 			<div class="panel-body">
-				<table class="table">
+				<table id="table-logons" class="table">
 					<thead>
 						<tr>
 							<th>UserName</th>
@@ -21,10 +21,37 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-md-7">
+		<div id="p2" class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Roles</h3>
+			</div>
+			<div class="panel-body">
+
+				<div class="form-group">
+					@Html.LabelFor(m => m.SelectedSecurityRole, new { @class = "control-label" })
+					@Html.EnumDropDownListFor(m => m.SelectedSecurityRole, new { @class = "form-control" })
+				</div>
+
+				<table id="table-roles" class="table">
+					<thead>
+						<tr>
+							<th>UserName</th>
+							<th>Role</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
+
 <script>
-	$('.table').dataTable({
+	$('#table-logons').dataTable({
 		"order": [[3, "desc"]],
 		"lengthChange": false,
 		"processing": true,
@@ -40,4 +67,51 @@
 		"sAjaxSource": '@Url.Action("GetLogons")',
 		"sServerMethod": "POST",
 	});
+
+	$('#table-roles').dataTable({
+		"order": [[0, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetSecurityRoles")',
+		"sServerMethod": "POST",
+		"fnServerParams": function (aoData) {
+			aoData.push({ "name": "securityRole", "value": $('#SelectedSecurityRole').val() });
+		},
+		"columnDefs": [{
+			"targets": 2,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<span class='pull-right'><button style='width:80px' onclick='updateRole(\"" + full[0] + "\", true);' class='btn btn-xs btn-success'>Add</button><button style='width:80px' onclick='updateRole(\"" + full[0] + "\", false);' class='btn btn-xs btn-danger'>Remove</button></span>";
+			}
+		}]
+	});
+
+	$('#SelectedSecurityRole').on('change', function () {
+		$('#table-roles').dataTable().fnDraw();
+	});
+
+	function updateRole(user, isAdd) {
+		var action = isAdd ? '@Url.Action("AddSecurityRole")' : '@Url.Action("RemoveSecurityRole")';
+		openModal(action, { user: user }, function () {
+			$('#table-roles').dataTable().fnDraw();
+		});
+	}
+
+	//$(window).resize(function () {
+	//	var max = Math.max(+$('#p1').height(), +$('#p2').height());
+	//	alert(max)
+	//	//$('#p1').height(max);
+	//	$('#p2').height(max);
+	//});
+	//$(window).resize();
 </script>

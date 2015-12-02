@@ -62,7 +62,6 @@
   <ItemGroup>
     <Compile Include="Admin\UserWriter.cs" />
     <Compile Include="Admin\UserReader.cs" />
-    <Compile Include="Admin\LogonReader.cs" />
     <Compile Include="Heplers\DataTableHelpers.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
