@@ -192,7 +192,6 @@
     <Content Include="Content\dataTables.bootstrap.min.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\webhostinghub-glyphs.svg" />
-    <Content Include="Content\Images\favicon.ico" />
     <Content Include="Content\Images\sort_asc.png" />
     <Content Include="Content\Images\sort_asc_disabled.png" />
     <Content Include="Content\Images\sort_both.png" />
@@ -292,6 +291,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\GoogleHelper.cs" />
+    <Compile Include="Helpers\IdentityHelpers.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Models\Admin\AdminSecurityModel.cs" />

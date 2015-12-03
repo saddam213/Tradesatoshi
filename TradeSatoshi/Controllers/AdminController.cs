@@ -9,18 +9,19 @@ using TradeSatoshi.Common.Admin;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Core.Admin;
+using TradeSatoshi.Helpers;
 using TradeSatoshi.Models;
 using TradeSatoshi.Models.Admin;
 
 namespace TradeSatoshi.Controllers
 {
-	//[Authorize(Roles = "Admin")]
+	[AuthorizeSecurityRole(SecurityRole.Administrator)]
 	public class AdminController : BaseController
 	{
 		public IUserReader UserReader { get; set; }
 		public IUserWriter UserWriter { get; set; }
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Index()
 		{
 			return View();
@@ -28,7 +29,7 @@ namespace TradeSatoshi.Controllers
 
 		#region Status
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Status()
 		{
 			return PartialView("_StatusPartial");
@@ -38,7 +39,7 @@ namespace TradeSatoshi.Controllers
 
 		#region Accounts
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Accounts()
 		{
 			return PartialView("_AccountsPartial", new AdminAccountsModel());
@@ -81,14 +82,13 @@ namespace TradeSatoshi.Controllers
 
 		#region Security
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Security()
 		{
 			return PartialView("_SecurityPartial", new AdminSecurityModel());
 		}
 
 		[HttpPost]
-		//[Authorize(Roles = "Admin")]
 		public ActionResult GetLogons(DataTablesModel param)
 		{
 			return DataTable(UserReader.GetLogonDataTable(param));
@@ -172,13 +172,13 @@ namespace TradeSatoshi.Controllers
 
 		#region Deposits/Withdrawals
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Deposits()
 		{
 			return PartialView("_DepositsPartial");
 		}
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Withdrawals()
 		{
 			return PartialView("_WithdrawalsPartial");
@@ -188,7 +188,7 @@ namespace TradeSatoshi.Controllers
 
 		#region Statistics
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Statistics()
 		{
 			return PartialView("_StatisticsPartial");
@@ -198,7 +198,7 @@ namespace TradeSatoshi.Controllers
 
 		#region Voting
 
-		//[Authorize(Roles = "Admin")]
+		[HttpGet]
 		public ActionResult Voting()
 		{
 			return PartialView("_VotingPartial");

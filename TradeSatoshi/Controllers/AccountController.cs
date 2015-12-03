@@ -15,6 +15,7 @@ using TradeSatoshi.Data;
 using System.Linq;
 using System.Security.Claims;
 using TradeSatoshi.Models.Account;
+using TradeSatoshi.Common.Security;
 
 namespace TradeSatoshi.Controllers
 {
@@ -138,7 +139,7 @@ namespace TradeSatoshi.Controllers
 					ModelState.AddModelError("", this.Resource("Invalid reCaptcha"));
 					return View(model);
 				}
-
+				
 				var user = new ApplicationUser()
 				{
 					UserName = model.UserName,
@@ -149,9 +150,11 @@ namespace TradeSatoshi.Controllers
 				};
 				user.Profile = new UserProfile { Id = user.Id };
 				user.Settings = new UserSettings { Id = user.Id };
+				
 				var result = await UserManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
+					await UserManager.AddToRoleAsync(user.Id, SecurityRoles.Standard);
 					string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
 					if (await EmailService.SendAsync(EmailType.Registration, user, Request.GetIPAddress(), callbackUrl))

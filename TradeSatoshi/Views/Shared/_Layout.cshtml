@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using TradeSatoshi.Common.Security
+@using TradeSatoshi.Helpers;
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
@@ -28,8 +30,10 @@
 					<li>@Html.ResourceActionLink("Contact", "Contact", "Home")</li>
 					<li>@Html.ResourceActionLink("Terms of Service", "Terms", "Home")</li>
 					<li>@Html.ResourceActionLink("Voting", "Voting", "Home")</li>
+					@if(User.IsInRole(SecurityRole.Administrator))
+					{
 					<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
-					
+					}
 				</ul>
 				@Html.Partial("_LoginPartial")
 			</div>
