@@ -224,91 +224,7 @@ namespace TradeSatoshi.Controllers
 
 		#endregion
 
-		#region Manage
-
-		[HttpGet]
-		public ActionResult Manage(ManageMessageId? message)
-		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
-			ViewBag.StatusMessage =
-				message == ManageMessageId.ChangePasswordSuccess ? this.Resource("Your password has been changed.")
-				: message == ManageMessageId.Error ? this.Resource("An error has occurred.")
-				: "";
-			ViewBag.ReturnUrl = Url.Action("Manage");
-			var loginTfa = user.TwoFactor.FirstOrDefault(x => x.Component == TwoFactorComponentType.Login) ?? new UserTwoFactor { Type = TwoFactorType.None };
-			return View(new ManageUserViewModel
-			{
-				Profile = new UserProfileModel
-				{
-					BirthDate = user.Profile.BirthDate,
-					City = user.Profile.City,
-					Country = user.Profile.Country,
-					Address = user.Profile.Address,
-					FirstName = user.Profile.FirstName,
-					LastName = user.Profile.LastName,
-					PostCode = user.Profile.PostCode,
-					State = user.Profile.State,
-					CanUpdate = user.Profile.CanUpdate()
-				},
-				TwoFactorModel = new VerifyTwoFactorModel
-				{
-					TwoFactorType = loginTfa.Type
-				}
-			});
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Manage(ManageUserViewModel model)
-		{
-			ViewBag.ReturnUrl = Url.Action("Manage");
-			if (ModelState.IsValid)
-			{
-				IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-				if (result.Succeeded)
-				{
-					return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
-				}
-				else
-				{
-					AddErrors(result);
-				}
-			}
-
-			// If we got this far, something failed, redisplay form
-			return View(model);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> UserProfile(UserProfileModel model)
-		{
-			if (!ModelState.IsValid)
-			{
-				return View("Manage", new ManageUserViewModel { Profile = model });
-			}
-
-			var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-			if (user.Profile.CanUpdate())
-			{
-				user.Profile.Address = model.Address;
-				user.Profile.BirthDate = model.BirthDate;
-				user.Profile.City = model.City;
-				user.Profile.Country = model.Country;
-				user.Profile.FirstName = model.FirstName;
-				user.Profile.LastName = model.LastName;
-				user.Profile.PostCode = model.PostCode;
-				user.Profile.State = model.State;
-
-				await UserManager.UpdateAsync(user);
-				model.CanUpdate = user.Profile.CanUpdate();
-			}
-
-			return View("Manage", new ManageUserViewModel { Profile = model });
-		}
-
-		#endregion
-
+		#region TwoFactor
 
 		/// <summary>
 		/// GET: Verifies the login two factor code.
@@ -375,6 +291,8 @@ namespace TradeSatoshi.Controllers
 			return View("VerifyTwoFactor", model);
 		}
 
+		#endregion
+
 		#region Helpers
 
 		/// <summary>
@@ -420,19 +338,12 @@ namespace TradeSatoshi.Controllers
 			await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));
 		}
 
-		private void AddErrors(IdentityResult result)
-		{
-			foreach (var error in result.Errors)
-			{
-				ModelState.AddModelError("", error);
-			}
-		}
-
-		public enum ManageMessageId
-		{
-			ChangePasswordSuccess,
-			Error
-		}
+	
+		//public enum ManageMessageId
+		//{
+		//	ChangePasswordSuccess,
+		//	Error
+		//}
 
 		private ActionResult RedirectToLocal(string returnUrl)
 		{

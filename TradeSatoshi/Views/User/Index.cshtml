@@ -1,0 +1,50 @@
+﻿@{
+	ViewBag.Title = "User";
+}
+
+<div class="row" style="padding-top: 20px">
+	<div class="col-md-2">
+		<ul class="nav nav-pills nav-pills-primary nav-stacked" id="tabcontrol-main" style="padding-top: 1px">
+			<li>
+				<a href="#Profile" data-toggle="tab" data-div="#profileTarget" data-action="@Url.Action("UserProfile")">Profile
+					<i id="profileTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#Security" data-toggle="tab" data-div="#securityTarget" data-action="@Url.Action("Security")">Security
+					<i id="securityTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<a href="#Balances" data-toggle="tab" data-div="#balancesTarget" data-action="@Url.Action("Balances")">Balances
+					<i id="balancesTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-md-10">
+		<div class="tab-content">
+
+			<!--Profile -->
+			<div class="tab-pane fade" id="Profile">
+				<div id="profileTarget"></div>
+			</div>
+
+			<!--Security -->
+			<div class="tab-pane fade" id="Security">
+				<div id="securityTarget"></div>
+			</div>
+
+			<!--Balances -->
+			<div class="tab-pane fade" id="Balances">
+				<div id="balancesTarget"></div>
+			</div>
+
+			
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/User/user.js")
+}

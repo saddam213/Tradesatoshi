@@ -1,0 +1,73 @@
+﻿@model TradeSatoshi.Models.User.UserSecurityModel
+<div class="row">
+	<div class="col-md-12">
+		<div id="p1" class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Logons</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div id="changePasswordTarget" class="col-md-6 col-lg-4">
+						@Html.Partial("_PasswordPartial")
+					</div>
+
+					<div class="col-md-6 col-lg-4">
+						<div class="col-md-12">
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Data.Entities.TwoFactorComponentType.Login });}
+						</div>
+						<div class="col-md-12">
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Data.Entities.TwoFactorComponentType.Withdraw });}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+
+
+	@*	$('#table-roles').dataTable({
+		"order": [[0, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetSecurityRoles")',
+		"sServerMethod": "POST",
+		"fnServerParams": function (aoData) {
+			aoData.push({ "name": "securityRole", "value": $('#SelectedSecurityRole').val() });
+		},
+		"columnDefs": [{
+			"targets": 2,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<span class='pull-right'><button style='width:80px' onclick='updateRole(\"" + full[0] + "\", true);' class='btn btn-xs btn-success'>Add</button><button style='width:80px' onclick='updateRole(\"" + full[0] + "\", false);' class='btn btn-xs btn-danger'>Remove</button></span>";
+			}
+		}]
+	});
+
+	$('#SelectedSecurityRole').on('change', function () {
+		$('#table-roles').dataTable().fnDraw();
+	});
+
+	function updateRole(user, isAdd) {
+		var action = isAdd ? '@Url.Action("AddSecurityRole")' : '@Url.Action("RemoveSecurityRole")';
+		openModal(action, { user: user }, function () {
+			$('#table-roles').dataTable().fnDraw();
+		});
+	}*@
+
+
+</script>

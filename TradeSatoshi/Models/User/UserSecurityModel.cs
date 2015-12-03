@@ -4,10 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace TradeSatoshi.Models.Account
+namespace TradeSatoshi.Models.User
 {
-	public class ManageUserViewModel
+	public class UserSecurityModel
 	{
+		public UserSecurityModel()
+		{
+		}
+
 		[Required]
 		[DataType(DataType.Password)]
 		[Display(Name = "Current password")]
@@ -23,9 +27,5 @@ namespace TradeSatoshi.Models.Account
 		[Display(Name = "Confirm new password")]
 		[Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; }
-
-		public UserProfileModel Profile { get; set; }
-
-		public VerifyTwoFactorModel TwoFactorModel { get; set; }
 	}
 }

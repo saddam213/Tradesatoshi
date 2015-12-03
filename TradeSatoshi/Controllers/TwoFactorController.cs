@@ -29,8 +29,8 @@ namespace TradeSatoshi.Controllers
 
 		#endregion
 
-		[HttpGet]
 		[Authorize]
+		[ChildActionOnly]
 		public ActionResult GetTwoFactor(TwoFactorComponentType component)
 		{
 			var user = UserManager.FindById(User.Identity.GetUserId());
@@ -85,7 +85,7 @@ namespace TradeSatoshi.Controllers
 
 			var twofactor = user.TwoFactor.FirstOrDefault(x => x.Component == model.ComponentType && x.Type == model.Type);
 			if (twofactor == null)
-				return RedirectToAction("Manage", "Account");
+				return RedirectToActionWithHash("Index", "User", "#Security");
 
 			if (!await UserManager.VerifyUserTwoFactorCodeAsync(model.ComponentType, user.Id, model.Data))
 			{
@@ -100,7 +100,7 @@ namespace TradeSatoshi.Controllers
 			twofactor.Updated = DateTime.UtcNow;
 			await UserManager.UpdateAsync(user);
 
-			return RedirectToAction("Manage", "Account");
+			return RedirectToActionWithHash("Index", "User", "#Security");
 		}
 
 		[HttpGet]
@@ -114,7 +114,7 @@ namespace TradeSatoshi.Controllers
 			// If twofactor exists something is dodgy, return unauthorised
 			var twofactor = user.TwoFactor.FirstOrDefault(x => x.Component == componentType && x.Type != TwoFactorType.None);
 			if (twofactor != null)
-				return RedirectToAction("Manage", "Account");
+				return RedirectToActionWithHash("Index", "User", "#Security");
 
 			return View(new CreateTwoFactorModel
 			{
@@ -138,7 +138,7 @@ namespace TradeSatoshi.Controllers
 			// If twofactor exists something is dodgy, return unauthorised
 			var twofactor = user.TwoFactor.FirstOrDefault(x => x.Component == model.ComponentType);
 			if (twofactor != null && twofactor.Type != TwoFactorType.None)
-				return RedirectToAction("Manage", "Account");
+				return RedirectToActionWithHash("Index", "User", "#Security");
 
 			// If no TFA exists, create and redirect to TFA view partial
 			if (twofactor == null)
@@ -154,7 +154,7 @@ namespace TradeSatoshi.Controllers
 					IsEnabled = true
 				});
 				await UserManager.UpdateAsync(user);
-				return RedirectToAction("Manage", "Account");
+				return RedirectToActionWithHash("Index", "User", "#Security");
 			}
 
 			twofactor.ClearData();
@@ -163,7 +163,7 @@ namespace TradeSatoshi.Controllers
 			twofactor.Data2 = model.GoogleData.PublicKey;
 			twofactor.Updated = DateTime.UtcNow;
 			await UserManager.UpdateAsync(user);
-			return RedirectToAction("Manage", "Account");
+			return RedirectToActionWithHash("Index", "User", "#Security");
 		}
 
 		[HttpPost]

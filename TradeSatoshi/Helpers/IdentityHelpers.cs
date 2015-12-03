@@ -5,11 +5,21 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common.Security;
+using Microsoft.AspNet.Identity;
 
 namespace TradeSatoshi.Helpers
 {
 	public static class IdentityHelpers
 	{
+
+		public static string Id(this IPrincipal principal)
+		{
+			if (principal == null || principal.Identity == null)
+				return string.Empty;
+
+			return principal.Identity.GetUserId();
+		}
+
 		public static bool IsInRole(this IPrincipal principal, params SecurityRole[] roles)
 		{
 			if (principal == null || roles == null)

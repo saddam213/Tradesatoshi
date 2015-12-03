@@ -246,6 +246,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Project\Admin\admin.js" />
+    <Content Include="Scripts\Project\User\user.js" />
     <Content Include="Scripts\Project\TwoFactor\twoFactorCreate.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
@@ -282,6 +283,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\TwoFactorController.cs" />
     <Compile Include="Controllers\ExchangeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -305,6 +307,9 @@
     <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
     <Compile Include="Models\Account\UserProfileModel.cs" />
     <Compile Include="Models\Account\VerifyTwoFactorModel.cs" />
+    <Compile Include="Models\User\UserSecurityModel.cs" />
+    <Compile Include="Models\User\UserBalancesModel.cs" />
+    <Compile Include="Models\User\UserProfileModel.cs" />
     <Compile Include="Models\Vote\VotingModel.cs" />
     <Compile Include="Models\ViewMessageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -317,9 +322,8 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
+    <Content Include="Views\User\_PasswordPartial.cshtml" />
     <Content Include="Views\Exchange\Index.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -327,7 +331,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Account\_ProfilePartial.cshtml" />
     <Content Include="Views\Shared\Unauthorized.cshtml" />
     <Content Include="Views\Shared\ViewMessage.cshtml" />
     <Content Include="Views\TwoFactor\_ViewPartial.cshtml" />
@@ -336,6 +339,10 @@
     <Content Include="Views\Shared\ViewMessageModal.cshtml" />
     <Content Include="Views\Shared\ViewMessagePartial.cshtml" />
     <Content Include="Views\Shared\_Modal.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\_ProfilePartial.cshtml" />
+    <Content Include="Views\User\_SecurityPartial.cshtml" />
+    <Content Include="Views\User\_BalancesPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

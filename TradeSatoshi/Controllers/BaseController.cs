@@ -81,6 +81,18 @@ namespace TradeSatoshi.Controllers
 			}, protocol: Request.Url.Scheme);
 		}
 
+		protected internal ActionResult RedirectToActionWithHash(string actionName, string controllerName, string hash)
+		{
+			return new RedirectResult(Url.Action(actionName, controllerName) + hash);
+		}
+
+		protected internal void AddErrors(IdentityResult result)
+		{
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError("", error);
+			}
+		}
 		//protected override void Dispose(bool disposing)
 		//{
 		//	if (disposing && UserManager != null)
