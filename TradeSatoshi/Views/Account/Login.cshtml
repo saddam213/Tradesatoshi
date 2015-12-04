@@ -37,9 +37,16 @@
 						<input type="submit" value="@Html.Resource("Log in")" class="btn btn-default" />
 					</div>
 				</div>
-				<p>
-					@Html.ResourceActionLink("Register", "Register") @Html.Resource("if you don't have an account.")
-				</p>
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<div class=" text-center" style="max-width:280px">
+							@Html.ResourceActionLink("Register", "Register") @Html.Resource("if you don't have an account.")
+						</div>
+						<div class=" text-center" style="max-width:280px">
+							@Html.ResourceActionLink("Forgot your password?", "PasswordForgot")
+						</div>
+					</div>
+				</div>
 			}
 		</section>
 	</div>
