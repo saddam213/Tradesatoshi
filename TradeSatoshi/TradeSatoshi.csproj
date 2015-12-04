@@ -266,6 +266,8 @@
     <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Admin\UpdateUserModal.cshtml" />
     <Content Include="Views\Admin\UpdateRoleModal.cshtml" />
+    <Content Include="Views\Account\PasswordReset.cshtml" />
+    <Content Include="Views\Account\PasswordForgot.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <None Include="Views\Home\Voting.cshtml" />
     <Content Include="Web.config">
@@ -296,16 +298,16 @@
     <Compile Include="Helpers\IdentityHelpers.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
+    <Compile Include="Models\Account\PasswordForgotModel.cs" />
+    <Compile Include="Models\Account\PasswordResetModel.cs" />
     <Compile Include="Models\Admin\AdminSecurityModel.cs" />
     <Compile Include="Models\DataTableModelBinder.cs" />
     <Compile Include="Models\Account\RegisterViewModel.cs" />
     <Compile Include="Models\Account\LoginViewModel.cs" />
-    <Compile Include="Models\Account\ManageUserViewModel.cs" />
     <Compile Include="Models\Admin\AdminAccountsModel.cs" />
     <Compile Include="Models\TwoFactor\CreateTwoFactorModel.cs" />
     <Compile Include="Models\TwoFactor\RemoveTwoFactorModel.cs" />
     <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
-    <Compile Include="Models\Account\UserProfileModel.cs" />
     <Compile Include="Models\Account\VerifyTwoFactorModel.cs" />
     <Compile Include="Models\User\UserSecurityModel.cs" />
     <Compile Include="Models\User\UserBalancesModel.cs" />

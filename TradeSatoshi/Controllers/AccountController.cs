@@ -139,7 +139,7 @@ namespace TradeSatoshi.Controllers
 					ModelState.AddModelError("", this.Resource("Invalid reCaptcha"));
 					return View(model);
 				}
-				
+
 				var user = new ApplicationUser()
 				{
 					UserName = model.UserName,
@@ -150,7 +150,7 @@ namespace TradeSatoshi.Controllers
 				};
 				user.Profile = new UserProfile { Id = user.Id };
 				user.Settings = new UserSettings { Id = user.Id };
-				
+
 				var result = await UserManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
@@ -193,6 +193,85 @@ namespace TradeSatoshi.Controllers
 			}
 
 			return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Activation Link.", ""));
+		}
+
+		#endregion
+
+		#region Password
+
+		/// <summary>
+		/// GET: Forgot password view.
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		[AllowAnonymous]
+		public ActionResult PasswordForgot()
+		{
+			return View();
+		}
+
+		/// <summary>
+		/// POST: Forgot password. sends a secure token link to users email
+		/// </summary>
+		/// <param name="model">The model.</param>
+		/// <returns></returns>
+		[HttpPost]
+		[AllowAnonymous]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> PasswordForgot(PasswordForgotModel model)
+		{
+			if (!ModelState.IsValid)
+				return View(model);
+
+			var message = new ViewMessageModel(ViewMessageType.Info, "Reset Email Sent", "An email has been sent to your registered email address with password reset instructions.");
+			var user = await UserManager.FindByEmailAsync(model.Email);
+			if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)) || !user.IsEnabled)
+			{
+				// Don't reveal that the user does not exist or is not confirmed
+				return ViewMessage(message);
+			}
+
+			var resetPasswordToken = Url.Action("PasswordReset", "Account", new { secureToken = await UserManager.GeneratePasswordResetTokenAsync(user.Id) }, protocol: Request.Url.Scheme);
+			await EmailService.SendAsync(EmailType.PasswordReset, user, Request.GetIPAddress(), resetPasswordToken);
+			return ViewMessage(message);
+		}
+
+		/// <summary>
+		/// GET: Resets the password with the code from the link sent to the user.
+		/// </summary>
+		/// <param name="code">The code.</param>
+		[HttpGet]
+		[AllowAnonymous]
+		public ActionResult PasswordReset(string secureToken)
+		{
+			return View("PasswordReset", new PasswordResetModel { SecureToken = secureToken });
+		}
+
+		/// <summary>
+		/// Resets the users password.
+		/// </summary>
+		/// <param name="model">The model.</param>
+		[HttpPost]
+		[AllowAnonymous]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> PasswordReset(PasswordResetModel model)
+		{
+			if (!ModelState.IsValid)
+				return View(model);
+			
+			var user = await UserManager.FindByEmailAsync(model.Email);
+			if (user == null)
+			{
+				// Don't reveal that the user does not exist
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Success, "Password Reset.", "Your password has been reset"));
+			}
+			var result = await UserManager.ResetPasswordAsync(user.Id, model.SecureToken, model.Password);
+			if (result.Succeeded)
+			{
+				return ViewMessage(new ViewMessageModel(ViewMessageType.Success, "Password Reset.", "Your password has been reset"));
+			}
+
+			return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Password Reset Failed.", "Falied to reset password."));
 		}
 
 		#endregion
@@ -332,13 +411,13 @@ namespace TradeSatoshi.Controllers
 		{
 			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 			var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false,  }, identity);
+			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false, }, identity);
 
 			await UserManager.AddUserLogon(user, Request.GetIPAddress(), true);
 			await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));
 		}
 
-	
+
 		//public enum ManageMessageId
 		//{
 		//	ChangePasswordSuccess,

@@ -15,5 +15,6 @@ namespace TradeSatoshi.Common.Services.EmailService
 		Registration = 4,
 		TwoFactorLogin = 5,
 		TwoFactorUnlockCode = 6,
+		PasswordReset,
 	}
 }

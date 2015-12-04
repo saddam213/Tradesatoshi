@@ -11,6 +11,8 @@ using TradeSatoshi.Core.Heplers;
 using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Common.Security;
+using System.Data.Entity.Validation;
+using System.Security.Permissions;
 
 namespace TradeSatoshi.Core.Admin
 {
@@ -18,11 +20,16 @@ namespace TradeSatoshi.Core.Admin
 	{
 		public IDataContext DataContext { get; set; }
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public IWriterResult UpdateUser(UpdateUserModel model)
 		{
 			using (var context = DataContext.CreateContext())
 			{
+				var existinguser = context.Users.FirstOrDefault(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
+				if (existinguser != null)
+				{
+					return WriterResult.ErrorResult(model.UserName == existinguser.UserName ? "Username already in use." : "Email already in use.");
+				}
 				var user = context.Users
 					.Include(x => x.Profile)
 					.FirstOrDefault(x => x.Id == model.UserId);
@@ -43,17 +50,23 @@ namespace TradeSatoshi.Core.Admin
 				user.Profile.Country = model.Country;
 				user.Profile.PostCode = model.PostCode;
 				user.Profile.State = model.State;
+
 				context.SaveChanges();
 
 				return WriterResult.SuccessResult();
 			}
 		}
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult> UpdateUserAsync(UpdateUserModel model)
 		{
 			using (var context = DataContext.CreateContext())
 			{
+				var existinguser = await context.Users.FirstOrDefaultAsync(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
+				if (existinguser != null)
+				{
+					return WriterResult.ErrorResult(model.UserName == existinguser.UserName ? "Username already in use." : "Email already in use.");
+				}
 				var user = await context.Users
 					.Include(x => x.Profile)
 					.FirstOrDefaultAsync(x => x.Id == model.UserId);
@@ -74,13 +87,14 @@ namespace TradeSatoshi.Core.Admin
 				user.Profile.Country = model.Country;
 				user.Profile.PostCode = model.PostCode;
 				user.Profile.State = model.State;
+
 				await context.SaveChangesAsync();
 
 				return WriterResult.SuccessResult();
 			}
 		}
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public IWriterResult AddUserRole(UserRoleModel model)
 		{
 			using (var context = DataContext.CreateContext())
@@ -103,7 +117,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult> AddUserRoleAsync(UserRoleModel model)
 		{
 			using (var context = DataContext.CreateContext())
@@ -127,7 +141,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public IWriterResult RemoveUserRole(UserRoleModel model)
 		{
 			if (model.SecurityRole == SecurityRole.Standard)
@@ -145,7 +159,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
+		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult> RemoveUserRoleAsync(UserRoleModel model)
 		{
 			if (model.SecurityRole == SecurityRole.Standard)
