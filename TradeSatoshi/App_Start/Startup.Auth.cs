@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
@@ -8,6 +9,7 @@ using System.Web;
 using TradeSatoshi.App_Start;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Data.Entities;
+using TradeSatoshi.Hubs;
 using TradeSatoshi.Models;
 
 namespace TradeSatoshi
@@ -36,7 +38,19 @@ namespace TradeSatoshi
 				LoginPath = new PathString("/Account/Login")
 			});
 			// Use a cookie to temporarily store information about a user logging in with a third party login provider
-			app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5)); 
+			app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+
+			//Signalr
+			var hubConfiguration = new HubConfiguration
+			{
+#if DEBUG
+				EnableDetailedErrors = true,
+#else
+				EnableDetailedErrors = false
+#endif
+			};
+			GlobalHost.DependencyResolver.Register(typeof(IUserIdProvider), () => new HubUserIdProvider());
+			app.MapSignalR(hubConfiguration);
 		}
 
 		private static bool IsApiRequest(IOwinRequest request)

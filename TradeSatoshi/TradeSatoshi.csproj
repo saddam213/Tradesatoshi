@@ -78,6 +78,14 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.0\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -203,6 +211,8 @@
     <Content Include="Content\jquery.dataTables.css" />
     <Content Include="Content\jquery.dataTables.min.css" />
     <Content Include="Content\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\jquery.jgrowl.css" />
+    <Content Include="Content\jquery.jgrowl.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\whhg.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -229,13 +239,18 @@
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
     <Content Include="Scripts\jquery.countdown.min.js.map" />
+    <Content Include="Scripts\jquery.jgrowl.js" />
+    <Content Include="Scripts\jquery.jgrowl.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.countdown.js" />
     <Content Include="Scripts\jquery.countdown.min.js" />
     <Content Include="Scripts\jquery.dataTables.js" />
     <Content Include="Scripts\jquery.dataTables.min.js" />
+    <Content Include="Scripts\jquery.jgrowl.min.js" />
     <Content Include="Scripts\jquery.plugin.js" />
     <Content Include="Scripts\jquery.plugin.min.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="Scripts\jquery.simplemodal.1.4.4.js" />
     <Content Include="Scripts\jquery.simplemodal.1.4.4.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
@@ -252,7 +267,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\Project\site.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Account\VerifyTwoFactor.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
@@ -314,6 +329,8 @@
     <Compile Include="Models\User\UserProfileModel.cs" />
     <Compile Include="Models\Vote\VotingModel.cs" />
     <Compile Include="Models\ViewMessageModel.cs" />
+    <Compile Include="Hubs\HubUserIdProvider.cs" />
+    <Compile Include="Hubs\NotificationHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Validation\RequiredIfAttribute.cs" />

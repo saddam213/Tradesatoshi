@@ -1,4 +1,12 @@
-﻿function getPartial(div, url, callback) {
+﻿(function () {
+	var notificationHub = $.connection.Notification;
+	notificationHub.client.SendNotification = function (notification) {
+		$.jGrowl(notification.Message, { position: "bottom-left", header: notification.Title });
+	};
+	$.connection.hub.start();
+})();
+
+function getPartial(div, url, callback) {
 	$.ajax({
 		url: url,
 		cache: false,
@@ -117,7 +125,7 @@ function notifyModal(header, message, callback) {
 					callback.apply();
 				}
 				// close the dialog
-				modal.close(); 
+				modal.close();
 			});
 		},
 		onClose: function (dialog) {

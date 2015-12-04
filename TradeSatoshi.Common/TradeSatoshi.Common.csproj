@@ -77,6 +77,10 @@
     <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\NotificationService\INotificationClient.cs" />
+    <Compile Include="Services\NotificationService\Notification.cs" />
+    <Compile Include="Services\NotificationService\NotificationType.cs" />
+    <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
   </ItemGroup>
   <ItemGroup>

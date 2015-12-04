@@ -30,9 +30,9 @@
 					<li>@Html.ResourceActionLink("Contact", "Contact", "Home")</li>
 					<li>@Html.ResourceActionLink("Terms of Service", "Terms", "Home")</li>
 					<li>@Html.ResourceActionLink("Voting", "Voting", "Home")</li>
-					@if(User.IsInRole(SecurityRole.Administrator))
+					@if (User.IsInRole(SecurityRole.Administrator))
 					{
-					<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
+						<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
 					}
 				</ul>
 				@Html.Partial("_LoginPartial")
@@ -49,6 +49,8 @@
 
 	@Scripts.Render("~/bundles/jquery")
 	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/signalr/hubs")
+	@Scripts.Render("~/Scripts/Project/site.js")
 	@RenderSection("scripts", required: false)
 </body>
 </html>
