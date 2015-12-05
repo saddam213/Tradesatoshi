@@ -23,6 +23,7 @@ namespace TradeSatoshi.Data.Entities
 		public virtual ICollection<Deposit> Deposit { get; set; }
 		public virtual ICollection<Withdraw> Withdraw { get; set; }
 		public virtual ICollection<Balance> Balance { get; set; }
+		public virtual ICollection<Address> Address { get; set; }
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
 		{

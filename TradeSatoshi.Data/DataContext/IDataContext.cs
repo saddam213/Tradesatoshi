@@ -29,5 +29,6 @@ namespace TradeSatoshi.Data.DataContext
 		DbSet<Deposit> Deposit { get; set; }
 		DbSet<Withdraw> Withdraw { get; set; }
 		DbSet<Balance> Balance { get; set; }
+		DbSet<Address> Address { get; set; }
 	}
 }

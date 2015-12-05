@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using TradeSatoshi.Common.Address;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
@@ -19,6 +20,7 @@ namespace TradeSatoshi.Controllers
 		public IBalanceReader BalanceReader { get; set; }
 		public IDepositReader DepositReader { get; set; }
 		public IWithdrawReader WithdrawReader { get; set; }
+		public IAddressWriter AddressWriter { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -31,9 +33,9 @@ namespace TradeSatoshi.Controllers
 		[HttpGet]
 		public async Task<ActionResult> UserProfile()
 		{
-	
+
 			var user = await UserManager.FindByIdAsync(User.Id());
-			var model =new UserProfileModel
+			var model = new UserProfileModel
 			{
 				BirthDate = user.Profile.BirthDate,
 				City = user.Profile.City,
@@ -114,6 +116,16 @@ namespace TradeSatoshi.Controllers
 		public ActionResult GetBalances(DataTablesModel param)
 		{
 			return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
+		}
+
+		[HttpPost]
+		public ActionResult GetAddress(int currencyId)
+		{
+			var result = AddressWriter.GenerateAddress(User.Id(), currencyId);
+			if (result.HasError)
+				return JsonError(result.Error);
+			
+			return JsonSuccess(result.Message);
 		}
 
 		#endregion

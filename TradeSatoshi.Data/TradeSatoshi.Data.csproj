@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Balance.cs" />
+    <Compile Include="Entities\Address.cs" />
     <Compile Include="Entities\Withdraw.cs" />
     <Compile Include="Entities\Currency.cs" />
     <Compile Include="Entities\Deposit.cs" />
@@ -99,6 +100,10 @@
     <Compile Include="Migrations\201512050618370_Balance.Designer.cs">
       <DependentUpon>201512050618370_Balance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512050746499_Address.cs" />
+    <Compile Include="Migrations\201512050746499_Address.Designer.cs">
+      <DependentUpon>201512050746499_Address.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -133,6 +138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512050618370_Balance.resx">
       <DependentUpon>201512050618370_Balance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512050746499_Address.resx">
+      <DependentUpon>201512050746499_Address.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -28,10 +28,14 @@ namespace TradeSatoshi.Core.Balance
 				var query = from currency in context.Currency.Where(c => c.Id == currencyId)
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
 							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,
@@ -48,10 +52,14 @@ namespace TradeSatoshi.Core.Balance
 				var query = from currency in context.Currency
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
 							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,
@@ -66,11 +74,16 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContext.CreateContext())
 			{
 				var query = from currency in context.Currency.Where(c => c.Id == currencyId)
-							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id).DefaultIfEmpty()
+							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
+							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,
@@ -85,11 +98,16 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContext.CreateContext())
 			{
 				var query = from currency in context.Currency
-							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id).DefaultIfEmpty()
+							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
+							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,
@@ -104,11 +122,16 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContext.CreateContext())
 			{
 				var query = from currency in context.Currency
-							from balance in context.Balance.Where(b => b.CurrencyId == currency.Id).DefaultIfEmpty()
+							from balance in context.Balance.Where(b => b.CurrencyId == currency.Id)
+							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == balance.UserId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,
@@ -123,11 +146,16 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContext.CreateContext())
 			{
 				var query = from currency in context.Currency
-							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id).DefaultIfEmpty()
+							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
+							.DefaultIfEmpty()
+							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
+							.DefaultIfEmpty()
 							select new BalanceModel
 							{
+								CurrencyId = currency.Id,
 								Currency = currency.Name,
 								Symbol = currency.Symbol,
+								Address = address.AddressHash,
 								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
 								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
 								Total = (decimal?)balance.Total ?? 0m,

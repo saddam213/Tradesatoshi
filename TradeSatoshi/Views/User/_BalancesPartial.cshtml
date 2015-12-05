@@ -9,8 +9,10 @@
 				<table id="table-balance" class="table">
 					<thead>
 						<tr>
+							<th></th>
 							<th>Currency</th>
 							<th>Symbol</th>
+							<th>Address</th>
 							<th>Total</th>
 							<th>Avaliable</th>
 							<th>Unconfirmed</th>
@@ -29,7 +31,6 @@
 
 <script>
 
-
 	$('#table-balance').dataTable({
 		"order": [[0, "asc"]],
 		"lengthChange": false,
@@ -44,10 +45,34 @@
 		"info": true,
 		"language": { "emptyTable": "No data avaliable." },
 		"sAjaxSource": '@Url.Action("GetBalances")',
-		"sServerMethod": "POST"
+		"sServerMethod": "POST",
+		"columnDefs": [{"targets": 0,"visible": false},
+		{
+			"targets": 3,
+			"searchable": true,
+			"orderable": true,
+			"render": function (data, type, full, meta) {
+				var currencyId = full[0];
+				var address = data || '@Html.Resource("<- Click to Generate Address")';
+				return '<span><button title="@Html.Resource("Generate new address")" id="address-' + currencyId + '" onclick="generateAddress(' + currencyId + ')" class="text-info btn btn-default btn-xs" ><i class="fa fa-refresh"></i></button><span style="padding-left:5px" class="target">' + address + '</span></span>';
+			}
+		}]
 	});
 
-	
-
+	function generateAddress(currencyId) {
+		var target = $('#address-' + currencyId);
+		var targetCell = target.closest('td');
+		target.attr('disabled', 'disabled');
+		targetCell.addClass('info');
+		postJson('@Url.Action("GetAddress")', { currencyId: currencyId }, function (data) {
+			targetCell.removeClass('info');
+			target.removeAttr('disabled');
+			if (data.Success) {
+				targetCell.find('.target').html(data.Message);
+				return;
+			}
+			notifyModal('@Html.Resource("Generate Address Failed!")', data.Message);
+		});
+	}
 
 </script>

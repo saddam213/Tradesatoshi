@@ -31,6 +31,7 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<Deposit> Deposit { get; set; }
 		public DbSet<Withdraw> Withdraw { get; set; }
 		public DbSet<Balance> Balance { get; set; }
+		public DbSet<Address> Address { get; set; }
 
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -57,6 +58,7 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<Deposit>().HasRequired(p => p.User).WithMany(b => b.Deposit).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<Withdraw>().HasRequired(p => p.User).WithMany(b => b.Withdraw).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<Balance>().HasRequired(p => p.User).WithMany(b => b.Balance).HasForeignKey(p => p.UserId);
+			modelBuilder.Entity<Address>().HasRequired(p => p.User).WithMany(b => b.Address).HasForeignKey(p => p.UserId);
 
 			base.OnModelCreating(modelBuilder);
 		}

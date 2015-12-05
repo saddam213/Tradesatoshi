@@ -81,6 +81,7 @@
     <Compile Include="Deposit\IDepositReader.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Security\SecurityRoles.cs" />
+    <Compile Include="Address\IAddressWriter.cs" />
     <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +89,8 @@
     <Compile Include="Services\NotificationService\Notification.cs" />
     <Compile Include="Services\NotificationService\NotificationType.cs" />
     <Compile Include="Services\NotificationService\INotificationService.cs" />
+    <Compile Include="Services\Wallet\AddressModel.cs" />
+    <Compile Include="Services\Wallet\IWalletService.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
     <Compile Include="Withdraw\WithdrawModel.cs" />
     <Compile Include="Withdraw\IWithdrawReader.cs" />
