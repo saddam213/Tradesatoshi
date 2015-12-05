@@ -8,15 +8,27 @@ using TradeSatoshi.Data.Entities;
 using System;
 using System.Data.Entity.Validation;
 using TradeSatoshi.Models.Vote;
+using TradeSatoshi.Common.Services.NotificationService;
+using TradeSatoshi.Helpers;
+using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Common;
 
 namespace TradeSatoshi.Controllers
 {
 	public class HomeController : BaseController
 	{
 		public IDataContext DataContext { get; set; }
+		public INotificationService NotificationService { get; set; }
+		public IBalanceReader BalanceReader { get; set; }
 
 		public ActionResult Index()
 		{
+			if (User.Identity.IsAuthenticated)
+			{
+				var test = BalanceReader.GetBalance(User.Id(), 2);
+				var test2 = BalanceReader.GetBalances(User.Id());
+			}
+
 			using (var context = DataContext.CreateContext())
 			{
 				try
@@ -28,16 +40,19 @@ namespace TradeSatoshi.Controllers
 				}
 				catch (DbEntityValidationException ex)
 				{
-					
-					
+
+
 				}
 			}
 
 			return View();
 		}
 
-		public ActionResult Contact()
+		public async Task<ActionResult> Contact()
 		{
+
+
+
 			return View();
 		}
 
@@ -48,12 +63,33 @@ namespace TradeSatoshi.Controllers
 
 		public ActionResult Test()
 		{
-			return View();
+			foreach (NotificationType item in Enum.GetValues(typeof(NotificationType)))
+			{
+				NotificationService.SendNotification(new Notification
+				{
+					Message = "Test message",
+					Title = "Test title",
+					Type = item
+				});
+
+				if (User.Identity.IsAuthenticated)
+				{
+					NotificationService.SendUserNotification(User.Id(), new Notification
+					{
+						Message = "Test message",
+						Title = "Test title",
+						Type = item
+					});
+				}
+			}
+
+
+			return Index();
 		}
 
 		public ActionResult Test2()
 		{
-			return ViewMessageModal(new ViewMessageModel( ViewMessageType.Danger, "Danger", "Danger! Will Robertson, Danger!"));
+			return ViewMessageModal(new ViewMessageModel(ViewMessageType.Danger, "Danger", "Danger! Will Robertson, Danger!"));
 		}
 
 		[HttpPost]

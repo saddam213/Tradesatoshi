@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Common;
 
 namespace TradeSatoshi.Data.Entities
 {
@@ -54,24 +55,5 @@ namespace TradeSatoshi.Data.Entities
 			Data4 = string.Empty;
 			Data5 = string.Empty;
 		}
-	}
-
-	public enum TwoFactorType : byte
-	{
-		None = 0,
-		[Display(Name = "Email")]
-		EmailCode = 1,
-		[Display(Name = "Google Authenticator")]
-		GoogleCode = 2,
-		[Display(Name = "Pin Number")]
-		PinCode = 3,
-	}
-
-	public enum TwoFactorComponentType : byte
-	{
-		[Display(Name = "Login")]
-		Login = 0,
-		[Display(Name = "Withdraw")]
-		Withdraw = 1,
 	}
 }

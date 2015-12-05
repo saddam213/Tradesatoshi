@@ -16,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using TradeSatoshi.Models.Account;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common;
 
 namespace TradeSatoshi.Controllers
 {

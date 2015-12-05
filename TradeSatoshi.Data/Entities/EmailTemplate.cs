@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Common;
 using TradeSatoshi.Common.Services.EmailService;
 
 namespace TradeSatoshi.Data.Entities

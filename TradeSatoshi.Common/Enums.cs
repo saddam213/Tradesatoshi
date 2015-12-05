@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,5 +48,44 @@ namespace TradeSatoshi.Common
 		UnConfirmed = 0,
 		Confirmed = 1,
 		Error = 2,
+	}
+
+	public enum EmailType
+	{
+		Logon = 0,
+		FailedLogon = 1,
+		PasswordLockout = 2,
+		UserLockout = 3,
+		Registration = 4,
+		TwoFactorLogin = 5,
+		TwoFactorUnlockCode = 6,
+		PasswordReset,
+	}
+
+	public enum NotificationType
+	{
+		Info,
+		Success,
+		Warning,
+		Error
+	}
+
+	public enum TwoFactorType
+	{
+		None = 0,
+		[Display(Name = "Email")]
+		EmailCode = 1,
+		[Display(Name = "Google Authenticator")]
+		GoogleCode = 2,
+		[Display(Name = "Pin Number")]
+		PinCode = 3,
+	}
+
+	public enum TwoFactorComponentType
+	{
+		[Display(Name = "Login")]
+		Login = 0,
+		[Display(Name = "Withdraw")]
+		Withdraw = 1,
 	}
 }

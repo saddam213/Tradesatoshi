@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using TradeSatoshi.Common;
 using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Data.Entities;
