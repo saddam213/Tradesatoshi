@@ -10,7 +10,7 @@ namespace TradeSatoshi
 					"~/Scripts/jquery-{version}.js",
 					"~/Scripts/jquery.unobtrusive-ajax.js",
 					"~/Scripts/jquery.signalR-2.2.0.js",
-					"~/Scripts/jquery.jgrowl.js",
+					"~/Scripts/Project/notifications.js",
 					"~/Scripts/jquery.simplemodal.1.4.4.js",
 					"~/Scripts/jquery.dataTables.js"));
 				
@@ -30,9 +30,9 @@ namespace TradeSatoshi
 					"~/Content/bootstrap.css",
 					"~/Content/jquery.dataTables.css",
 					"~/Content/dataTables.bootstrap.css",
-					"~/Content/site.css",
 					"~/Content/whhg.css",
-					"~/Content/jquery.jgrowl.css"));
+					"~/Content/notification.css",
+					"~/Content/site.css"));
 		}
 	}
 }

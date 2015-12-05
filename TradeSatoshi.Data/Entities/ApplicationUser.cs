@@ -20,6 +20,10 @@ namespace TradeSatoshi.Data.Entities
 		public virtual ICollection<UserLogon> Logons { get; set; }
 		public virtual ICollection<UserTwoFactor> TwoFactor { get; set; }
 
+		public virtual ICollection<Deposit> Deposit { get; set; }
+		public virtual ICollection<Withdraw> Withdraw { get; set; }
+		public virtual ICollection<Balance> Balance { get; set; }
+
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
 		{
 			// Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

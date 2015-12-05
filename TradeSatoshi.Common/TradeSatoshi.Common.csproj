@@ -70,9 +70,16 @@
     <Compile Include="Admin\IUserReader.cs" />
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
+    <Compile Include="Balance\BalanceModel.cs" />
+    <Compile Include="Balance\IBalanceReader.cs" />
+    <Compile Include="Currency\CurrencyModel.cs" />
+    <Compile Include="Currency\ICurrencyReader.cs" />
     <Compile Include="DataTables\DataTablesResponse.cs" />
     <Compile Include="DataTables\DataTableModel.cs" />
     <Compile Include="DataTables\IDataTablesModel.cs" />
+    <Compile Include="Deposit\DepositModel.cs" />
+    <Compile Include="Deposit\IDepositReader.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Services\EmailService\EmailType.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
@@ -82,11 +89,14 @@
     <Compile Include="Services\NotificationService\NotificationType.cs" />
     <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
+    <Compile Include="Withdraw\WithdrawModel.cs" />
+    <Compile Include="Withdraw\IWithdrawReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

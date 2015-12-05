@@ -1,21 +1,24 @@
-﻿@model TradeSatoshi.Models.User.UserBalancesModel
-<div class="row">
+﻿<div class="row">
 	<div class="col-md-12">
 		<div id="p1" class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Balances</h3>
+				<h3 class="panel-title">Withdrawals</h3>
 			</div>
 			<div class="panel-body">
-				<table id="table-balance" class="table">
+				<table id="table-withdraw" class="table">
 					<thead>
 						<tr>
+							<th>Id</th>
 							<th>Currency</th>
 							<th>Symbol</th>
-							<th>Total</th>
-							<th>Avaliable</th>
-							<th>Unconfirmed</th>
-							<th>HeldForTrades</th>
-							<th>PendingWithdraw</th>
+							<th>Amount</th>
+							<th>Fee</th>
+							<th>Net Amount</th>
+							<th>Status</th>
+							<th>Confirmations</th>
+							<th>Txid</th>
+							<th>Address</th>
+							<th>TimeStamp</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -30,7 +33,7 @@
 <script>
 
 
-	$('#table-balance').dataTable({
+	$('#table-withdraw').dataTable({
 		"order": [[0, "asc"]],
 		"lengthChange": false,
 		"processing": true,
@@ -43,7 +46,7 @@
 		"paging": true,
 		"info": true,
 		"language": { "emptyTable": "No data avaliable." },
-		"sAjaxSource": '@Url.Action("GetBalances")',
+		"sAjaxSource": '@Url.Action("GetWithdraws")',
 		"sServerMethod": "POST"
 	});
 

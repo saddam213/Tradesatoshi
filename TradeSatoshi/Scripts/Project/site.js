@@ -1,7 +1,21 @@
 ﻿(function () {
 	var notificationHub = $.connection.Notification;
 	notificationHub.client.SendNotification = function (notification) {
-		$.jGrowl(notification.Message, { position: "bottom-left", header: notification.Title });
+		var icon = 'fa-info';
+		var type = 'alert-info';
+		if (notification.Type == 1) {
+			icon = 'fa-check';
+			type = 'alert-success';
+		}
+		if (notification.Type == 2) {
+			icon = 'fa-exclamation-triangle';
+			type = 'alert-warning';
+		}
+		if (notification.Type == 3) {
+			icon = 'fa-times-circle';
+			type = 'alert-danger';
+		}
+		$.jGrowl(notification.Message, { position: "bottom-right", header: notification.Title, icon: icon, type: type });
 	};
 	$.connection.hub.start();
 })();

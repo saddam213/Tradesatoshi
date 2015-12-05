@@ -70,10 +70,14 @@
   <ItemGroup>
     <Compile Include="Admin\UserWriter.cs" />
     <Compile Include="Admin\UserReader.cs" />
+    <Compile Include="Balance\BalanceReader.cs" />
+    <Compile Include="Currency\CurrencyReader.cs" />
+    <Compile Include="Deposit\DepositReader.cs" />
     <Compile Include="Heplers\DataTableHelpers.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Withdraw\WithdrawReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">

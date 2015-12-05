@@ -56,6 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Balance.cs" />
+    <Compile Include="Entities\Withdraw.cs" />
+    <Compile Include="Entities\Currency.cs" />
+    <Compile Include="Entities\Deposit.cs" />
     <Compile Include="Entities\UserRole.cs" />
     <Compile Include="Entities\UserLogon.cs" />
     <Compile Include="Enums.cs" />
@@ -83,6 +87,18 @@
     <Compile Include="Migrations\201511280028079_LogonIsValid.Designer.cs">
       <DependentUpon>201511280028079_LogonIsValid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512050454316_Currency.cs" />
+    <Compile Include="Migrations\201512050454316_Currency.Designer.cs">
+      <DependentUpon>201512050454316_Currency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512050511288_DepositWithdrawBalance.cs" />
+    <Compile Include="Migrations\201512050511288_DepositWithdrawBalance.Designer.cs">
+      <DependentUpon>201512050511288_DepositWithdrawBalance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512050618370_Balance.cs" />
+    <Compile Include="Migrations\201512050618370_Balance.Designer.cs">
+      <DependentUpon>201512050618370_Balance.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -108,6 +124,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511280028079_LogonIsValid.resx">
       <DependentUpon>201511280028079_LogonIsValid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512050454316_Currency.resx">
+      <DependentUpon>201512050454316_Currency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512050511288_DepositWithdrawBalance.resx">
+      <DependentUpon>201512050511288_DepositWithdrawBalance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512050618370_Balance.resx">
+      <DependentUpon>201512050618370_Balance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

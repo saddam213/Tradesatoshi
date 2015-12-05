@@ -1,6 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Helpers;
 using TradeSatoshi.Models.User;
@@ -12,6 +16,9 @@ namespace TradeSatoshi.Controllers
 	{
 		public IUserReader UserReader { get; set; }
 		public IUserWriter UserWriter { get; set; }
+		public IBalanceReader BalanceReader { get; set; }
+		public IDepositReader DepositReader { get; set; }
+		public IWithdrawReader WithdrawReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -24,6 +31,7 @@ namespace TradeSatoshi.Controllers
 		[HttpGet]
 		public async Task<ActionResult> UserProfile()
 		{
+	
 			var user = await UserManager.FindByIdAsync(User.Id());
 			var model =new UserProfileModel
 			{
@@ -100,6 +108,44 @@ namespace TradeSatoshi.Controllers
 		public ActionResult Balances()
 		{
 			return PartialView("_BalancesPartial", new UserBalancesModel());
+		}
+
+		[HttpPost]
+		public ActionResult GetBalances(DataTablesModel param)
+		{
+			return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
+		}
+
+		#endregion
+
+		#region Deposit
+
+		[HttpGet]
+		public ActionResult Deposit()
+		{
+			return PartialView("_DepositPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetDeposits(DataTablesModel param)
+		{
+			return DataTable(DepositReader.GetUserDepositDataTable(param, User.Id()));
+		}
+
+		#endregion
+
+		#region Withdraw
+
+		[HttpGet]
+		public ActionResult Withdraw()
+		{
+			return PartialView("_WithdrawPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetWithdraws(DataTablesModel param)
+		{
+			return DataTable(WithdrawReader.GetUserWithdrawDataTable(param, User.Id()));
 		}
 
 		#endregion

@@ -13,6 +13,9 @@ namespace TradeSatoshi.Data.DataContext
 	public interface IDataContext : IDisposable
 	{
 		IDataContext CreateContext();
+		int SaveChanges();
+		Task<int> SaveChangesAsync();
+
 		DbSet<UserLogon> UserLogons { get; set; }
 		DbSet<ApplicationUser> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
@@ -21,7 +24,10 @@ namespace TradeSatoshi.Data.DataContext
 		DbSet<EmailTemplate> EmailTemplates { get; set; }
 		DbSet<UserTwoFactor> UserTwoFactor { get; set; }
 		DbSet<UserRole> UserRoles { get; set; }
-		int SaveChanges();
-		Task<int> SaveChangesAsync();
+
+		DbSet<Currency> Currency { get; set; }
+		DbSet<Deposit> Deposit { get; set; }
+		DbSet<Withdraw> Withdraw { get; set; }
+		DbSet<Balance> Balance { get; set; }
 	}
 }
