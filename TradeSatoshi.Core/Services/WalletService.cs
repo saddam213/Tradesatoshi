@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common.Services.Wallet;
+using TradeSatoshi.Common.Services.WalletService;
 
 namespace TradeSatoshi.Core.Services
 {
@@ -15,7 +15,7 @@ namespace TradeSatoshi.Core.Services
 			try
 			{
 				var wallerConnector = new WalletConnector(ipAddress, port, username, password);
-				var address = wallerConnector.GenerateAddress(userId);
+				var address = wallerConnector.GenerateAddress(userId, true);
 				var privateKey = wallerConnector.DumpPrivKey(address);
 				return new AddressModel
 				{

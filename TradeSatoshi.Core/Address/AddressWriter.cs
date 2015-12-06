@@ -7,7 +7,8 @@ using TradeSatoshi.Common.Address;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
-using TradeSatoshi.Common.Services.Wallet;
+using TradeSatoshi.Common.Services.WalletService;
+using TradeSatoshi.Common.Services.EncryptionService;
 
 namespace TradeSatoshi.Core.Address
 {
@@ -15,6 +16,7 @@ namespace TradeSatoshi.Core.Address
 	{
 		public IDataContext DataContext { get; set; }
 		public IWalletService WalletService { get; set; }
+		public IEncryptionService EncryptionService { get; set; }
 
 		public IWriterResult GenerateAddress(string userId, int currencyId)
 		{
@@ -37,7 +39,7 @@ namespace TradeSatoshi.Core.Address
 				var addressEntity = new TradeSatoshi.Data.Entities.Address
 				{
 					AddressHash = newAddress.Address,
-					PrivateKey = newAddress.PrivateKey,
+					PrivateKey = EncryptionService.EncryptString(newAddress.PrivateKey),
 					CurrencyId = currencyId,
 					UserId = userId,
 					IsActive = true,

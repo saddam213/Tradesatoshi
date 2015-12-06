@@ -84,11 +84,12 @@
     <Compile Include="Address\IAddressWriter.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EncryptionService\IEncryptionService.cs" />
     <Compile Include="Services\NotificationService\INotificationClient.cs" />
     <Compile Include="Services\NotificationService\Notification.cs" />
     <Compile Include="Services\NotificationService\INotificationService.cs" />
-    <Compile Include="Services\Wallet\AddressModel.cs" />
-    <Compile Include="Services\Wallet\IWalletService.cs" />
+    <Compile Include="Services\WalletService\AddressModel.cs" />
+    <Compile Include="Services\WalletService\IWalletService.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
     <Compile Include="Withdraw\WithdrawModel.cs" />
     <Compile Include="Withdraw\IWithdrawReader.cs" />

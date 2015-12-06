@@ -15,6 +15,7 @@ namespace TradeSatoshi.Data.Entities
 		public int Id { get; set; }
 
 		[MaxLength(128)]
+		[Index("IX_UserTxId", 1, IsUnique = true)]
 		public string UserId { get; set; }
 
 		public int CurrencyId { get; set; }
@@ -22,6 +23,7 @@ namespace TradeSatoshi.Data.Entities
 		public decimal Amount { get; set; }
 
 		[MaxLength(256)]
+		[Index("IX_UserTxId", 2, IsUnique = true)]
 		public string Txid { get; set; }
 	
 		public int Confirmations { get; set; }

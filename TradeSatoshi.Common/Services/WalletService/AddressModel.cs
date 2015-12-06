@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TradeSatoshi.Common.Services.Wallet
+namespace TradeSatoshi.Common.Services.WalletService
 {
 	public class AddressModel
 	{

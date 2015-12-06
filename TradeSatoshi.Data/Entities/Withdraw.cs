@@ -29,6 +29,7 @@ namespace TradeSatoshi.Data.Entities
 		public int Confirmations { get; set; }
 
 		[MaxLength(256)]
+		[Index("IX_TxId", IsUnique = true)]
 		public string Txid { get; set; }
 
 		public WithdrawType WithdrawType { get; set; }

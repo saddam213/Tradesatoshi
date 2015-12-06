@@ -6,6 +6,10 @@
 				<h3 class="panel-title">Balances</h3>
 			</div>
 			<div class="panel-body">
+			
+
+ 
+
 				<table id="table-balance" class="table">
 					<thead>
 						<tr>
@@ -53,7 +57,7 @@
 			"render": function (data, type, full, meta) {
 				var currencyId = full[0];
 				var address = data || '@Html.Resource("<- Click to Generate Address")';
-				return '<span><button title="@Html.Resource("Generate new address")" id="address-' + currencyId + '" onclick="generateAddress(' + currencyId + ')" class="text-info btn btn-default btn-xs" ><i class="fa fa-refresh"></i></button><span style="padding-left:5px" class="target">' + address + '</span></span>';
+				return '<div><button title="@Html.Resource("Generate new address")" id="address-' + currencyId + '" onclick="generateAddress(' + currencyId + ')" class="text-info btn btn-default btn-xs pull-left" ><i class="fa fa-refresh"></i></button><div style="padding-left:5px" class="target  pull-left">' + address + '</div></div>';
 			}
 		}]
 	});

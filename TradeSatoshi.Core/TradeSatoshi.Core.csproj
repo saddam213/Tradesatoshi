@@ -80,6 +80,7 @@
     <Compile Include="Heplers\DataTableHelpers.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EncryptionService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\WalletService.cs" />
     <Compile Include="Withdraw\WithdrawReader.cs" />

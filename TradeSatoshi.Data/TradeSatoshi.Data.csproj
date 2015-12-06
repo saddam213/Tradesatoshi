@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="Entities\Balance.cs" />
     <Compile Include="Entities\Address.cs" />
     <Compile Include="Entities\Withdraw.cs" />
@@ -66,7 +67,6 @@
     <Compile Include="Enums.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\DataContext.cs" />
-    <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\EmailTemplate.cs" />
     <Compile Include="Entities\UserSettings.cs" />
@@ -103,6 +103,14 @@
     <Compile Include="Migrations\201512050746499_Address.cs" />
     <Compile Include="Migrations\201512050746499_Address.Designer.cs">
       <DependentUpon>201512050746499_Address.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512060024487_TwoFactorUniqueConstraint.cs" />
+    <Compile Include="Migrations\201512060024487_TwoFactorUniqueConstraint.Designer.cs">
+      <DependentUpon>201512060024487_TwoFactorUniqueConstraint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.cs" />
+    <Compile Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.Designer.cs">
+      <DependentUpon>201512060622022_DepositWithdrawUniqueConstraint.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,6 +149,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512050746499_Address.resx">
       <DependentUpon>201512050746499_Address.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512060024487_TwoFactorUniqueConstraint.resx">
+      <DependentUpon>201512060024487_TwoFactorUniqueConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.resx">
+      <DependentUpon>201512060622022_DepositWithdrawUniqueConstraint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
