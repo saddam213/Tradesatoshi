@@ -10,7 +10,6 @@ using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Core;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Data.Entities;
 
 namespace TradeSatoshi.DependencyInjection
 {

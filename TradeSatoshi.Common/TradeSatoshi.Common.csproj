@@ -70,6 +70,8 @@
     <Compile Include="Admin\IUserReader.cs" />
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
+    <Compile Include="Services\AuditService\AuditResult.cs" />
+    <Compile Include="Services\AuditService\IAuditService.cs" />
     <Compile Include="Balance\BalanceModel.cs" />
     <Compile Include="Balance\IBalanceReader.cs" />
     <Compile Include="Currency\CurrencyModel.cs" />
@@ -77,9 +79,23 @@
     <Compile Include="DataTables\DataTablesResponse.cs" />
     <Compile Include="DataTables\DataTableModel.cs" />
     <Compile Include="DataTables\IDataTablesModel.cs" />
+    <Compile Include="Data\IDataContext.cs" />
+    <Compile Include="Data\Entities\Address.cs" />
+    <Compile Include="Data\Entities\ApplicationUser.cs" />
+    <Compile Include="Data\Entities\Balance.cs" />
+    <Compile Include="Data\Entities\Currency.cs" />
+    <Compile Include="Data\Entities\Deposit.cs" />
+    <Compile Include="Data\Entities\EmailTemplate.cs" />
+    <Compile Include="Data\Entities\UserLogon.cs" />
+    <Compile Include="Data\Entities\UserProfile.cs" />
+    <Compile Include="Data\Entities\UserRole.cs" />
+    <Compile Include="Data\Entities\UserSettings.cs" />
+    <Compile Include="Data\Entities\UserTwoFactor.cs" />
+    <Compile Include="Data\Entities\Withdraw.cs" />
     <Compile Include="Deposit\DepositModel.cs" />
     <Compile Include="Deposit\IDepositReader.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Security\ITwoFactorEntry.cs" />
     <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Address\IAddressWriter.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
@@ -91,6 +107,8 @@
     <Compile Include="Services\WalletService\AddressModel.cs" />
     <Compile Include="Services\WalletService\IWalletService.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
+    <Compile Include="Withdraw\IWithdrawWriter.cs" />
+    <Compile Include="Withdraw\CreateWithdrawModel.cs" />
     <Compile Include="Withdraw\WithdrawModel.cs" />
     <Compile Include="Withdraw\IWithdrawReader.cs" />
   </ItemGroup>

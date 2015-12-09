@@ -7,8 +7,8 @@ using Owin;
 using System;
 using System.Web;
 using TradeSatoshi.App_Start;
+using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Hubs;
 using TradeSatoshi.Models;
 

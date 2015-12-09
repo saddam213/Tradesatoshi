@@ -13,6 +13,7 @@ using System.Threading;
 using System.Security.Claims;
 using System.Security.Permissions;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Data;
 
 namespace TradeSatoshi.Core.Admin
 {

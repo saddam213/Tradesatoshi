@@ -260,6 +260,7 @@
     <Content Include="Scripts\Project\notifications.js" />
     <Content Include="Scripts\Project\User\user.js" />
     <Content Include="Scripts\Project\TwoFactor\twoFactorCreate.js" />
+    <Content Include="Scripts\Project\Withdraw\withdrawCreate.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -301,11 +302,13 @@
     <Compile Include="Controllers\TwoFactorController.cs" />
     <Compile Include="Controllers\ExchangeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\WithdrawController.cs" />
     <Compile Include="DependencyInjection\ControllerFactory.cs" />
     <Compile Include="DependencyInjection\ControllersInstaller.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\TwoFactorHelpers.cs" />
     <Compile Include="Helpers\GoogleHelper.cs" />
     <Compile Include="Helpers\IdentityHelpers.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
@@ -361,6 +364,8 @@
     <Content Include="Views\User\_BalancesPartial.cshtml" />
     <Content Include="Views\User\_DepositPartial.cshtml" />
     <Content Include="Views\User\_WithdrawPartial.cshtml" />
+    <Content Include="Views\Withdraw\CreateWithdrawModal.cshtml" />
+    <Content Include="Views\Shared\_TwoFactorEntryPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -370,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\Withdraw\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">

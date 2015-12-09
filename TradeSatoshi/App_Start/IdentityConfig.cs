@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Helpers;
 using TradeSatoshi.Models;
 
@@ -151,6 +151,15 @@ namespace TradeSatoshi.App_Start
 			return twofactorMethod == null
 				? TwoFactorType.None
 				: twofactorMethod.Type;
+		}
+
+		public async Task<UserTwoFactor> GetUserTwoFactorAsync(string userId, TwoFactorComponentType component)
+		{
+			var user = await FindByIdAsync(userId);
+			if (user == null)
+				throw new UnauthorizedAccessException();
+		
+			return user.TwoFactor.FirstOrDefault(x => x.Component == component);
 		}
 
 		public async Task<bool> AddUserLogon(ApplicationUser user, string ipaddress, bool isvalid)

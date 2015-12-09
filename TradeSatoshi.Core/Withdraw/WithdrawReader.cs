@@ -15,6 +15,7 @@ using System.Security.Permissions;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.Withdraw;
+using TradeSatoshi.Common.Data;
 
 namespace TradeSatoshi.Core.Withdraw
 {
@@ -164,6 +165,58 @@ namespace TradeSatoshi.Core.Withdraw
 				return query.GetDataTableResult(model);
 			}
 		}
-		
+
+
+		public CreateWithdrawModel GetCreateWithdraw(string userId, int currencyId)
+		{
+			using (var context = DataContext.CreateContext())
+			{
+				var userInfo = context.Currency
+						.Where(c => c.Id == currencyId)
+						.Select(x => new CreateWithdrawModel
+						{
+							CurrencyId = x.Id,
+							Fee = x.WithdrawFee,
+							MaxWithdraw = x.MaxWithdraw,
+							MinWithdraw = x.MinWithdraw,
+							Symbol = x.Symbol,
+							WithdrawFeeType = x.WithdrawFeeType
+						}).FirstOrDefault();
+
+				var balance = context.Balance.FirstOrDefault(c => c.UserId == userId && c.CurrencyId == currencyId);
+				if (balance != null)
+				{
+					userInfo.Balance = balance.Avaliable;
+				}
+
+				return userInfo;
+			}
+		}
+
+		public async Task<CreateWithdrawModel> GetCreateWithdrawAsync(string userId, int currencyId)
+		{
+			using (var context = DataContext.CreateContext())
+			{
+				var userInfo = await context.Currency
+						.Where(c => c.Id == currencyId)
+						.Select(x => new CreateWithdrawModel
+						{
+							CurrencyId = x.Id,
+							Fee = x.WithdrawFee,
+							MaxWithdraw = x.MaxWithdraw,
+							MinWithdraw = x.MinWithdraw,
+							Symbol = x.Symbol,
+							WithdrawFeeType = x.WithdrawFeeType
+						}).FirstOrDefaultAsync();
+
+				var balance = await context.Balance.FirstOrDefaultAsync(c => c.UserId == userId && c.CurrencyId == currencyId);
+				if (balance != null)
+				{
+					userInfo.Balance = balance.Avaliable;
+				}
+
+				return userInfo;
+			}
+		}
 	}
 }

@@ -11,13 +11,13 @@ namespace TradeSatoshi.Core.Admin
 {
 	public interface IUserWriter
 	{
-		IWriterResult UpdateUser(UpdateUserModel model);
-		Task<IWriterResult> UpdateUserAsync(UpdateUserModel model);
+		IWriterResult<bool> UpdateUser(UpdateUserModel model);
+		Task<IWriterResult<bool>> UpdateUserAsync(UpdateUserModel model);
 
-		IWriterResult AddUserRole(UserRoleModel model);
-		Task<IWriterResult> AddUserRoleAsync(UserRoleModel model);
+		IWriterResult<bool> AddUserRole(UserRoleModel model);
+		Task<IWriterResult<bool>> AddUserRoleAsync(UserRoleModel model);
 
-		IWriterResult RemoveUserRole(UserRoleModel model);
-		Task<IWriterResult> RemoveUserRoleAsync(UserRoleModel model);
+		IWriterResult<bool> RemoveUserRole(UserRoleModel model);
+		Task<IWriterResult<bool>> RemoveUserRoleAsync(UserRoleModel model);
 	}
 }

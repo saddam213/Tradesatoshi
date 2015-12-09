@@ -10,9 +10,10 @@ using TradeSatoshi.Common.Services;
 using TradeSatoshi.Common.Services.EmailService;
 using Microsoft.AspNet.Identity.EntityFramework;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Data.Entities;
 using System.Data.Entity;
 using System.Net;
+using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Core.Services
 {

@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Validation
 {
-	public interface IWriterResult
+	public interface IWriterResult<T>
 	{
 		string Error { get; set; }
 		string Message { get; set; }
 		bool HasError { get; }
 		bool HasMessage { get; }
+		T Data { get; set; }
 	}
 
-	public class WriterResult : IWriterResult
+	public class WriterResult<T> : IWriterResult<T>
 	{
 		public string Error { get; set; }
 		public string Message { get; set; }
+		public T Data { get; set; }
 
 		public bool HasError
 		{
@@ -30,24 +32,34 @@ namespace TradeSatoshi.Common.Validation
 		}
 
 
-		public static WriterResult SuccessResult(string message = null)
+		public static WriterResult<T> SuccessResult(string message = null)
 		{
-			return new WriterResult { Message = message };
+			return new WriterResult<T> { Message = message };
 		}
 
-		public static WriterResult ErrorResult(string error = null)
+		public static WriterResult<T> ErrorResult(string error = null)
 		{
-			return new WriterResult { Error = error };
+			return new WriterResult<T> { Error = error };
 		}
 
-		public static WriterResult SuccessResult(string message, params object[] param)
+		public static WriterResult<T> SuccessResult(string message, params object[] param)
 		{
-			return new WriterResult { Message = string.Format(message, param) };
+			return new WriterResult<T> { Message = string.Format(message, param) };
 		}
 
-		public static WriterResult ErrorResult(string error, params object[] param)
+		public static WriterResult<T> ErrorResult(string error, params object[] param)
 		{
-			return new WriterResult { Error = string.Format(error, param) };
+			return new WriterResult<T> { Error = string.Format(error, param) };
+		}
+
+		public static WriterResult<T> SuccessResult(T data)
+		{
+			return new WriterResult<T> { Data = data };
+		}
+
+		public static WriterResult<T> SuccessResult(T data, string message)
+		{
+			return new WriterResult<T> { Data = data, Message = message };
 		}
 	}
 }

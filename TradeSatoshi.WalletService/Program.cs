@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Base.Logging;
 
 namespace TradeSatoshi.WalletService
 {
@@ -14,22 +16,25 @@ namespace TradeSatoshi.WalletService
 		/// </summary>
 		static void Main()
 		{
+			var level = LoggingManager.LogLevelFromString(ConfigurationManager.AppSettings["LogLevel"]);
+			var location = ConfigurationManager.AppSettings["LogLocation"];
+
 #if DEBUG
+			LoggingManager.AddLog(new ConsoleLogger(level));
 			using (var processor = new WalletService())
 			{
 				processor.StartService();
-				Console.WriteLine("Press Enter to terminate ...");
 				Console.ReadLine();
 				processor.StopService();
 			}
 #else
-
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new WalletService() 
-            };
-            ServiceBase.Run(ServicesToRun);
+				LoggingManager.AddLog(new FileLogger(location, "WalletService", level));
+				ServiceBase[] ServicesToRun;
+				ServicesToRun = new ServiceBase[] 
+				{ 
+					new WalletService() 
+				};
+				ServiceBase.Run(ServicesToRun);
 #endif
 		}
 	}

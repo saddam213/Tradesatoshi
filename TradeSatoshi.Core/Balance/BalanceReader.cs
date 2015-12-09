@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Security.Permissions;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Common.Data;
 
 namespace TradeSatoshi.Core.Balance
 {

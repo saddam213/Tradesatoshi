@@ -4,7 +4,6 @@ using TradeSatoshi.Models;
 using TradeSatoshi.Data.DataContext;
 using System.Linq;
 using System.Collections.Generic;
-using TradeSatoshi.Data.Entities;
 using System;
 using System.Data.Entity.Validation;
 using TradeSatoshi.Models.Vote;
@@ -12,6 +11,7 @@ using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Helpers;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Data;
 
 namespace TradeSatoshi.Controllers
 {

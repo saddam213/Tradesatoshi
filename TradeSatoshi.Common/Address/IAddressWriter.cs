@@ -9,7 +9,7 @@ namespace TradeSatoshi.Common.Address
 {
 	public interface IAddressWriter
 	{
-		IWriterResult GenerateAddress(string userId, int currencyId);
-		Task<IWriterResult> GenerateAddressAsync(string userId, int currencyId);
+		IWriterResult<string> GenerateAddress(string userId, int currencyId);
+		Task<IWriterResult<string>> GenerateAddressAsync(string userId, int currencyId);
 	}
 }

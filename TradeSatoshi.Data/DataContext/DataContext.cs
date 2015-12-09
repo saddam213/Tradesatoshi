@@ -6,7 +6,8 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Data.Entities;
+using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Data.DataContext
 {

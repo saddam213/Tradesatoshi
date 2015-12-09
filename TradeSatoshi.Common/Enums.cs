@@ -60,6 +60,8 @@ namespace TradeSatoshi.Common
 		TwoFactorLogin = 5,
 		TwoFactorUnlockCode = 6,
 		PasswordReset,
+		TwoFactorWithdraw,
+		WithdrawConfirmation,
 	}
 
 	public enum NotificationType

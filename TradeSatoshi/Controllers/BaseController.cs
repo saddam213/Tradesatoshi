@@ -6,11 +6,11 @@ using TradeSatoshi.Common;
 using TradeSatoshi.Models;
 using Microsoft.AspNet.Identity.Owin;
 using System.Web;
-using TradeSatoshi.Data.Entities;
 using System.Threading.Tasks;
 using TradeSatoshi.Data;
 using TradeSatoshi.ActionResults;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Controllers
 {

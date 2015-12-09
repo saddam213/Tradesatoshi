@@ -10,7 +10,6 @@ using System.Data.Entity.Validation;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Helpers;
 using System;
-using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Data;
 using System.Linq;
 using System.Security.Claims;
@@ -18,10 +17,11 @@ using TradeSatoshi.Models.TwoFactor;
 using TradeSatoshi.Models.Account;
 using TradeSatoshi.Validation;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Controllers
 {
-	[Authorize]
+	//[Authorize]
 	public class TwoFactorController : BaseController
 	{
 		#region Properties
@@ -208,6 +208,35 @@ namespace TradeSatoshi.Controllers
 			if (GoogleHelper.VerifyGoogleTwoFactorCode(key, code))
 			{
 				return JsonSuccess();
+			}
+			return JsonError();
+		}
+
+
+		[HttpPost]
+		public async Task<ActionResult> SendTwoFactorEmailCode(TwoFactorComponentType componentType)
+		{
+			var twoFactor = await UserManager.GetUserTwoFactorAsync(User.Id(), componentType);
+			if (twoFactor == null || twoFactor.Type != TwoFactorType.EmailCode)
+				return JsonError("Unauthorized");
+
+			var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, User.Id());
+			switch (componentType)
+			{
+				case TwoFactorComponentType.Login:
+					if (await EmailService.SendAsync(EmailType.TwoFactorLogin, twoFactor.User, Request.GetIPAddress(), twofactorCode))
+					{
+						return JsonSuccess();
+					}
+					break;
+				case TwoFactorComponentType.Withdraw:
+					if (await EmailService.SendAsync(EmailType.TwoFactorWithdraw, twoFactor.User, Request.GetIPAddress(), twofactorCode))
+					{
+						return JsonSuccess();
+					}
+					break;
+				default:
+					break;
 			}
 			return JsonError();
 		}

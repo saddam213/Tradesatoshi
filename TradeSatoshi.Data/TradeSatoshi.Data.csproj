@@ -56,22 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataContext\IDataContext.cs" />
-    <Compile Include="Entities\Balance.cs" />
-    <Compile Include="Entities\Address.cs" />
-    <Compile Include="Entities\Withdraw.cs" />
-    <Compile Include="Entities\Currency.cs" />
-    <Compile Include="Entities\Deposit.cs" />
-    <Compile Include="Entities\UserRole.cs" />
-    <Compile Include="Entities\UserLogon.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\DataContext.cs" />
-    <Compile Include="Entities\ApplicationUser.cs" />
-    <Compile Include="Entities\EmailTemplate.cs" />
-    <Compile Include="Entities\UserSettings.cs" />
-    <Compile Include="Entities\UserProfile.cs" />
-    <Compile Include="Entities\UserTwoFactor.cs" />
     <Compile Include="Migrations\201511231052055_Initial.cs" />
     <Compile Include="Migrations\201511231052055_Initial.Designer.cs">
       <DependentUpon>201511231052055_Initial.cs</DependentUpon>
@@ -111,6 +98,10 @@
     <Compile Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.cs" />
     <Compile Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.Designer.cs">
       <DependentUpon>201512060622022_DepositWithdrawUniqueConstraint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512080905160_WithdrawIndex.cs" />
+    <Compile Include="Migrations\201512080905160_WithdrawIndex.Designer.cs">
+      <DependentUpon>201512080905160_WithdrawIndex.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -155,6 +146,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512060622022_DepositWithdrawUniqueConstraint.resx">
       <DependentUpon>201512060622022_DepositWithdrawUniqueConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512080905160_WithdrawIndex.resx">
+      <DependentUpon>201512080905160_WithdrawIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

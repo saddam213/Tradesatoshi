@@ -10,13 +10,13 @@ using System.Data.Entity.Validation;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Helpers;
 using System;
-using TradeSatoshi.Data.Entities;
 using TradeSatoshi.Data;
 using System.Linq;
 using System.Security.Claims;
 using TradeSatoshi.Models.Account;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Controllers
 {

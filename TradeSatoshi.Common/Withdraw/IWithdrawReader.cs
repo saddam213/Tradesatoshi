@@ -12,6 +12,9 @@ namespace TradeSatoshi.Common.Withdraw
 {
 	public interface IWithdrawReader
 	{
+		CreateWithdrawModel GetCreateWithdraw(string userId, int currencyId);
+		Task<CreateWithdrawModel> GetCreateWithdrawAsync(string userId, int currencyId);
+
 		List<WithdrawModel> GetWithdrawals(string userId);
 		List<WithdrawModel> GetWithdrawals(string userId, int currencyId);
 

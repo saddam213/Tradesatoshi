@@ -7,14 +7,14 @@
 <div class="modalform modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header alert alert-@Model.Type.ToString().ToLower()" style="-moz-border-radius:5px!important;-webkit-border-radius:5px!important;border-radius:5px!important">
-			<button class="close simplemodal-close" aria-hidden="true" type="button">×</button>
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
 			<h4 class="modal-title"><strong>@Model.Title</strong></h4>
 		</div>
 		<div class="modal-body">
 			<h5>@Html.Raw(Model.Message)</h5>
 		</div>
 		<div class="modal-footer">
-			<button style="width: 70px" class="btn btn-info simplemodal-close" type="button">OK</button>
+			<button style="width: 70px" onclick="$.modal.close();" class="btn btn-info simplemodal-close" type="button">OK</button>
 		</div>
 	</div>
 </div>

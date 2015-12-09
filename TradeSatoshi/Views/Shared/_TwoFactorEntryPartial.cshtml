@@ -1,0 +1,41 @@
+﻿@model TradeSatoshi.Common.Security.ITwoFactorEntry
+@using TradeSatoshi.Helpers
+
+@if (Model.TwoFactorType != TradeSatoshi.Common.TwoFactorType.None)
+{
+	<div class="row">
+		<div class="col-xs-12">
+			@Html.HiddenFor(m => m.TwoFactorType)
+			@Html.HiddenFor(m => m.TwoFactorComponentType)
+			<hr style="margin: 5px; margin-top: 15px" />
+			<div class="text-center">
+				<strong>@Model.TwoFactorComponentType TwoFactor</strong>
+				<div id="tfa-message" class="alert hidden">
+					<p></p>
+				</div>
+			</div>
+			<hr style="margin: 5px" />
+			<div class="col-xs-6">
+				<label class="form-label">@Model.TwoFactorType.GetTwoFactorTypeSummary()</label>
+				@Html.PasswordFor(m => m.Data, new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.Data)
+			</div>
+			@if (Model.TwoFactorType == TradeSatoshi.Common.TwoFactorType.EmailCode)
+			{
+				<div class="col-xs-6">
+					<button id="tfa-email-submit" class="btn btn-primary" type="button" style="margin-top: 24px">Send Email Code</button>
+					<script>
+						$('#tfa-email-submit').on('click', function () {
+							$('#tfa-message').removeClass('alert-success alert-danger');
+							postJson('@Url.Action("SendTwoFactorEmailCode", "TwoFactor")', { componentType: '@Model.TwoFactorComponentType' }, function (data) {
+							$('#tfa-message > p').html(data.Message)
+							$('#tfa-message').addClass('alert-' + data.Success ? 'success' : 'danger');
+						});
+					});
+					</script>
+				</div>
+			}
+		</div>
+	</div>
+}
+
