@@ -90,4 +90,25 @@ namespace TradeSatoshi.Common
 		[Display(Name = "Withdraw")]
 		Withdraw = 1,
 	}
+
+	public enum TradeStatus
+	{
+		Pending = 0,
+		Complete = 1,
+		Partial = 2,
+		Canceled = 3
+	}
+	public enum TradeHistoryType
+	{
+		Buy = 0,
+		Sell = 1
+	}
+
+	public enum TradePairStatus
+	{
+		OK = 0,
+		Closing = 1,
+		Paused = 2,
+		Closed = 3
+	}
 }

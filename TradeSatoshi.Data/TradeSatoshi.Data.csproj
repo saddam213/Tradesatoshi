@@ -103,6 +103,10 @@
     <Compile Include="Migrations\201512080905160_WithdrawIndex.Designer.cs">
       <DependentUpon>201512080905160_WithdrawIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512090936544_TradeTables.cs" />
+    <Compile Include="Migrations\201512090936544_TradeTables.Designer.cs">
+      <DependentUpon>201512090936544_TradeTables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -149,6 +153,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512080905160_WithdrawIndex.resx">
       <DependentUpon>201512080905160_WithdrawIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512090936544_TradeTables.resx">
+      <DependentUpon>201512090936544_TradeTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

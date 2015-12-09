@@ -70,6 +70,9 @@
     <Compile Include="Admin\IUserReader.cs" />
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
+    <Compile Include="Data\Entities\TradePair.cs" />
+    <Compile Include="Data\Entities\Trade.cs" />
+    <Compile Include="Data\Entities\TradeHistory.cs" />
     <Compile Include="Services\AuditService\AuditResult.cs" />
     <Compile Include="Services\AuditService\IAuditService.cs" />
     <Compile Include="Balance\BalanceModel.cs" />

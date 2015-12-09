@@ -27,12 +27,15 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<UserTwoFactor> UserTwoFactor { get; set; }
 		public DbSet<UserRole> UserRoles { get; set; }
 
-
 		public DbSet<Currency> Currency { get; set; }
 		public DbSet<Deposit> Deposit { get; set; }
 		public DbSet<Withdraw> Withdraw { get; set; }
 		public DbSet<Balance> Balance { get; set; }
 		public DbSet<Address> Address { get; set; }
+
+		public DbSet<TradePair> TradePair { get; set; }
+		public DbSet<Trade> Trade { get; set; }
+		public DbSet<TradeHistory> TradeHistory { get; set; }
 
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -60,6 +63,14 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<Withdraw>().HasRequired(p => p.User).WithMany(b => b.Withdraw).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<Balance>().HasRequired(p => p.User).WithMany(b => b.Balance).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<Address>().HasRequired(p => p.User).WithMany(b => b.Address).HasForeignKey(p => p.UserId);
+
+			modelBuilder.Entity<TradePair>().HasRequired(p => p.Currency1);
+			modelBuilder.Entity<TradePair>().HasRequired(p => p.Currency2);
+			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.User);
+			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.ToUser);
+			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.TradePair);
+			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.Currency);
+			modelBuilder.Entity<Trade>().HasRequired(p => p.User).WithMany(b => b.Trade).HasForeignKey(p => p.UserId);
 
 			base.OnModelCreating(modelBuilder);
 		}
