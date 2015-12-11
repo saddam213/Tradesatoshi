@@ -20,11 +20,11 @@ namespace TradeSatoshi.Core.Balance
 {
 	public class DepositReader : IDepositReader
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		public List<DepositModel> GetDeposits(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Where(x => x.UserId == userId)
@@ -46,7 +46,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public List<DepositModel> GetDeposits(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Where(x => x.UserId == userId)
@@ -68,7 +68,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public async Task<List<DepositModel>> GetDepositsAsync(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Where(x => x.UserId == userId)
@@ -90,7 +90,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public async Task<List<DepositModel>> GetDepositsAsync(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
@@ -112,7 +112,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public DataTablesResponse GetDepositDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Select(deposit =>
@@ -133,7 +133,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public DataTablesResponse GetUserDepositDataTable(DataTablesModel model, string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
 							.Where(x => x.UserId == userId)

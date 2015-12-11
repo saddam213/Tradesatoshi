@@ -15,13 +15,13 @@ namespace TradeSatoshi.Core.Address
 {
 	public class AddressWriter : IAddressWriter
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 		public IWalletService WalletService { get; set; }
 		public IEncryptionService EncryptionService { get; set; }
 
 		public IWriterResult<string> GenerateAddress(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var currentAddress = context.Address.FirstOrDefault(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive);
 				if (currentAddress != null)
@@ -54,7 +54,7 @@ namespace TradeSatoshi.Core.Address
 
 		public async Task<IWriterResult<string>> GenerateAddressAsync(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var currentAddress = await context.Address.FirstOrDefaultAsync(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive);
 				if (currentAddress != null)

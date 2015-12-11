@@ -19,12 +19,12 @@ namespace TradeSatoshi.Core.Admin
 {
 	public class UserReader : IUserReader
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public DataTablesResponse GetUserDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Users
 						.Select(x => new UserModel
@@ -45,7 +45,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public UserModel GetUser(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Users
 						.Select(x => new UserModel
@@ -66,7 +66,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<UserModel> GetUserAsync(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = await context.Users
 						.Select(x => new UserModel
@@ -87,7 +87,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public UpdateUserModel GetUserUpdate(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Users
 					.Include(x => x.Profile)
@@ -117,7 +117,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<UpdateUserModel> GetUserUpdateAsync(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = await context.Users
 						.Include(x => x.Profile)
@@ -147,7 +147,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public DataTablesResponse GetLogonDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.UserLogons
 						.Include(u => u.User)
@@ -166,7 +166,7 @@ namespace TradeSatoshi.Core.Admin
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public DataTablesResponse GetRolesDataTable(DataTablesModel model, SecurityRole securityRole)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var users = context.UserRoles
 						.Include(x => x.User)

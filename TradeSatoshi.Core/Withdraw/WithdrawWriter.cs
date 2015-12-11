@@ -23,13 +23,13 @@ namespace TradeSatoshi.Core.Withdraw
 {
 	public class WithdrawWriter : IWithdrawWriter
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 		public IAuditService AuditService { get; set; }
 
 
 		public IWriterResult<int> CreateWithdraw(string userId, CreateWithdrawModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var auditResult = AuditService.AuditUserCurrency(context, userId, model.CurrencyId);
 				if (!auditResult.Success)
@@ -63,7 +63,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<IWriterResult<int>> CreateWithdrawAsync(string userId, CreateWithdrawModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var auditResult = await AuditService.AuditUserCurrencyAsync(context, userId, model.CurrencyId);
 				if (!auditResult.Success)
@@ -96,7 +96,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public IWriterResult<bool> ConfirmWithdraw(string userId, int withdrawId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = context.Withdraw
 						.Include(x => x.Currency)
@@ -114,7 +114,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<IWriterResult<bool>> ConfirmWithdrawAsync(string userId, int withdrawId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
 						.Include(x => x.Currency)
@@ -132,7 +132,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public IWriterResult<bool> CancelWithdraw(string userId, int withdrawId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = context.Withdraw
 						.Include(x => x.Currency)
@@ -150,7 +150,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<IWriterResult<bool>> CancelWithdrawAsync(string userId, int withdrawId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
 						.Include(x => x.Currency)

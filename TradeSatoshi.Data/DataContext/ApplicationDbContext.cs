@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +14,12 @@ using TradeSatoshi.Common.Data.Entities;
 namespace TradeSatoshi.Data.DataContext
 {
 	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+
 	{
 		public ApplicationDbContext()
 			: base("DefaultConnection")
 		{
+			Database.Log = (e) => Debug.WriteLine(e);
 		}
 
 		public DbSet<UserLogon> UserLogons { get; set; }
@@ -33,6 +37,8 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<TradePair> TradePair { get; set; }
 		public DbSet<Trade> Trade { get; set; }
 		public DbSet<TradeHistory> TradeHistory { get; set; }
+
+		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{

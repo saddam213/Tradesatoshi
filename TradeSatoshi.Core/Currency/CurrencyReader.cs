@@ -20,11 +20,11 @@ namespace TradeSatoshi.Core.Currency
 {
 	public class CurrencyReader : ICurrencyReader
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		public CurrencyModel GetCurrency(int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var currency = context.Currency.Find(currencyId);
 				if (currency == null)
@@ -41,7 +41,7 @@ namespace TradeSatoshi.Core.Currency
 
 		public List<CurrencyModel> GetCurrencies()
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				return context.Currency.Select(currency =>
 					new CurrencyModel
@@ -55,7 +55,7 @@ namespace TradeSatoshi.Core.Currency
 
 		public async Task<CurrencyModel> GetCurrencyAsync(int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var currency = await context.Currency.FindAsync(currencyId);
 				if (currency == null)
@@ -72,7 +72,7 @@ namespace TradeSatoshi.Core.Currency
 
 		public async Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				return await context.Currency.Select(currency =>
 					new CurrencyModel
@@ -86,7 +86,7 @@ namespace TradeSatoshi.Core.Currency
 
 		public DataTablesResponse GetCurrencyDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Currency.Select(currency =>
 						new CurrencyModel

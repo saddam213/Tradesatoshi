@@ -21,11 +21,11 @@ namespace TradeSatoshi.Core.Withdraw
 {
 	public class WithdrawReader : IWithdrawReader
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		public List<WithdrawModel> GetWithdrawals(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Where(x => x.UserId == userId)
@@ -49,7 +49,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public List<WithdrawModel> GetWithdrawals(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
@@ -73,7 +73,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Where(x => x.UserId == userId)
@@ -97,7 +97,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
@@ -121,7 +121,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public DataTablesResponse GetWithdrawDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Select(withdraw =>
@@ -144,7 +144,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public DataTablesResponse GetUserWithdrawDataTable(DataTablesModel model, string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Withdraw
 							.Where(x => x.UserId == userId)
@@ -169,7 +169,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public CreateWithdrawModel GetCreateWithdraw(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var userInfo = context.Currency
 						.Where(c => c.Id == currencyId)
@@ -195,7 +195,7 @@ namespace TradeSatoshi.Core.Withdraw
 
 		public async Task<CreateWithdrawModel> GetCreateWithdrawAsync(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var userInfo = await context.Currency
 						.Where(c => c.Id == currencyId)

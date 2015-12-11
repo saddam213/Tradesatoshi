@@ -12,6 +12,7 @@ namespace TradeSatoshi.Common.Data
 	public interface IDataContext : IDisposable
 	{
 		IDataContext CreateContext();
+		Database Database { get; }
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
 
@@ -33,5 +34,7 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entities.TradePair> TradePair { get; set; }
 		DbSet<Entities.Trade> Trade { get; set; }
 		DbSet<Entities.TradeHistory> TradeHistory { get; set; }
+
+		DbSet<Entities.Log> Log { get; set; }
 	}
 }

@@ -25,11 +25,11 @@ namespace TradeSatoshi.Core.Services
 		private readonly string EmailServer = ConfigurationManager.AppSettings["SMTP_Server"];
 		private readonly int EmailPort = int.Parse(ConfigurationManager.AppSettings["SMTP_Port"]);
 
-		public IDataContext ApplicationDbContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 		
 		public bool Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{
-			using (var context = ApplicationDbContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var emailTemplate = context.EmailTemplates.FirstOrDefault(x => x.Type == template && x.IsEnabled);
 				if (emailTemplate == null)
@@ -41,7 +41,7 @@ namespace TradeSatoshi.Core.Services
 
 		public async Task<bool> SendAsync(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{
-			using (var context = ApplicationDbContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var emailTemplate = await context.EmailTemplates.FirstOrDefaultAsync(x => x.Type == template && x.IsEnabled);
 				if (emailTemplate == null)

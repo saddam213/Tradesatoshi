@@ -19,12 +19,12 @@ namespace TradeSatoshi.Core.Admin
 {
 	public class UserWriter : IUserWriter
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public IWriterResult<bool> UpdateUser(UpdateUserModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var existinguser = context.Users.FirstOrDefault(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
 				if (existinguser != null)
@@ -61,7 +61,7 @@ namespace TradeSatoshi.Core.Admin
 		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult<bool>> UpdateUserAsync(UpdateUserModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var existinguser = await context.Users.FirstOrDefaultAsync(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
 				if (existinguser != null)
@@ -98,7 +98,7 @@ namespace TradeSatoshi.Core.Admin
 		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public IWriterResult<bool> AddUserRole(UserRoleModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var user = context.Users.FirstOrDefault(x => x.UserName == model.UserName);
 				if (user == null)
@@ -121,7 +121,7 @@ namespace TradeSatoshi.Core.Admin
 		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult<bool>> AddUserRoleAsync(UserRoleModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == model.UserName);
 				if (user == null)
@@ -148,7 +148,7 @@ namespace TradeSatoshi.Core.Admin
 			if (model.SecurityRole == SecurityRole.Standard)
 				return WriterResult<bool>.ErrorResult("The {0} role cannot be remove from users.", SecurityRole.Standard);
 
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var role = context.UserRoles.FirstOrDefault(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
 				if (role == null)
@@ -166,7 +166,7 @@ namespace TradeSatoshi.Core.Admin
 			if (model.SecurityRole == SecurityRole.Standard)
 				return WriterResult<bool>.ErrorResult("The {0} role cannot be remove from users.", SecurityRole.Standard);
 
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var role = await context.UserRoles.FirstOrDefaultAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
 				if (role == null)

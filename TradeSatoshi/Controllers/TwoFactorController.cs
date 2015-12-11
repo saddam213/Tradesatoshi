@@ -34,7 +34,7 @@ namespace TradeSatoshi.Controllers
 		[ChildActionOnly]
 		public ActionResult GetTwoFactor(TwoFactorComponentType component)
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return Unauthorized();
 
@@ -51,7 +51,7 @@ namespace TradeSatoshi.Controllers
 		[Authorize]
 		public async Task<ActionResult> Remove(TwoFactorComponentType componentType)
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return Unauthorized();
 
@@ -80,7 +80,7 @@ namespace TradeSatoshi.Controllers
 			if (!ModelState.IsValid)
 				return View("Remove", model);
 
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return Unauthorized();
 
@@ -108,7 +108,7 @@ namespace TradeSatoshi.Controllers
 		[Authorize]
 		public ActionResult Create(TwoFactorComponentType componentType)
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return Unauthorized();
 
@@ -132,7 +132,7 @@ namespace TradeSatoshi.Controllers
 			if (!model.IsValid(ModelState))
 				return View("Create", model);
 
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return Unauthorized();
 
@@ -171,14 +171,14 @@ namespace TradeSatoshi.Controllers
 		[Authorize]
 		public async Task<ActionResult> SendEmailCode(TwoFactorComponentType componentType, string dataEmail)
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return JsonError("Unauthorized");
 
 			if (!ValidationHelpers.IsValidEmailAddress(dataEmail))
 				return JsonError(string.Format("'{0} is an invalid email address.'"));
 
-			var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, User.Identity.GetUserId());
+			var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, User.Id());
 			if (await EmailService.SendAsync(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), twofactorCode))
 			{
 				return JsonSuccess();
@@ -190,7 +190,7 @@ namespace TradeSatoshi.Controllers
 		[Authorize]
 		public async Task<ActionResult> VerifyEmailCode(TwoFactorComponentType componentType, string code)
 		{
-			var user = UserManager.FindById(User.Identity.GetUserId());
+			var user = UserManager.FindById(User.Id());
 			if (user == null)
 				return JsonError("Unauthorized");
 

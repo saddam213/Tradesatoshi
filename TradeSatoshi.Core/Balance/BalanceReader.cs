@@ -15,16 +15,17 @@ using System.Security.Permissions;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.Data;
+using System.Diagnostics;
 
 namespace TradeSatoshi.Core.Balance
 {
 	public class BalanceReader : IBalanceReader
 	{
-		public IDataContext DataContext { get; set; }
+		public IDataContextFactory DataContextFactory { get; set; }
 
 		public BalanceModel GetBalance(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency.Where(c => c.Id == currencyId)
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
@@ -48,7 +49,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public List<BalanceModel> GetBalances(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
@@ -72,7 +73,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public async Task<BalanceModel> GetBalanceAsync(string userId, int currencyId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency.Where(c => c.Id == currencyId)
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
@@ -96,7 +97,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public async Task<List<BalanceModel>> GetBalancesAsync(string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
@@ -120,7 +121,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public DataTablesResponse GetBalanceDataTable(DataTablesModel model)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency
 							from balance in context.Balance.Where(b => b.CurrencyId == currency.Id)
@@ -144,7 +145,7 @@ namespace TradeSatoshi.Core.Balance
 
 		public DataTablesResponse GetUserBalanceDataTable(DataTablesModel model, string userId)
 		{
-			using (var context = DataContext.CreateContext())
+			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = from currency in context.Currency
 							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)

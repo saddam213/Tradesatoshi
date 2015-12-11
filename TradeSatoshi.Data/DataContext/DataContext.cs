@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace TradeSatoshi.Data.DataContext
 		public DataContext()
 			: base("DefaultConnection")
 		{
+			Database.Log = (e) => Debug.WriteLine(e);
 		}
 
 		public DbSet<ApplicationUser> Users { get; set; }
@@ -37,18 +39,18 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<Trade> Trade { get; set; }
 		public DbSet<TradeHistory> TradeHistory { get; set; }
 
+		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Conventions.Remove<DecimalPropertyConvention>();
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 			modelBuilder.Conventions.Add(new DecimalPropertyConvention(38, 8));
-			
+
 			modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers");
 			modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles");
 			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasKey(r => new { r.RoleId, r.UserId }).HasRequired(p => p.User);
 			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasRequired(p => p.Role);
-
 
 			modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
 			modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);

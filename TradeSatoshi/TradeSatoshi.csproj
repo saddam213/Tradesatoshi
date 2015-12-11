@@ -366,6 +366,8 @@
     <Content Include="Views\User\_WithdrawPartial.cshtml" />
     <Content Include="Views\Withdraw\CreateWithdrawModal.cshtml" />
     <Content Include="Views\Shared\_TwoFactorEntryPartial.cshtml" />
+    <Content Include="Views\User\_TradesPartial.cshtml" />
+    <Content Include="Views\User\_TradeHistoryPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

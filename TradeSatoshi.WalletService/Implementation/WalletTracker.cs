@@ -21,7 +21,7 @@ namespace TradeSatoshi.WalletService.Implementation
 {
 	public class WalletTracker
 	{
-		private readonly Log Log = LoggingManager.GetLog(typeof(WalletTracker));
+		private readonly TradeSatoshi.Base.Logging.Log Log = LoggingManager.GetLog(typeof(WalletTracker));
 		private CancellationToken _cancelToken;
 		private bool _isRunning = false;
 		private bool _isEnabled = false;
