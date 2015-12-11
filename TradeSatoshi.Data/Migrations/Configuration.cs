@@ -53,10 +53,9 @@ namespace TradeSatoshi.Data.Migrations
 				Settings = new UserSettings { Id = "4a6347c2-2c93-46e9-80d3-cbe064cb8491" },
 			};
 
+			adminUser.Roles.Add(new IdentityUserRole() { UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Standard).Id });
 			adminUser.Roles.Add(new IdentityUserRole(){ UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Administrator).Id});
 			context.Users.AddOrUpdate(u => u.UserName, adminUser);
-
-
 		}
 	}
 }
