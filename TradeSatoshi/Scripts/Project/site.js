@@ -15,7 +15,15 @@
 			icon = 'fa-times-circle';
 			type = 'alert-danger';
 		}
-		$.jGrowl(notification.Message, { position: "bottom-right", header: notification.Title, icon: icon, type: type });
+		$.jGrowl(htmlEncode(notification.Message), { position: "bottom-right", header: htmlEncode(notification.Title), icon: icon, type: type });
+	};
+
+	var dataNotificationHub = $.connection.DataNotification;
+	dataNotificationHub.client.UpdateData = function (notification) {
+		$(htmlEncode(notification.ElementName)).html(htmlEncode(notification.ElementValue));
+	};
+	dataNotificationHub.client.UpdateDataTable = function (notification) {
+		$(htmlEncode(notification.DataTableName)).dataTable().fnDraw();
 	};
 	$.connection.hub.start();
 })();
@@ -156,4 +164,18 @@ function notifyModal(header, message, callback) {
 			});
 		}
 	});
+}
+
+function truncateDecimals(num, digits) {
+	var numS = num.toString(),
+        decPos = numS.indexOf('.'),
+        substrLength = decPos == -1 ? numS.length : 1 + decPos + digits,
+        trimmedResult = numS.substr(0, substrLength),
+        finalResult = isNaN(trimmedResult) ? 0 : trimmedResult;
+
+	return parseFloat(finalResult);
+}
+
+function htmlEncode(val) {
+	return $('<div/>').text(val).html();
 }

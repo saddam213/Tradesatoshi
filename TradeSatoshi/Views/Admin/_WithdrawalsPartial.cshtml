@@ -5,8 +5,45 @@
 				<h3 class="panel-title">Site Withdrawals</h3>
 			</div>
 			<div class="panel-body">
-				Panel content
+				<table id="table-withdraw" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Currency</th>
+							<th>Symbol</th>
+							<th>Amount</th>
+							<th>Fee</th>
+							<th>NetAmount</th>
+							<th>Status</th>
+							<th>Confirmations</th>
+							<th>Txid</th>
+							<th>Address</th>
+							<th>TimeStamp</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script>
+	$('#table-withdraw').dataTable({
+		"order": [[1, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetWithdrawals")',
+		"sServerMethod": "POST"
+	});
+</script>

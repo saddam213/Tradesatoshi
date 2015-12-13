@@ -12,6 +12,12 @@ namespace TradeSatoshi.Core.Logger
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
+		public DatabaseLogger() { }
+		public DatabaseLogger(IDataContextFactory dataContextFactory)
+		{
+			DataContextFactory = dataContextFactory;
+		}
+
 		public void Info(string component, string message, params object[] formatParams)
 		{
 			LogMessage("Info", component, string.Format(message, formatParams));
@@ -46,7 +52,14 @@ namespace TradeSatoshi.Core.Logger
 		{
 			using (var dataContext = DataContextFactory.CreateContext())
 			{
-
+				dataContext.Log.Add(new Common.Data.Entities.Log
+				{
+					Component = component,
+					Message = message,
+					Type = type,
+					Timestamp = DateTime.UtcNow
+				});
+				dataContext.SaveChanges();
 			}
 		}
 	}

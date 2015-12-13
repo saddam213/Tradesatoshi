@@ -8,11 +8,7 @@ namespace TradeSatoshi.Common.Trade
 {
 	public interface ITradeItem
 	{
-		bool IsBuy { get; set; }
 		string UserId { get; set; }
-		int TradePairId { get; set; }
-		decimal Rate { get; set; }
-		decimal Amount { get; set; }
 		bool IsApi { get; set; }
 	}
 }

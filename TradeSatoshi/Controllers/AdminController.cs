@@ -7,7 +7,10 @@ using System.Web.Mvc;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Admin;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Helpers;
 using TradeSatoshi.Models;
@@ -20,6 +23,9 @@ namespace TradeSatoshi.Controllers
 	{
 		public IUserReader UserReader { get; set; }
 		public IUserWriter UserWriter { get; set; }
+		public IDepositReader DepositReader { get; set; }
+		public IWithdrawReader WithdrawReader { get; set; }
+		public ITradeReader TradeReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -178,10 +184,52 @@ namespace TradeSatoshi.Controllers
 			return PartialView("_DepositsPartial");
 		}
 
+		[HttpPost]
+		public ActionResult GetDeposits(DataTablesModel param)
+		{
+			return DataTable(DepositReader.GetDepositDataTable(param));
+		}
+
+
 		[HttpGet]
 		public ActionResult Withdrawals()
 		{
 			return PartialView("_WithdrawalsPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetWithdrawals(DataTablesModel param)
+		{
+			return DataTable(WithdrawReader.GetWithdrawDataTable(param));
+		}
+
+		#endregion
+
+		#region Trades
+
+		[HttpGet]
+		public ActionResult Trades()
+		{
+			return PartialView("_TradesPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetTrades(DataTablesModel param)
+		{
+			return DataTable(TradeReader.GetTradeDataTable(param));
+		}
+
+
+		[HttpGet]
+		public ActionResult TradeHistory()
+		{
+			return PartialView("_TradeHistoryPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetTradeHistory(DataTablesModel param)
+		{
+			return DataTable(TradeReader.GetTradeHistoryDataTable(param));
 		}
 
 		#endregion

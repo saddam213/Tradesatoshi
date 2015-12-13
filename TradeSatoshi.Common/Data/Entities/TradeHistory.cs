@@ -23,7 +23,7 @@ namespace TradeSatoshi.Common.Data.Entities
 
 		public int CurrencyId { get; set; }
 
-		public TradeHistoryType TradeHistoryType { get; set; }
+		public TradeType TradeHistoryType { get; set; }
 
 		public decimal Amount { get; set; }
 

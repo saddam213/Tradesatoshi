@@ -169,11 +169,12 @@ namespace TradeSatoshi.WalletService.Implementation
 									context.Deposit.Add(newDeposit);
 									await context.SaveChangesAsync();
 									await AuditUser(context, currency.Id, userId);
-									await NotificationService.SendUserNotificationAsync(userId, new Notification
+									await NotificationService.SendUserNotificationAsync(new UserNotification
 									{
 										Title = "New Deposit",
 										Message = string.Format("{0} Deposit #{1}, {2:F8} {3}", newDeposit.DepositStatus, newDeposit.Id, newDeposit.Amount, currency.Symbol),
-										Type = NotificationType.Info
+										Type = NotificationType.Info,
+										UserId = userId
 									});
 									Log.Message(LogLevel.Info, "Successfully Processed new {0} deposit.", currency.Symbol);
 									continue;
@@ -201,11 +202,12 @@ namespace TradeSatoshi.WalletService.Implementation
 									{
 										Log.Message(LogLevel.Info, "Deposit #{0} confirmed.", existingDeposit.Id);
 										await AuditUser(context, currency.Id, userId);
-										await NotificationService.SendUserNotificationAsync(userId, new Notification
+										await NotificationService.SendUserNotificationAsync(new UserNotification
 										{
 											Title = "Deposit Confirmed",
 											Message = string.Format("Deposit #{0}, {1:F8} {2} has now been confirmed", existingDeposit.Id, existingDeposit.Amount, existingDeposit.Currency.Symbol),
-											Type = NotificationType.Info
+											Type = NotificationType.Info,
+											UserId = userId
 										});
 									}
 									Log.Message(LogLevel.Info, "Successfully Processed existing {0} deposit.", currency.Symbol);

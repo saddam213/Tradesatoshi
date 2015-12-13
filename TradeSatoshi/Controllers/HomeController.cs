@@ -72,13 +72,20 @@ namespace TradeSatoshi.Controllers
 					Type = item
 				});
 
+				NotificationService.SendDataNotificationAsync(new DataNotification
+ 				{
+					ElementName = "#test",
+					ElementValue = "Hello World!"
+				});
+
 				if (User.Identity.IsAuthenticated)
 				{
-					NotificationService.SendUserNotification(User.Id(), new Notification
+					NotificationService.SendUserNotification(new UserNotification
 					{
 						Message = "Test message",
 						Title = "Test title",
-						Type = item
+						Type = item,
+						UserId = User.Id()
 					});
 				}
 			}

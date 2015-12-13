@@ -10,7 +10,17 @@ namespace TradeSatoshi.Common.Trade
 {
 	public interface ITradeReader
 	{
-		DataTablesResponse GetTradeDataTable(DataTablesModel model, string userId);
-		DataTablesResponse GetTradeHistoryDataTable(DataTablesModel model, string userId);
+		DataTablesResponse GetTradeDataTable(DataTablesModel model);
+		DataTablesResponse GetTradeHistoryDataTable(DataTablesModel model);
+		DataTablesResponse GetUserTradeDataTable(DataTablesModel model, string userId);
+		DataTablesResponse GetUserTradeHistoryDataTable(DataTablesModel model, string userId);
+
+		DataTablesResponse GetTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId);
+		DataTablesResponse GetTradePairOrderBookDataTable(DataTablesModel model, int tradePairId, TradeType tradeType);
+
+		DataTablesResponse GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string userId);
+		DataTablesResponse GetUserTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId, string userId);
+
+		TradePairInfoModel GetTradePairInfo(int tradePairId, string userId);
 	}
 }

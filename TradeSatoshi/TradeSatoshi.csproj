@@ -257,6 +257,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Project\Admin\admin.js" />
+    <Content Include="Scripts\Project\Exchange\tradepairPartial.js" />
+    <Content Include="Scripts\Project\Exchange\exchange.js" />
     <Content Include="Scripts\Project\notifications.js" />
     <Content Include="Scripts\Project\User\user.js" />
     <Content Include="Scripts\Project\TwoFactor\twoFactorCreate.js" />
@@ -281,6 +283,10 @@
     <Content Include="Views\Admin\UpdateRoleModal.cshtml" />
     <Content Include="Views\Account\PasswordReset.cshtml" />
     <Content Include="Views\Account\PasswordForgot.cshtml" />
+    <Content Include="Views\Admin\_TradeHistoryPartial.cshtml" />
+    <Content Include="Views\Admin\_TradesPartial.cshtml" />
+    <Content Include="Views\Exchange\_TradePairPartial.cshtml" />
+    <Content Include="Views\Exchange\_CreateTradePartial.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <None Include="Views\Home\Voting.cshtml" />
     <Content Include="Web.config">
@@ -313,6 +319,7 @@
     <Compile Include="Helpers\IdentityHelpers.cs" />
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
+    <Compile Include="Hubs\DataNotificationHub.cs" />
     <Compile Include="Models\Account\PasswordForgotModel.cs" />
     <Compile Include="Models\Account\PasswordResetModel.cs" />
     <Compile Include="Models\Admin\AdminSecurityModel.cs" />
@@ -320,6 +327,8 @@
     <Compile Include="Models\Account\RegisterViewModel.cs" />
     <Compile Include="Models\Account\LoginViewModel.cs" />
     <Compile Include="Models\Admin\AdminAccountsModel.cs" />
+    <Compile Include="Models\Exchange\CreateTradeModel.cs" />
+    <Compile Include="Models\Exchange\TradePairExchangeModel.cs" />
     <Compile Include="Models\TwoFactor\CreateTwoFactorModel.cs" />
     <Compile Include="Models\TwoFactor\RemoveTwoFactorModel.cs" />
     <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
@@ -406,7 +415,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>59073</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:62765/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

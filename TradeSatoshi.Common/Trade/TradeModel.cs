@@ -10,7 +10,7 @@ namespace TradeSatoshi.Common.Trade
 	{
 		public int Id { get; set; }
 		public string TradePair { get; set; }
-		public TradeHistoryType TradeType { get; set; }
+		public TradeType TradeType { get; set; }
 		public decimal Amount { get; set; }
 		public decimal Rate { get; set; }
 		public decimal Fee { get; set; }

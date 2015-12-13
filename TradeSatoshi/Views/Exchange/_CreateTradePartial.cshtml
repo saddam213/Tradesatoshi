@@ -1,0 +1,77 @@
+﻿@model TradeSatoshi.Common.Trade.CreateTradeModel
+@{
+	var targetDiv = string.Format("createTrade-{0}", Model.TradeType);
+}
+
+@using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = targetDiv, InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+{
+	@Html.HiddenFor(m => m.TradeType);
+	@Html.HiddenFor(m => m.TradePairId);
+	
+	<div class="form-group">
+		@Html.ResourceLabelFor(m => m.Amount, new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Amount, "{0:F8}", new { @class = "form-control", id = "amount-" + Model.TradeType })
+			@Html.ValidationMessageFor(m => m.Amount)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(m => m.Rate, new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "form-control", id = "rate-" + Model.TradeType })
+			@Html.ValidationMessageFor(m => m.Rate)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabel("Total", new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			<span id="total-@Model.TradeType" >0.00000000</span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabel("Fee", new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			<span id="fee-@Model.TradeType">0.00000000</span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabel("Net Total", new { @class = "col-md-2 control-label" })
+		<div class="col-md-10">
+			<span id="net-@Model.TradeType">0.00000000</span>
+		</div>
+	</div>
+
+	if (User.Identity.IsAuthenticated)
+	{
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<button id="submit-@Model.TradeType" type="submit" disabled="disabled" class="btn btn-info">Place Order</button>
+			</div>
+		</div>
+	}
+}
+
+<script>
+	$('#rate-@Model.TradeType, #amount-@Model.TradeType').on('change paste keyup', function () {
+		var amount = $('#amount-@Model.TradeType').val();
+		var price = $('#rate-@Model.TradeType').val();
+		var tradefee = +'@Model.Fee';
+		var minTrade = +'@Model.MinTrade';
+		$('#submit-@Model.TradeType').attr('disabled', 'disabled');
+		if (!isNaN(amount) && !isNaN(price)) {
+			var total = amount * price;
+			var fee = (total / 100) * tradefee;
+			var nettotal = total - fee;
+			$('#total-@Model.TradeType').html(truncateDecimals(total, 8).toFixed(8));
+			$('#fee-@Model.TradeType').html(truncateDecimals(fee, 8).toFixed(8));
+			$('#net-@Model.TradeType').html(truncateDecimals(nettotal, 8).toFixed(8));
+			if (nettotal > minTrade) {
+				$('#submit-@Model.TradeType').removeAttr('disabled');
+			}
+		}
+	});
+</script>

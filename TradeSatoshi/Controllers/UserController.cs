@@ -175,7 +175,7 @@ namespace TradeSatoshi.Controllers
 		[HttpPost]
 		public ActionResult GetTrades(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetTradeDataTable(param, User.Id()));
+			return DataTable(TradeReader.GetUserTradeDataTable(param, User.Id()));
 		}
 
 		#endregion
@@ -191,7 +191,7 @@ namespace TradeSatoshi.Controllers
 		[HttpPost]
 		public ActionResult GetTradeHistory(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetTradeHistoryDataTable(param, User.Id()));
+			return DataTable(TradeReader.GetUserTradeHistoryDataTable(param, User.Id()));
 		}
 
 		#endregion

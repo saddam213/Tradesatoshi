@@ -95,26 +95,26 @@ input[type="checkbox"].input-validation-error {
 	min-height: 40px;
 }
 
-.jGrowl-notification .jGrowl-header {
-	font-weight: bold;
-	font-size: 14px;
-	padding: 0px;
-	margin: 0px;
-}
+	.jGrowl-notification .jGrowl-header {
+		font-weight: bold;
+		font-size: 14px;
+		padding: 0px;
+		margin: 0px;
+	}
 
-.jGrowl-notification .jGrowl-message {
-	font-size: 12px;
-}
+	.jGrowl-notification .jGrowl-message {
+		font-size: 12px;
+	}
 
-.jGrowl-notification .jGrowl-line {
-	padding: 0px;
-	margin: 0px;
-	padding-top: 2px;
-	padding-bottom: 4px;
-}
+	.jGrowl-notification .jGrowl-line {
+		padding: 0px;
+		margin: 0px;
+		padding-top: 2px;
+		padding-bottom: 4px;
+	}
 
-.jGrowl-notification .jGrowl-icon {
-	padding-right: 5px;
-	font-size: 30px;
-	vertical-align: middle;
-}
+	.jGrowl-notification .jGrowl-icon {
+		padding-right: 5px;
+		font-size: 30px;
+		vertical-align: middle;
+	}

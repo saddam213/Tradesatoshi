@@ -1,0 +1,168 @@
+﻿@model TradeSatoshi.Models.Exchange.TradePairExchangeModel
+
+<div class="row">
+	<div class="col-xs-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<span>Sell @Model.Symbol</span>
+					<span style="display:@(User.Identity.IsAuthenticated ? "" : "none")" class="pull-right">
+						<span id="data-balance-@Model.Symbol">@Model.Balance.ToString("F8") @Model.Symbol</span>
+					</span>
+				</h3>
+			</div>
+			<div class="panel-body" id="createTrade-@TradeSatoshi.Common.TradeType.Sell">
+				@Html.Partial("_CreateTradePartial", Model.SellModel)
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<span>Buy @Model.Symbol</span>
+					<span style="display:@(User.Identity.IsAuthenticated ? "" : "none")" class="pull-right">
+						<span id="data-balance-@Model.BaseSymbol">@Model.BaseBalance.ToString("F8") @Model.BaseSymbol</span>
+					</span>
+				</h3>
+			</div>
+			<div class="panel-body" id="createTrade-@TradeSatoshi.Common.TradeType.Buy">
+				@Html.Partial("_CreateTradePartial", Model.BuyModel)
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Buy Orders</h3>
+			</div>
+			<div id="buyOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Common.TradeType.Buy">
+				<table id="table-buyOrders-@Model.TradePairId" class="table" >
+					<thead>
+						<tr>
+							<th>Rate</th>
+							<th>Amount</th>
+							<th>Total</th>
+							<th>Sum</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Sell Orders</h3>
+			</div>
+			<div id="sellOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Common.TradeType.Sell">
+				<table id="table-sellOrders-@Model.TradePairId" class="table" >
+					<thead>
+						<tr>
+							<th>Rate</th>
+							<th>Amount</th>
+							<th>Total</th>
+							<th>Sum</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Market History</h3>
+			</div>
+			<div id="tradehistory-host" class="panel-body" data-action="@Url.Action("GetMarketHistory")" data-tradepair="@Model.TradePairId">
+				<table id="table-tradehistory-@Model.TradePairId" class="table" >
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>TradePair</th>
+							<th>TradeType</th>
+							<th>Amount</th>
+							<th>Rate</th>
+							<th>Fee</th>
+							<th>Timestamp</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Open Orders</h3>
+				</div>
+				<div id="useropenorders-host" class="panel-body" data-action="@Url.Action("GetUserOpenOrders")" data-cancel="@Url.Action("CancelTrade")" data-tradepair="@Model.TradePairId">
+					<table id="table-useropenorders-@Model.TradePairId" class="table" >
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>TradeType</th>
+								<th>Rate</th>
+								<th>Amount</th>
+								<th>Remaining</th>
+								<th>Timestamp</th>
+								<th>
+									<button id="table-canceltradepair" data-tradepair="@Model.TradePairId" data-action="@Url.Action("CancelTrade")" style="font-size:inherit" class="btn btn-link btn-xs"><b>Cancel All</b></button></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">History</h3>
+				</div>
+				<div id="userhistory-host" class="panel-body" data-action="@Url.Action("GetUserMarketHistory")" data-tradepair="@Model.TradePairId">
+					<table id="table-userhistory-@Model.TradePairId" class="table" >
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>TradePair</th>
+								<th>TradeType</th>
+								<th>Amount</th>
+								<th>Rate</th>
+								<th>Fee</th>
+								<th>Timestamp</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")

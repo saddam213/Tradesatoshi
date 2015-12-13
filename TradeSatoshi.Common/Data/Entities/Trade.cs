@@ -18,7 +18,7 @@ namespace TradeSatoshi.Common.Data.Entities
 
 		public int TradePairId { get; set; }
 
-		public TradeHistoryType TradeType { get; set; }
+		public TradeType TradeType { get; set; }
 
 		public decimal Amount { get; set; }
 

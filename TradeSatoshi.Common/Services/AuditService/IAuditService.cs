@@ -10,10 +10,10 @@ namespace TradeSatoshi.Common.Services.AuditService
 {
 	public interface IAuditService
 	{
-		AuditResult AuditUserCurrency(IDataContext context, string userId, int currencyId);
-		Task<AuditResult> AuditUserCurrencyAsync(IDataContext context, string userId, int currencyId);
+		AuditCurrencyResult AuditUserCurrency(IDataContext context, string userId, int currencyId);
+		Task<AuditCurrencyResult> AuditUserCurrencyAsync(IDataContext context, string userId, int currencyId);
 
-		AuditResult AuditUserTradePair(IDataContext context, string userId, TradePair tradepair);
-		Task<AuditResult> AuditUserTradePairAsync(IDataContext context, string userId, TradePair tradepair);
+		AuditTradePairResult AuditUserTradePair(IDataContext context, string userId, TradePair tradepair);
+		Task<AuditTradePairResult> AuditUserTradePairAsync(IDataContext context, string userId, TradePair tradepair);
 	}
 }

@@ -27,7 +27,7 @@ namespace TradeSatoshi.Common
 		Other = 10,
 	}
 
-	public enum WithdrawStatus 
+	public enum WithdrawStatus
 	{
 		Pending = 0,
 		Processing = 1,
@@ -98,7 +98,7 @@ namespace TradeSatoshi.Common
 		Partial = 2,
 		Canceled = 3
 	}
-	public enum TradeHistoryType
+	public enum TradeType
 	{
 		Buy = 0,
 		Sell = 1
@@ -110,5 +110,12 @@ namespace TradeSatoshi.Common
 		Closing = 1,
 		Paused = 2,
 		Closed = 3
+	}
+
+	public enum CancelTradeType
+	{
+		Trade = 0,
+		TradePair = 1,
+		All = 10
 	}
 }

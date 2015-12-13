@@ -54,8 +54,29 @@ namespace TradeSatoshi.Data.Migrations
 			};
 
 			adminUser.Roles.Add(new IdentityUserRole() { UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Standard).Id });
-			adminUser.Roles.Add(new IdentityUserRole(){ UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Administrator).Id});
+			adminUser.Roles.Add(new IdentityUserRole() { UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Administrator).Id });
 			context.Users.AddOrUpdate(u => u.UserName, adminUser);
+
+			context.Currency.AddOrUpdate(c => c.Id,
+				new TradeSatoshi.Common.Data.Entities.Currency
+				{
+					Id = 1,
+					Symbol = "BTC",
+					Name = "Bitcoin",
+					IsEnabled = true,
+					TradeFee = 0.2m,
+				},
+				new TradeSatoshi.Common.Data.Entities.Currency
+				{
+					Id = 2,
+					Symbol = "DOT",
+					Name = "Dotcoin",
+					IsEnabled = true,
+					TradeFee = 0.2m,
+				}
+			);
+
+			context.TradePair.Add(new TradePair{ CurrencyId1 = 2, CurrencyId2 = 1});
 		}
 	}
 }
