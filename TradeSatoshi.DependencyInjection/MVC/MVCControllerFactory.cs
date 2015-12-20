@@ -2,17 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace TradeSatoshi.DependencyInjection
+namespace TradeSatoshi.DependencyInjection.MVC
 {
-	public class ControllerFactory : DefaultControllerFactory
+	public class MVCControllerFactory : DefaultControllerFactory
 	{
 		private readonly IKernel kernel;
 
-		public ControllerFactory(IKernel kernel)
+		public MVCControllerFactory(IKernel kernel)
 		{
 			this.kernel = kernel;
 		}

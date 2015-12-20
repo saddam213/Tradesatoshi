@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Base", "TradeS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.WalletService", "TradeSatoshi.WalletService\TradeSatoshi.WalletService.csproj", "{8BD8A9B8-8043-4A01-AA7B-E5E41F170811}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.DependencyInjection", "TradeSatoshi.DependencyInjection\TradeSatoshi.DependencyInjection.csproj", "{CEB024CD-54DC-474A-A9F6-20BCE5DB4C4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{8BD8A9B8-8043-4A01-AA7B-E5E41F170811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BD8A9B8-8043-4A01-AA7B-E5E41F170811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BD8A9B8-8043-4A01-AA7B-E5E41F170811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEB024CD-54DC-474A-A9F6-20BCE5DB4C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB024CD-54DC-474A-A9F6-20BCE5DB4C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB024CD-54DC-474A-A9F6-20BCE5DB4C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB024CD-54DC-474A-A9F6-20BCE5DB4C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

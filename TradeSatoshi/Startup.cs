@@ -1,9 +1,6 @@
 ﻿using TradeSatoshi;
 using Microsoft.Owin;
 using Owin;
-using Castle.Windsor;
-using Castle.Windsor.Installer;
-using Castle.MicroKernel.Registration;
 using TradeSatoshi.Common;
 using TradeSatoshi.Core;
 using System.Web.Mvc;
