@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi", "TradeSatoshi\TradeSatoshi.csproj", "{75DB6B86-0251-4A36-AA70-580B224213E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Web", "TradeSatoshi\TradeSatoshi.Web.csproj", "{75DB6B86-0251-4A36-AA70-580B224213E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeSatoshi.Core", "TradeSatoshi.Core\TradeSatoshi.Core.csproj", "{4BFA8C93-D3E3-4D93-9B2A-E2CBA4223895}"
 EndProject

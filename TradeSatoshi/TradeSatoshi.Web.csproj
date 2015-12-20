@@ -11,8 +11,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TradeSatoshi</RootNamespace>
-    <AssemblyName>TradeSatoshi</AssemblyName>
+    <RootNamespace>TradeSatoshi.Web</RootNamespace>
+    <AssemblyName>TradeSatoshi.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -310,30 +310,11 @@
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Hubs\DataNotificationHub.cs" />
-    <Compile Include="Models\Account\PasswordForgotModel.cs" />
-    <Compile Include="Models\Account\PasswordResetModel.cs" />
-    <Compile Include="Models\Admin\AdminSecurityModel.cs" />
-    <Compile Include="Models\DataTableModelBinder.cs" />
-    <Compile Include="Models\Account\RegisterViewModel.cs" />
-    <Compile Include="Models\Account\LoginViewModel.cs" />
-    <Compile Include="Models\Admin\AdminAccountsModel.cs" />
-    <Compile Include="Models\Exchange\TradePairExchangeModel.cs" />
-    <Compile Include="Models\TwoFactor\CreateTwoFactorModel.cs" />
-    <Compile Include="Models\TwoFactor\RemoveTwoFactorModel.cs" />
-    <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
-    <Compile Include="Models\Account\VerifyTwoFactorModel.cs" />
-    <Compile Include="Models\User\UserSecurityModel.cs" />
-    <Compile Include="Models\User\UserBalancesModel.cs" />
-    <Compile Include="Models\User\UserProfileModel.cs" />
-    <Compile Include="Models\Vote\VotingModel.cs" />
-    <Compile Include="Models\ViewMessageModel.cs" />
+    <Compile Include="ModelBinder\DataTableModelBinder.cs" />
     <Compile Include="Hubs\HubUserIdProvider.cs" />
     <Compile Include="Hubs\NotificationHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Validation\RequiredIfAttribute.cs" />
-    <Compile Include="Validation\RequiredToBeTrueAttribute.cs" />
-    <Compile Include="Validation\ValidationHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -375,7 +356,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Withdraw\" />
+    <Folder Include="Validation\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">

@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Common.Services.EmailService;
-using TradeSatoshi.Data;
-using System.Data.Entity;
-using TradeSatoshi.Models;
-using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Services.EmailService;
+using TradeSatoshi.Common.Withdraw;
+using TradeSatoshi.Data;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	public class WithdrawController : BaseController
 	{

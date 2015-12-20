@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
-using System.Web.Compilation;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public static class ResourceHelper
 	{

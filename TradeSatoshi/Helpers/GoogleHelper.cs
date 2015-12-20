@@ -1,11 +1,9 @@
 ﻿using Base32;
 using OtpSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using TradeSatoshi.Common.TwoFactor;
 
-namespace TradeSatoshi.Helpers
+namespace TradeSatoshi.Web.Helpers
 {
 	public class GoogleHelper
 	{
@@ -41,16 +39,5 @@ namespace TradeSatoshi.Helpers
 		}
 	}
 
-	public class GoogleTwoFactorData
-	{
-		public string PrivateKey { get; set; }
-		public string PublicKey { get; set; }
-		public bool IsValid
-		{
-			get
-			{ return !string.IsNullOrEmpty(PublicKey) 
-				&& !string.IsNullOrEmpty(PrivateKey);
-			}
-		}
-	}
+	
 }

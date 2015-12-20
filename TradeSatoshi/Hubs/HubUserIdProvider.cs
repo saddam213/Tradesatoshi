@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using TradeSatoshi.Helpers;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Hubs
+namespace TradeSatoshi.Web.Hubs
 {
 	public class HubUserIdProvider : IUserIdProvider
 	{

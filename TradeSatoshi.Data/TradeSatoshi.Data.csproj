@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data.cs" />
     <Compile Include="DataContext\DataContextFactory.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />

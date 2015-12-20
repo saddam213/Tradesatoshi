@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using TradeSatoshi.Common;
+﻿using TradeSatoshi.Common;
 
-namespace TradeSatoshi.Models.TwoFactor
+namespace TradeSatoshi.Common.TwoFactor
 {
 	public class RemoveTwoFactorModel
 	{

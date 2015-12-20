@@ -1,25 +1,17 @@
-﻿using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using TradeSatoshi.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
-using hbehr.recaptcha;
-using System.Data.Entity.Validation;
-using TradeSatoshi.Common.Services.EmailService;
-using TradeSatoshi.Helpers;
+﻿using Microsoft.AspNet.Identity;
 using System;
-using TradeSatoshi.Data;
 using System.Linq;
-using System.Security.Claims;
-using TradeSatoshi.Models.TwoFactor;
-using TradeSatoshi.Models.Account;
-using TradeSatoshi.Validation;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Services.EmailService;
+using TradeSatoshi.Common.TwoFactor;
+using TradeSatoshi.Common.Validation;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	//[Authorize]
 	public class TwoFactorController : BaseController

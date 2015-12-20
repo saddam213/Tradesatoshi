@@ -1,19 +1,17 @@
-﻿using System.Web.Mvc;
-using System.Threading.Tasks;
-using TradeSatoshi.Models;
-using TradeSatoshi.Data.DataContext;
-using System.Linq;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using System.Data.Entity.Validation;
-using TradeSatoshi.Models.Vote;
-using TradeSatoshi.Common.Services.NotificationService;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Common.Balance;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Services.NotificationService;
+using TradeSatoshi.Common.Vote;
+using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	public class HomeController : BaseController
 	{

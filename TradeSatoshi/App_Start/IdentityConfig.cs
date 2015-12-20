@@ -3,18 +3,15 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Models;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.App_Start
+namespace TradeSatoshi.Web.App_Start
 {
 	public class ApplicationUserManager : UserManager<ApplicationUser>
 	{

@@ -13,14 +13,14 @@ namespace TradeSatoshi.DependencyInjection.Installers
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
-			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Core")
+			container.Register(Classes.FromAssemblyContaining<TradeSatoshi.Core.Core>()
 				.Pick()
 				.WithService
 				.DefaultInterfaces()
 				.LifestyleTransient()
 			);
 
-			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Data")
+			container.Register(Classes.FromAssemblyContaining<TradeSatoshi.Data.Data>()
 				.Pick()
 				.WithService
 				.DefaultInterfaces()

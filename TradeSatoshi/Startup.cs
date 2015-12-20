@@ -1,13 +1,10 @@
-﻿using TradeSatoshi;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Owin;
-using TradeSatoshi.Common;
-using TradeSatoshi.Core;
-using System.Web.Mvc;
+using TradeSatoshi.Web;
 
 
 [assembly: OwinStartup(typeof(Startup))]
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public partial class Startup
 	{

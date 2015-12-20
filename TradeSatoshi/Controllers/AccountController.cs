@@ -1,24 +1,22 @@
-﻿using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using TradeSatoshi.Models;
+﻿using hbehr.recaptcha;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using hbehr.recaptcha;
-using System.Data.Entity.Validation;
-using TradeSatoshi.Common.Services.EmailService;
-using TradeSatoshi.Helpers;
 using System;
-using TradeSatoshi.Data;
 using System.Linq;
 using System.Security.Claims;
-using TradeSatoshi.Models.Account;
-using TradeSatoshi.Common.Security;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 using TradeSatoshi.Common;
+using TradeSatoshi.Common.Account;
 using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Services.EmailService;
+using TradeSatoshi.Data;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	[Authorize]
 	public class AccountController : BaseController

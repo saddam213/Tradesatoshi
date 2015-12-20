@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public class FilterConfig
 	{

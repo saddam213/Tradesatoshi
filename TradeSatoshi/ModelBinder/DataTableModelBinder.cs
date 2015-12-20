@@ -1,13 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System;
 using System.Web.Mvc;
 using TradeSatoshi.Common.DataTables;
-//using TradeSatoshi.Common.DataTables;
 
-namespace TradeSatoshi.Models
+namespace TradeSatoshi.Web.ModelBinder
 {
 
 	public class DataTablesModelBinder : IModelBinder

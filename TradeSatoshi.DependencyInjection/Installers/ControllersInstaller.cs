@@ -14,7 +14,7 @@ namespace TradeSatoshi.DependencyInjection.Installers
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
-			container.Register(Classes.FromAssemblyNamed("TradeSatoshi")
+			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Web")
 				.BasedOn<IController>()
 				.LifestyleTransient()
 			);

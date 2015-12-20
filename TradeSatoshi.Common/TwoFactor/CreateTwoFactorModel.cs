@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Validation;
+using TradeSatoshi.Common.TwoFactor;
+using TradeSatoshi.Common.Validation;
 
-namespace TradeSatoshi.Models.TwoFactor
+namespace TradeSatoshi.Common.TwoFactor
 {
 	public class CreateTwoFactorModel
 	{

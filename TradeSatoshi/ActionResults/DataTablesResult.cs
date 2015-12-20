@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common.DataTables;
 
-namespace TradeSatoshi.ActionResults
+namespace TradeSatoshi.Web.ActionResults
 {
 	public class DataTablesResult : ActionResult
 	{

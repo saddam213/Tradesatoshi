@@ -75,6 +75,7 @@
     <Compile Include="Admin\UserWriter.cs" />
     <Compile Include="Admin\UserReader.cs" />
     <Compile Include="Balance\BalanceReader.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Currency\CurrencyReader.cs" />
     <Compile Include="Deposit\DepositReader.cs" />
     <Compile Include="Heplers\DataTableHelpers.cs" />

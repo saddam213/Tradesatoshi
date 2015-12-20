@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using TradeSatoshi.Validation;
+﻿using System.ComponentModel.DataAnnotations;
+using TradeSatoshi.Common.Validation;
+//using TradeSatoshi.Web.Validation;
 
-namespace TradeSatoshi.Models.Account
+namespace TradeSatoshi.Common.Account
 {
 	public class RegisterViewModel
 	{

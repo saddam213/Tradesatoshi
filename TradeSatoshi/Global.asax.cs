@@ -1,15 +1,11 @@
 ﻿using hbehr.recaptcha;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using TradeSatoshi.Common.Validation;
 using TradeSatoshi.DependencyInjection;
-using TradeSatoshi.Validation;
 
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public class MvcApplication : System.Web.HttpApplication
 	{
@@ -22,7 +18,7 @@ namespace TradeSatoshi
 			BundleConfig.RegisterBundles(BundleTable.Bundles);
 			DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfAttribute), typeof(RequiredAttributeAdapter));
 			DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredToBeTrueAttribute), typeof(RequiredAttributeAdapter));
-			ModelBinders.Binders.Add(typeof(TradeSatoshi.Common.DataTables.DataTablesModel), new TradeSatoshi.Models.DataTablesModelBinder());
+			ModelBinders.Binders.Add(typeof(TradeSatoshi.Common.DataTables.DataTablesModel), new TradeSatoshi.Web.ModelBinder.DataTablesModelBinder());
 			string publicKey = "6LdfdBETAAAAAILHIQ4yjZST5zbTPEhcIBSPA8Ld";
 			string secretKey = "6LdfdBETAAAAAI1d_wuXstow54r4eR4AKVWLRZle";
 			ReCaptcha.Configure(publicKey, secretKey);

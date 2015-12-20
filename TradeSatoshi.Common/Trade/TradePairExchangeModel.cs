@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using TradeSatoshi.Common.Trade;
+﻿using TradeSatoshi.Common.Trade;
 
-namespace TradeSatoshi.Models.Exchange
+namespace TradeSatoshi.Common.Exchange
 {
 	public class TradePairExchangeModel
 	{

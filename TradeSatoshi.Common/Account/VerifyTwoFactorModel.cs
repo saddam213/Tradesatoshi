@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using TradeSatoshi.Common;
+﻿using TradeSatoshi.Common;
 
-namespace TradeSatoshi.Models.Account
+namespace TradeSatoshi.Common.Account
 {
 	public class VerifyTwoFactorModel
 	{

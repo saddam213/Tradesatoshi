@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
-using TradeSatoshi.Common.Trade;
-using TradeSatoshi.Models.Exchange;
-using TradeSatoshi.Helpers;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Web.Helpers;
+using TradeSatoshi.Common.Exchange;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	public class ExchangeController : BaseController
 	{

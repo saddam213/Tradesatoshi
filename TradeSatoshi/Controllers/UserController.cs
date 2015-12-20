@@ -8,10 +8,10 @@ using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Models.User;
+using TradeSatoshi.Web.Helpers;
+using TradeSatoshi.Common.User;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	[AuthorizeSecurityRole(SecurityRole.Standard)]
 	public class UserController : BaseController

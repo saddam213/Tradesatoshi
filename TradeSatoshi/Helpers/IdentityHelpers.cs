@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Security.Principal;
-using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common.Security;
-using Microsoft.AspNet.Identity;
 
-namespace TradeSatoshi.Helpers
+namespace TradeSatoshi.Web.Helpers
 {
 	public static class IdentityHelpers
 	{

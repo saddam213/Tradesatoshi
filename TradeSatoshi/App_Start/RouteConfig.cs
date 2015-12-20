@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public class RouteConfig
 	{

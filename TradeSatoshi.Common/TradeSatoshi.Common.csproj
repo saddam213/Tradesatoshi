@@ -55,6 +55,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +63,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\LoginViewModel.cs" />
+    <Compile Include="Account\PasswordForgotModel.cs" />
+    <Compile Include="Account\PasswordResetModel.cs" />
+    <Compile Include="Account\RegisterViewModel.cs" />
+    <Compile Include="Account\VerifyTwoFactorModel.cs" />
+    <Compile Include="Admin\AdminAccountsModel.cs" />
+    <Compile Include="Admin\AdminSecurityModel.cs" />
     <Compile Include="Admin\RoleModel.cs" />
     <Compile Include="Admin\IUserWriter.cs" />
     <Compile Include="Admin\UpdateUserModel.cs" />
@@ -70,12 +78,14 @@
     <Compile Include="Admin\IUserReader.cs" />
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
+    <Compile Include="Balance\UserBalancesModel.cs" />
     <Compile Include="Data\Entities\Log.cs" />
     <Compile Include="Data\IDataContextFactory.cs" />
     <Compile Include="Data\Entities\TradePair.cs" />
     <Compile Include="Data\Entities\Trade.cs" />
     <Compile Include="Data\Entities\TradeHistory.cs" />
     <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Modal\ViewMessageModel.cs" />
     <Compile Include="Services\AuditService\AuditCurrencyResult.cs" />
     <Compile Include="Services\AuditService\AuditTradePairResult.cs" />
     <Compile Include="Services\AuditService\IAuditService.cs" />
@@ -139,8 +149,19 @@
     <Compile Include="Trade\TradeModel.cs" />
     <Compile Include="Trade\TradeOpenOrderModel.cs" />
     <Compile Include="Trade\TradeOrderBookModel.cs" />
+    <Compile Include="Trade\TradePairExchangeModel.cs" />
     <Compile Include="Trade\TradePairInfoModel.cs" />
+    <Compile Include="TwoFactor\GoogleTwoFactorData.cs" />
+    <Compile Include="TwoFactor\CreateTwoFactorModel.cs" />
+    <Compile Include="TwoFactor\RemoveTwoFactorModel.cs" />
+    <Compile Include="TwoFactor\ViewTwoFactorModel.cs" />
+    <Compile Include="User\UserProfileModel.cs" />
+    <Compile Include="User\UserSecurityModel.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
+    <Compile Include="Validation\RequiredIfAttribute.cs" />
+    <Compile Include="Validation\RequiredToBeTrueAttribute.cs" />
+    <Compile Include="Validation\ValidationHelpers.cs" />
+    <Compile Include="Vote\VotingModel.cs" />
     <Compile Include="Withdraw\IWithdrawWriter.cs" />
     <Compile Include="Withdraw\CreateWithdrawModel.cs" />
     <Compile Include="Withdraw\WithdrawModel.cs" />

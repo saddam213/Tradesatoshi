@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace TradeSatoshi.Models.Vote
+namespace TradeSatoshi.Common.Vote
 {
     public class VotingModel
     {

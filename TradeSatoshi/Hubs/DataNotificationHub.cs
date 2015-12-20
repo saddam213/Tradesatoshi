@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using TradeSatoshi.Common.Services.NotificationService;
 
-namespace TradeSatoshi.Hubs
+namespace TradeSatoshi.Web.Hubs
 {
 	[HubName("DataNotification")]
 	public class DataNotificationHub : Hub, IDataNotificationClient

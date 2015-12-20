@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System.Web.Mvc;
-using TradeSatoshi.App_Start;
-using TradeSatoshi.Common;
-using TradeSatoshi.Models;
 using Microsoft.AspNet.Identity.Owin;
-using System.Web;
 using System.Threading.Tasks;
-using TradeSatoshi.Data;
-using TradeSatoshi.ActionResults;
-using TradeSatoshi.Common.DataTables;
+using System.Web;
+using System.Web.Mvc;
 using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Data;
+using TradeSatoshi.Web.ActionResults;
+using TradeSatoshi.Web.App_Start;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	public class BaseController : Controller
 	{

@@ -6,13 +6,12 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System;
 using System.Web;
-using TradeSatoshi.App_Start;
 using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Hubs;
-using TradeSatoshi.Models;
+using TradeSatoshi.Web.App_Start;
+using TradeSatoshi.Web.Hubs;
 
-namespace TradeSatoshi
+namespace TradeSatoshi.Web
 {
 	public partial class Startup
 	{

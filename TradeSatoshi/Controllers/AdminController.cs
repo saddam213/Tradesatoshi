@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
-using TradeSatoshi.Common;
 using TradeSatoshi.Common.Admin;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
+using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
-using TradeSatoshi.Helpers;
-using TradeSatoshi.Models;
-using TradeSatoshi.Models.Admin;
+using TradeSatoshi.Web.Helpers;
 
-namespace TradeSatoshi.Controllers
+namespace TradeSatoshi.Web.Controllers
 {
 	[AuthorizeSecurityRole(SecurityRole.Administrator)]
 	public class AdminController : BaseController
