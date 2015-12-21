@@ -88,10 +88,19 @@ namespace TradeSatoshi.Core.Services
 					.DefaultIfEmpty()
 					.SumAsync(x => (((decimal?)x.Remaining ?? 0m) * ((decimal?)x.Rate ?? 0m)) + (decimal?)x.Fee ?? 0m);
 
+				var transferIn = await context.TransferHistory
+					.Where(x => x.ToUserId == userId && x.CurrencyId == currencyId)
+					.DefaultIfEmpty()
+					.SumAsync(x => (decimal?)x.Amount ?? 0m);
+
+				var transferOut = await context.TransferHistory
+					.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
+					.DefaultIfEmpty()
+					.SumAsync(x => (decimal?)x.Amount ?? 0m);
 
 				// Sum sub totals
-				var totalIn = depositsConfirmed + depositsUnconfirmed + totalBuy + totalBuyBase;
-				var totalOut = withdrawConfirmed + totalSell + totalSellBase + totalBuyFee + totalSellFee;
+				var totalIn = depositsConfirmed + depositsUnconfirmed + totalBuy + totalBuyBase + transferIn;
+				var totalOut = withdrawConfirmed + totalSell + totalSellBase + totalBuyFee + totalSellFee + transferOut;
 				var totalHeldForOrders = heldForOrders + heldForOrdersBase;
 				var totalPendingWithdraw = withdrawPending;
 				var totalUnconfirmed = depositsUnconfirmed;

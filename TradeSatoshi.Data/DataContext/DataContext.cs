@@ -39,6 +39,8 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<Trade> Trade { get; set; }
 		public DbSet<TradeHistory> TradeHistory { get; set; }
 
+		public DbSet<TransferHistory> TransferHistory { get; set; }
+
 		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -73,6 +75,11 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.TradePair);
 			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.Currency);
 			modelBuilder.Entity<Trade>().HasRequired(p => p.User).WithMany(b => b.Trade).HasForeignKey(p => p.UserId);
+
+			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User);
+			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.ToUser);
+			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.Currency);
+			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User).WithMany(b => b.Transfer).HasForeignKey(p => p.UserId);
 
 			base.OnModelCreating(modelBuilder);
 		}

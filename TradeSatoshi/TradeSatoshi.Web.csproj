@@ -356,7 +356,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Validation\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">

@@ -113,6 +113,10 @@
     <Compile Include="Migrations\201512100816216_LogTable.Designer.cs">
       <DependentUpon>201512100816216_LogTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512210938436_TransferTable.cs" />
+    <Compile Include="Migrations\201512210938436_TransferTable.Designer.cs">
+      <DependentUpon>201512210938436_TransferTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -165,6 +169,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512100816216_LogTable.resx">
       <DependentUpon>201512100816216_LogTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512210938436_TransferTable.resx">
+      <DependentUpon>201512210938436_TransferTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

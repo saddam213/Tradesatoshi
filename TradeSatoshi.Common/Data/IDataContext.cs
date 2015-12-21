@@ -35,6 +35,8 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entities.Trade> Trade { get; set; }
 		DbSet<Entities.TradeHistory> TradeHistory { get; set; }
 
+		DbSet<Entities.TransferHistory> TransferHistory { get; set; }
+
 		DbSet<Entities.Log> Log { get; set; }
 	}
 }

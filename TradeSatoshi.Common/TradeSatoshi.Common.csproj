@@ -79,6 +79,7 @@
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
     <Compile Include="Balance\UserBalancesModel.cs" />
+    <Compile Include="Data\Entities\TransferHistory.cs" />
     <Compile Include="Data\Entities\Log.cs" />
     <Compile Include="Data\IDataContextFactory.cs" />
     <Compile Include="Data\Entities\TradePair.cs" />

@@ -118,4 +118,10 @@ namespace TradeSatoshi.Common
 		TradePair = 1,
 		All = 10
 	}
+
+	public enum TransferType
+	{
+		User = 0,
+		Vote = 1
+	}
 }
