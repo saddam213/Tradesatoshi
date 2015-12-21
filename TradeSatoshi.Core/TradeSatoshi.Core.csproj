@@ -89,6 +89,8 @@
     <Compile Include="Services\WalletService.cs" />
     <Compile Include="Trade\TradeReader.cs" />
     <Compile Include="Trade\TradeWriter.cs" />
+    <Compile Include="Transfer\TransferWriter.cs" />
+    <Compile Include="Transfer\TransferReader.cs" />
     <Compile Include="Withdraw\WithdrawWriter.cs" />
     <Compile Include="Withdraw\WithdrawReader.cs" />
   </ItemGroup>

@@ -36,6 +36,7 @@ namespace TradeSatoshi.Core.Admin
 							IsEnabled = x.IsEnabled,
 							IsTradeEnabled = x.IsTradeEnabled,
 							IsWithdrawEnabled = x.IsWithdrawEnabled,
+							IsTransferEnabled = x.IsTransferEnabled
 						});
 
 				return query.GetDataTableResult(model);
@@ -57,6 +58,7 @@ namespace TradeSatoshi.Core.Admin
 							IsEnabled = x.IsEnabled,
 							IsTradeEnabled = x.IsTradeEnabled,
 							IsWithdrawEnabled = x.IsWithdrawEnabled,
+							IsTransferEnabled = x.IsTransferEnabled
 						}).FirstOrDefault(x => x.UserId == userId);
 
 				return query;
@@ -78,6 +80,7 @@ namespace TradeSatoshi.Core.Admin
 							IsEnabled = x.IsEnabled,
 							IsTradeEnabled = x.IsTradeEnabled,
 							IsWithdrawEnabled = x.IsWithdrawEnabled,
+							IsTransferEnabled = x.IsTransferEnabled
 						}).FirstOrDefaultAsync(x => x.UserId == userId);
 
 				return query;
@@ -100,6 +103,7 @@ namespace TradeSatoshi.Core.Admin
 						IsEnabled = x.IsEnabled,
 						IsTradeEnabled = x.IsTradeEnabled,
 						IsWithdrawEnabled = x.IsWithdrawEnabled,
+						IsTransferEnabled = x.IsTransferEnabled,
 						FirstName = x.Profile.FirstName,
 						LastName = x.Profile.LastName,
 						Address = x.Profile.Address,
@@ -130,6 +134,7 @@ namespace TradeSatoshi.Core.Admin
 							IsEnabled = x.IsEnabled,
 							IsTradeEnabled = x.IsTradeEnabled,
 							IsWithdrawEnabled = x.IsWithdrawEnabled,
+							IsTransferEnabled = x.IsTransferEnabled,
 							FirstName = x.Profile.FirstName,
 							LastName = x.Profile.LastName,
 							Address = x.Profile.Address,

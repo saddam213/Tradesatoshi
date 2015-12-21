@@ -152,6 +152,11 @@
     <Compile Include="Trade\TradeOrderBookModel.cs" />
     <Compile Include="Trade\TradePairExchangeModel.cs" />
     <Compile Include="Trade\TradePairInfoModel.cs" />
+    <Compile Include="Transfer\CreateTransferResponse.cs" />
+    <Compile Include="Transfer\CreateTransferModel.cs" />
+    <Compile Include="Transfer\ITransferReader.cs" />
+    <Compile Include="Transfer\ITransferWriter.cs" />
+    <Compile Include="Transfer\TransferModel.cs" />
     <Compile Include="TwoFactor\GoogleTwoFactorData.cs" />
     <Compile Include="TwoFactor\CreateTwoFactorModel.cs" />
     <Compile Include="TwoFactor\RemoveTwoFactorModel.cs" />

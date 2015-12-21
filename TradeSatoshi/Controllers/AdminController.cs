@@ -6,6 +6,7 @@ using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Web.Helpers;
@@ -20,6 +21,7 @@ namespace TradeSatoshi.Web.Controllers
 		public IDepositReader DepositReader { get; set; }
 		public IWithdrawReader WithdrawReader { get; set; }
 		public ITradeReader TradeReader { get; set; }
+		public ITransferReader TransferReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -224,6 +226,22 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult GetTradeHistory(DataTablesModel param)
 		{
 			return DataTable(TradeReader.GetTradeHistoryDataTable(param));
+		}
+
+		#endregion
+
+		#region Transfers
+
+		[HttpGet]
+		public ActionResult Transfers()
+		{
+			return PartialView("_TransferPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetTransfers(DataTablesModel param)
+		{
+			return DataTable(TransferReader.GetTransferDataTable(param));
 		}
 
 		#endregion

@@ -1,0 +1,67 @@
+﻿@model TradeSatoshi.Common.Transfer.CreateTransferModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title">Transfer @Model.Symbol</h3>
+			<small>Transfer @Model.Symbol to another TradeSatoshi user account.</small>
+		</div>
+		@using (Ajax.BeginForm("Create", "Withdraw", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.CurrencyId)
+			@Html.HiddenFor(m => m.Balance)
+			@Html.HiddenFor(m => m.Fee)
+			@Html.HiddenFor(m => m.Symbol)
+			<div class="row">
+				<div class="col-md-12 ">
+					@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-xs-12 text-center">
+							<span><strong>Balance: </strong><span id="balance" class="btn-link text-info">@Model.Balance.ToString("F8")</span> @Model.Symbol</span>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.Amount, new { @class = "form-label" })
+								@Html.TextBoxFor(m => m.Amount, new { @class = "form-control", min = 0.00000001m, max = 1000000000 })
+							</div>
+							<div class="col-md-6" style="margin-top: 20px">
+								<div><strong>Fee: </strong><span class="feeamount">@Model.Fee.ToString("F8")</span> @Model.Symbol</div>
+								<div><strong>Net: </strong><span><span id="netamount">0.00000000</span> @Model.Symbol</span></div>
+							</div>
+							<div class="col-xs-12">
+								@Html.ValidationMessageFor(m => m.Amount)
+							</div>
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.Recipient, new { @class = "form-label" })
+								@Html.TextBoxFor(m => m.Recipient, new { @class = "form-control" })
+							</div>
+							<div class="col-xs-12">
+								@Html.ValidationMessageFor(m => m.Recipient)
+							</div>
+						</div>
+
+						<div class="row">
+							@{Html.RenderPartial("_TwoFactorEntryPartial", Model);}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Transfer</button>
+				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/Scripts/Project/Transfer/transferCreate.js")

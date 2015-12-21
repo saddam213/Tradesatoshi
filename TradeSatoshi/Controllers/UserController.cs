@@ -10,6 +10,7 @@ using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Web.Helpers;
 using TradeSatoshi.Common.User;
+using TradeSatoshi.Common.Transfer;
 
 namespace TradeSatoshi.Web.Controllers
 {
@@ -23,6 +24,7 @@ namespace TradeSatoshi.Web.Controllers
 		public IWithdrawReader WithdrawReader { get; set; }
 		public IAddressWriter AddressWriter { get; set; }
 		public ITradeReader TradeReader { get; set; }
+		public ITransferReader TransferReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -192,6 +194,22 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult GetTradeHistory(DataTablesModel param)
 		{
 			return DataTable(TradeReader.GetUserTradeHistoryDataTable(param, User.Id()));
+		}
+
+		#endregion
+
+		#region Transfer
+
+		[HttpGet]
+		public ActionResult Transfers()
+		{
+			return PartialView("_TransferPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetTransfers(DataTablesModel param)
+		{
+			return DataTable(TransferReader.GetUserTransferDataTable(param, User.Id()));
 		}
 
 		#endregion

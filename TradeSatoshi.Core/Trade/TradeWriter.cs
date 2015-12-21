@@ -9,13 +9,13 @@ using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Core.Services;
 using TradeSatoshi.Base.Extensions;
+using TradeSatoshi.Common.Transfer;
 
 namespace TradeSatoshi.Core.Trade
 {
 	public class TradeWriter : ITradeWriter
 	{
 		public ITradeService TradeService { get; set; }
-		public INotificationService NotificationService { get; set; }
 
 		public async Task<IWriterResult<bool>> CreateTradeAsync(CreateTradeModel model)
 		{

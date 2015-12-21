@@ -17,6 +17,7 @@ using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Common.Logging;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Core.Logger;
+using TradeSatoshi.Common.Transfer;
 
 namespace TradeSatoshi.Core.Services
 {
@@ -54,7 +55,87 @@ namespace TradeSatoshi.Core.Services
 			{
 				return await CancelTrade(tradeItem as CancelTradeModel);
 			}
+			else if (tradeItem is CreateTransferModel)
+			{
+				return await CreateTransfer(tradeItem as CreateTransferModel);
+			}
 			return null;
+		}
+
+		private async Task<ITradeResponse> CreateTransfer(CreateTransferModel tradeItem)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				using (var transaction = context.Database.BeginTransaction())
+				{
+					try
+					{
+						var user = await context.Users.FindAsync(tradeItem.UserId);
+						if (user == null)
+						{
+							throw new Exception("User does not exist");
+						}
+
+						var toUser = await context.Users.FindAsync(tradeItem.ToUser);
+						if (toUser == null)
+						{
+							throw new Exception("Receiver does not exist");
+						}
+
+						var currency = await context.Currency.FindAsync(tradeItem.CurrencyId);
+						if (currency == null)
+						{
+							throw new Exception("Currency does not exist");
+						}
+
+						//Audit the user balance for currency
+						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
+						{
+							throw new Exception(string.Format("Failed to audit user balance, Currency: {0}", currency.Symbol));
+						}
+
+						var userBalance = await context.Balance.FirstOrDefaultAsync(b => b.UserId == tradeItem.UserId && b.CurrencyId == tradeItem.CurrencyId);
+						if (userBalance == null || userBalance.Avaliable < tradeItem.Amount.ExcludingFees(currency.TransferFee))
+						{
+							throw new Exception("Insufficient funds for transfer.");
+						}
+
+						var transfer = new TransferHistory
+						{
+							Amount = tradeItem.Amount,
+							Fee = tradeItem.Amount.GetFees(currency.TransferFee),
+							CurrencyId = currency.Id,
+							Timestamp = DateTime.UtcNow,
+							ToUserId = toUser.Id,
+							TransferType = TransferType.User,
+							UserId = user.Id,
+						};
+
+						context.TransferHistory.Add(transfer);
+						await context.SaveChangesAsync();
+
+						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
+						{
+							throw new Exception(string.Format("Failed to audit User balance, Currency: {0}", currency.Symbol));
+						}
+
+						if (!await AuditUserBalanceAsync(context, tradeItem.ToUser, currency.Id))
+						{
+							throw new Exception(string.Format("Failed to audit ToUser balance, Currency: {0}", currency.Symbol));
+						}
+
+						transaction.Commit();
+						return new CreateTransferResponse();
+					}
+					catch (Exception ex)
+					{
+						Log.Error("TradeService", "Rollback databaseTransaction");
+						transaction.Rollback();
+						Log.Exception("TradeService", ex);
+					}
+				}
+			}
+			return new CreateTransferResponse("Failed to create transfer.");
 		}
 
 		private async Task<ITradeResponse> CancelTrade(CancelTradeModel tradeItem)
@@ -199,7 +280,7 @@ namespace TradeSatoshi.Core.Services
 						transaction.Commit();
 
 						await notifications.SendNotificationsAsync();
-					
+
 						return response;
 					}
 					catch (Exception ex)

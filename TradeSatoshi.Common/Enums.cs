@@ -89,6 +89,8 @@ namespace TradeSatoshi.Common
 		Login = 0,
 		[Display(Name = "Withdraw")]
 		Withdraw = 1,
+		[Display(Name = "Transfer")]
+		Transfer = 2,
 	}
 
 	public enum TradeStatus

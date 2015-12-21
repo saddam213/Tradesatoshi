@@ -14,6 +14,7 @@ namespace TradeSatoshi.Common.Data.Entities
 		public bool IsEnabled { get; set; }
 		public bool IsTradeEnabled { get; set; }
 		public bool IsWithdrawEnabled { get; set; }
+		public bool IsTransferEnabled { get; set; }
 		
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }

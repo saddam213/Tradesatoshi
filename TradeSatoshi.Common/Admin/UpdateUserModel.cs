@@ -23,6 +23,7 @@ namespace TradeSatoshi.Common.Admin
 		public bool IsEnabled { get; set; }
 		public bool IsTradeEnabled { get; set; }
 		public bool IsWithdrawEnabled { get; set; }
+		public bool IsTransferEnabled { get; set; }
 
 
 		public string FirstName { get; set; }

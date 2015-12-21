@@ -1,0 +1,46 @@
+﻿<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Site Transfers</h3>
+			</div>
+			<div class="panel-body">
+				<table id="table-transfer" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Symbol</th>
+							<th>Amount</th>
+							<th>Fee</th>
+							<th>TransferType</th>
+							<th>Sender</th>
+							<th>Receiver</th>
+							<th>Timestamp</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$('#table-transfer').dataTable({
+		"order": [[1, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetTransfers")',
+		"sServerMethod": "POST"
+	});
+</script>

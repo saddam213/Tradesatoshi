@@ -72,6 +72,8 @@ namespace TradeSatoshi.Common.Data.Entities
 		public string Errors { get; set; }
 
 		public bool IsEnabled { get; set; }
+
+		public decimal TransferFee { get; set; }
 	}
 
 }

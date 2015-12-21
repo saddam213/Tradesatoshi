@@ -43,6 +43,7 @@ namespace TradeSatoshi.Core.Admin
 				user.IsEnabled = model.IsEnabled;
 				user.IsTradeEnabled = model.IsTradeEnabled;
 				user.IsWithdrawEnabled = model.IsWithdrawEnabled;
+				user.IsTransferEnabled = model.IsTransferEnabled;
 				user.Profile.FirstName = model.FirstName;
 				user.Profile.LastName = model.LastName;
 				user.Profile.Address = model.Address;
@@ -80,6 +81,7 @@ namespace TradeSatoshi.Core.Admin
 				user.IsEnabled = model.IsEnabled;
 				user.IsTradeEnabled = model.IsTradeEnabled;
 				user.IsWithdrawEnabled = model.IsWithdrawEnabled;
+				user.IsTransferEnabled = model.IsTransferEnabled;
 				user.Profile.FirstName = model.FirstName;
 				user.Profile.LastName = model.LastName;
 				user.Profile.Address = model.Address;
