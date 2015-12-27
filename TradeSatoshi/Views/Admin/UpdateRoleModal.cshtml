@@ -5,7 +5,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button class="close simplemodal-close" aria-hidden="true" type="button">×</button>
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
 			<h3 class="modal-title"><span class="symbol"></span>@Model.ButtonName</h3>
 			<small>@Model.Description</small>
 		</div>
@@ -34,7 +34,7 @@
 
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary">@Model.ButtonName</button>
-				<button type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
 			</div>
 		}
 	</div>

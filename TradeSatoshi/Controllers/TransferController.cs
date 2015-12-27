@@ -39,12 +39,13 @@ namespace TradeSatoshi.Web.Controllers
 				return ViewMessageModal(new ViewMessageModel(ViewMessageType.Danger, "Invalid Request", "An unknown error occured."));
 
 			model.TwoFactorComponentType = TwoFactorComponentType.Transfer;
-			model.TwoFactorType = await UserManager.GetUserTwoFactorTypeAsync(user.Id, TwoFactorComponentType.Withdraw);
+			model.TwoFactorType = await UserManager.GetUserTwoFactorTypeAsync(user.Id, TwoFactorComponentType.Transfer);
 
 			return View("CreateTransferModal", model);
 		}
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Create(CreateTransferModel model)
 		{
 			if (model.TwoFactorType == TwoFactorType.None)
@@ -84,6 +85,16 @@ namespace TradeSatoshi.Web.Controllers
 			}
 
 			return ViewMessageModal(new ViewMessageModel(ViewMessageType.Success, "Transfer Success", "Your transfer request has been sucessfully processed."));
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> UserSearch(string searchTerm)
+		{
+			var recipient = await UserManager.FindByNameAsync(searchTerm);
+			return recipient != null
+				? JsonSuccess("Sucessfully found user '{0}'", recipient.UserName)
+				: JsonError("UserName '{0}' not found.", searchTerm);
 		}
 	}
 }

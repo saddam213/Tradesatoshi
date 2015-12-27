@@ -126,4 +126,13 @@ namespace TradeSatoshi.Common
 		User = 0,
 		Vote = 1
 	}
+
+	public enum SupportTicketStatus
+	{
+		New = 0,
+		UserReply = 1,
+		AdminReply = 2,
+		AdminClosed = 3,
+		UserClosed = 4
+	}
 }

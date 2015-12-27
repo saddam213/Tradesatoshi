@@ -40,6 +40,16 @@ namespace TradeSatoshi.Web.Controllers
 			return Json(new { Success = false, Message = message });
 		}
 
+		protected JsonResult JsonSuccess(string message, params object[] formatParams)
+		{
+			return Json(new { Success = true, Message = string.Format(message, formatParams) });
+		}
+
+		protected JsonResult JsonError(string message, params object[] formatParams)
+		{
+			return Json(new { Success = false, Message = string.Format(message, formatParams) });
+		}
+
 		protected ViewResult ViewMessage(ViewMessageModel model)
 		{
 			return View("ViewMessage", model);
@@ -60,8 +70,11 @@ namespace TradeSatoshi.Web.Controllers
 			return View("Unauthorized");
 		}
 
-		protected CloseModalResult CloseModal()
+		protected CloseModalResult CloseModal(string redirectAction = null)
 		{
+			if (!string.IsNullOrEmpty(redirectAction))
+				return new CloseModalResult(redirectAction);
+
 			return new CloseModalResult();
 		}
 

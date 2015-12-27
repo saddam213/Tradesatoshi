@@ -1,4 +1,11 @@
-﻿(function () {
+﻿$.ajaxPrefilter(function (options, originalOptions) {
+	if (options.type.toUpperCase() == "POST") {
+		options.data = $.param($.extend(originalOptions.data, { __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() }));
+	}
+});
+$.ajaxSetup({ cache: false });
+
+(function () {
 	var notificationHub = $.connection.Notification;
 	notificationHub.client.SendNotification = function (notification) {
 		var icon = 'fa-info';
@@ -45,7 +52,7 @@ function getPartial(div, url, callback) {
 	});
 }
 
-function postJson(url, vars, callback) {
+function postJson(url, vars, callback, errorCallback) {
 	$.ajax({
 		url: url,
 		cache: false,
@@ -59,6 +66,9 @@ function postJson(url, vars, callback) {
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
+			if (errorCallback) {
+				errorCallback(jqXHR, textStatus, errorThrown);
+			}
 		}
 	});
 }

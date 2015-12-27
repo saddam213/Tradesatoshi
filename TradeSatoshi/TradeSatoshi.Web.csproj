@@ -222,6 +222,7 @@
     <Content Include="Content\fonts\webhostinghub-glyphs.eot" />
     <Content Include="Content\fonts\webhostinghub-glyphs.ttf" />
     <Content Include="Content\Images\Sorting icons.psd" />
+    <Content Include="App_Code\Helpers.cshtml" />
     <None Include="Properties\PublishProfiles\TradeSatoshi.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.js" />
@@ -281,6 +282,7 @@
     <Content Include="Views\Exchange\_TradePairPartial.cshtml" />
     <Content Include="Views\Exchange\_CreateTradePartial.cshtml" />
     <Content Include="Views\Admin\_TransferPartial.cshtml" />
+    <Content Include="Views\Admin\_SupportPartial.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <None Include="Views\Home\Voting.cshtml" />
     <Content Include="Web.config">
@@ -298,6 +300,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\TwoFactorController.cs" />
@@ -352,6 +355,18 @@
     <Content Include="Views\User\_TradeHistoryPartial.cshtml" />
     <Content Include="Views\Transfer\CreateTransferModal.cshtml" />
     <Content Include="Views\User\_TransferPartial.cshtml" />
+    <Content Include="Views\Support\Support.cshtml" />
+    <Content Include="Views\Support\Index.cshtml" />
+    <Content Include="Views\Support\ViewTicket.cshtml" />
+    <Content Include="Views\Support\ReplyTicketModal.cshtml" />
+    <Content Include="Views\Support\CreateTicketModal.cshtml" />
+    <Content Include="Views\Support\AdminViewTicket.cshtml" />
+    <Content Include="Views\Support\AdminReplyRequestModal.cshtml" />
+    <Content Include="Views\Support\AdminViewRequest.cshtml" />
+    <Content Include="Views\Support\AdminCreateCategoryModal.cshtml" />
+    <Content Include="Views\Support\AdminCreateFaqModal.cshtml" />
+    <Content Include="Views\Support\AdminUpdateCategoryModal.cshtml" />
+    <Content Include="Views\Support\AdminUpdateFaqModal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

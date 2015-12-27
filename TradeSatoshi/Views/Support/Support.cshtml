@@ -1,0 +1,77 @@
+﻿@model TradeSatoshi.Common.Support.SupportUserModel
+@{
+	ViewBag.Title = Html.Resource("Support");
+}
+
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Support Tickets</h2>
+		<hr class="seperator" />
+	</div>
+
+	<div class="col-md-5">
+		<div><strong>Fequently asked questions.</strong></div>
+		<span>Please check the FAQ below before creating a new ticket as you may find the answer you are looking for.</span>
+		<hr class="seperator" />
+		<div class="panel-group" id="faq-accordion" role="tablist" aria-multiselectable="true">
+			@foreach (var item in Model.SupportFaq)
+			{
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab" id="heading@(item.Id)">
+						<h4 class="panel-title">
+							<a role="button" data-toggle="collapse" data-parent="#faq-accordion" href="#collapse@(item.Id)" aria-expanded="true" aria-controls="collapse@(item.Id)">
+								<i class="fa fa-chevron-down pull-right"></i>
+								<span class="block">@(item.Order + 1). @item.Question</span>
+							</a>
+						</h4>
+					</div>
+					<div id="collapse@(item.Id)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(item.Id)">
+						<div class="panel-body">
+							<p style="white-space:pre-line">@item.Answer</p>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+	</div>
+
+	<div class="col-md-7">
+		<button  class="btn btn-primary" onclick="openModal('@Url.Action("CreateTicket")')">Create New Ticket</button>
+
+		<div style="max-height: 650px; overflow: auto; margin-top: 10px">
+			@if (!Model.Tickets.Any())
+			{
+				<i>You have no Support tickets :)</i>
+			}
+			else
+			{
+				foreach (var ticket in Model.Tickets)
+				{
+				<div class="panel panel-default" style="margin: 0px">
+					<div class="panel-body">
+						<strong class="panel-title block">[#@ticket.Id] @ticket.Title</strong>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-block" href="@Url.Action("ViewTicket", new { ticketId = ticket.Id })">View Ticket</a>
+						</div>
+						<small class="block">
+							@Helpers.GetSupportTicketStatus(ticket.Status)
+						</small>
+						<small class="block">
+							<strong>Category: </strong>
+							<span>@ticket.Category</span>
+						</small>
+						<small class="block">
+							<strong>Last Update: </strong>
+							<span>@ticket.LastUpdate</span>
+						</small>
+					</div>
+				</div>
+				}
+			}
+		</div>
+	</div>
+
+</div>
+

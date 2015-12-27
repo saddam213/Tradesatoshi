@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common.Admin;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Withdraw;
@@ -22,6 +24,7 @@ namespace TradeSatoshi.Web.Controllers
 		public IWithdrawReader WithdrawReader { get; set; }
 		public ITradeReader TradeReader { get; set; }
 		public ITransferReader TransferReader { get; set; }
+		public ISupportReader SupportReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -242,6 +245,40 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult GetTransfers(DataTablesModel param)
 		{
 			return DataTable(TransferReader.GetTransferDataTable(param));
+		}
+
+		#endregion
+
+		#region Support
+
+		[HttpGet]
+		public ActionResult Support()
+		{
+			return PartialView("_SupportPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetSupportTickets(DataTablesModel param)
+		{
+			return DataTable(SupportReader.AdminGetSupportTicketDataTable(param));
+		}
+
+		[HttpPost]
+		public ActionResult GetSupportRequests(DataTablesModel param)
+		{
+			return DataTable(SupportReader.AdminGetSupportRequestDataTable(param));
+		}
+
+		[HttpPost]
+		public ActionResult GetSupportCategory(DataTablesModel param)
+		{
+			return DataTable(SupportReader.AdminGetSupportCategoryDataTable(param));
+		}
+
+		[HttpPost]
+		public ActionResult GetSupportFaq(DataTablesModel param)
+		{
+			return DataTable(SupportReader.AdminGetSupportFaqDataTable(param));
 		}
 
 		#endregion

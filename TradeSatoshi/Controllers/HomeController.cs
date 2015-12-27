@@ -100,7 +100,7 @@ namespace TradeSatoshi.Web.Controllers
 		[HttpPost]
 		public ActionResult Test3()
 		{
-			return CloseModal();
+			return CloseModal(Url.Action("Voting", "Home"));
 		}
 
 		#region Coin Voting

@@ -40,11 +40,19 @@
 								@Html.ValidationMessageFor(m => m.Amount)
 							</div>
 							<div class="col-md-6">
-								@Html.LabelFor(m => m.Recipient, new { @class = "form-label" })
-								@Html.TextBoxFor(m => m.Recipient, new { @class = "form-control" })
+								<div id="Recipient-group" class="form-group" style="margin-bottom:0px">
+									@Html.LabelFor(m => m.Recipient, new { @class = "form-label" })
+									<div class="input-group">
+										@Html.TextBoxFor(m => m.Recipient, new { @class = "form-control" })
+										<span class="input-group-btn">
+											<button id="Recipient-search" class="btn btn-default" type="button" data-action="@Url.Action("UserSearch")"><i class="fa fa-search"></i></button>
+										</span>
+									</div>
+								</div>
 							</div>
 							<div class="col-xs-12">
 								@Html.ValidationMessageFor(m => m.Recipient)
+								<span id="Recipient-msg"></span>
 							</div>
 						</div>
 

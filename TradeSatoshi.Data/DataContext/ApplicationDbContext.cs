@@ -33,12 +33,16 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<Withdraw> Withdraw { get; set; }
 		public DbSet<Balance> Balance { get; set; }
 		public DbSet<Address> Address { get; set; }
-
 		public DbSet<TradePair> TradePair { get; set; }
 		public DbSet<Trade> Trade { get; set; }
 		public DbSet<TradeHistory> TradeHistory { get; set; }
-
 		public DbSet<TransferHistory> TransferHistory { get; set; }
+
+		public DbSet<SupportFaq> SupportFaq { get; set; }
+		public DbSet<SupportCategory> SupportCategory { get; set; }
+		public DbSet<SupportTicket> SupportTicket { get; set; }
+		public DbSet<SupportTicketReply> SupportTicketReply { get; set; }
+		public DbSet<SupportRequest> SupportRequest { get; set; }
 
 		public DbSet<Log> Log { get; set; }
 
@@ -69,7 +73,11 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User);
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.ToUser);
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.Currency);
-			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User).WithMany(b => b.Transfer).HasForeignKey(p => p.UserId);
+
+			modelBuilder.Entity<SupportTicket>().HasRequired(p => p.User).WithMany(b => b.SupportTickets).HasForeignKey(p => p.UserId);
+			modelBuilder.Entity<SupportTicket>().HasRequired(p => p.Category).WithMany(b => b.SupportTickets).HasForeignKey(p => p.CategoryId);
+			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.User);
+			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.Ticket).WithMany(b => b.Replies).HasForeignKey(p => p.TicketId);
 
 			base.OnModelCreating(modelBuilder);
 		}

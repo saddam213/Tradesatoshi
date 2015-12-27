@@ -1,0 +1,202 @@
+﻿<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Support Tickets</h3>
+			</div>
+			<div class="panel-body">
+				<table id="table-support" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>UserName</th>
+							<th>Title</th>
+							<th>Category</th>
+							<th>Status</th>
+							<th>LastUpdate</th>
+							<th>Created</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Support Requests</h3>
+			</div>
+			<div class="panel-body">
+				<table id="table-supportrequest" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Sender</th>
+							<th>Title</th>
+							<th>Replied</th>
+							<th>Created</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Support Categories</h3>
+			</div>
+			<div class="panel-body">
+				<button class="btn btn-info btn-xs" onclick="openModal('@Url.Action("AdminCreateCategory", "Support")')">Create Category</button>
+					<table id="table-category" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>IsEnabled</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Support FAQ</h3>
+			</div>
+			<div class="panel-body">
+				<button class="btn btn-info btn-xs" onclick="openModal('@Url.Action("AdminCreateFaq", "Support")')">Create FAQ</button>
+				<table id="table-faq" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Question</th>
+							<th>Answer</th>
+							<th>Order</th>
+							<th>IsEnabled</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$('#table-support').dataTable({
+		"order": [[0, "desc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetSupportTickets")',
+		"sServerMethod": "POST",
+		"columnDefs": [{
+			"targets": 7,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<a class='btn btn-info btn-xs' href='@Url.Action("AdminViewTicket", "Support")?ticketId=" + full[0] + "'>View Ticket</a>";
+			}
+		}]
+	});
+
+		$('#table-supportrequest').dataTable({
+			"order": [[0, "desc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"sPaginationType": "simple_numbers",
+			"pageLength": "15",
+			"sort": true,
+			"paging": true,
+			"info": true,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetSupportRequests")',
+			"sServerMethod": "POST",
+			"columnDefs": [{
+				"targets": 5,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					return "<a class='btn btn-info btn-xs' href='@Url.Action("AdminViewRequest", "Support")?requestId=" + full[0] + "'>View Request</a>";
+				}
+			}]
+		});
+
+	$('#table-faq').dataTable({
+		"order": [[3, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetSupportFaq")',
+			"sServerMethod": "POST",
+			"columnDefs": [{
+				"targets": 2, "visible": false },
+			{
+				"targets": 5,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					return "<button class='btn btn-info btn-xs' onclick='openModal(\"@Url.Action("AdminUpdateFaq", "Support")\", { faqId:" + full[0] + "})'>Edit</button>";
+				}
+			}]
+	});
+
+	$('#table-category').dataTable({
+		"order": [[1, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetSupportCategory")',
+			"sServerMethod": "POST",
+			"columnDefs": [{
+				"targets": 3,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					return "<button class='btn btn-info btn-xs' onclick='openModal(\"@Url.Action("AdminUpdateCategory", "Support")\", { categoryId:" + full[0] + "})'>Edit</button>";
+				}
+			}]
+		});
+</script>

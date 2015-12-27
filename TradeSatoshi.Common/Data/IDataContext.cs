@@ -5,7 +5,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common.Data.Entities;
 
 namespace TradeSatoshi.Common.Data
 {
@@ -16,7 +15,7 @@ namespace TradeSatoshi.Common.Data
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
 
-		DbSet<ApplicationUser> Users { get; set; }
+		DbSet<Entities.ApplicationUser> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
 		DbSet<Entities.UserLogon> UserLogons { get; set; }
 		DbSet<Entities.UserProfile> UserProfiles { get; set; }
@@ -36,6 +35,13 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entities.TradeHistory> TradeHistory { get; set; }
 
 		DbSet<Entities.TransferHistory> TransferHistory { get; set; }
+
+		DbSet<Entities.SupportFaq> SupportFaq { get; set; }
+		DbSet<Entities.SupportCategory> SupportCategory { get; set; }
+		DbSet<Entities.SupportRequest> SupportRequest { get; set; }
+		DbSet<Entities.SupportTicket> SupportTicket { get; set; }
+		DbSet<Entities.SupportTicketReply> SupportTicketReply { get; set; }
+
 
 		DbSet<Entities.Log> Log { get; set; }
 	}

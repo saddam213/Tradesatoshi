@@ -5,7 +5,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button class="close simplemodal-close" aria-hidden="true" type="button">×</button>
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
 			<h3 class="modal-title"><span class="symbol"></span>Update User</h3>
 			<small>Update user settings</small>
 		</div>
@@ -110,7 +110,7 @@
 
 			<div class="modal-footer">
 				<button type="submit" class="btn btn-primary">Save Changes</button>
-				<button type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
 			</div>
 		}
 	</div>

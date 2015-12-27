@@ -87,6 +87,8 @@
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\TradeService.cs" />
     <Compile Include="Services\WalletService.cs" />
+    <Compile Include="Support\SupportReader.cs" />
+    <Compile Include="Support\SupportWriter.cs" />
     <Compile Include="Trade\TradeReader.cs" />
     <Compile Include="Trade\TradeWriter.cs" />
     <Compile Include="Transfer\TransferWriter.cs" />

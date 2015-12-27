@@ -1,0 +1,26 @@
+﻿@helper GetSupportTicketStatus(TradeSatoshi.Common.SupportTicketStatus status)
+{
+	<span>
+		<strong>Status: </strong>
+		@switch (status)
+		{
+			case TradeSatoshi.Common.SupportTicketStatus.New:
+			<span class="text-info">New</span>
+				break;
+			case TradeSatoshi.Common.SupportTicketStatus.UserReply:
+			<span class="text-warning">Awaiting Admin</span>
+				break;
+			case TradeSatoshi.Common.SupportTicketStatus.AdminReply:
+			<span class="text-success">Admin Reply</span>
+				break;
+			case TradeSatoshi.Common.SupportTicketStatus.UserClosed:
+			<span class="text-danger">Closed by you</span>
+				break;
+			case TradeSatoshi.Common.SupportTicketStatus.AdminClosed:
+			<span class="text-danger">Closed by Admin</span>
+				break;
+			default:
+				break;
+		}
+	</span>
+}

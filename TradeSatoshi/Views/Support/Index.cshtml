@@ -1,0 +1,52 @@
+﻿@model TradeSatoshi.Common.Support.CreateSupportRequestModel
+@{
+	ViewBag.Title = Html.Resource("Support");
+}
+
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-8">
+		<section>
+			@using (Html.BeginForm("SupportRequest", "Support", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				<h4>@Html.Resource("Please enter the details below to send a support request.")</h4>
+				<hr />
+				<div class="row">
+					<div class="col-md-7 ">
+						@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+					</div>
+				</div>
+				<div class="form-group">
+					@Html.ResourceLabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Title)
+					</div>
+				</div>
+				<div class="form-group">
+					@Html.ResourceLabelFor(m => m.Sender, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.TextBoxFor(m => m.Sender, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Sender)
+					</div>
+				</div>
+				<div class="form-group">
+					@Html.ResourceLabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 12 })
+						@Html.ValidationMessageFor(m => m.Description)
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="@Html.Resource("Send Request")" class="btn btn-default" />
+					</div>
+				</div>
+			}
+		</section>
+	</div>
+</div>
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

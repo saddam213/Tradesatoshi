@@ -18,6 +18,9 @@
 						<div class="col-md-12">
 							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Common.TwoFactorComponentType.Withdraw });}
 						</div>
+							<div class="col-md-12">
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Common.TwoFactorComponentType.Transfer });}
+						</div>
 					</div>
 				</div>
 			</div>

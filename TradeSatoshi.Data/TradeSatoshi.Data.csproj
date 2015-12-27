@@ -121,6 +121,10 @@
     <Compile Include="Migrations\201512211116476_TransferEnable.Designer.cs">
       <DependentUpon>201512211116476_TransferEnable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512270104270_SupportTables.cs" />
+    <Compile Include="Migrations\201512270104270_SupportTables.Designer.cs">
+      <DependentUpon>201512270104270_SupportTables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -179,6 +183,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512211116476_TransferEnable.resx">
       <DependentUpon>201512211116476_TransferEnable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512270104270_SupportTables.resx">
+      <DependentUpon>201512270104270_SupportTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

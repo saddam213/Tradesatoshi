@@ -1,0 +1,54 @@
+﻿@model TradeSatoshi.Common.Support.CreateSupportTicketReplyModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>Support Reply</h3>
+			<small>Reply to a support ticket</small>
+		</div>
+		@using (Ajax.BeginForm(Model.IsAdmin ? "AdminReplyTicket" : "ReplyTicket", "Support", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.TicketId)
+			<div class="row">
+				<div class="col-md-12">
+					@Html.ValidationSummary(true, "", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="col-md-12">
+								@Html.LabelFor(m => m.Message, new { @class = "control-label" })
+								@Html.TextAreaFor(m => m.Message, new { @class = " form-control form-control-fullwidth", rows = 12 })
+								@Html.ValidationMessageFor(m => m.Message)
+							</div>
+						</div>
+						@if (Model.IsAdmin)
+						{
+							<div class="checkbox">
+								<label>
+									@Html.CheckBoxFor(model => model.IsPublic)
+									@Html.Resource("Reply is visible to user")
+								</label>
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

@@ -1,0 +1,78 @@
+﻿@model TradeSatoshi.Common.Support.SupportTicketModel
+@{
+	ViewBag.Title = Html.Resource("Support");
+}
+
+<h2>View Ticket</h2>
+<div class="row">
+	<div class="col-md-6">
+		<div style="font-size: x-large">#@Model.Id [@Model.Category] - @Model.Title</div>
+	</div>
+	<div class="col-md-6">
+		@if (Model.Status != TradeSatoshi.Common.SupportTicketStatus.AdminClosed || Model.Status != TradeSatoshi.Common.SupportTicketStatus.UserClosed)
+		{
+			using (Html.BeginForm("CloseTicket", "Support", new { ticketId = Model.Id }, FormMethod.Post))
+			{
+			@Html.AntiForgeryToken()
+			<button class="btn btn-danger pull-right">Close Ticket</button>
+			}
+			<button class="btn btn-primary pull-right" onclick="openModal('@Url.Action("ReplyTicket", new { ticketId = Model.Id })')">Add new reply</button>
+		}
+		<span style="font-size: x-large">
+			@Helpers.GetSupportTicketStatus(Model.Status)
+		</span>
+
+	</div>
+</div>
+<hr class="seperator" />
+<div class="row">
+	<div class="col-md-6">
+		<p style="white-space: pre-line">@Model.Description</p>
+		<br />
+		<div>
+			<span>
+				<strong>Created: </strong>
+				<span>@Model.Created</span>
+			</span>
+			<span class="pull-right">
+				<strong>Updated: </strong>
+				<span>@Model.LastUpdate</span>
+			</span>
+		</div>
+		<hr class="seperator" />
+	</div>
+	<div class="col-md-6" style="max-height: 650px; overflow: auto">
+		@if (!Model.Replies.Any())
+		{
+		<i>You have no new replies.</i>
+		}
+		else
+		{
+			foreach (var item in Model.Replies.OrderByDescending(x => x.Id))
+			{
+			<div class="panel panel-default" style="margin: 0px">
+				<div class="panel-body">
+					<div>
+						<span>
+							<strong>Sender: </strong>
+							@GetUserName(item)
+						</span>
+						<span class="pull-right">
+							<strong>Created: </strong>
+							<span>@DateTime.UtcNow</span>
+						</span>
+					</div>
+					<br />
+					<p style="white-space: pre-line">@item.Message</p>
+				</div>
+			</div>
+			}
+		}
+	</div>
+</div>
+
+@helper GetUserName(TradeSatoshi.Common.Support.SupportTicketReplyModel reply)
+{
+	<span class="@(reply.IsAdmin ? "text-danger" : "")">@reply.UserName</span>
+}
+

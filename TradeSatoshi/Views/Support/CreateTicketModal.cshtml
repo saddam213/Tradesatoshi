@@ -1,0 +1,58 @@
+﻿@model TradeSatoshi.Common.Support.CreateSupportTicketModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>Create Ticket</h3>
+			<small>Create a new support ticket</small>
+		</div>
+		@using (Ajax.BeginForm("CreateTicket", "Support", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			<div class="row">
+				<div class="col-md-12">
+					@Html.ValidationSummary(true, "", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							@Html.ResourceLabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+							<div class="col-md-10">
+								@Html.TextBoxFor(m => m.Title, new { @class = "form-control form-control-fullwidth" })
+								@Html.ValidationMessageFor(m => m.Title)
+							</div>
+						</div>
+						<div class="form-group">
+							@Html.ResourceLabelFor(m => m.CategoryId, new { @class = "col-md-2 control-label" })
+							<div class="col-md-10">
+								@Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories, "Id", "Name"), "-Please Select-", new { @class = "form-control form-control-fullwidth" })
+								@Html.ValidationMessageFor(m => m.CategoryId)
+							</div>
+						</div>
+						<div class="form-group">
+							@Html.ResourceLabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+							<div class="col-md-10">
+								@Html.TextAreaFor(m => m.Description, new { @class = "form-control form-control-fullwidth", rows = 10 })
+								@Html.ValidationMessageFor(m => m.Description)
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<input type="submit" value="@Html.Resource("Create Ticket")" class="btn btn-default" />
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

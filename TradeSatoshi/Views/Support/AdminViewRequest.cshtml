@@ -1,0 +1,20 @@
+﻿@model TradeSatoshi.Common.Support.SupportRequestModel
+@{
+	ViewBag.Title = Html.Resource("Admin Support");
+}
+
+<h2>Support request from @Model.Sender</h2>
+<hr class="seperator"/>
+<div class="row">
+	<div class="col-md-6">
+		<div style="font-size: x-large">@Model.Title</div>
+		<p>@Model.Description</p>
+		<br />
+		<small class="block"><strong>Created: </strong>@Model.Created</small>
+		<hr class="seperator"/>
+		<button class="btn btn-primary" onclick="openModal('@Url.Action("AdminReplyRequest", new { requestId = Model.Id, email = Model.Sender })')">Reply to @Model.Sender</button>
+	</div>
+</div>
+
+
+
