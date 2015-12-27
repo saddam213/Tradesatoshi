@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Services.EmailService;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Data.Entities
 {

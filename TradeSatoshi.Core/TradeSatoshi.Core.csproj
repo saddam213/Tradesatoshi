@@ -109,6 +109,10 @@
       <Project>{8b1ed66c-ff3d-40f3-8ec0-d5e95a9b5573}</Project>
       <Name>TradeSatoshi.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TradeSatoshi.Enums\TradeSatoshi.Enums.csproj">
+      <Project>{8b10b6a3-becb-4a11-9d5d-5a1e7ee096df}</Project>
+      <Name>TradeSatoshi.Enums</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

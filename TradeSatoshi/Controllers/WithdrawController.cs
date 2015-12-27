@@ -6,6 +6,7 @@ using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Data;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers

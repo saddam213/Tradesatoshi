@@ -9,6 +9,7 @@ using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.App_Start

@@ -1,4 +1,5 @@
 ﻿using TradeSatoshi.Common;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Web.Helpers
 {

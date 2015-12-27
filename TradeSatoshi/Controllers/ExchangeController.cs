@@ -5,6 +5,7 @@ using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Web.Helpers;
 using TradeSatoshi.Common.Exchange;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Web.Controllers
 {

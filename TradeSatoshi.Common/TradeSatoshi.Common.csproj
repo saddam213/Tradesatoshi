@@ -117,7 +117,6 @@
     <Compile Include="DataTables\IDataTablesModel.cs" />
     <Compile Include="Deposit\DepositModel.cs" />
     <Compile Include="Deposit\IDepositReader.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="Security\ITwoFactorEntry.cs" />
     <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Address\IAddressWriter.cs" />
@@ -202,7 +201,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\TradeSatoshi.Enums\TradeSatoshi.Enums.csproj">
+      <Project>{8b10b6a3-becb-4a11-9d5d-5a1e7ee096df}</Project>
+      <Name>TradeSatoshi.Enums</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

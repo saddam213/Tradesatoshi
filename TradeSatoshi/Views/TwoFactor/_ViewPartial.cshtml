@@ -1,9 +1,9 @@
 ﻿@model TradeSatoshi.Common.TwoFactor.ViewTwoFactorModel
 @{
-	var action = Model.Type == TradeSatoshi.Common.TwoFactorType.None
+	var action = Model.Type == TradeSatoshi.Enums.TwoFactorType.None
 		? "Create"
 		: "Remove";
-	var button = Model.Type == TradeSatoshi.Common.TwoFactorType.None
+	var button = Model.Type == TradeSatoshi.Enums.TwoFactorType.None
 		? Html.Resource("Create TwoFactor")
 		: Html.Resource("Remove TwoFactor");
 }

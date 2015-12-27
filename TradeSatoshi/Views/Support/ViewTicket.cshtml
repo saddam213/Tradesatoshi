@@ -9,7 +9,7 @@
 		<div style="font-size: x-large">#@Model.Id [@Model.Category] - @Model.Title</div>
 	</div>
 	<div class="col-md-6">
-		@if (Model.Status != TradeSatoshi.Common.SupportTicketStatus.AdminClosed || Model.Status != TradeSatoshi.Common.SupportTicketStatus.UserClosed)
+		@if (Model.Status != TradeSatoshi.Enums.SupportTicketStatus.AdminClosed || Model.Status != TradeSatoshi.Enums.SupportTicketStatus.UserClosed)
 		{
 			using (Html.BeginForm("CloseTicket", "Support", new { ticketId = Model.Id }, FormMethod.Post))
 			{

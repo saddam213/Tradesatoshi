@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Validation;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Trade
 {

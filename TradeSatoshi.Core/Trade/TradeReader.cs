@@ -12,6 +12,7 @@ using TradeSatoshi.Core.Services;
 using TradeSatoshi.Core.Heplers;
 using System.Data.Entity;
 using TradeSatoshi.Common;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Trade
 {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Data.Entities
 {

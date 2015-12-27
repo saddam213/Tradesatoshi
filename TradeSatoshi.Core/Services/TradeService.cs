@@ -18,6 +18,7 @@ using TradeSatoshi.Common.Logging;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Core.Logger;
 using TradeSatoshi.Common.Transfer;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Services
 {

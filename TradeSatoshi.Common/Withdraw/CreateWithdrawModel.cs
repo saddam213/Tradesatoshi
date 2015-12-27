@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Withdraw
 {

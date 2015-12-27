@@ -8,6 +8,7 @@ using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Validation;
 using System.Data.Entity;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Support
 {
@@ -23,7 +24,7 @@ namespace TradeSatoshi.Core.Support
 				{
 					CategoryId = model.CategoryId,
 					Description = model.Description,
-					Status = Common.SupportTicketStatus.New,
+					Status = SupportTicketStatus.New,
 					Title = model.Title,
 					UserId = userId,
 					LastUpdate = DateTime.UtcNow,
@@ -54,7 +55,7 @@ namespace TradeSatoshi.Core.Support
 					Created = DateTime.UtcNow
 				};
 				ticket.Replies.Add(reply);
-				ticket.Status = Common.SupportTicketStatus.UserReply;
+				ticket.Status = SupportTicketStatus.UserReply;
 				ticket.LastUpdate = DateTime.UtcNow;
 				await context.SaveChangesAsync();
 
@@ -117,7 +118,7 @@ namespace TradeSatoshi.Core.Support
 					Created = DateTime.UtcNow
 				};
 				ticket.Replies.Add(reply);
-				ticket.Status = Common.SupportTicketStatus.AdminReply;
+				ticket.Status = SupportTicketStatus.AdminReply;
 				ticket.LastUpdate = DateTime.UtcNow;
 				await context.SaveChangesAsync();
 

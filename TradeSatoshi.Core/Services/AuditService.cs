@@ -8,6 +8,7 @@ using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using System.Data.Entity;
 using System.Diagnostics;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Services
 {

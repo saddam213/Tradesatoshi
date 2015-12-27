@@ -1,7 +1,7 @@
 ﻿@model TradeSatoshi.Common.Security.ITwoFactorEntry
 @using TradeSatoshi.Web.Helpers
 
-@if (Model.TwoFactorType != TradeSatoshi.Common.TwoFactorType.None)
+@if (Model.TwoFactorType != TradeSatoshi.Enums.TwoFactorType.None)
 {
 	<div class="row">
 		<div class="col-xs-12">
@@ -20,7 +20,7 @@
 				@Html.PasswordFor(m => m.Data, new { @class = "form-control" })
 				@Html.ValidationMessageFor(model => model.Data)
 			</div>
-			@if (Model.TwoFactorType == TradeSatoshi.Common.TwoFactorType.EmailCode)
+			@if (Model.TwoFactorType == TradeSatoshi.Enums.TwoFactorType.EmailCode)
 			{
 				<div class="col-xs-6">
 					<button id="tfa-email-submit" class="btn btn-primary" type="button" style="margin-top: 24px">Send Email Code</button>

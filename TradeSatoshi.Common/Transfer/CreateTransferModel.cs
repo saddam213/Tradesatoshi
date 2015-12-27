@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Transfer
 {

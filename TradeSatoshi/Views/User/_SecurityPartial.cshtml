@@ -13,13 +13,13 @@
 
 					<div class="col-md-6 col-lg-4">
 						<div class="col-md-12">
-							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Common.TwoFactorComponentType.Login });}
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Login });}
 						</div>
 						<div class="col-md-12">
-							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Common.TwoFactorComponentType.Withdraw });}
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Withdraw });}
 						</div>
 							<div class="col-md-12">
-							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Common.TwoFactorComponentType.Transfer });}
+							@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Transfer });}
 						</div>
 					</div>
 				</div>

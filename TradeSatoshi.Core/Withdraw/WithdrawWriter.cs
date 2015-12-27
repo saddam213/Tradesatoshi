@@ -18,6 +18,7 @@ using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Withdraw
 {

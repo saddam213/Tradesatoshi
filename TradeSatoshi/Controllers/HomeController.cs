@@ -9,6 +9,7 @@ using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers

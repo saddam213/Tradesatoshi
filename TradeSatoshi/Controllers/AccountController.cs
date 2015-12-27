@@ -14,6 +14,7 @@ using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Data;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers

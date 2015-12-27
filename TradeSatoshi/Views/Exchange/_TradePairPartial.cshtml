@@ -11,7 +11,7 @@
 					</span>
 				</h3>
 			</div>
-			<div class="panel-body" id="createTrade-@TradeSatoshi.Common.TradeType.Buy">
+			<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Buy">
 				@Html.Partial("_CreateTradePartial", Model.BuyModel)
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 					</span>
 				</h3>
 			</div>
-			<div class="panel-body" id="createTrade-@TradeSatoshi.Common.TradeType.Sell">
+			<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Sell">
 				@Html.Partial("_CreateTradePartial", Model.SellModel)
 			</div>
 		</div>
@@ -39,7 +39,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">Buy Orders</h3>
 			</div>
-			<div id="buyOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Common.TradeType.Buy">
+			<div id="buyOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Buy">
 				<table id="table-buyOrders-@Model.TradePairId" class="table" >
 					<thead>
 						<tr>
@@ -60,7 +60,7 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">Sell Orders</h3>
 			</div>
-			<div id="sellOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Common.TradeType.Sell">
+			<div id="sellOrders-host" class="panel-body" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Sell">
 				<table id="table-sellOrders-@Model.TradePairId" class="table" >
 					<thead>
 						<tr>

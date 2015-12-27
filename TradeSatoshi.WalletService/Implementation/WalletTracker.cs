@@ -16,6 +16,7 @@ using TradeSatoshi.Base.Logging;
 using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.WalletService.Implementation
 {

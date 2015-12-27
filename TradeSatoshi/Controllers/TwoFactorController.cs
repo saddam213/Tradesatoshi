@@ -9,6 +9,7 @@ using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.TwoFactor;
 using TradeSatoshi.Common.Validation;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
