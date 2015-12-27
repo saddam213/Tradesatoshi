@@ -15,34 +15,34 @@ namespace TradeSatoshi.Common.Data
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
 
-		DbSet<Entities.ApplicationUser> Users { get; set; }
+		DbSet<Entity.ApplicationUser> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
-		DbSet<Entities.UserLogon> UserLogons { get; set; }
-		DbSet<Entities.UserProfile> UserProfiles { get; set; }
-		DbSet<Entities.UserSettings> UserSettings { get; set; }
-		DbSet<Entities.EmailTemplate> EmailTemplates { get; set; }
-		DbSet<Entities.UserTwoFactor> UserTwoFactor { get; set; }
-		DbSet<Entities.UserRole> UserRoles { get; set; }
+		DbSet<Entity.UserLogon> UserLogons { get; set; }
+		DbSet<Entity.UserProfile> UserProfiles { get; set; }
+		DbSet<Entity.UserSettings> UserSettings { get; set; }
+		DbSet<Entity.EmailTemplate> EmailTemplates { get; set; }
+		DbSet<Entity.UserTwoFactor> UserTwoFactor { get; set; }
+		DbSet<Entity.UserRole> UserRoles { get; set; }
 
-		DbSet<Entities.Currency> Currency { get; set; }
-		DbSet<Entities.Deposit> Deposit { get; set; }
-		DbSet<Entities.Withdraw> Withdraw { get; set; }
-		DbSet<Entities.Balance> Balance { get; set; }
-		DbSet<Entities.Address> Address { get; set; }
+		DbSet<Entity.Currency> Currency { get; set; }
+		DbSet<Entity.Deposit> Deposit { get; set; }
+		DbSet<Entity.Withdraw> Withdraw { get; set; }
+		DbSet<Entity.Balance> Balance { get; set; }
+		DbSet<Entity.Address> Address { get; set; }
 
-		DbSet<Entities.TradePair> TradePair { get; set; }
-		DbSet<Entities.Trade> Trade { get; set; }
-		DbSet<Entities.TradeHistory> TradeHistory { get; set; }
+		DbSet<Entity.TradePair> TradePair { get; set; }
+		DbSet<Entity.Trade> Trade { get; set; }
+		DbSet<Entity.TradeHistory> TradeHistory { get; set; }
 
-		DbSet<Entities.TransferHistory> TransferHistory { get; set; }
+		DbSet<Entity.TransferHistory> TransferHistory { get; set; }
 
-		DbSet<Entities.SupportFaq> SupportFaq { get; set; }
-		DbSet<Entities.SupportCategory> SupportCategory { get; set; }
-		DbSet<Entities.SupportRequest> SupportRequest { get; set; }
-		DbSet<Entities.SupportTicket> SupportTicket { get; set; }
-		DbSet<Entities.SupportTicketReply> SupportTicketReply { get; set; }
+		DbSet<Entity.SupportFaq> SupportFaq { get; set; }
+		DbSet<Entity.SupportCategory> SupportCategory { get; set; }
+		DbSet<Entity.SupportRequest> SupportRequest { get; set; }
+		DbSet<Entity.SupportTicket> SupportTicket { get; set; }
+		DbSet<Entity.SupportTicketReply> SupportTicketReply { get; set; }
 
 
-		DbSet<Entities.Log> Log { get; set; }
+		DbSet<Entity.Log> Log { get; set; }
 	}
 }

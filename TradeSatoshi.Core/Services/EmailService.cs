@@ -13,8 +13,8 @@ using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
 using System.Net;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Services
 {

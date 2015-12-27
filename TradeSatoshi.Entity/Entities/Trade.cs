@@ -5,12 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common;
 using TradeSatoshi.Enums;
 
-namespace TradeSatoshi.Common.Data.Entities
+namespace TradeSatoshi.Entity
 {
-	public class TradeHistory
+	public class Trade
 	{
 		[Key]
 		public int Id { get; set; }
@@ -18,14 +17,9 @@ namespace TradeSatoshi.Common.Data.Entities
 		[MaxLength(128)]
 		public string UserId { get; set; }
 
-		[MaxLength(128)]
-		public string ToUserId { get; set; }
-
 		public int TradePairId { get; set; }
 
-		public int CurrencyId { get; set; }
-
-		public TradeType TradeHistoryType { get; set; }
+		public TradeType TradeType { get; set; }
 
 		public decimal Amount { get; set; }
 
@@ -35,19 +29,17 @@ namespace TradeSatoshi.Common.Data.Entities
 
 		public DateTime Timestamp { get; set; }
 
+		public TradeStatus Status { get; set; }
+
+		public decimal Remaining { get; set; }
+
 		public bool IsApi { get; set; }
 
 
 		[ForeignKey("UserId")]
 		public virtual ApplicationUser User { get; set; }
 
-		[ForeignKey("ToUserId")]
-		public virtual ApplicationUser ToUser { get; set; }
-
 		[ForeignKey("TradePairId")]
 		public virtual TradePair TradePair { get; set; }
-
-		[ForeignKey("CurrencyId")]
-		public virtual Currency Currency { get; set; }
 	}
 }

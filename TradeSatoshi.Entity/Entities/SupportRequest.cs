@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TradeSatoshi.Common.Data.Entities
+namespace TradeSatoshi.Entity
 {
 	public class SupportRequest
 	{

@@ -40,7 +40,7 @@ namespace TradeSatoshi.Core.Withdraw
 				if (balance == null || model.Amount > balance.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
 
-				var newWithdraw = new TradeSatoshi.Common.Data.Entities.Withdraw
+				var newWithdraw = new TradeSatoshi.Entity.Withdraw
 				{
 					IsApi = false,
 					TimeStamp = DateTime.UtcNow,
@@ -74,7 +74,7 @@ namespace TradeSatoshi.Core.Withdraw
 				if (balance == null || model.Amount > balance.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
 
-				var newWithdraw = new TradeSatoshi.Common.Data.Entities.Withdraw
+				var newWithdraw = new TradeSatoshi.Entity.Withdraw
 				{
 					IsApi = false,
 					TimeStamp = DateTime.UtcNow,

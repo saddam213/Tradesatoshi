@@ -52,7 +52,7 @@ namespace TradeSatoshi.Core.Logger
 		{
 			using (var dataContext = DataContextFactory.CreateContext())
 			{
-				dataContext.Log.Add(new Common.Data.Entities.Log
+				dataContext.Log.Add(new Entity.Log
 				{
 					Component = component,
 					Message = message,

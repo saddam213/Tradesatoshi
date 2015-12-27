@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using TradeSatoshi.Base.Queueing;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Trade;
 using System.Data.Entity;
-using Tables = TradeSatoshi.Common.Data.Entities;
+using Tables = TradeSatoshi.Entity;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Common.Services.NotificationService;
@@ -19,6 +18,7 @@ using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Core.Logger;
 using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Services
 {

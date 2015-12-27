@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.TwoFactor;
 using TradeSatoshi.Common.Validation;
+using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 

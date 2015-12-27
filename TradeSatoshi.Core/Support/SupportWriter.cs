@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Validation;
 using System.Data.Entity;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Support
 {

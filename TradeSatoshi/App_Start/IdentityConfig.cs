@@ -6,9 +6,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TradeSatoshi.Common;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 

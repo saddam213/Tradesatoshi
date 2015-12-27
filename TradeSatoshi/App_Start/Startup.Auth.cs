@@ -6,8 +6,8 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using System;
 using System.Web;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Data.DataContext;
+using TradeSatoshi.Entity;
 using TradeSatoshi.Web.App_Start;
 using TradeSatoshi.Web.Hubs;
 

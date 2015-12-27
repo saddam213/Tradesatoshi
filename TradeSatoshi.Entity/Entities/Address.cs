@@ -6,31 +6,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TradeSatoshi.Common.Data.Entities
+namespace TradeSatoshi.Entity
 {
-	public class SupportTicketReply
+	public class Address
 	{
 		[Key]
 		public int Id { get; set; }
 
-		public int TicketId { get; set; }
-
 		[MaxLength(128)]
 		public string UserId { get; set; }
+		
+		public int CurrencyId { get; set; }
 
-		[MaxLength(4000)]
-		public string Message { get; set; }
+		[MaxLength(256)]
+		public string AddressHash { get; set; }
+		
+		[MaxLength(512)]
+		public string PrivateKey { get; set; }
+	
+		public bool IsActive { get; set; }
 
-		public bool IsPublic { get; set; }
-
-		public bool IsAdmin { get; set; }
-
-		public DateTime Created { get; set; }
+		[ForeignKey("CurrencyId")]
+		public virtual Currency Currency { get; set; }
 
 		[ForeignKey("UserId")]
 		public virtual ApplicationUser User { get; set; }
-
-		[ForeignKey("TicketId")]
-		public virtual SupportTicket Ticket { get; set; }
 	}
 }

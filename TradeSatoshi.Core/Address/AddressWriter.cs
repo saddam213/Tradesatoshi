@@ -37,7 +37,7 @@ namespace TradeSatoshi.Core.Address
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currency.Name);
 
-				var addressEntity = new TradeSatoshi.Common.Data.Entities.Address
+				var addressEntity = new TradeSatoshi.Entity.Address
 				{
 					AddressHash = newAddress.Address,
 					PrivateKey = EncryptionService.EncryptString(newAddress.PrivateKey),
@@ -70,7 +70,7 @@ namespace TradeSatoshi.Core.Address
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currency.Name);
 
-				var addressEntity = new TradeSatoshi.Common.Data.Entities.Address
+				var addressEntity = new Entity.Address
 				{
 					AddressHash = newAddress.Address,
 					PrivateKey = newAddress.PrivateKey,

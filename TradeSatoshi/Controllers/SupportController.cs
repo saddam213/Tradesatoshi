@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Balance;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Services.EmailService;

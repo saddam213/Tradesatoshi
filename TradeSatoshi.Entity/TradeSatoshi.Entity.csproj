@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8BD8A9B8-8043-4A01-AA7B-E5E41F170811}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E7FEF592-620D-4E0C-8D6C-11B383B9B2C7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TradeSatoshi.WalletService</RootNamespace>
-    <AssemblyName>TradeSatoshi.WalletService</AssemblyName>
+    <RootNamespace>TradeSatoshi.Entity</RootNamespace>
+    <AssemblyName>TradeSatoshi.Entity</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,13 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cryptopia.WalletAPI">
-      <HintPath>..\..\Cryptopia\WalletAPI\bin\Debug\Cryptopia.WalletAPI.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -54,66 +46,49 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WindowsServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Implementation\WalletTracker.cs" />
-    <Compile Include="WalletService.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="WalletService.Designer.cs">
-      <DependentUpon>WalletService.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Entities\Address.cs" />
+    <Compile Include="Entities\ApplicationUser.cs" />
+    <Compile Include="Entities\Balance.cs" />
+    <Compile Include="Entities\Currency.cs" />
+    <Compile Include="Entities\Deposit.cs" />
+    <Compile Include="Entities\EmailTemplate.cs" />
+    <Compile Include="Entities\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\SupportCategory.cs" />
+    <Compile Include="Entities\SupportFaq.cs" />
+    <Compile Include="Entities\SupportRequest.cs" />
+    <Compile Include="Entities\SupportTicket.cs" />
+    <Compile Include="Entities\SupportTicketReply.cs" />
+    <Compile Include="Entities\Trade.cs" />
+    <Compile Include="Entities\TradeHistory.cs" />
+    <Compile Include="Entities\TradePair.cs" />
+    <Compile Include="Entities\TransferHistory.cs" />
+    <Compile Include="Entities\UserLogon.cs" />
+    <Compile Include="Entities\UserProfile.cs" />
+    <Compile Include="Entities\UserRole.cs" />
+    <Compile Include="Entities\UserSettings.cs" />
+    <Compile Include="Entities\UserTwoFactor.cs" />
+    <Compile Include="Entities\Withdraw.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="Install.bat" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TradeSatoshi.Base\TradeSatoshi.Base.csproj">
-      <Project>{0a671687-cbbf-4246-8b2d-db6c373b9f51}</Project>
-      <Name>TradeSatoshi.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TradeSatoshi.Common\TradeSatoshi.Common.csproj">
-      <Project>{a2747885-1df5-46a7-8037-4b9aadeb642f}</Project>
-      <Name>TradeSatoshi.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TradeSatoshi.Core\TradeSatoshi.Core.csproj">
-      <Project>{4bfa8c93-d3e3-4d93-9b2a-e2cba4223895}</Project>
-      <Name>TradeSatoshi.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TradeSatoshi.Data\TradeSatoshi.Data.csproj">
-      <Project>{8b1ed66c-ff3d-40f3-8ec0-d5e95a9b5573}</Project>
-      <Name>TradeSatoshi.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TradeSatoshi.Entity\TradeSatoshi.Entity.csproj">
-      <Project>{e7fef592-620d-4e0c-8d6c-11b383b9b2c7}</Project>
-      <Name>TradeSatoshi.Entity</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TradeSatoshi.Enums\TradeSatoshi.Enums.csproj">
       <Project>{8b10b6a3-becb-4a11-9d5d-5a1e7ee096df}</Project>
       <Name>TradeSatoshi.Enums</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

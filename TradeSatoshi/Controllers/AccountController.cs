@@ -9,11 +9,11 @@ using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Account;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Data;
+using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
 

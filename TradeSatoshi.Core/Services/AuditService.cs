@@ -111,7 +111,7 @@ namespace TradeSatoshi.Core.Services
 				var balance = await context.Balance.Include(b => b.Currency).FirstOrDefaultAsync(x => x.CurrencyId == currencyId && x.UserId == userId);
 				if (balance == null)
 				{
-					balance = context.Balance.Add(new Common.Data.Entities.Balance
+					balance = context.Balance.Add(new Entity.Balance
 					{
 						UserId = userId,
 						CurrencyId = currencyId,
@@ -135,12 +135,12 @@ namespace TradeSatoshi.Core.Services
 		}
 
 
-		public AuditTradePairResult AuditUserTradePair(IDataContext context, string userId, Common.Data.Entities.TradePair tradepair)
+		public AuditTradePairResult AuditUserTradePair(IDataContext context, string userId, Entity.TradePair tradepair)
 		{
 			return Task.Run(() => AuditUserTradePairAsync(context, userId, tradepair)).Result;
 		}
 
-		public async Task<AuditTradePairResult> AuditUserTradePairAsync(IDataContext context, string userId, Common.Data.Entities.TradePair tradepair)
+		public async Task<AuditTradePairResult> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
 		{
 			var result = await AuditUserCurrencyAsync(context, userId, tradepair.CurrencyId1);
 			var baseResult = await AuditUserCurrencyAsync(context, userId, tradepair.CurrencyId2);

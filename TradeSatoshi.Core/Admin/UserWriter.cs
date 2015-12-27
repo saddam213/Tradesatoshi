@@ -13,7 +13,7 @@ using TradeSatoshi.Common.Security;
 using System.Data.Entity.Validation;
 using System.Security.Permissions;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Admin
 {

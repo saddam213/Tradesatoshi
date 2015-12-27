@@ -3,10 +3,10 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Data;
+using TradeSatoshi.Entity;
 using TradeSatoshi.Web.ActionResults;
 using TradeSatoshi.Web.App_Start;
 

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Data.Entities;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Data.DataContext
 {

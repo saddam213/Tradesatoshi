@@ -13,10 +13,10 @@ using System.Data.Entity;
 using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Core.Services;
 using TradeSatoshi.Base.Logging;
-using TradeSatoshi.Common.Data.Entities;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.WalletService.Implementation
 {

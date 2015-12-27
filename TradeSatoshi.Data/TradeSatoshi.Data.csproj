@@ -137,6 +137,10 @@
       <Project>{a2747885-1df5-46a7-8037-4b9aadeb642f}</Project>
       <Name>TradeSatoshi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TradeSatoshi.Entity\TradeSatoshi.Entity.csproj">
+      <Project>{e7fef592-620d-4e0c-8d6c-11b383b9b2c7}</Project>
+      <Name>TradeSatoshi.Entity</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201511231052055_Initial.resx">

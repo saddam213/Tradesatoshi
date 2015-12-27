@@ -79,28 +79,6 @@
     <Compile Include="Admin\LogonModel.cs" />
     <Compile Include="Admin\UserRoleModel.cs" />
     <Compile Include="Balance\UserBalancesModel.cs" />
-    <Compile Include="Data\Entities\Address.cs" />
-    <Compile Include="Data\Entities\ApplicationUser.cs" />
-    <Compile Include="Data\Entities\Balance.cs" />
-    <Compile Include="Data\Entities\Currency.cs" />
-    <Compile Include="Data\Entities\Deposit.cs" />
-    <Compile Include="Data\Entities\EmailTemplate.cs" />
-    <Compile Include="Data\Entities\Log.cs" />
-    <Compile Include="Data\Entities\SupportCategory.cs" />
-    <Compile Include="Data\Entities\SupportFaq.cs" />
-    <Compile Include="Data\Entities\SupportRequest.cs" />
-    <Compile Include="Data\Entities\SupportTicket.cs" />
-    <Compile Include="Data\Entities\SupportTicketReply.cs" />
-    <Compile Include="Data\Entities\Trade.cs" />
-    <Compile Include="Data\Entities\TradeHistory.cs" />
-    <Compile Include="Data\Entities\TradePair.cs" />
-    <Compile Include="Data\Entities\TransferHistory.cs" />
-    <Compile Include="Data\Entities\UserLogon.cs" />
-    <Compile Include="Data\Entities\UserProfile.cs" />
-    <Compile Include="Data\Entities\UserRole.cs" />
-    <Compile Include="Data\Entities\UserSettings.cs" />
-    <Compile Include="Data\Entities\UserTwoFactor.cs" />
-    <Compile Include="Data\Entities\Withdraw.cs" />
     <Compile Include="Data\IDataContext.cs" />
     <Compile Include="Data\IDataContextFactory.cs" />
     <Compile Include="Logging\ILogger.cs" />
@@ -202,6 +180,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TradeSatoshi.Entity\TradeSatoshi.Entity.csproj">
+      <Project>{e7fef592-620d-4e0c-8d6c-11b383b9b2c7}</Project>
+      <Name>TradeSatoshi.Entity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TradeSatoshi.Enums\TradeSatoshi.Enums.csproj">
       <Project>{8b10b6a3-becb-4a11-9d5d-5a1e7ee096df}</Project>
       <Name>TradeSatoshi.Enums</Name>

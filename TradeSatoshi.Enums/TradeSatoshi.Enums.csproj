@@ -56,7 +56,6 @@
     <Compile Include="CancelTradeType.cs" />
     <Compile Include="TransferType.cs" />
     <Compile Include="SupportTicketStatus.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
