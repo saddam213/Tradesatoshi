@@ -126,8 +126,8 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult GetAddress(int currencyId)
 		{
 			var result = AddressWriter.GenerateAddress(User.Id(), currencyId);
-			if (result.HasError)
-				return JsonError(result.Error);
+			if (!ModelState.IsWriterResultValid(result))
+				return JsonError(result.FirstError);
 			
 			return JsonSuccess(result.Message);
 		}

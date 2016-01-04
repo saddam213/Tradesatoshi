@@ -70,11 +70,8 @@ namespace TradeSatoshi.Web.Controllers
 			var twoFactortoken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawConfirm, user.Id);
 			model.ConfirmationToken = twoFactortoken;
 			var result = await WithdrawWriter.CreateWithdrawAsync(user.Id, model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateWithdrawModal", model);
-			}
 
 			int withdrawId = result.Data;
 
@@ -95,10 +92,9 @@ namespace TradeSatoshi.Web.Controllers
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Security Token", string.Format("Security token for withdraw #{0} is invalid or has expired, You can send a new one from the withdrawal section in your account page.", withdrawid)));
 
 			var result = await WithdrawWriter.ConfirmWithdrawAsync(user.Id, withdrawid);
-			if(result.HasError)
-			{
+			if (!ModelState.IsWriterResultValid(result))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Withdrawal Confirm Failed", string.Format("Failed to confirm withdraw #{0}.", withdrawid)));
-			}
+
 
 			return ViewMessage(new ViewMessageModel(ViewMessageType.Success, "Withdrawal Confirmed", string.Format("Successfully confirmed withdraw #{0}.", withdrawid)));
 		}
@@ -114,10 +110,8 @@ namespace TradeSatoshi.Web.Controllers
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Security Token", string.Format("Security token for withdraw #{0} is invalid or has expired, You can send a new one from the withdrawal section in your account page.", withdrawid)));
 
 			var result = await WithdrawWriter.CancelWithdrawAsync(user.Id, withdrawid);
-			if (result.HasError)
-			{
+			if (!ModelState.IsWriterResultValid(result))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Withdrawal Cancel Failed", string.Format("Failed to cancel withdraw #{0}.", withdrawid)));
-			}
 
 			return ViewMessage(new ViewMessageModel(ViewMessageType.Success, "Withdrawal Canceled", string.Format("Successfully canceled withdraw #{0}.", withdrawid)));
 		}

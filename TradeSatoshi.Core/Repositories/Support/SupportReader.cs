@@ -23,7 +23,7 @@ namespace TradeSatoshi.Core.Support
 				.Include(s => s.Replies)
 				.Include(s => s.User)
 				.Include(s => s.Category)
-				.FirstOrDefaultAsync(x => x.Id == ticketId && x.UserId == userId);
+				.FirstOrDefaultAsync(x => x.Id == ticketId && (x.UserId == userId || isadmin));
 				if (ticket == null)
 					return null;
 

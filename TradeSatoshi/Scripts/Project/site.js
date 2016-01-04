@@ -81,12 +81,12 @@ function openModal(url, data, callback) {
 		cache: false,
 		success: function (data, textStatus, jqXHR) {
 			$.modal(data, {
-				onClose: function (dialog) {
+				onClose: function (dialog, result) {
 					dialog.container.fadeOut(50, function () {
 						dialog.overlay.fadeOut(200, function () {
 							$.modal.close();
 							if ($.isFunction(callback)) {
-								callback(data);
+								callback(result);
 							}
 						});
 					});

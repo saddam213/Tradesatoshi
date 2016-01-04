@@ -80,12 +80,15 @@
     <Compile Include="Repositories\Deposit\DepositReader.cs" />
     <Compile Include="Helpers\DataTableHelpers.cs" />
     <Compile Include="Repositories\Logger\Logger.cs" />
+    <Compile Include="Repositories\Vote\VoteReader.cs" />
+    <Compile Include="Repositories\Vote\VoteWriter.cs" />
     <Compile Include="Services\AuditService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EncryptionService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\TradeService.cs" />
+    <Compile Include="Services\VoteService.cs" />
     <Compile Include="Services\WalletService.cs" />
     <Compile Include="Repositories\Support\SupportReader.cs" />
     <Compile Include="Repositories\Support\SupportWriter.cs" />

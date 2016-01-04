@@ -12,7 +12,7 @@
 		<br />
 		<small class="block"><strong>Created: </strong>@Model.Created</small>
 		<hr class="seperator"/>
-		<button class="btn btn-primary" onclick="openModal('@Url.Action("AdminReplyRequest", new { requestId = Model.Id, email = Model.Sender })')">Reply to @Model.Sender</button>
+		<button class="btn btn-primary" onclick="@Url.ActionModal("AdminReplyRequest", new { requestId = Model.Id, email = Model.Sender })">Reply to @Model.Sender</button>
 	</div>
 </div>
 

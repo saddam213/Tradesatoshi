@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="Data.cs" />
     <Compile Include="DataContext\DataContextFactory.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="DataContext\DataContext.cs" />
     <Compile Include="Migrations\201511231052055_Initial.cs" />
@@ -125,6 +124,22 @@
     <Compile Include="Migrations\201512270104270_SupportTables.Designer.cs">
       <DependentUpon>201512270104270_SupportTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201512280147597_VoteScaffold.cs" />
+    <Compile Include="Migrations\201512280147597_VoteScaffold.Designer.cs">
+      <DependentUpon>201512280147597_VoteScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601030957007_VoteItemDetails.cs" />
+    <Compile Include="Migrations\201601030957007_VoteItemDetails.Designer.cs">
+      <DependentUpon>201601030957007_VoteItemDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601040110099_VoteSettings.cs" />
+    <Compile Include="Migrations\201601040110099_VoteSettings.Designer.cs">
+      <DependentUpon>201601040110099_VoteSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601040427513_VoteSetting.cs" />
+    <Compile Include="Migrations\201601040427513_VoteSetting.Designer.cs">
+      <DependentUpon>201601040427513_VoteSetting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -140,6 +155,10 @@
     <ProjectReference Include="..\TradeSatoshi.Entity\TradeSatoshi.Entity.csproj">
       <Project>{e7fef592-620d-4e0c-8d6c-11b383b9b2c7}</Project>
       <Name>TradeSatoshi.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TradeSatoshi.Enums\TradeSatoshi.Enums.csproj">
+      <Project>{8b10b6a3-becb-4a11-9d5d-5a1e7ee096df}</Project>
+      <Name>TradeSatoshi.Enums</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +209,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201512270104270_SupportTables.resx">
       <DependentUpon>201512270104270_SupportTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512280147597_VoteScaffold.resx">
+      <DependentUpon>201512280147597_VoteScaffold.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601030957007_VoteItemDetails.resx">
+      <DependentUpon>201601030957007_VoteItemDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601040110099_VoteSettings.resx">
+      <DependentUpon>201601040110099_VoteSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601040427513_VoteSetting.resx">
+      <DependentUpon>201601040427513_VoteSetting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

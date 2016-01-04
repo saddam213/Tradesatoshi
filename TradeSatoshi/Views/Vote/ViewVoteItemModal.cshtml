@@ -1,0 +1,60 @@
+﻿@model TradeSatoshi.Common.Vote.ViewVoteItemModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title">View @Model.Name</h3>
+			<small>View details for @Model.Name.</small>
+		</div>
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.DisplayFor(m => m.Name)
+					</div>
+				</div>
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.Symbol, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.DisplayFor(m => m.Symbol)
+					</div>
+				</div>
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.AlgoType, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Html.DisplayFor(m => m.AlgoType)
+					</div>
+				</div>
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.Website, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Helpers.ExternalLink(Model.Website, Model.Website)
+					</div>
+				</div>
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.Source, new { @class = "col-md-2 control-label" })
+					<div class="col-md-10">
+						@Helpers.ExternalLink(Model.Source, Model.Source)
+					</div>
+				</div>
+				<div class="col-md-12">
+					@Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+					<div class="col-md-12">
+						<p class="paragraph">@Model.Description</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button onclick="$.modal.close({test:100});" type="button" class="btn btn-primary">Close</button>
+		</div>
+	</div>
+</div>
+
+
+

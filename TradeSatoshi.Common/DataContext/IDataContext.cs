@@ -14,6 +14,10 @@ namespace TradeSatoshi.Common.Data
 		Database Database { get; }
 		int SaveChanges();
 		Task<int> SaveChangesAsync();
+		List<string> SaveChangesWithLogging();
+		Task<List<string>> SaveChangesWithLoggingAsync();
+		void LogError(string type, string message);
+		Task LogErrorAsync(string type, string message);
 
 		DbSet<Entity.ApplicationUser> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
@@ -42,6 +46,10 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entity.SupportTicket> SupportTicket { get; set; }
 		DbSet<Entity.SupportTicketReply> SupportTicketReply { get; set; }
 
+	
+		DbSet<Entity.Vote> Vote { get; set; }
+		DbSet<Entity.VoteItem> VoteItem { get; set; }
+		DbSet<Entity.VoteSettings> VoteSetting { get; set; }
 
 		DbSet<Entity.Log> Log { get; set; }
 	}

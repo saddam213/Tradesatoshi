@@ -98,8 +98,8 @@
 	/*
 	 * Close the modal dialog.
 	 */
-	$.modal.close = function () {
-		$.modal.impl.close();
+	$.modal.close = function (data) {
+		$.modal.impl.close(data);
 	};
 
 	/*
@@ -663,9 +663,8 @@
 		 *     function was internal or external. If it was external, the
 		 *     onClose callback will be ignored
 		 */
-		close: function () {
+		close: function (data) {
 			var s = this;
-
 			// prevent close when dialog does not exist
 			if (!s.d.data) {
 				return false;
@@ -679,7 +678,7 @@
 				s.occb = true;
 
 				// execute the onClose callback
-				s.o.onClose.apply(s, [s.d]);
+				s.o.onClose.apply(s, [s.d, data]);
 			}
 			else {
 				// if the data came from the DOM, put it back
@@ -710,6 +709,7 @@
 
 				// reset the dialog object
 				s.d = {};
+				return data;
 			}
 		}
 	};

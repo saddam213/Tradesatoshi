@@ -8,27 +8,44 @@ namespace TradeSatoshi.Common.Validation
 {
 	public interface IWriterResult<T>
 	{
-		string Error { get; set; }
+		List<string> Errors { get; set; }
 		string Message { get; set; }
-		bool HasError { get; }
+		bool HasErrors { get; }
 		bool HasMessage { get; }
+		string FlattenErrors { get; }
+		string FirstError { get; }
 		T Data { get; set; }
 	}
 
 	public class WriterResult<T> : IWriterResult<T>
 	{
-		public string Error { get; set; }
+		public WriterResult()
+		{
+			Errors = new List<string>();
+		}
+
+		public List<string> Errors { get; set; }
 		public string Message { get; set; }
 		public T Data { get; set; }
 
-		public bool HasError
+		public bool HasErrors
 		{
-			get { return !string.IsNullOrEmpty(Error); }
+			get { return Errors.Any(); }
 		}
-	
+
 		public bool HasMessage
 		{
 			get { return !string.IsNullOrEmpty(Message); }
+		}
+
+		public string FlattenErrors
+		{
+			get { return string.Join(Environment.NewLine, Errors); }
+		}
+
+		public string FirstError
+		{
+			get { return Errors.FirstOrDefault(); }
 		}
 
 
@@ -39,7 +56,7 @@ namespace TradeSatoshi.Common.Validation
 
 		public static WriterResult<T> ErrorResult(string error = null)
 		{
-			return new WriterResult<T> { Error = error };
+			return new WriterResult<T> { Errors = new List<string> { error } };
 		}
 
 		public static WriterResult<T> SuccessResult(string message, params object[] param)
@@ -49,7 +66,12 @@ namespace TradeSatoshi.Common.Validation
 
 		public static WriterResult<T> ErrorResult(string error, params object[] param)
 		{
-			return new WriterResult<T> { Error = string.Format(error, param) };
+			return new WriterResult<T> { Errors = new List<string> { string.Format(error, param) } };
+		}
+
+		public static WriterResult<T> ErrorResult(List<string> errors)
+		{
+			return new WriterResult<T> { Errors = errors };
 		}
 
 		public static WriterResult<T> SuccessResult(T data)
@@ -60,6 +82,44 @@ namespace TradeSatoshi.Common.Validation
 		public static WriterResult<T> SuccessResult(T data, string message)
 		{
 			return new WriterResult<T> { Data = data, Message = message };
+		}
+
+	
+
+		public static WriterResult<T> ContextResult(List<string> contextResults)
+		{
+			if (contextResults.Any())
+			{
+				return WriterResult<T>.ErrorResult(contextResults);
+			}
+			return WriterResult<T>.SuccessResult();
+		}
+
+		public static WriterResult<T> ContextResult(List<string> contextResults, string successMessage, params object[] formatParams)
+		{
+			if (contextResults.Any())
+			{
+				return WriterResult<T>.ErrorResult(contextResults);
+			}
+			return WriterResult<T>.SuccessResult(successMessage, formatParams);
+		}
+
+		public static WriterResult<T> ContextResult(T data, List<string> contextResults)
+		{
+			if (contextResults.Any())
+			{
+				return WriterResult<T>.ErrorResult(contextResults);
+			}
+			return WriterResult<T>.SuccessResult(data);
+		}
+
+		public static WriterResult<T> ContextResult(T data, List<string> contextResults, string successMessage)
+		{
+			if (contextResults.Any())
+			{
+				return WriterResult<T>.ErrorResult(contextResults);
+			}
+			return WriterResult<T>.SuccessResult(data, successMessage);
 		}
 	}
 }

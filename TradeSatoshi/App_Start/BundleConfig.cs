@@ -11,7 +11,7 @@ namespace TradeSatoshi.Web
 					"~/Scripts/jquery.unobtrusive-ajax.js",
 					"~/Scripts/jquery.signalR-2.2.0.js",
 					"~/Scripts/Project/notifications.js",
-					"~/Scripts/jquery.simplemodal.1.4.4.js",
+					"~/Scripts/Project/simplemodal.js",
 					"~/Scripts/jquery.dataTables.js"));
 				
 			bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

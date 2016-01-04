@@ -9,6 +9,7 @@ using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Transfer;
+using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Web.Helpers;
@@ -25,6 +26,7 @@ namespace TradeSatoshi.Web.Controllers
 		public ITradeReader TradeReader { get; set; }
 		public ITransferReader TransferReader { get; set; }
 		public ISupportReader SupportReader { get; set; }
+		public IVoteReader VoteReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -74,11 +76,8 @@ namespace TradeSatoshi.Web.Controllers
 				return View("UpdateUserModal", model);
 
 			var result = await UserWriter.UpdateUserAsync(model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("UpdateUserModal", model);
-			}
 
 			return CloseModal();
 		}
@@ -124,9 +123,8 @@ namespace TradeSatoshi.Web.Controllers
 				return View("UpdateRoleModal", model);
 
 			var result = await UserWriter.AddUserRoleAsync(model);
-			if (result.HasError)
+			if (!ModelState.IsWriterResultValid(result))
 			{
-				ModelState.AddModelError("", result.Error);
 				return View("UpdateRoleModal", new UpdateUserRoleModel
 				{
 					UserName = model.UserName,
@@ -158,9 +156,8 @@ namespace TradeSatoshi.Web.Controllers
 				return View("UpdateRoleModal", model);
 
 			var result = await UserWriter.RemoveUserRoleAsync(model);
-			if (result.HasError)
+			if (!ModelState.IsWriterResultValid(result))
 			{
-				ModelState.AddModelError("", result.Error);
 				return View("UpdateRoleModal", new UpdateUserRoleModel
 				{
 					UserName = model.UserName,
@@ -299,6 +296,12 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult Voting()
 		{
 			return PartialView("_VotingPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetVoteItems(DataTablesModel param)
+		{
+			return DataTable(VoteReader.AdminGetVoteDataTable(param));
 		}
 
 		#endregion

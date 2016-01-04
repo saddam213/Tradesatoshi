@@ -1,0 +1,44 @@
+﻿@model TradeSatoshi.Common.Vote.UpdateVoteSettingsModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title">Update Vote Settings</h3>
+			<small>Update the sites vote settings.</small>
+		</div>
+		@using (Ajax.BeginForm("AdminUpdateVoteSettings", "Vote", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			<div class="row">
+				<div class="col-md-12 ">
+					@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Next, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Next, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Next)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Period, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Period, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Period)
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Update</button>
+				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+

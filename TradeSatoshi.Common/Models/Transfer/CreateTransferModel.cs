@@ -16,6 +16,7 @@ namespace TradeSatoshi.Common.Transfer
 		public string Symbol { get; set; }
 		public decimal Fee { get; set; }
 		public decimal Balance { get; set; }
+		public TransferType TransferType { get; set; }
 
 		[Required]
 		[MaxLength(128)]

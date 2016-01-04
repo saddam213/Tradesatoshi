@@ -77,12 +77,10 @@ namespace TradeSatoshi.Web.Controllers
 
 			model.UserId = user.Id;
 			model.ToUser = recipient.Id;
+			model.TransferType = TransferType.User;
 			var result = await TransferWriter.CreateTransferAsync(model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateTransferModal", model);
-			}
 
 			return ViewMessageModal(new ViewMessageModel(ViewMessageType.Success, "Transfer Success", "Your transfer request has been sucessfully processed."));
 		}

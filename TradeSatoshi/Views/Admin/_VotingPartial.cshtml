@@ -5,8 +5,57 @@
 				<h3 class="panel-title">Voting</h3>
 			</div>
 			<div class="panel-body">
-				Panel content
+				<button class="btn btn-primary" onclick="@Url.ActionModal("AdminUpdateVoteSettings", "Vote")">Update Vote Settings</button>
+				<table id="table-votes" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Status</th>
+							<th>Created By</th>
+							<th>Created</th>
+							<th>VoteCountFree</th>
+							<th>VoteCountPaid</th>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script>
+	$('#table-votes').dataTable({
+		"order": [[2, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetVoteItems")',
+		"sServerMethod": "POST",
+		"columnDefs": [{
+			"targets": 7,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<button class='btn btn-info btn-xs' onclick='updateVoteItem(\"" + full[0] + "\");'>Update</button>";
+			}
+		}]
+	});
+
+	function updateVoteItem(voteItemId) {
+		openModal('@Url.Action("AdminUpdateVoteItem", "Vote")', { voteItemId: voteItemId }, function (data) {
+			$("#table-votes").dataTable().fnDraw();
+		});
+	}
+</script>

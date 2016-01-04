@@ -24,3 +24,8 @@
 		}
 	</span>
 }
+
+@helper ExternalLink(string title, string link)
+{
+	<a href="@link" target="_blank">@title</a><small style="font-size: xx-small; padding-left: 10px;cursor:pointer" title="This is an external link use at your own risk"><i>[Caution External Link]</i></small>
+}

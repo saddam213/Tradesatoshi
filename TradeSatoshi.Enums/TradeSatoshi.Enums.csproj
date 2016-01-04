@@ -40,7 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgoType.cs" />
+    <Compile Include="TwoFactorTokenType.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="CurrencyStatus.cs" />
+    <Compile Include="VoteItemStatus.cs" />
+    <Compile Include="VoteStatus.cs" />
+    <Compile Include="VoteType.cs" />
     <Compile Include="WithdrawFeeType.cs" />
     <Compile Include="WithdrawType.cs" />
     <Compile Include="WithdrawStatus.cs" />

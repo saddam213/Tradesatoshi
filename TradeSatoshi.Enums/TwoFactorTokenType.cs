@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TradeSatoshi.Data
+namespace TradeSatoshi.Enums
 {
-	public enum TwoFactorTokenType : byte
+	public enum TwoFactorTokenType
 	{
-		EmailConfirm = 1,
+		EmailConfirm = 0,
 		LockAccount = 1,
 		WithdrawConfirm = 2,
 		WithdrawCancel = 3,

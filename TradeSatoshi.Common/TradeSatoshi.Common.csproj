@@ -120,7 +120,14 @@
     <Compile Include="Models\TwoFactor\ViewTwoFactorModel.cs" />
     <Compile Include="Models\User\UserProfileModel.cs" />
     <Compile Include="Models\User\UserSecurityModel.cs" />
-    <Compile Include="Models\Vote\VotingModel.cs" />
+    <Compile Include="Models\Vote\AdminVoteItemModel.cs" />
+    <Compile Include="Models\Vote\CreateFreeVoteModel.cs" />
+    <Compile Include="Models\Vote\UpdateVoteSettingsModel.cs" />
+    <Compile Include="Models\Vote\ViewVoteItemModel.cs" />
+    <Compile Include="Models\Vote\VoteModel.cs" />
+    <Compile Include="Models\Vote\VoteRejectedModel.cs" />
+    <Compile Include="Models\Vote\VotePendingModel.cs" />
+    <Compile Include="Models\Vote\VoteItemModel.cs" />
     <Compile Include="Models\Withdraw\CreateWithdrawModel.cs" />
     <Compile Include="Models\Withdraw\WithdrawModel.cs" />
     <Compile Include="Repositories\Admin\IUserWriter.cs" />
@@ -128,6 +135,11 @@
     <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="DataContext\IDataContextFactory.cs" />
     <Compile Include="Repositories\Logging\ILogger.cs" />
+    <Compile Include="Models\Vote\CreateVoteItemModel.cs" />
+    <Compile Include="Models\Vote\CreatePaidVoteModel.cs" />
+    <Compile Include="Repositories\Vote\IVoteWriter.cs" />
+    <Compile Include="Repositories\Vote\IVoteReader.cs" />
+    <Compile Include="Models\Vote\UpdateVoteItemModel.cs" />
     <Compile Include="Services\AuditService\AuditCurrencyResult.cs" />
     <Compile Include="Services\AuditService\AuditTradePairResult.cs" />
     <Compile Include="Services\AuditService\IAuditService.cs" />
@@ -160,6 +172,7 @@
     <Compile Include="Services\NotificationService\Notification\Notification.cs" />
     <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Services\TradeService\ITradeService.cs" />
+    <Compile Include="Services\VoteService\IVoteService.cs" />
     <Compile Include="Services\WalletService\AddressModel.cs" />
     <Compile Include="Services\WalletService\IWalletService.cs" />
     <Compile Include="Repositories\Support\ISupportWriter.cs" />

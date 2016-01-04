@@ -44,6 +44,10 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<SupportTicketReply> SupportTicketReply { get; set; }
 		public DbSet<SupportRequest> SupportRequest { get; set; }
 
+		public DbSet<Vote> Vote { get; set; }
+		public DbSet<VoteItem> VoteItem { get; set; }
+		public DbSet<VoteSettings> VoteSetting { get; set; }
+
 		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -78,6 +82,12 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<SupportTicket>().HasRequired(p => p.Category).WithMany(b => b.SupportTickets).HasForeignKey(p => p.CategoryId);
 			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.User);
 			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.Ticket).WithMany(b => b.Replies).HasForeignKey(p => p.TicketId);
+
+			modelBuilder.Entity<VoteItem>().HasRequired(p => p.User);
+			modelBuilder.Entity<Vote>().HasRequired(p => p.User);
+			modelBuilder.Entity<Vote>().HasRequired(p => p.VoteItem).WithMany(v => v.Votes).HasForeignKey(v => v.VoteItemId);
+			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastFree);
+			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastPaid);
 
 			base.OnModelCreating(modelBuilder);
 		}

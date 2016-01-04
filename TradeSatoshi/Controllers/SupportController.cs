@@ -44,16 +44,11 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> SupportRequest(CreateSupportRequestModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("Index", model);
-			}
 
 			var result = await SupportWriter.CreateSupportRequest(model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("Index", model);
-			}
 
 			return ViewMessage(ViewMessageModel.Success("Success", "Successfully submitted support request, a support person will be in touch shortly."));
 		}
@@ -103,18 +98,13 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> CreateTicket(CreateSupportTicketModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("CreateTicketModal", model);
-			}
 
 			var result = await SupportWriter.CreateSupportTicket(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateTicketModal", model);
-			}
 
-			return CloseModal(Url.Action("ViewTicket", new { ticketId = result.Data }));
+			return CloseModalRedirect(Url.Action("ViewTicket", new { ticketId = result.Data }));
 		}
 
 		[HttpGet]
@@ -130,18 +120,13 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> ReplyTicket(CreateSupportTicketReplyModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View(model);
-			}
 
 			var result = await SupportWriter.CreateSupportTicketReply(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View(model);
-			}
 
-			return CloseModal(Url.Action("ViewTicket", new { ticketId = model.TicketId }));
+			return CloseModalRedirect(Url.Action("ViewTicket", new { ticketId = model.TicketId }));
 		}
 
 		[HttpPost]
@@ -154,9 +139,9 @@ namespace TradeSatoshi.Web.Controllers
 				TicketId = ticketId,
 				Status = SupportTicketStatus.UserClosed
 			});
-			if (result.HasError)
+			if (result.HasErrors)
 			{
-				return ViewMessage(ViewMessageModel.Error("Error", result.Error));
+				return ViewMessage(ViewMessageModel.Error("Error", result.FirstError));
 			}
 
 			return RedirectToAction("ViewTicket", new { ticketId = ticketId });
@@ -177,6 +162,17 @@ namespace TradeSatoshi.Web.Controllers
 			return View(model);
 		}
 
+		[HttpGet]
+		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		public async Task<ActionResult> AdminViewRequest(int requestId)
+		{
+			var model = await SupportReader.AdminGetSupportRequest(requestId);
+			if (model == null)
+				return ViewMessage(ViewMessageModel.Warning("Not Found", "Support request #{0} not found.", requestId));
+
+			return View(model);
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AuthorizeSecurityRole(SecurityRole.Administrator)]
@@ -187,9 +183,9 @@ namespace TradeSatoshi.Web.Controllers
 				TicketId = ticketId,
 				Status = status
 			});
-			if (result.HasError)
+			if (result.HasErrors)
 			{
-				return ViewMessage(ViewMessageModel.Error("Error", result.Error));
+				return ViewMessage(ViewMessageModel.Error("Error", result.FlattenErrors));
 			}
 
 			return RedirectToAction("AdminViewTicket", new { ticketId = ticketId });
@@ -208,18 +204,13 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminReplyTicket(CreateSupportTicketReplyModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("ReplyTicketModal", model);
-			}
 
 			var result = await SupportWriter.AdminCreateSupportTicketReply(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("ReplyTicketModal", model);
-			}
 
-			return CloseModal(Url.Action("AdminViewTicket", new { ticketId = model.TicketId }));
+			return CloseModalRedirect(Url.Action("AdminViewTicket", new { ticketId = model.TicketId }));
 		}
 
 		[HttpGet]
@@ -228,17 +219,6 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			var result = await SupportWriter.AdminUpdateSupportReplyStatus(User.Id(), model);
 			return RedirectToAction("AdminViewTicket", new { ticketId = model.TicketId });
-		}
-
-		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
-		public async Task<ActionResult> AdminViewRequest(int requestId)
-		{
-			var model = await SupportReader.AdminGetSupportRequest(requestId);
-			if (model == null)
-				return ViewMessage(ViewMessageModel.Warning("Not Found", "Support request #{0} not found.", requestId));
-
-			return View(model);
 		}
 
 		[HttpGet]
@@ -254,21 +234,14 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminReplyRequest(CreateSupportRequestReplyModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("AdminReplyRequestModal", model);
-			}
 
 			var result = await SupportWriter.AdminCreateSupportRequestReply(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("AdminReplyRequestModal", model);
-			}
 
-			return CloseModal(Url.Action("Index", "Admin") + "#Support");
+			return CloseModalRedirect(Url.Action("Index", "Admin") + "#Support");
 		}
-
-
 
 		[HttpGet]
 		[AuthorizeSecurityRole(SecurityRole.Administrator)]
@@ -283,18 +256,13 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminCreateCategory(CreateSupportCategoryModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("AdminCreateCategoryModal", model);
-			}
 
 			var result = await SupportWriter.AdminCreateSupportCategory(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("AdminCreateCategoryModal", model);
-			}
 
-			return CloseModal(Url.Action("Index", "Admin"));
+			return CloseModalRedirect(Url.Action("Index", "Admin"));
 		}
 
 		[HttpGet]
@@ -319,24 +287,14 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminUpdateCategory(UpdateSupportCategoryModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("AdminUpdateCategoryModal", model);
-			}
 
 			var result = await SupportWriter.AdminUpdateSupportCategory(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("AdminUpdateCategoryModal", model);
-			}
 
-			return CloseModal(Url.Action("Index", "Admin"));
+			return CloseModalRedirect(Url.Action("Index", "Admin"));
 		}
-
-
-
-
-
 
 		[HttpGet]
 		[AuthorizeSecurityRole(SecurityRole.Administrator)]
@@ -351,20 +309,14 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminCreateFaq(CreateSupportFaqModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("AdminCreateFaqModal", model);
-			}
 
 			var result = await SupportWriter.AdminCreateSupportFaq(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("AdminCreateFaqModal", model);
-			}
 
-			return CloseModal(Url.Action("Index", "Admin"));
+			return CloseModalRedirect(Url.Action("Index", "Admin"));
 		}
-
 
 		[HttpGet]
 		[AuthorizeSecurityRole(SecurityRole.Administrator)]
@@ -390,19 +342,15 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> AdminUpdateFaq(UpdateSupportFaqModel model)
 		{
 			if (!ModelState.IsValid)
-			{
 				return View("AdminUpdateFaqModal", model);
-			}
 
 			var result = await SupportWriter.AdminUpdateSupportFaq(User.Id(), model);
-			if (result.HasError)
-			{
-				ModelState.AddModelError("", result.Error);
+			if (!ModelState.IsWriterResultValid(result))
 				return View("AdminUpdateFaqModal", model);
-			}
 
-			return CloseModal(Url.Action("Index", "Admin"));
+			return CloseModalRedirect(Url.Action("Index", "Admin"));
 		}
+
 		#endregion
 	}
 }

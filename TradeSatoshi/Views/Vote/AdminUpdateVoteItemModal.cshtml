@@ -1,0 +1,75 @@
+﻿@model TradeSatoshi.Common.Vote.UpdateVoteItemModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title">Update @Model.Name VoteItem</h3>
+			<small>Update the details or status of a vote item.</small>
+		</div>
+		@using (Ajax.BeginForm("AdminUpdateVoteItem", "Vote", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Id)
+			<div class="row">
+				<div class="col-md-12 ">
+					@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Name, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Name)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Symbol, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Symbol, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Symbol)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.AlgoType, new { @class = "control-label" })
+						@Html.EnumDropDownListFor(m => m.AlgoType, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.AlgoType)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Status, new { @class = "control-label" })
+						@Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Status)
+					</div>
+					<div class="col-md-12">
+						@Html.LabelFor(m => m.Website, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Website, new { @class = "form-control form-control-fullwidth" })
+						@Html.ValidationMessageFor(m => m.Website)
+					</div>
+					<div class="col-md-12">
+						@Html.LabelFor(m => m.Source, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Source, new { @class = "form-control form-control-fullwidth" })
+						@Html.ValidationMessageFor(m => m.Source)
+					</div>
+					<div class="col-md-12">
+						@Html.LabelFor(m => m.Description, new { @class = "control-label" })
+						@Html.TextAreaFor(m => m.Description, new { @class = "form-control form-control-fullwidth", rows = 3 })
+						@Html.ValidationMessageFor(m => m.Description)
+					</div>
+					<div class="col-md-12">
+						@Html.LabelFor(m => m.Note, new { @class = "control-label" })
+						@Html.TextAreaFor(m => m.Note, new { @class = "form-control form-control-fullwidth", rows = 3 })
+						@Html.ValidationMessageFor(m => m.Note)
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Update</button>
+				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+

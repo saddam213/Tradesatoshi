@@ -57,7 +57,9 @@ namespace TradeSatoshi.Web.Controllers
 				return PartialView("_CreateTradePartial", model);
 
 			model.UserId = User.Id();
-			await TradeWriter.CreateTradeAsync(model);
+			var result = await TradeWriter.CreateTradeAsync(model);
+			if (!ModelState.IsWriterResultValid(result))
+				return PartialView("_CreateTradePartial", model);
 
 			return PartialView("_CreateTradePartial", model);
 		}

@@ -7,6 +7,7 @@ using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Data;
 using TradeSatoshi.Entity;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.ActionResults;
 using TradeSatoshi.Web.App_Start;
 
@@ -70,12 +71,34 @@ namespace TradeSatoshi.Web.Controllers
 			return View("Unauthorized");
 		}
 
-		protected CloseModalResult CloseModal(string redirectAction = null)
+		protected ViewResult UnauthorizedModal()
 		{
-			if (!string.IsNullOrEmpty(redirectAction))
-				return new CloseModalResult(redirectAction);
+			return View("UnauthorizedModal");
+		}
 
+		protected CloseModalResult CloseModal()
+		{
 			return new CloseModalResult();
+		}
+
+		protected CloseModalJsonResult CloseModalJson(object data)
+		{
+			return new CloseModalJsonResult(data);
+		}
+
+		protected CloseModalRedirectResult CloseModalRedirect(string redirectAction)
+		{
+			return new CloseModalRedirectResult(redirectAction);
+		}
+
+		protected CloseModalSuccessResult CloseModalSuccess(string message = null)
+		{
+			return new CloseModalSuccessResult(message);
+		}
+
+		protected CloseModalErrorResult CloseModalError(string message = null)
+		{
+			return new CloseModalErrorResult(message);
 		}
 
 		protected DataTablesResult DataTable(DataTablesResponse dataTablesResponse)

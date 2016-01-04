@@ -1,0 +1,308 @@
+﻿@model TradeSatoshi.Common.Vote.VoteModel
+@using TradeSatoshi.Web.Helpers
+@{
+	ViewBag.Title = "Vote";
+}
+
+<div class="row row-top">
+	<div class="col-md-12">
+		@if (User.Identity.IsAuthenticated)
+		{
+			<button class="btn btn-info" onclick="createVoteItem();">Submit Coin</button>
+		}
+		else
+		{
+			<a class="btn btn-info" href="@Url.Action("Login", "Account", new { ReturnUrl = Url.Action("Index", "Vote") })">Submit Coin</a>
+		}
+	</div>
+</div>
+
+<hr class="seperator" />
+
+
+<div id="alert-success" class="alert alert-dismissible alert-success" style="display:none">
+  <button class="close" type="button" data-dismiss="alert">x</button>
+  <h4>Success!</h4>
+  <p></p>
+</div>
+<div id="alert-error" class="alert alert-dismissible alert-danger" style="display:none">
+  <button class="close" type="button" data-dismiss="alert">x</button>
+  <h4>Error!</h4>
+  <p></p>
+</div>
+
+
+<div class="row">
+
+	<div class="col-md-6">
+		<span>
+			<strong>Last Paid Winner: </strong>
+			@if (string.IsNullOrEmpty(Model.LastPaid))
+			{
+				<small><i>No winner has been drawn.</i></small>
+			}
+			else
+			{
+				<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastPaidId })" >@Model.LastPaid</button>
+			}
+		</span>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="panel-title">Paid Votes</span>
+				<div class="vote-countdown pull-right"></div>
+			</div>
+			<div class="panel-body">
+				<div class="table-container">
+					<table id="table-paid" class="table">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Currency</th>
+								<th>Votes</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<span>
+			<strong>Last Free Winner: </strong>
+			@if (string.IsNullOrEmpty(Model.LastFree))
+			{
+				<small><i>No winner has been drawn.</i></small>
+			}
+			else
+			{
+				<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastFreeId })" >@Model.LastFree</button>
+			}
+		</span>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="panel-title">Free Votes</span>
+				<div class="vote-countdown pull-right"></div>
+			</div>
+			<div class="panel-body">
+				<div class="table-container">
+					<table id="table-free" class="table">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Currency</th>
+								<th>Votes</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Pending Review</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-container">
+					<table id="table-pending" class="table">
+						<thead>
+							<tr>
+								<th>Currency</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Reject List</h3>
+			</div>
+			<div class="panel-body">
+				<div class="table-container">
+					<table id="table-reject" class="table">
+						<thead>
+							<tr>
+								<th>Currency</th>
+								<th>Reason</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/Scripts/jquery.plugin.js"></script>
+	<script src="~/Scripts/jquery.countdown.js"></script>
+	<script>
+		$('#table-paid').dataTable({
+			"order": [[2, "desc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"sPaginationType": "simple_numbers",
+			"sort": true,
+			"paging": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetPaidVotes")',
+			"sServerMethod": "POST",
+			"columnDefs": [{ "targets": 0, "visible": false },
+			{
+				"targets": 1,
+				"render": function (data, type, full, meta) {
+					return '<button class="btn-link" onclick="viewVoteItem(' + full[0] + ')">' + data + '</button>';
+				}
+			},
+			{
+				"targets": 3,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					var authed = '@User.Identity.IsAuthenticated';
+					if (authed === "True") {
+						return '<button class="btn btn-primary btn-xs pull-right btn-150" onclick="createPaidVote(' + full[0] + ', \'' + full[1] + '\')">Vote</button>';
+					}
+					return '<a class="btn btn-primary btn-xs pull-right btn-150" href="@Url.Action("Login", "Account", new { ReturnUrl = Url.Action("Index", "Vote") })">Vote</a>'
+				}
+			}]
+		});
+
+		$('#table-free').dataTable({
+			"order": [[2, "desc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"sPaginationType": "simple_numbers",
+			"sort": true,
+			"paging": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetFreeVotes")',
+			"sServerMethod": "POST",
+			"columnDefs": [{ "targets": 0, "visible": false },
+			{
+				"targets": 1,
+				"render": function (data, type, full, meta) {
+					return '<button class="btn-link" onclick="viewVoteItem(' + full[0] + ')">' + data + '</button>';
+				}
+			},
+			{
+				"targets": 3,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					var authed = '@User.Identity.IsAuthenticated';
+					if (authed === "True") {
+						return '<button class="btn btn-primary btn-xs pull-right btn-150" onclick="createFreeVote(' + full[0] + ')">Vote</button>';
+					}
+					return '<a class="btn btn-primary btn-xs pull-right btn-150" href="@Url.Action("Login", "Account", new { ReturnUrl = Url.Action("Index", "Vote") })">Vote</a>'
+				}
+			}]
+		});
+
+		$('#table-reject').dataTable({
+			"order": [[0, "asc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"paging": false,
+			"sort": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetRejects")',
+			"sServerMethod": "POST"
+		});
+
+		$('#table-pending').dataTable({
+			"order": [[0, "asc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"paging": false,
+			"sort": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetPending")',
+			"sServerMethod": "POST"
+		});
+
+		function createFreeVote(id) {
+			postJson('@Url.Action("CreateFreeVote")', { voteItemId: id }, function (data) {
+				$("#table-free").dataTable().fnDraw();
+				showAlert(data);
+			});
+		}
+
+		function createPaidVote(id, name) {
+			openModal('@Url.Action("CreatePaidVote")', { voteItemId: id, voteItem: name }, function (data) {
+				$("#table-paid").dataTable().fnDraw();
+				showAlert(data);
+			});
+		}
+
+		function createVoteItem() {
+			openModal('@Url.Action("CreateVoteItem")', {}, function (data) {
+				$("#table-pending").dataTable().fnDraw();
+				showAlert(data);
+			});
+		}
+
+		function viewVoteItem(voteItemId) {
+			openModal('@Url.Action("ViewVoteItem")', { voteItemId: voteItemId });
+		}
+
+		function showAlert(data) {
+			$("#alert-error, #alert-success").hide();
+			var alertType = data.Success ? "#alert-success" : "#alert-error";
+			$(alertType).find('p').text(data.Message);
+			$(alertType).slideDown(200);
+			$(alertType).delay(4000).slideUp(200, function () {
+				$(alertType).hide();
+			});
+		}
+
+		$('.vote-countdown').countdown({
+			until: new Date('@Model.NextVote.Year', '@(Model.NextVote.Month - 1)', '@Model.NextVote.Day', '@Model.NextVote.Hour', 0, 0, 0),
+			significant: 4,
+			timezone: +0,
+			layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',
+			onTick: function (periods) {
+				if ($.countdown.periodsToSeconds(periods) < (60 * 60) && !$(this).hasClass('text-danger')) {
+					$(this).addClass('text-danger');
+				}
+			}
+		});
+
+	</script>
+}

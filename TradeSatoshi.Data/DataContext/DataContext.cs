@@ -2,7 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -45,6 +49,11 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<SupportTicketReply> SupportTicketReply { get; set; }
 		public DbSet<SupportRequest> SupportRequest { get; set; }
 
+
+		public DbSet<Vote> Vote { get; set; }
+		public DbSet<VoteItem> VoteItem { get; set; }
+		public DbSet<VoteSettings> VoteSetting { get; set; }
+
 		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -83,11 +92,17 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User);
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.ToUser);
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.Currency);
-			
+
 			modelBuilder.Entity<SupportTicket>().HasRequired(p => p.User).WithMany(b => b.SupportTickets).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<SupportTicket>().HasRequired(p => p.Category).WithMany(b => b.SupportTickets).HasForeignKey(p => p.CategoryId);
 			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.User);
 			modelBuilder.Entity<SupportTicketReply>().HasRequired(p => p.Ticket).WithMany(b => b.Replies).HasForeignKey(p => p.TicketId);
+
+			modelBuilder.Entity<VoteItem>().HasRequired(p => p.User);
+			modelBuilder.Entity<Vote>().HasRequired(p => p.User);
+			modelBuilder.Entity<Vote>().HasRequired(p => p.VoteItem).WithMany(v => v.Votes).HasForeignKey(v => v.VoteItemId);
+			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastFree);
+			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastPaid);
 
 			base.OnModelCreating(modelBuilder);
 		}
@@ -95,6 +110,100 @@ namespace TradeSatoshi.Data.DataContext
 		public IDataContext CreateContext()
 		{
 			return new DataContext();
+		}
+
+		public List<string> SaveChangesWithLogging()
+		{
+			var errorMessages = new List<string>();
+			try
+			{
+				SaveChanges();
+			}
+			catch (DbEntityValidationException ex)
+			{
+				errorMessages = ex.EntityValidationErrors
+					.SelectMany(x => x.ValidationErrors)
+					.Select(x => x.ErrorMessage)
+					.ToList();
+
+				LogError("DbEntityValidationException", string.Join(Environment.NewLine, errorMessages));
+			}
+			catch (DbUpdateException ex)
+			{
+				var updateException = (UpdateException)ex.InnerException;
+				var sqlException = (SqlException)updateException.InnerException;
+				errorMessages = sqlException.Errors.OfType<SqlError>()
+					.Select(x => x.Message)
+					.ToList();
+
+				LogError("DbUpdateException", string.Join(Environment.NewLine, errorMessages));
+			}
+			return errorMessages;
+		}
+
+		public async Task<List<string>> SaveChangesWithLoggingAsync()
+		{
+			var errorMessages = new List<string>();
+			try
+			{
+				await SaveChangesAsync();
+			}
+			catch (DbEntityValidationException ex)
+			{
+				errorMessages = ex.EntityValidationErrors
+					.SelectMany(x => x.ValidationErrors)
+					.Select(x => x.ErrorMessage)
+					.ToList();
+
+				LogError("DbEntityValidationException", string.Join(Environment.NewLine, errorMessages));
+			}
+			catch (DbUpdateException ex)
+			{
+				var updateException = (UpdateException)ex.InnerException;
+				var sqlException = (SqlException)updateException.InnerException;
+				errorMessages = sqlException.Errors.OfType<SqlError>()
+					.Select(x => x.Message)
+					.ToList();
+			
+				LogError("DbUpdateException", string.Join(Environment.NewLine, errorMessages));
+			}
+			return errorMessages;
+		}
+
+		public void LogError(string type, string message)
+		{
+			try
+			{
+				Log.Add(new Log
+				{
+					Component = "DbContext",
+					Type = type,
+					Message = message,
+					Timestamp = DateTime.UtcNow
+				});
+				SaveChanges();
+			}
+			catch (Exception)
+			{
+			}
+		}
+
+		public async Task LogErrorAsync(string type, string message)
+		{
+			try
+			{
+				Log.Add(new Log
+				{
+					Component = "DbContext",
+					Type = type,
+					Message = message,
+					Timestamp = DateTime.UtcNow
+				});
+				await SaveChangesAsync();
+			}
+			catch (Exception)
+			{
+			}
 		}
 	}
 }

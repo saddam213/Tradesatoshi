@@ -9,14 +9,14 @@
 		<div style="font-size: x-large">#@Model.Id [@Model.Category] - @Model.Title</div>
 	</div>
 	<div class="col-md-6">
-		@if (Model.Status != TradeSatoshi.Enums.SupportTicketStatus.AdminClosed || Model.Status != TradeSatoshi.Enums.SupportTicketStatus.UserClosed)
+		@if (Model.Status != SupportTicketStatus.AdminClosed || Model.Status != SupportTicketStatus.UserClosed)
 		{
 			using (Html.BeginForm("CloseTicket", "Support", new { ticketId = Model.Id }, FormMethod.Post))
 			{
 			@Html.AntiForgeryToken()
 			<button class="btn btn-danger pull-right">Close Ticket</button>
 			}
-			<button class="btn btn-primary pull-right" onclick="openModal('@Url.Action("ReplyTicket", new { ticketId = Model.Id })')">Add new reply</button>
+			<button class="btn btn-primary pull-right" onclick="@Url.ActionModal("ReplyTicket", new { ticketId = Model.Id })">Add new reply</button>
 		}
 		<span style="font-size: x-large">
 			@Helpers.GetSupportTicketStatus(Model.Status)
@@ -63,7 +63,7 @@
 						</span>
 					</div>
 					<br />
-					<p style="white-space: pre-line">@item.Message</p>
+					<p class="paragraph">@item.Message</p>
 				</div>
 			</div>
 			}

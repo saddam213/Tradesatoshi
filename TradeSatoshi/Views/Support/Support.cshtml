@@ -28,7 +28,7 @@
 					</div>
 					<div id="collapse@(item.Id)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(item.Id)">
 						<div class="panel-body">
-							<p style="white-space:pre-line">@item.Answer</p>
+							<p class="paragraph">@item.Answer</p>
 						</div>
 					</div>
 				</div>
@@ -38,7 +38,7 @@
 	</div>
 
 	<div class="col-md-7">
-		<button  class="btn btn-primary" onclick="openModal('@Url.Action("CreateTicket")')">Create New Ticket</button>
+		<button  class="btn btn-primary" onclick="@Url.ActionModal("CreateTicket")">Create New Ticket</button>
 
 		<div style="max-height: 650px; overflow: auto; margin-top: 10px">
 			@if (!Model.Tickets.Any())
@@ -63,7 +63,7 @@
 							<span>@ticket.Category</span>
 						</small>
 						<small class="block">
-							<strong>Last Update: </strong>
+							<strong>@(ticket.Status == SupportTicketStatus.AdminClosed || ticket.Status == SupportTicketStatus.UserClosed ? "Closed: " : "Last Update: ")</strong>
 							<span>@ticket.LastUpdate</span>
 						</small>
 					</div>

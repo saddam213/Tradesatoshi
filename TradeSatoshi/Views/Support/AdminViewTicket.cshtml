@@ -10,12 +10,12 @@
 		<div style="font-size: x-large">#@Model.Id [@Model.Category] - @Model.Title</div>
 	</div>
 	<div class="col-md-6">
-		@using (Html.BeginForm("AdminUpdateTicketStatus", "Support", new { ticketId = Model.Id, status = isClosed ? TradeSatoshi.Enums.SupportTicketStatus.AdminReply : TradeSatoshi.Enums.SupportTicketStatus.AdminClosed }, FormMethod.Post))
+		@using (Html.BeginForm("AdminUpdateTicketStatus", "Support", new { ticketId = Model.Id, status = isClosed ? SupportTicketStatus.AdminReply : SupportTicketStatus.AdminClosed }, FormMethod.Post))
 		{
 			@Html.AntiForgeryToken()
 			<button class="btn btn-@(isClosed ? "success" : "danger") pull-right">@(isClosed ? "Reopen " : "Close ") Ticket</button>
 		}
-		<button class="btn btn-primary pull-right" onclick="openModal('@Url.Action("AdminReplyTicket", new { ticketId = Model.Id, userName = Model.UserName })')">Add new reply</button>
+		<button class="btn btn-primary pull-right" onclick="@Url.ActionModal("AdminReplyTicket", new { ticketId = Model.Id, userName = Model.UserName })">Add new reply</button>
 		<span style="font-size: x-large">
 			@Helpers.GetSupportTicketStatus(Model.Status)
 		</span>
@@ -47,7 +47,7 @@
 		}
 		else
 		{
-			@foreach (var item in Model.Replies.OrderByDescending(x => x.Id))
+			foreach (var item in Model.Replies.OrderByDescending(x => x.Id))
 			{
 			<div class="panel panel-default" style="margin: 0px">
 				<div class="panel-body">

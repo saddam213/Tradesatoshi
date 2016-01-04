@@ -1,0 +1,54 @@
+﻿@model TradeSatoshi.Common.Vote.CreatePaidVoteModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title">@Model.VoteItem Paid Voting</h3>
+			<small>Add votes using @Model.Symbol.</small>
+		</div>
+		@using (Ajax.BeginForm("CreatePaidVote", "Vote", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.VoteItemId)
+			@Html.HiddenFor(m => m.Balance)
+			<div class="row">
+				<div class="col-md-12 ">
+					@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-xs-12 text-center">
+							<span><strong>Balance: </strong><span id="balance" class="btn-link text-info">@Model.Balance.ToString("F8")</span> @Model.Symbol</span>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.VoteCount, new { @class = "form-label" })
+								@Html.TextBoxFor(m => m.VoteCount, new { @class = "form-control", min = 1m, max = 1000000000 })
+							</div>
+							<div class="col-xs-12">
+								@Html.ValidationMessageFor(m => m.VoteCount)
+							</div>
+						</div>
+
+						<div class="row">
+							@{Html.RenderPartial("_TwoFactorEntryPartial", Model);}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-primary">Vote</button>
+				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/Scripts/Project/Transfer/transferCreate.js")
