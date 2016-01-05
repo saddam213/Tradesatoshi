@@ -99,7 +99,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!ModelState.IsWriterResultValid(result))
 				return View("CreatePaidVoteModal", model);
 
-			return CloseModalSuccess(result.Message);
+			return CloseModalSuccess(result.Message, "Vote Success");
 		}
 
 		[HttpPost]
@@ -111,9 +111,9 @@ namespace TradeSatoshi.Web.Controllers
 
 			var result = await VoteWriter.CreateFreeVote(User.Id(), model);
 			if (!ModelState.IsWriterResultValid(result))
-				return JsonError(result.FirstError);
+				return JsonError(result.FirstError, "Vote Failed", AlertType.Warning);
 
-			return JsonSuccess();
+			return JsonSuccess(result.Message, "Vote Success");
 		}
 
 		[HttpGet]
@@ -133,7 +133,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateVoteItemModal", model);
 
-			return CloseModalSuccess(result.Message);
+			return CloseModalSuccess(result.Message, "Successfully Submitted");
 		}
 
 

@@ -291,8 +291,6 @@
     <Compile Include="ActionResults\CloseModalJsonResult.cs" />
     <Compile Include="ActionResults\CloseModalResult.cs" />
     <Compile Include="ActionResults\CloseModalRedirectResult.cs" />
-    <Compile Include="ActionResults\CloseModalSuccessResult.cs" />
-    <Compile Include="ActionResults\CloseModalErrorResult.cs" />
     <Compile Include="ActionResults\DataTablesResult.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

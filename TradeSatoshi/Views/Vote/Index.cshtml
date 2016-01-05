@@ -4,6 +4,8 @@
 	ViewBag.Title = "Vote";
 }
 
+@Helpers.AlertResultSection()
+
 <div class="row row-top">
 	<div class="col-md-12">
 		@if (User.Identity.IsAuthenticated)
@@ -18,19 +20,6 @@
 </div>
 
 <hr class="seperator" />
-
-
-<div id="alert-success" class="alert alert-dismissible alert-success" style="display:none">
-  <button class="close" type="button" data-dismiss="alert">x</button>
-  <h4>Success!</h4>
-  <p></p>
-</div>
-<div id="alert-error" class="alert alert-dismissible alert-danger" style="display:none">
-  <button class="close" type="button" data-dismiss="alert">x</button>
-  <h4>Error!</h4>
-  <p></p>
-</div>
-
 
 <div class="row">
 
@@ -260,36 +249,26 @@
 		function createFreeVote(id) {
 			postJson('@Url.Action("CreateFreeVote")', { voteItemId: id }, function (data) {
 				$("#table-free").dataTable().fnDraw();
-				showAlert(data);
+				showAlertResult(data);
 			});
 		}
 
 		function createPaidVote(id, name) {
 			openModal('@Url.Action("CreatePaidVote")', { voteItemId: id, voteItem: name }, function (data) {
 				$("#table-paid").dataTable().fnDraw();
-				showAlert(data);
+				showAlertResult(data);
 			});
 		}
 
 		function createVoteItem() {
 			openModal('@Url.Action("CreateVoteItem")', {}, function (data) {
 				$("#table-pending").dataTable().fnDraw();
-				showAlert(data);
+				showAlertResult(data);
 			});
 		}
 
 		function viewVoteItem(voteItemId) {
 			openModal('@Url.Action("ViewVoteItem")', { voteItemId: voteItemId });
-		}
-
-		function showAlert(data) {
-			$("#alert-error, #alert-success").hide();
-			var alertType = data.Success ? "#alert-success" : "#alert-error";
-			$(alertType).find('p').text(data.Message);
-			$(alertType).slideDown(200);
-			$(alertType).delay(4000).slideUp(200, function () {
-				$(alertType).hide();
-			});
 		}
 
 		$('.vote-countdown').countdown({

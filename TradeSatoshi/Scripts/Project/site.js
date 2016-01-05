@@ -189,3 +189,22 @@ function truncateDecimals(num, digits) {
 function htmlEncode(val) {
 	return $('<div/>').text(val).html();
 }
+
+function showAlertResult(data) {
+	if (data) {
+		$("#alert-result").hide();
+		var type = data.AlertType || "Info";
+		var title = data.Title || type;
+		var message = data.Message;
+		var alertType = "#alert-result";
+		var alertObj = $(alertType);
+		alertObj.removeClass("alert-success alert-info alert-warning alert-danger").addClass("alert-" + type.toLowerCase())
+		alertObj.find('h4').text(title);
+		alertObj.find('p').text(message);
+		alertObj.slideDown(200);
+		alertObj.delay(4000).slideUp(200, function () {
+			alertObj.hide();
+		});
+	}
+}
+

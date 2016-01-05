@@ -31,26 +31,16 @@ namespace TradeSatoshi.Web.Controllers
 			private set { _userManager = value; }
 		}
 
-		protected JsonResult JsonSuccess(string message = null)
+		protected JsonResult JsonSuccess(string message = null, string title = null, AlertType alertType = AlertType.Success)
 		{
-			return Json(new { Success = true, Message = message });
+			return Json(new { Success = true, Message = message, Title = title, AlertType = alertType.ToString() });
 		}
 
-		protected JsonResult JsonError(string message = null)
+		protected JsonResult JsonError(string message = null, string title = null, AlertType alertType = AlertType.Danger)
 		{
-			return Json(new { Success = false, Message = message });
+			return Json(new { Success = false, Message = message, Title = title, AlertType = alertType.ToString() });
 		}
-
-		protected JsonResult JsonSuccess(string message, params object[] formatParams)
-		{
-			return Json(new { Success = true, Message = string.Format(message, formatParams) });
-		}
-
-		protected JsonResult JsonError(string message, params object[] formatParams)
-		{
-			return Json(new { Success = false, Message = string.Format(message, formatParams) });
-		}
-
+	
 		protected ViewResult ViewMessage(ViewMessageModel model)
 		{
 			return View("ViewMessage", model);
@@ -81,24 +71,24 @@ namespace TradeSatoshi.Web.Controllers
 			return new CloseModalResult();
 		}
 
-		protected CloseModalJsonResult CloseModalJson(object data)
+		protected CloseModalResult CloseModal(object data)
 		{
-			return new CloseModalJsonResult(data);
+			return new CloseModalResult(data);
+		}
+
+		protected CloseModalResult CloseModalSuccess(string message = null, string title = null, AlertType alertType = AlertType.Success)
+		{
+			return new CloseModalResult(true, message, title,alertType);
+		}
+
+		protected CloseModalResult CloseModalError(string message = null, string title = null, AlertType alertType = AlertType.Danger)
+		{
+			return new CloseModalResult(false, message, title,alertType);
 		}
 
 		protected CloseModalRedirectResult CloseModalRedirect(string redirectAction)
 		{
 			return new CloseModalRedirectResult(redirectAction);
-		}
-
-		protected CloseModalSuccessResult CloseModalSuccess(string message = null)
-		{
-			return new CloseModalSuccessResult(message);
-		}
-
-		protected CloseModalErrorResult CloseModalError(string message = null)
-		{
-			return new CloseModalErrorResult(message);
 		}
 
 		protected DataTablesResult DataTable(DataTablesResponse dataTablesResponse)
