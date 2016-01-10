@@ -32,7 +32,8 @@ $.ajaxSetup({ cache: false });
 	dataNotificationHub.client.UpdateDataTable = function (notification) {
 		$(htmlEncode(notification.DataTableName)).dataTable().fnDraw();
 	};
-	$.connection.hub.start();
+
+	$.connection.hub.start().done(function () {	});
 })();
 
 function getPartial(div, url, callback) {
@@ -208,3 +209,29 @@ function showAlertResult(data) {
 	}
 }
 
+function timeSince(time1, time2) {
+	var seconds = Math.floor((time1 - time2) / 1000);
+
+	if (seconds < 60) {
+		var val = Math.floor(seconds);
+		if (val > 3) {
+			return '(' + Math.floor(seconds) + ' seconds ago)';
+		}
+		return '(just now)';
+	}
+	if (seconds < 3600) {
+		var val = Math.floor((seconds / 60));
+		if (val > 2) {
+			return '(' + val + ' minutes ago)';
+		}
+		return '(a minute ago)';
+	}
+	if (seconds < 86400) {
+		var val = Math.floor(((seconds / 60) / 60));
+		if (val > 1) {
+			return '(' + val + ' hours ago)';
+		}
+		return '(an hour ago)';
+	}
+	return '(ages ago...)';
+}

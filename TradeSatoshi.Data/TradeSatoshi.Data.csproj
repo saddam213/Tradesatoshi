@@ -140,6 +140,10 @@
     <Compile Include="Migrations\201601040427513_VoteSetting.Designer.cs">
       <DependentUpon>201601040427513_VoteSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601091109423_Chat.cs" />
+    <Compile Include="Migrations\201601091109423_Chat.Designer.cs">
+      <DependentUpon>201601091109423_Chat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -221,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601040427513_VoteSetting.resx">
       <DependentUpon>201601040427513_VoteSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601091109423_Chat.resx">
+      <DependentUpon>201601091109423_Chat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

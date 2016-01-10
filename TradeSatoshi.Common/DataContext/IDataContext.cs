@@ -51,6 +51,8 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entity.VoteItem> VoteItem { get; set; }
 		DbSet<Entity.VoteSettings> VoteSetting { get; set; }
 
+		DbSet<Entity.ChatMessage> ChatMessage { get; set; }
+
 		DbSet<Entity.Log> Log { get; set; }
 	}
 }

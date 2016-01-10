@@ -15,6 +15,9 @@ namespace TradeSatoshi.Entity
 		public bool IsTradeEnabled { get; set; }
 		public bool IsWithdrawEnabled { get; set; }
 		public bool IsTransferEnabled { get; set; }
+
+		public string ChatIcon { get; set; }
+		public DateTime? ChatBanEnd { get; set; }
 		
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }

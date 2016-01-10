@@ -25,13 +25,4 @@ namespace TradeSatoshi.Web.Helpers
 			return roles.Any(role => principal.IsInRole(role.ToString()));
 		}
 	}
-
-	public class AuthorizeSecurityRoleAttribute : AuthorizeAttribute
-	{
-		public AuthorizeSecurityRoleAttribute(params SecurityRole[] roles)
-		{
-			if (roles != null)
-				Roles = string.Join(", ", roles.Select(x => x.ToString()));
-		}
-	}
 }

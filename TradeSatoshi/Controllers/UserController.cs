@@ -11,6 +11,7 @@ using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Web.Helpers;
 using TradeSatoshi.Common.User;
 using TradeSatoshi.Common.Transfer;
+using TradeSatoshi.Web.Attributes;
 
 namespace TradeSatoshi.Web.Controllers
 {

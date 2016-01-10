@@ -7,7 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Routing;
 using TradeSatoshi.DependencyInjection.MVC;
+using System.Web.Routing;
+using Microsoft.AspNet.SignalR;
 
 namespace TradeSatoshi.DependencyInjection
 {
@@ -34,6 +37,7 @@ namespace TradeSatoshi.DependencyInjection
 		{
 			var cryptopiaDependencyResolver = new MVCDependencyResolver(_container.Kernel);
 			DependencyResolver.SetResolver(cryptopiaDependencyResolver);
+			GlobalHost.DependencyResolver = new SignalrDependencyResolver(_container.Kernel);
 		}
 
 		public static void Deregister()

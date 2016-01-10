@@ -12,7 +12,8 @@ namespace TradeSatoshi.Web
 					"~/Scripts/jquery.signalR-2.2.0.js",
 					"~/Scripts/Project/notifications.js",
 					"~/Scripts/Project/simplemodal.js",
-					"~/Scripts/jquery.dataTables.js"));
+					"~/Scripts/jquery.dataTables.js",
+					"~/Scripts/mustache.js"));
 				
 			bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
 					"~/Scripts/jquery.validate*"));

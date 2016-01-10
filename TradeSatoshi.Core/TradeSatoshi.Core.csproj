@@ -76,6 +76,8 @@
     <Compile Include="Repositories\Admin\UserReader.cs" />
     <Compile Include="Repositories\Balance\BalanceReader.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="Repositories\Chat\ChatReader.cs" />
+    <Compile Include="Repositories\Chat\ChatWriter.cs" />
     <Compile Include="Repositories\Currency\CurrencyReader.cs" />
     <Compile Include="Repositories\Deposit\DepositReader.cs" />
     <Compile Include="Helpers\DataTableHelpers.cs" />

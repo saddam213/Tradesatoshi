@@ -227,6 +227,7 @@
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\mustache.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -248,6 +249,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Project\Admin\admin.js" />
+    <Content Include="Scripts\Project\chat.js" />
     <Content Include="Scripts\Project\simplemodal.js" />
     <Content Include="Scripts\Project\Transfer\transferCreate.js" />
     <Content Include="Scripts\Project\Exchange\tradepairPartial.js" />
@@ -297,6 +299,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Attributes\AuthorizeAttrubute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -311,6 +314,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Helpers\ModelStateHelpers.cs" />
     <Compile Include="Helpers\TwoFactorHelpers.cs" />
     <Compile Include="Helpers\GoogleHelper.cs" />
@@ -318,6 +322,7 @@
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
+    <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Hubs\DataNotificationHub.cs" />
     <Compile Include="ModelBinder\DataTableModelBinder.cs" />
     <Compile Include="Hubs\HubUserIdProvider.cs" />
@@ -377,6 +382,7 @@
     <Content Include="Views\Vote\AdminUpdateVoteItemModal.cshtml" />
     <Content Include="Views\Vote\ViewVoteItemModal.cshtml" />
     <Content Include="Views\Vote\AdminUpdateVoteSettingsModal.cshtml" />
+    <Content Include="Views\Shared\_ChatPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

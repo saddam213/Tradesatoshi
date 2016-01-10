@@ -54,6 +54,8 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<VoteItem> VoteItem { get; set; }
 		public DbSet<VoteSettings> VoteSetting { get; set; }
 
+		public DbSet<ChatMessage> ChatMessage { get; set; }
+
 		public DbSet<Log> Log { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -103,6 +105,8 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<Vote>().HasRequired(p => p.VoteItem).WithMany(v => v.Votes).HasForeignKey(v => v.VoteItemId);
 			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastFree);
 			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastPaid);
+
+			modelBuilder.Entity<ChatMessage>().HasRequired(p => p.User);
 
 			base.OnModelCreating(modelBuilder);
 		}

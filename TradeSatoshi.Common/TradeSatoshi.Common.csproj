@@ -78,6 +78,7 @@
     <Compile Include="Models\Admin\UserRoleModel.cs" />
     <Compile Include="Models\Balance\BalanceModel.cs" />
     <Compile Include="Models\Balance\UserBalancesModel.cs" />
+    <Compile Include="Models\Chat\ChatUserModel.cs" />
     <Compile Include="Models\Currency\CurrencyModel.cs" />
     <Compile Include="Models\Deposit\DepositModel.cs" />
     <Compile Include="Models\Modal\ViewMessageModel.cs" />
@@ -134,6 +135,11 @@
     <Compile Include="Repositories\Admin\IUserReader.cs" />
     <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="DataContext\IDataContextFactory.cs" />
+    <Compile Include="Models\Chat\ChatMessageModel.cs" />
+    <Compile Include="Models\Chat\CreateChatMessageModel.cs" />
+    <Compile Include="Repositories\Chat\IChatWriter.cs" />
+    <Compile Include="Repositories\Chat\IChatReader.cs" />
+    <Compile Include="Models\Chat\UpdateChatMessageModel.cs" />
     <Compile Include="Repositories\Logging\ILogger.cs" />
     <Compile Include="Models\Vote\CreateVoteItemModel.cs" />
     <Compile Include="Models\Vote\CreatePaidVoteModel.cs" />

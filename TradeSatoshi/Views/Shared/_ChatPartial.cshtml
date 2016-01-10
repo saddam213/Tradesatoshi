@@ -1,0 +1,32 @@
+﻿<div>Users Online: <span id="chat-count">0</span></div>
+<div style="width: 300px" class="panel panel-default">
+	<div id="chat-table-container" style="height: 500px; overflow-y: auto">
+		<table id="chat-table" class="table table-striped" data-user="@User.Identity.Name">
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div style="height: 55px">
+		<textarea rows="3" id="chat-input" style="width: 230px;"></textarea>
+		<button id="chat-submit">Send</button>
+	</div>
+</div>
+
+<script id="chatMessageTemplate" type="text/html">
+	<tr id="message-{{id}}" >
+		<td class="{{highlight}}">
+			<small>
+				<i class="{{icon}}"></i>
+				<b class="clickable" onclick="quoteMessage('{{user}}');">{{user}}</b>:
+			</small>
+			<span class="pull-right">
+				<small class="time" data-val="{{time}}">{{since}}</small>
+				@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator))
+				{
+					<i class="fa fa-times text-danger clickable" onclick="removeMessage({{id}});"></i>
+				}
+			</span>
+			<p class="paragraph">{{message}}</p>
+		</td>
+	</tr>
+</script>

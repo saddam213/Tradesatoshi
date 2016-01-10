@@ -12,6 +12,7 @@ using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers

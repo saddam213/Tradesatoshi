@@ -12,12 +12,12 @@ using System.Web.Mvc;
 
 namespace TradeSatoshi.DependencyInjection.Installers
 {
-	public class ControllersInstaller : IWindsorInstaller
+	public class SignalrInstaller : IWindsorInstaller
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
 			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Web")
-				.BasedOn<IController>()
+				.BasedOn<IHub>()
 				.LifestyleTransient()
 			);
 		}

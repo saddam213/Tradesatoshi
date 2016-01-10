@@ -111,6 +111,10 @@ input[type="checkbox"].input-validation-error {
 	min-width: 150px;
 }
 
+.clickable{
+cursor:pointer;
+}
+
 .paragraph {
 	white-space: pre-line;
 	-ms-word-wrap: break-word;
