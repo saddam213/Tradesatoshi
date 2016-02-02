@@ -23,55 +23,7 @@ namespace TradeSatoshi.Core.Balance
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public BalanceModel GetBalance(string userId, int currencyId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = from currency in context.Currency.Where(c => c.Id == currencyId)
-							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
-							.DefaultIfEmpty()
-							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
-							.DefaultIfEmpty()
-							select new BalanceModel
-							{
-								CurrencyId = currency.Id,
-								Currency = currency.Name,
-								Symbol = currency.Symbol,
-								Address = address.AddressHash,
-								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
-								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
-								Total = (decimal?)balance.Total ?? 0m,
-								Unconfirmed = (decimal?)balance.Unconfirmed ?? 0m
-							};
-				return query.FirstOrDefault();
-			}
-		}
-
-		public List<BalanceModel> GetBalances(string userId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = from currency in context.Currency
-							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
-							.DefaultIfEmpty()
-							from address in context.Address.Where(a => a.UserId == userId && a.CurrencyId == currency.Id && a.IsActive)
-							.DefaultIfEmpty()
-							select new BalanceModel
-							{
-								CurrencyId = currency.Id,
-								Currency = currency.Name,
-								Symbol = currency.Symbol,
-								Address = address.AddressHash,
-								HeldForTrades = (decimal?)balance.HeldForTrades ?? 0m,
-								PendingWithdraw = (decimal?)balance.PendingWithdraw ?? 0m,
-								Total = (decimal?)balance.Total ?? 0m,
-								Unconfirmed = (decimal?)balance.Unconfirmed ?? 0m
-							};
-				return query.ToList();
-			}
-		}
-
-		public async Task<BalanceModel> GetBalanceAsync(string userId, int currencyId)
+		public async Task<BalanceModel> GetBalance(string userId, int currencyId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -95,7 +47,7 @@ namespace TradeSatoshi.Core.Balance
 			}
 		}
 
-		public async Task<List<BalanceModel>> GetBalancesAsync(string userId)
+		public async Task<List<BalanceModel>> GetBalances(string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -116,6 +68,22 @@ namespace TradeSatoshi.Core.Balance
 								Unconfirmed = (decimal?)balance.Unconfirmed ?? 0m
 							};
 				return await query.ToListAsync();
+			}
+		}
+
+		public DataTablesResponse GetBalanceMenu(DataTablesModel model, string userId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var query = from currency in context.Currency
+							from balance in context.Balance.Where(b => b.UserId == userId && b.CurrencyId == currency.Id)
+							.DefaultIfEmpty()
+							select new BalanceMenuModel
+							{
+								Symbol = currency.Symbol,
+								Balance = balance.Total - (balance.Unconfirmed + balance.HeldForTrades + balance.PendingWithdraw)
+							};
+				return query.GetDataTableResult(model);
 			}
 		}
 

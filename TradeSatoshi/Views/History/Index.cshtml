@@ -1,0 +1,70 @@
+﻿@model TradeSatoshi.Common.History.HistoryViewModel
+@{
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+			@* Page Content*@
+			<div style="padding: 2px; padding-top: 5px;">
+				<div class="btn-group btn-group-justified" style="width: 300px;padding-top:2px;padding-bottom:5px;display:inline-block;margin-right:20px;">
+					<a data-action="@Url.Action("Deposit", new { search = Model.Currency })" data-section="Deposit" class="btn btn-default section-option">Deposit</a>
+					<a data-action="@Url.Action("Withdraw", new { search = Model.Currency })" data-section="Withdraw" class="btn btn-default section-option">Withdraw</a>
+					<a data-action="@Url.Action("Transfers", new { search = Model.Currency })" data-section="Transfer" class="btn btn-default section-option">Transfer</a>
+				</div>
+				<div class="btn-group btn-group-justified" style="width: 100px; padding-top:2px;padding-bottom:5px;display:inline-block">
+					<a data-action="@Url.Action("Trades", new { search = Model.Currency })" data-section="Trade" class="btn btn-default section-option">Trades</a>
+				</div>
+				<div id="historyTarget" data-currency="@Model.Currency" data-section="@Model.Section">
+				</div>
+			</div>
+
+			@* Footer Content*@
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/History/history.js")
+	<script>
+		$(".section-option").on("click", function () {
+			$(".section-option").removeClass('active');
+			$(this).addClass('active');
+			var url = $(this).data("action");
+			var section = $(this).data("section");
+			if (url) {
+				$('#historyTarget').unbind();
+				$('#historyTarget').empty();
+				getPartial('#historyTarget', url);
+				var currency = $('#historyTarget').data("currency");
+				var queryString = "?area=" + section;
+				if (currency) {
+					queryString += "&coin=" + currency;
+				}
+				History.pushState({}, "TradeSatoshi - History", queryString);
+			}
+		});
+
+		$("[data-section='" + $("#historyTarget").data("section") + "']").trigger("click");
+	</script>
+}

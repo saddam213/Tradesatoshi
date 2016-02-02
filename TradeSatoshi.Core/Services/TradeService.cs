@@ -554,7 +554,7 @@ namespace TradeSatoshi.Core.Services
 
 		#region Helpers
 
-		private Tables.Trade CreateTrade(DbSet<Tables.Trade> tradeTable, TradeType type, string userId, TradePair tradePair, decimal amount, decimal rate, decimal fee, bool isapi)
+		private Tables.Trade CreateTrade(DbSet<Tables.Trade> tradeTable, TradeType type, string userId, Entity.TradePair tradePair, decimal amount, decimal rate, decimal fee, bool isapi)
 		{
 			var newTrade = new Tables.Trade();
 			newTrade.TradePairId = tradePair.Id;
@@ -573,7 +573,7 @@ namespace TradeSatoshi.Core.Services
 			return newTrade;
 		}
 
-		private Tables.TradeHistory CreateTransaction(DbSet<Tables.TradeHistory> transactionTable, TradeType type, string userId, string toUserId, TradePair tradepair, decimal amount, decimal rate, decimal fee, bool isapi)
+		private Tables.TradeHistory CreateTransaction(DbSet<Tables.TradeHistory> transactionTable, TradeType type, string userId, string toUserId, Entity.TradePair tradepair, decimal amount, decimal rate, decimal fee, bool isapi)
 		{
 			var transaction = new TradeHistory();
 			transaction.TradePairId = tradepair.Id;
@@ -601,7 +601,7 @@ namespace TradeSatoshi.Core.Services
 			return 0.00;
 		}
 
-		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, TradePair tradepair, TradeNotifier notifications)
+		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair, TradeNotifier notifications)
 		{
 			var result = await AuditService.AuditUserTradePairAsync(context, userId, tradepair);
 			if (result.Success)

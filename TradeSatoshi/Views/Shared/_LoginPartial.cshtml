@@ -1,22 +1,27 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-    @Html.AntiForgeryToken()
-
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ResourceActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "User", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
-    }
+	using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+	{
+	@Html.AntiForgeryToken()
+	<ul class="nav navbar-nav navbar-right" style="margin-right:25px">
+		<li>
+			@Html.ResourceActionLink("Account", "Index", "User")
+		</li>
+		@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator))
+		{
+			<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
+		}
+		<li>
+			<a href="#" onclick="$('#logoutForm').submit()">Log off</a>
+		</li>
+	</ul>
+	}
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ResourceActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ResourceActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
+	<ul class="nav navbar-nav navbar-right" style="margin-right:25px">
+		<li>@Html.ResourceActionLink("Register", "Register", "Account")</li>
+		<li>@Html.ResourceActionLink("Log in", "Login", "Account")</li>
+	</ul>
 }

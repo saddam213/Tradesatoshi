@@ -4,96 +4,86 @@
 			? (object)new { @class = "form-control" }
 			: (object)new { @class = "form-control", @readonly = "readonly" };
 }
-<div class="row">
-	<div class="col-md-4">
-		<div id="p1" class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">@Html.Resource("Profile")</h3>
-			</div>
-			<div class="panel-body">
-			@using (Ajax.BeginForm("UserProfile", "User", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "profileTarget" }, new { @class = "form-horizontal", role = "form" }))
-				{
-					@Html.AntiForgeryToken()
-					@Html.HiddenFor(m => m.CanUpdate)
-					<div class="form-horizontal">
-						@Html.ValidationSummary(true)
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.FirstName, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.FirstName, attribs)
-								@Html.ValidationMessageFor(model => model.FirstName)
-							</div>
-						</div>
 
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.LastName, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.LastName, attribs)
-								@Html.ValidationMessageFor(model => model.LastName)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.BirthDate, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.BirthDate, attribs)
-								@Html.ValidationMessageFor(model => model.BirthDate)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.Address, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.Address, attribs)
-								@Html.ValidationMessageFor(model => model.Address)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.City, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.City, attribs)
-								@Html.ValidationMessageFor(model => model.City)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.State, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.State, attribs)
-								@Html.ValidationMessageFor(model => model.State)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.Country, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.Country, attribs)
-								@Html.ValidationMessageFor(model => model.Country)
-							</div>
-						</div>
-
-						<div class="form-group">
-							@Html.ResourceLabelFor(model => model.PostCode, new { @class = "control-label col-md-2" })
-							<div class="col-md-10">
-								@Html.TextBoxFor(model => model.PostCode, attribs)
-								@Html.ValidationMessageFor(model => model.PostCode)
-							</div>
-						</div>
-
-						@if (Model.CanUpdate)
-						{
-							<div class="form-group">
-								<div class="col-md-offset-2 col-md-10">
-									<input type="submit" value="@Html.Resource("Update Profile")" class="btn btn-default" />
-								</div>
-							</div>
-						}
-					</div>
-				}
-			</div>
+@using (Ajax.BeginForm("UserProfile", "User", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "changeProfileTarget" }, new { @class = "form-horizontal", role = "form" }))
+{
+	@Html.AntiForgeryToken()
+	<h4>@Html.Resource("Change Password Form")</h4>
+	<hr />
+	@Html.HiddenFor(m => m.CanUpdate)
+	@Html.ValidationSummary(true)
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.FirstName, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.FirstName, attribs)
+			@Html.ValidationMessageFor(model => model.FirstName)
 		</div>
 	</div>
-</div>
 
-@Scripts.Render("~/bundles/jqueryval")
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.LastName, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.LastName, attribs)
+			@Html.ValidationMessageFor(model => model.LastName)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.BirthDate, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.BirthDate, attribs)
+			@Html.ValidationMessageFor(model => model.BirthDate)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.Address, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.Address, attribs)
+			@Html.ValidationMessageFor(model => model.Address)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.City, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.City, attribs)
+			@Html.ValidationMessageFor(model => model.City)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.State, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.State, attribs)
+			@Html.ValidationMessageFor(model => model.State)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.Country, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.Country, attribs)
+			@Html.ValidationMessageFor(model => model.Country)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.PostCode, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.PostCode, attribs)
+			@Html.ValidationMessageFor(model => model.PostCode)
+		</div>
+	</div>
+
+	if (Model.CanUpdate)
+	{
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="@Html.Resource("Update Profile")" class="btn btn-default" />
+			</div>
+		</div>
+	}
+}
+
+

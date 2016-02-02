@@ -1,25 +1,147 @@
 ﻿@{
-    ViewBag.Title = Html.Resource("Home");
+	ViewBag.Title = Html.Resource("Home");
 }
+<div class="home">
 
-<div class="jumbotron row-top">
-    <img  src="../../Content/Images/TradeSatoshi.png" alt="" />
-    @*<p class="lead">@Html.Resource("The Fastest, most secure way to trade your crypto-currency")</p>*@
-</div>
+	<section class="home-section">
+		<div class="container">
+			<div class="home-content text-center">
+				<div class="home-text fadeIn">
+					<h3 class="home-title"><span>TradeSatoshi</span> Your CryptoCurrency Exchange</h3>
+					<h3 class="home-title">Coming Soon</h3>
+					<p class="home-description">Buy! Sell! Trade! Bitcoin and Altcoins</p>
+					<a href="@Url.Action("Login", "Account")" class="btn btn-info">
+						<strong>Login </strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>@Html.Resource("Exchange")</h2>
-        <p>
-            @Html.Resource("Trade you crypto accoss many trade pairs instantly...")
-        </p>
-    </div>
-    <div class="col-md-4">
-        <h2>@Html.Resource("Security")</h2>
-        <p>@Html.Resource("Secure TFA authentication keeps you coins safe from the dick weeds.")</p>
-    </div>
-    <div class="col-md-4">
-        <h2>@Html.Resource("Voting")</h2>
-        <p>@Html.Resource("Vote for the coins you want to see on Tradesatoshi.")</p>
-    </div>
+	<section class="feature-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="feature_header text-center">
+						<h3 class="feature_title">Your <b>Exchange</b></h3>
+						<h4 class="feature_sub">We are a team of profesionals working to take Crypto to the next level.
+						<br>
+							Trade Bitcoin and Altcoin like never before on our secure and reliable plataform, we offer the best support on the market.</h4>
+						<div class="divider"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="main_feature text-center">
+					<div class="col-md-3 col-xs-12 col-sm-6">
+						<div class="feature_content">
+							<i class="fa fa-rocket"></i>
+							<h5>Fast</h5>
+							<p>Get the best experience of trading, you will never miss a trade again.</p>
+						</div>
+					</div>
+					<div class="col-md-3 col-xs-12 col-sm-6">
+						<div class="feature_content">
+							<i class="fa fa-lock"></i>
+							<h5>Secure</h5>
+							<p>Cold storage, Two factor authentication for your loging account, our encrypted wallets and server, anti Ddos and much more, hackers will be never be a problem for us</p>
+						</div>
+					</div>
+					<div class="col-md-3 col-xs-12 col-sm-6">
+						<div class="feature_content">
+							<i class="fa fa-comments-o"></i>
+							<h5>Full time Support</h5>
+							<p>Fast support for any enquire you have, you dnt have to wait long hours for support, any problem will be solved fast</p>
+						</div>
+					</div>
+					<div class="col-md-3 col-xs-12 col-sm-6">
+						<div class="feature_content">
+							<i class="fa fa-btc"></i>
+							<h5>Proof of solvency</h5>
+							<p>We are 100% open and our wallets and balances are shown to proof our solvency. </p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="footer-section">
+		<div class="footer_top">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3 col-sm-6">
+						<h3 class="menu_head">Main Menu</h3>
+						<div class="footer_menu">
+							<ul>
+								<li><a href="@Url.Action("Index", "Home")">Home</a></li>
+								<li><a href="@Url.Action("News", "Home")">News</a></li>
+								<li><a href="@Url.Action("Index", "Support")">Support</a></li>
+								<li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6">
+						<h3 class="menu_head">Useful Links</h3>
+						<div class="footer_menu">
+							<ul>
+								<li><a href="@Url.Action("About", "Home")">About Us</a></li>
+								<li><a href="@Url.Action("Bitcoin", "Home")">What is Bitcoin</a></li>
+								<li><a href="@Url.Action("Terms", "Home")">Terms of use</a></li>
+								<li><a href="@Url.Action("Privacy", "Home")">Privacy Policy</a></li>
+								<li><a href="@Url.Action("Legal", "Home")">Legal</a></li>
+								<li><a href="@Url.Action("Faq", "Home")">Frequently Asked Questions</a></li>
+								<li><a href="@Url.Action("Audit", "Home")">Audit</a></li>
+								<li><a href="@Url.Action("Api", "Home")">API</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6">
+						<h3 class="menu_head">Contact us</h3>
+						<div class="footer_menu_contact">
+							<ul>
+								<li><i class="fa fa-map-marker"></i>
+									<span>27 Old Gloucester St, London WC1N 3AF, UK </span></li>
+								<li><i class="fa fa-home"></i>
+									<span>www.tradesatoshi.com</span></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-sm-6">
+						<h3 class="menu_head">Partners</h3>
+						<div class="footer_menu">
+							<ul>
+								<li><a href="https://www.cryptopia.co.nz" target="_blank">Cryptopia</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+</section>
+
+	<div class="footer_b">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="footer_bottom">
+						<p class="text-block">&copy; Copyright reserved <span>TRADESATOSHI LTD </span></p>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="footer_mid pull-right">
+						<ul class="social-contact list-inline">
+							<li><a href="https://www.facebook.com/tradesatoshi/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="https://twitter.com/TradeSatoshi" target="_blank"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-linkedin" target="_blank"></i></a></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </div>

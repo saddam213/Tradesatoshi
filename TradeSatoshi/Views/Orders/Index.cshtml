@@ -1,0 +1,110 @@
+﻿@model TradeSatoshi.Common.Orders.OrdersViewModel
+@{
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+
+			<div style="padding: 2px; padding-top: 5px;">
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Open Orders</h3>
+					</div>
+					<div class="panel-body">
+						<button style="position:absolute;z-index:1001" onclick='cancelAllOrders();' class='btn btn-xs btn-danger'>Cancel All</button>
+						<table id="table-trades" class="table">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>TradePair</th>
+									<th>TradeType</th>
+									<th>Amount</th>
+									<th>Rate</th>
+									<th>Fee</th>
+									<th>Remaining</th>
+									<th>Status</th>
+									<th>Timestamp</th>
+									<th>IsApi</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+
+
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/Orders/orders.js")
+
+	<script>
+		$('#table-trades').dataTable({
+			"order": [[0, "desc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"sPaginationType": "simple_numbers",
+			"scrollY": '600px',
+			"pageLength": "15",
+			"sort": true,
+			"paging": true,
+			"info": true,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetTrades")',
+			"sServerMethod": "POST",
+			"columnDefs": [{
+				"targets": 0,
+				"searchable": false,
+				"orderable": false,
+				"render": function (data, type, full, meta) {
+					return "<button onclick='cancelOrder(\"" + full[0] + "\");' class='btn btn-xs btn-danger'>Cancel</button>";
+				}
+			}]
+		});
+
+		function cancelOrder(tradeId) {
+			confirmModal("Cancel Order", "Are you sure you want to cancel order #" + tradeId + "?", function () {
+				postJson('@Url.Action("CancelTrade", "Exchange")', { id: tradeId, cancelType: 'Trade' }, function (data) {
+					$('#table-trades').dataTable().fnDraw();
+				});
+			});
+		}
+
+		function cancelAllOrders() {
+			confirmModal("Cancel All Open Orders", "Are you sure you want to cancel ALL open orders?", function () {
+				postJson('@Url.Action("CancelTrade", "Exchange")', { id: 0, cancelType: 'All' }, function (data) {
+					$('#table-trades').dataTable().fnDraw();
+				});
+			});
+		}
+	</script>
+}

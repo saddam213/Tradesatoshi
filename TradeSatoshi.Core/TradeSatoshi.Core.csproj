@@ -79,9 +79,12 @@
     <Compile Include="Repositories\Chat\ChatReader.cs" />
     <Compile Include="Repositories\Chat\ChatWriter.cs" />
     <Compile Include="Repositories\Currency\CurrencyReader.cs" />
+    <Compile Include="Repositories\Currency\CurrencyWriter.cs" />
     <Compile Include="Repositories\Deposit\DepositReader.cs" />
     <Compile Include="Helpers\DataTableHelpers.cs" />
     <Compile Include="Repositories\Logger\Logger.cs" />
+    <Compile Include="Repositories\TradePair\TradePairReader.cs" />
+    <Compile Include="Repositories\TradePair\TradePairWriter.cs" />
     <Compile Include="Repositories\Vote\VoteReader.cs" />
     <Compile Include="Repositories\Vote\VoteWriter.cs" />
     <Compile Include="Services\AuditService.cs" />

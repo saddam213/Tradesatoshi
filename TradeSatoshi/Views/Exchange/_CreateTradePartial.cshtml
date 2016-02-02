@@ -1,77 +1,118 @@
 ﻿@model TradeSatoshi.Common.Trade.CreateTradeModel
 @{
 	var targetDiv = string.Format("createTrade-{0}", Model.TradeType);
+	var sellSymbol = Model.TradeType == TradeType.Buy
+		? Model.Symbol
+		: Model.BaseSymbol;
+	var buySymbol = Model.TradeType == TradeType.Buy
+		? Model.BaseSymbol
+		: Model.Symbol;
 }
 
 @using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = targetDiv, InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
 {
 	@Html.HiddenFor(m => m.TradeType);
 	@Html.HiddenFor(m => m.TradePairId);
+	@Html.HiddenFor(m => m.BaseSymbol);
+	@Html.HiddenFor(m => m.Symbol);
+	@Html.HiddenFor(m => m.MinTrade);
+	@Html.HiddenFor(m => m.Fee);
 	
-	<div class="form-group">
-		@Html.ResourceLabelFor(m => m.Amount, new { @class = "col-md-2 control-label" })
-		<div class="col-md-10">
-			@Html.TextBoxFor(m => m.Amount, "{0:F8}", new { @class = "form-control", id = "amount-" + Model.TradeType })
-			@Html.ValidationMessageFor(m => m.Amount)
-		</div>
-	</div>
+	<table class="buySell-table-layout">
+		<tbody>
+			<tr>
+				<td class="row-title">
+					<span>Amount</span>
+				</td>
+				<td>
+					<div class="row-content">
+						@Html.TextBoxFor(m => m.Amount, "{0:F8}", new { @class = "row-content-input", id = "amount-" + Model.TradeType })
+						<div class="row-content-addon">@Model.Symbol</div>
+					</div>
+				</td>
 
-	<div class="form-group">
-		@Html.ResourceLabelFor(m => m.Rate, new { @class = "col-md-2 control-label" })
-		<div class="col-md-10">
-			@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "form-control", id = "rate-" + Model.TradeType })
-			@Html.ValidationMessageFor(m => m.Rate)
-		</div>
-	</div>
+			</tr>
+			<tr>
+				<td class="row-header">
+					<span>Rate</span>
+				</td>
+				<td>
+					<div class="row-content">
+						@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "row-content-input", id = "rate-" + Model.TradeType })
+						<div class="row-content-addon">@Model.BaseSymbol</div>
+					</div>
+				</td>
 
-	<div class="form-group">
-		@Html.ResourceLabel("Total", new { @class = "col-md-2 control-label" })
-		<div class="col-md-10">
-			<span id="total-@Model.TradeType" >0.00000000</span>
-		</div>
-	</div>
+			</tr>
 
-	<div class="form-group">
-		@Html.ResourceLabel("Fee", new { @class = "col-md-2 control-label" })
-		<div class="col-md-10">
-			<span id="fee-@Model.TradeType">0.00000000</span>
-		</div>
-	</div>
+			<tr>
+				<td class="row-header">
+					<span>Total</span>
+				</td>
+				<td>
+					<div class="row-content">
+						<span id="total-@Model.TradeType" class="row-content-input">0.00000000</span>
+						<span class="row-content-addon">@Model.BaseSymbol</span>
+					</div>
+				</td>
 
-	<div class="form-group">
-		@Html.ResourceLabel("Net Total", new { @class = "col-md-2 control-label" })
-		<div class="col-md-10">
-			<span id="net-@Model.TradeType">0.00000000</span>
-		</div>
-	</div>
+			</tr>
+			<tr>
+				<td class="row-header">
+					<span>
+						<span>Fee </span>
+						<small>
+							<i>(@Model.Fee.ToString("F2")%)</i>
+						</small>
+					</span>
+				</td>
+				<td>
+					<div class="row-content">
+						<span id="fee-@Model.TradeType" class="row-content-input">0.00000000</span>
+						<span class="row-content-addon">@Model.BaseSymbol</span>
+					</div>
 
-	if (User.Identity.IsAuthenticated)
-	{
-		<div class="form-group">
-			<div class="col-md-offset-2 col-md-10">
-				<button id="submit-@Model.TradeType" type="submit" disabled="disabled" class="btn btn-info">Place Order</button>
-			</div>
-		</div>
-	}
+				</td>
+
+			</tr>
+			<tr>
+				<td class="row-header">
+					<span>Net</span>
+				</td>
+				<td>
+					<div class="row-content">
+						<span id="net-@Model.TradeType" class="row-content-input">0.00000000</span>
+						<span class="row-content-addon">@Model.BaseSymbol</span>
+					</div>
+
+				</td>
+
+			</tr>
+		</tbody>
+	</table>
+	<hr class="seperator"/>
+	<button id="submit-@Model.TradeType" type="submit" disabled="disabled" class="btn btn-info">@Model.TradeType @Model.Symbol</button>
 }
 
 <script>
-	$('#rate-@Model.TradeType, #amount-@Model.TradeType').on('change paste keyup', function () {
-		var amount = $('#amount-@Model.TradeType').val();
-		var price = $('#rate-@Model.TradeType').val();
-		var tradefee = +'@Model.Fee';
-		var minTrade = +'@Model.MinTrade';
-		$('#submit-@Model.TradeType').attr('disabled', 'disabled');
-		if (!isNaN(amount) && !isNaN(price)) {
-			var total = amount * price;
-			var fee = (total / 100) * tradefee;
-			var nettotal = total - fee;
-			$('#total-@Model.TradeType').html(truncateDecimals(total, 8).toFixed(8));
-			$('#fee-@Model.TradeType').html(truncateDecimals(fee, 8).toFixed(8));
-			$('#net-@Model.TradeType').html(truncateDecimals(nettotal, 8).toFixed(8));
-			if (nettotal > minTrade) {
-				$('#submit-@Model.TradeType').removeAttr('disabled');
+	$(function () {
+		$('#rate-@Model.TradeType, #amount-@Model.TradeType').on('change paste keyup', function () {
+			var amount = $('#amount-@Model.TradeType').val();
+			var price = $('#rate-@Model.TradeType').val();
+			var tradefee = +'@Model.Fee';
+			var minTrade = +'@Model.MinTrade';
+			$('#submit-@Model.TradeType').attr('disabled', 'disabled');
+			if (!isNaN(amount) && !isNaN(price)) {
+				var total = amount * price;
+				var fee = (total / 100) * tradefee;
+				var nettotal = total - fee;
+				$('#total-@Model.TradeType').html(total.toFixed(8));
+				$('#fee-@Model.TradeType').html(fee.toFixed(8));
+				$('#net-@Model.TradeType').html(nettotal.toFixed(8));
+				if (nettotal > minTrade) {
+					$('#submit-@Model.TradeType').removeAttr('disabled');
+				}
 			}
-		}
+		});
 	});
 </script>

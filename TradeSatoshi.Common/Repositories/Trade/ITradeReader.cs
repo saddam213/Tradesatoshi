@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Exchange;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Enums;
 
@@ -22,6 +23,8 @@ namespace TradeSatoshi.Common.Trade
 		DataTablesResponse GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string userId);
 		DataTablesResponse GetUserTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId, string userId);
 
-		TradePairInfoModel GetTradePairInfo(int tradePairId, string userId);
+		Task<TradePairInfoModel> GetTradePairInfo(int tradePairId, string userId);
+		Task<TradePairExchangeModel> GetTradePairExchange(int tradePairId, string userId);
+		Task<ChartDataViewModel> GetTradePairChart(int tradePairId);
 	}
 }

@@ -1,0 +1,38 @@
+﻿@model TradeSatoshi.Common.Status.StatusViewModel
+@{
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+
+			<div style="padding: 2px; padding-top: 5px;">
+				<h1>Status</h1>
+			</div>
+
+
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/Status/status.js")
+}

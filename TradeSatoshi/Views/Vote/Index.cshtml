@@ -6,143 +6,168 @@
 
 @Helpers.AlertResultSection()
 
-<div class="row row-top">
-	<div class="col-md-12">
-		@if (User.Identity.IsAuthenticated)
-		{
-			<button class="btn btn-info" onclick="createVoteItem();">Submit Coin</button>
-		}
-		else
-		{
-			<a class="btn btn-info" href="@Url.Action("Login", "Account", new { ReturnUrl = Url.Action("Index", "Vote") })">Submit Coin</a>
-		}
+
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
 	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+
+			<div style="padding-left:2px;padding-top:6px">
+				@if (User.Identity.IsAuthenticated)
+				{
+					<button class="btn btn-info" onclick="createVoteItem();">Submit Coin</button>
+				}
+				else
+				{
+					<a class="btn btn-info" href="@Url.Action("Login", "Account", new { ReturnUrl = Url.Action("Index", "Vote") })">Submit Coin</a>
+				}
+			</div>
+
+			<hr class="seperator" />
+
+
+
+			<div class="col-md-6">
+				<span>
+					<strong>Last Paid Winner: </strong>
+					@if (string.IsNullOrEmpty(Model.LastPaid))
+					{
+						<small><i>No winner has been drawn.</i></small>
+					}
+					else
+					{
+						<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastPaidId })" >@Model.LastPaid</button>
+					}
+				</span>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<span class="panel-title">Paid Votes</span>
+						<div class="vote-countdown pull-right"></div>
+					</div>
+					<div class="panel-body">
+						<div class="table-container">
+							<table id="table-paid" class="table">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Currency</th>
+										<th>Votes</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<span>
+					<strong>Last Free Winner: </strong>
+					@if (string.IsNullOrEmpty(Model.LastFree))
+					{
+						<small><i>No winner has been drawn.</i></small>
+					}
+					else
+					{
+						<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastFreeId })" >@Model.LastFree</button>
+					}
+				</span>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<span class="panel-title">Free Votes</span>
+						<div class="vote-countdown pull-right"></div>
+					</div>
+					<div class="panel-body">
+						<div class="table-container">
+							<table id="table-free" class="table">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Currency</th>
+										<th>Votes</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Pending Review</h3>
+					</div>
+					<div class="panel-body">
+						<div class="table-container">
+							<table id="table-pending" class="table">
+								<thead>
+									<tr>
+										<th>Currency</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Reject List</h3>
+					</div>
+					<div class="panel-body">
+						<div class="table-container">
+							<table id="table-reject" class="table">
+								<thead>
+									<tr>
+										<th>Currency</th>
+										<th>Reason</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+			</div>
+		</div>
 </div>
 
-<hr class="seperator" />
-
-<div class="row">
-
-	<div class="col-md-6">
-		<span>
-			<strong>Last Paid Winner: </strong>
-			@if (string.IsNullOrEmpty(Model.LastPaid))
-			{
-				<small><i>No winner has been drawn.</i></small>
-			}
-			else
-			{
-				<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastPaidId })" >@Model.LastPaid</button>
-			}
-		</span>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<span class="panel-title">Paid Votes</span>
-				<div class="vote-countdown pull-right"></div>
-			</div>
-			<div class="panel-body">
-				<div class="table-container">
-					<table id="table-paid" class="table">
-						<thead>
-							<tr>
-								<th>Id</th>
-								<th>Currency</th>
-								<th>Votes</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<span>
-			<strong>Last Free Winner: </strong>
-			@if (string.IsNullOrEmpty(Model.LastFree))
-			{
-				<small><i>No winner has been drawn.</i></small>
-			}
-			else
-			{
-				<button class="btn-link" onclick="@Url.ActionModal("ViewVoteItem", new { voteItemId = Model.LastFreeId })" >@Model.LastFree</button>
-			}
-		</span>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<span class="panel-title">Free Votes</span>
-				<div class="vote-countdown pull-right"></div>
-			</div>
-			<div class="panel-body">
-				<div class="table-container">
-					<table id="table-free" class="table">
-						<thead>
-							<tr>
-								<th>Id</th>
-								<th>Currency</th>
-								<th>Votes</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+@* RightSidebar Content*@
+<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+	@{Html.RenderPartial("_ChatSidebarPartial");}
+</div>
 </div>
 
-<div class="row">
-	<div class="col-md-6">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Pending Review</h3>
-			</div>
-			<div class="panel-body">
-				<div class="table-container">
-					<table id="table-pending" class="table">
-						<thead>
-							<tr>
-								<th>Currency</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Reject List</h3>
-			</div>
-			<div class="panel-body">
-				<div class="table-container">
-					<table id="table-reject" class="table">
-						<thead>
-							<tr>
-								<th>Currency</th>
-								<th>Reason</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
 @section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
 	<script src="~/Scripts/jquery.plugin.js"></script>
 	<script src="~/Scripts/jquery.countdown.js"></script>
 	<script>

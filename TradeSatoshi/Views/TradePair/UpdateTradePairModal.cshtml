@@ -1,0 +1,54 @@
+﻿@model TradeSatoshi.Common.TradePair.UpdateTradePairModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>Update TradePair @Model.Name</h3>
+			<small>Update @Model.Name tradePairs settings</small>
+		</div>
+		@using (Ajax.BeginForm("Update", "TradePair", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Id)
+			@Html.HiddenFor(m => m.Name)
+
+			<div class="row">
+				<div class="col-md-12">
+					@Html.ValidationSummary(true, "", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.Status, new { @class = "control-label" })
+								@Html.EnumDropDownListFor(m => m.Status, new { @class = " form-control" })
+								@Html.ValidationMessageFor(m => m.Status)
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-12">
+								@Html.LabelFor(m => m.StatusMessage, new { @class = "control-label" })
+								@Html.TextAreaFor(m => m.StatusMessage, new { @class = " form-control form-control-fullwidth", rows = 12 })
+								@Html.ValidationMessageFor(m => m.StatusMessage)
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<input type="submit" value="@Html.Resource("Update")" class="btn btn-default" />
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

@@ -8,7 +8,7 @@
 		"bServerSide": true,
 		"searching": false,
 		"scrollCollapse": false,
-		"scrollY": '300px',
+		"scrollY": "250px",
 		"sPaginationType": "simple_numbers",
 		"pageLength": "15",
 		"sort": false,
@@ -31,12 +31,19 @@
 		},
 		{
 			"targets": 3,
+			"visible": false,
 			"render": function (data, type, full, meta) {
 				return sum_buy.toFixed(8);
 			}
 		}],
 		"footerCallback": function (row, data, start, end, display) {
 			sum_buy = 0;
+		},
+		"rowCallback": function (row, data, index) {
+			$(row).on('click', function () {
+				$('#amount-Sell, #amount-Buy').val(data[1]);
+				$('#rate-Sell, #rate-Buy').val(data[0]).trigger('change');
+			});
 		}
 	});
 
@@ -48,7 +55,7 @@
 		"bServerSide": true,
 		"searching": false,
 		"scrollCollapse": false,
-		"scrollY": '300px',
+		"scrollY": "250px",
 		"sPaginationType": "simple_numbers",
 		"pageLength": "15",
 		"sort": false,
@@ -71,12 +78,19 @@
 		},
 		{
 			"targets": 3,
+			"visible":false,
 			"render": function (data, type, full, meta) {
 				return sum_sell.toFixed(8);
 			}
 		}],
 		"footerCallback": function (row, data, start, end, display) {
 			sum_sell = 0;
+		},
+		"rowCallback": function (row, data, index) {
+			$(row).on('click', function () {
+				$('#amount-Sell, #amount-Buy').val(data[1]);
+				$('#rate-Sell, #rate-Buy').val(data[0]).trigger('change');
+			});
 		}
 	});
 
@@ -84,13 +98,11 @@
 	$('[id^="table-tradehistory-"]').dataTable({
 		"order": [[0, "desc"]],
 		"lengthChange": false,
-		"processing": true,
+		"processing": false,
 		"bServerSide": true,
 		"searching": false,
-		"scrollCollapse": true,
-		"scrollY": '300px',
-		"sPaginationType": "simple_numbers",
-		"pageLength": "15",
+		"scrollCollapse": false,
+		"scrollY": "504px",
 		"sort": false,
 		"paging": false,
 		"info": false,
@@ -101,26 +113,30 @@
 			aoData.push({ "name": "tradePairId", "value": $('#tradehistory-host').data('tradepair') });
 		},
 		"columnDefs": [{
-			"targets": -1,
-			"visible": false
-		}]
+			"targets": 0,
+			"render": function (data, type, full, meta) {
+				return moment(new Date(data)).format('h:mm:ss a');
+			}
+		}],
+		"rowCallback": function (row, data, index) {
+			var textClass = data[1] === 'Buy' ? 'text-success' : 'text-danger';
+			$(row).addClass(textClass);
+		}
 	});
 
 	$('[id^="table-userhistory-"]').dataTable({
 		"order": [[0, "desc"]],
 		"lengthChange": false,
 		"processing": true,
-		"bServerSide": true,
+		"bServerSide": false,
 		"searching": false,
-		"scrollCollapse": true,
+		"scrollCollapse": false,
 		"scrollY": '300px',
-		"sPaginationType": "simple_numbers",
-		"pageLength": "15",
 		"sort": false,
 		"paging": false,
 		"info": false,
 		"language": { "emptyTable": "No data avaliable." },
-		"sAjaxSource": $('#userhistory-host').data('action'),
+		//"sAjaxSource": $('#userhistory-host').data('action'),
 		"sServerMethod": "POST",
 		"fnServerParams": function (aoData) {
 			aoData.push({ "name": "tradePairId", "value": $('#userhistory-host').data('tradepair') });
@@ -135,28 +151,26 @@
 		"order": [[0, "desc"]],
 		"lengthChange": false,
 		"processing": true,
-		"bServerSide": true,
+		"bServerSide": false,
 		"searching": false,
-		"scrollCollapse": true,
+		"scrollCollapse": false,
 		"scrollY": '300px',
-		"sPaginationType": "simple_numbers",
-		"pageLength": "15",
 		"sort": false,
 		"paging": false,
 		"info": false,
 		"language": { "emptyTable": "No data avaliable." },
-		"sAjaxSource": $('#useropenorders-host').data('action'),
+		//"sAjaxSource": $('#useropenorders-host').data('action'),
 		"sServerMethod": "POST",
 		"fnServerParams": function (aoData) {
 			aoData.push({ "name": "tradePairId", "value": $('#useropenorders-host').data('tradepair') });
 		},
-		"columnDefs": [{
-			"targets": 6,
-			"render": function (data, type, full, meta) {
-				var cancelAction = $('#useropenorders-host').data('cancel')
-				return '<button class="btn btn-primary btn-xs" onclick="cancelOrder(' + full[0] + ',\'' + cancelAction + '\')" >Cancel</button>'
-			}
-		}]
+		//"columnDefs": [{
+		//	"targets": 6,
+		//	"render": function (data, type, full, meta) {
+		//		var cancelAction = $('#useropenorders-host').data('cancel')
+		//		return '<button class="btn btn-primary btn-xs" onclick="cancelOrder(' + full[0] + ',\'' + cancelAction + '\')" >Cancel</button>'
+		//	}
+		//}]
 	});
 
 	$('#table-canceltradepair').on('click', function () {

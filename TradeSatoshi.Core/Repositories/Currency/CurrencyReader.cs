@@ -13,8 +13,9 @@ using System.Threading;
 using System.Security.Claims;
 using System.Security.Permissions;
 using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.Data;
+using System.Linq.Expressions;
 
 namespace TradeSatoshi.Core.Currency
 {
@@ -22,65 +23,49 @@ namespace TradeSatoshi.Core.Currency
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public CurrencyModel GetCurrency(int currencyId)
+		public async Task<CurrencyModel> GetCurrency(int currencyId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currency = context.Currency.Find(currencyId);
+				return await context.Currency.Select(MapCurrency).FirstOrDefaultAsync(c => c.Id == currencyId);
+			}
+		}
+
+		public async Task<UpdateCurrencyModel> GetCurrencyUpdate(int currencyId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var currency = await context.Currency.FirstOrDefaultAsync(c => c.Id == currencyId);
 				if (currency == null)
 					return null;
 
-				return new CurrencyModel
+				return new UpdateCurrencyModel
 				{
+					Id = currency.Id,
+					IsEnabled = currency.IsEnabled,
+					MaxTrade = currency.MaxTrade,
+					MaxWithdraw = currency.MaxWithdraw,
+					MinBaseTrade = currency.MinBaseTrade,
+					MinConfirmations = currency.MinConfirmations,
+					MinTrade = currency.MinTrade,
+					MinWithdraw = currency.MinWithdraw,
 					Name = currency.Name,
+					Status = currency.Status,
+					StatusMessage = currency.StatusMessage,
 					Symbol = currency.Symbol,
-					Status = currency.Status
+					TradeFee = currency.TradeFee,
+					TransferFee = currency.TransferFee,
+					WithdrawFee = currency.WithdrawFee,
+					WithdrawFeeType = currency.WithdrawFeeType
 				};
 			}
 		}
 
-		public List<CurrencyModel> GetCurrencies()
+		public async Task<List<CurrencyModel>> GetCurrencies()
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return context.Currency.Select(currency =>
-					new CurrencyModel
-					{
-						Name = currency.Name,
-						Symbol = currency.Symbol,
-						Status = currency.Status
-					}).ToList();
-			}
-		}
-
-		public async Task<CurrencyModel> GetCurrencyAsync(int currencyId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var currency = await context.Currency.FindAsync(currencyId);
-				if (currency == null)
-					return null;
-
-				return new CurrencyModel
-				{
-					Name = currency.Name,
-					Symbol = currency.Symbol,
-					Status = currency.Status
-				};
-			}
-		}
-
-		public async Task<List<CurrencyModel>> GetCurrenciesAsync()
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				return await context.Currency.Select(currency =>
-					new CurrencyModel
-					{
-						Name = currency.Name,
-						Symbol = currency.Symbol,
-						Status = currency.Status
-					}).ToListAsync();
+				return await context.Currency.Select(MapCurrency).ToListAsync();
 			}
 		}
 
@@ -88,14 +73,27 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var query = context.Currency.Select(currency =>
-						new CurrencyModel
-						{
-							Name = currency.Name,
-							Symbol = currency.Symbol,
-							Status = currency.Status
-						});
-				return query.GetDataTableResult(model);
+				return context.Currency.Select(MapCurrency).GetDataTableResult(model);
+			}
+		}
+
+		private Expression<Func<Entity.Currency, CurrencyModel>> MapCurrency
+		{
+			get
+			{
+				return (currency) => new CurrencyModel
+				{
+					Id = currency.Id,
+					Name = currency.Name,
+					Symbol = currency.Symbol,
+					Status = currency.Status,
+					Version = currency.Version,
+					Balance = currency.Balance,
+					Connections = currency.Connections,
+					Block = currency.Block,
+					Error = currency.Errors,
+					IsEnabled = currency.IsEnabled
+				};
 			}
 		}
 	}

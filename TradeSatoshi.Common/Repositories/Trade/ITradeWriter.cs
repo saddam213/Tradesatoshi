@@ -10,7 +10,7 @@ namespace TradeSatoshi.Common.Trade
 {
 	public interface ITradeWriter
 	{
-		Task<IWriterResult<bool>> CreateTradeAsync(CreateTradeModel tradeItem);
-		Task<IWriterResult<bool>> CancelTradeAsync(CancelTradeModel tradeItem);
+		Task<IWriterResult<bool>> CreateTrade(string userId, CreateTradeModel tradeItem);
+		Task<IWriterResult<bool>> CancelTrade(string userId, CancelTradeModel tradeItem);
 	}
 }

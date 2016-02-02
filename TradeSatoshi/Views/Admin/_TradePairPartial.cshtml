@@ -1,0 +1,65 @@
+﻿<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">TradePairs</h3>
+			</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" onclick="createTradePair();">Create TradePair</button>
+				<table id="table-tradepair" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Status</th>
+							<th>CurrencyId</th>
+							<th>BaseCurrencyId</th>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$('#table-tradepair').dataTable({
+		"order": [[1, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetTradePairs")',
+		"sServerMethod": "POST",
+		"columnDefs": [{
+			"targets": 5,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<button class='btn btn-info btn-xs' onclick='updateTradePair(\"" + full[0] + "\");'>Edit</button>";
+			}
+		}]
+	});
+
+	function createTradePair() {
+		openModal('@Url.Action("Create", "TradePair")', { }, function (data) {
+			$("#table-tradepair").dataTable().fnDraw();
+		});
+	}
+
+	function updateTradePair(tradepairId) {
+		openModal('@Url.Action("Update", "TradePair")', { tradepairId: tradepairId }, function (data) {
+			$("#table-tradepair").dataTable().fnDraw();
+		});
+	}
+</script>

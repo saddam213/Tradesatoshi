@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Helpers;
@@ -18,10 +19,15 @@ namespace TradeSatoshi.Web.Controllers
 		public IVoteReader VoteReader { get; set; }
 		public IVoteWriter VoteWriter { get; set; }
 		public IBalanceReader BalanceReader { get; set; }
+		public ITradePairReader TradePairReader { get; set; }
 
 		public async Task<ActionResult> Index()
 		{
 			var model = await VoteReader.GetVoteSettings();
+			var tradePairs = await TradePairReader.GetTradePairs();
+			var balances = await BalanceReader.GetBalances(User.Id());
+			model.TradePairs = new List<TradePairModel>(tradePairs);
+			model.Balances = new List<BalanceModel>(balances);
 			return View(model);
 		}
 
@@ -57,7 +63,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (user == null)
 				return UnauthorizedModal();
 
-			var balance = await BalanceReader.GetBalanceAsync(User.Id(), Constants.SystemCurrencyId);
+			var balance = await BalanceReader.GetBalance(User.Id(), Constants.SystemCurrencyId);
 			if (balance == null)
 				return ViewMessageModal(ViewMessageModel.Error("Invalid Request", "An unknown error occured."));
 

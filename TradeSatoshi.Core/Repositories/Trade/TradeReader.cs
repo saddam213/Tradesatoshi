@@ -13,6 +13,8 @@ using TradeSatoshi.Core.Helpers;
 using System.Data.Entity;
 using TradeSatoshi.Common;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Base.Extensions;
+using TradeSatoshi.Common.Exchange;
 
 namespace TradeSatoshi.Core.Trade
 {
@@ -27,7 +29,7 @@ namespace TradeSatoshi.Core.Trade
 				var query = context.Trade
 					.Include(t => t.TradePair.Currency1)
 					.Include(t => t.TradePair.Currency2)
-					.Where(x => x.UserId == userId)
+					.Where(x => x.UserId == userId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 					.Select(x => new TradeModel
 					{
 						Amount = x.Amount,
@@ -119,20 +121,14 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.TradeHistory
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
 					.Where(x => x.TradePairId == tradePairId)
-					.Select(x => new TradeHistoryModel
+					.Select(x => new TradeHistoryDataTableModel
 					{
 						Amount = x.Amount,
-						Fee = x.Fee,
-						Id = x.Id,
-						IsApi = x.IsApi,
 						Rate = x.Rate,
 						Timestamp = x.Timestamp,
 						TradeHistoryType = x.TradeHistoryType,
-						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
-					}).OrderByDescending(x => x.Id);
+					}).OrderByDescending(x => x.Timestamp);
 				return query.GetDataTableResult(model);
 			}
 		}
@@ -208,14 +204,14 @@ namespace TradeSatoshi.Core.Trade
 		}
 
 
-		public TradePairInfoModel GetTradePairInfo(int tradePairId, string userId)
+		public async Task<TradePairInfoModel> GetTradePairInfo(int tradePairId, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var tradePair = context.TradePair
+				var tradePair = await context.TradePair
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
-					.FirstOrDefault(x => x.Id == tradePairId);
+					.FirstOrDefaultAsync(x => x.Id == tradePairId);
 
 				var model = new TradePairInfoModel
 				{
@@ -226,7 +222,7 @@ namespace TradeSatoshi.Core.Trade
 					BaseSymbol = tradePair.Currency2.Symbol,
 				};
 
-				if(!string.IsNullOrEmpty(userId))
+				if (!string.IsNullOrEmpty(userId))
 				{
 					var balances = context.Balance.Where(x => x.UserId == userId && (x.CurrencyId == tradePair.CurrencyId1 || x.CurrencyId == tradePair.CurrencyId2)).ToList();
 					var balance1 = balances.FirstOrDefault(x => x.CurrencyId == tradePair.CurrencyId1);
@@ -238,5 +234,104 @@ namespace TradeSatoshi.Core.Trade
 				return model;
 			}
 		}
+
+		public async Task<TradePairExchangeModel> GetTradePairExchange(int tradePairId, string userId)
+		{
+			var model = await GetTradePairInfo(tradePairId, userId);
+			return new TradePairExchangeModel
+			{
+				TradePairId = model.TradePairId,
+				Symbol = model.Symbol,
+				BaseSymbol = model.BaseSymbol,
+				Balance = model.Balance,
+				BaseBalance = model.BaseBalance,
+				BuyModel = new CreateTradeModel
+				{
+					TradePairId = model.TradePairId,
+					TradeType = TradeType.Buy,
+					Symbol = model.Symbol,
+					BaseSymbol = model.BaseSymbol,
+					Fee = 0.2m,
+					MinTrade = 0.00002000m
+				},
+				SellModel = new CreateTradeModel
+				{
+					TradePairId = model.TradePairId,
+					TradeType = TradeType.Sell,
+					Symbol = model.Symbol,
+					BaseSymbol = model.BaseSymbol,
+					Fee = model.Fee,
+					MinTrade = model.MinTrade
+				},
+			};
+		}
+
+		public async Task<ChartDataViewModel> GetTradePairChart(int tradePairId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var tradePairData = await context.TradeHistory
+				.Where(x => x.TradePairId == tradePairId)
+				.Select(x => new
+				{
+					Amount = x.Amount,
+					Rate = x.Rate,
+					Timestamp = x.Timestamp
+				}).ToListAsync();
+
+				if (tradePairData.IsNullOrEmpty())
+					return MapChartData(new[] { new ChartDataModel(DateTime.UtcNow.ToJavaTime(), 0, 0, 0, 0, 0) });
+
+				var chartData = new List<ChartDataModel>();
+				var start = tradePairData.Min(x => x.Timestamp);
+				var finish = DateTime.UtcNow;
+				var totalhours = (finish - start).TotalHours;
+				var lastClose = 0m;
+				var interval = TimeSpan.FromHours(1);
+				var tickData = tradePairData.GroupBy(s => s.Timestamp.Ticks / interval.Ticks);
+				for (int i = 0; i < totalhours; i++)
+				{
+					var date = start.AddHours(i);
+					var data = tickData.FirstOrDefault(x => x.Any(c => c.Timestamp > date && c.Timestamp < date.Add(interval)));
+					if (data.IsNullOrEmpty())
+					{
+						if (lastClose == 0)
+						{
+							lastClose = tradePairData.FirstOrDefault().Rate;
+						}
+						chartData.Add(new ChartDataModel(date.ToJavaTime(), lastClose, lastClose, lastClose, lastClose, 0));
+						continue;
+					}
+
+					var max = data.Max(x => x.Rate);
+					lastClose = data.Last().Rate;
+					chartData.Add(new ChartDataModel(date.ToJavaTime(), data.First().Rate, max, data.Min(x => x.Rate), lastClose, data.Sum(x => x.Amount)));
+				}
+
+				return MapChartData(chartData);
+			}
+		}
+
+		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData)
+		{
+			return new ChartDataViewModel
+			{
+				Candle = chartData.Select(x => new[]
+					{ 
+						x.Timestamp,
+						x.Open,
+						x.High,
+						x.Low,
+						x.Close
+					}).ToList(),
+				Volume = chartData.Select(x => new[]
+					{ 
+						x.Timestamp,
+						x.Volume 
+					}).ToList()
+			};
+		}
 	}
+
+
 }

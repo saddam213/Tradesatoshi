@@ -6,6 +6,12 @@ using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Web.Helpers;
 using TradeSatoshi.Common.Exchange;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Common.TradePair;
+using System.Collections.Generic;
+using System.Linq;
+using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Web.Attributes;
+using TradeSatoshi.Common.Security;
 
 namespace TradeSatoshi.Web.Controllers
 {
@@ -13,51 +19,36 @@ namespace TradeSatoshi.Web.Controllers
 	{
 		public ITradeWriter TradeWriter { get; set; }
 		public ITradeReader TradeReader { get; set; }
+		public IBalanceReader BalanceReader { get; set; }
+		public ITradePairReader TradePairReader { get; set; }
 
-		public ActionResult Index()
+		[HttpGet]
+		public async Task<ActionResult> Index(string market)
 		{
-			return View();
-		}
-
-		public ActionResult TradePair(int tradePairId)
-		{
-			var model = TradeReader.GetTradePairInfo(tradePairId, User.Id());
-			return PartialView("_TradePairPartial", new TradePairExchangeModel
+			var tradePairs = await TradePairReader.GetTradePairs();
+			var balances = await BalanceReader.GetBalances(User.Id());
+			return View(new ExchangeModel
 			{
-				TradePairId = model.TradePairId,
-				Symbol = model.Symbol,
-				BaseSymbol = model.BaseSymbol,
-				Balance = model.Balance,
-				BaseBalance = model.BaseBalance,
-				BuyModel = new CreateTradeModel
-				{
-					TradePairId = model.TradePairId,
-					TradeType = TradeType.Buy,
-					Symbol = model.Symbol,
-					BaseSymbol = model.BaseSymbol,
-					Fee = 0.2m,
-					MinTrade = 0.00002000m
-				},
-				SellModel = new CreateTradeModel
-				{
-					TradePairId = model.TradePairId,
-					TradeType = TradeType.Sell,
-					Symbol = model.Symbol,
-					BaseSymbol = model.BaseSymbol,
-					Fee = model.Fee,
-					MinTrade = model.MinTrade
-				},
+				TradePair = market,
+				TradePairs = new List<TradePairModel>(tradePairs),
+				Balances = new List<BalanceModel>(balances)
 			});
 		}
 
+		[HttpGet]
+		public async Task<ActionResult> TradePair(int tradePairId)
+		{
+			return PartialView("_TradePairPartial", await TradeReader.GetTradePairExchange(tradePairId, User.Id()));
+		}
+
 		[HttpPost]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CreateTrade(CreateTradeModel model)
 		{
 			if (!ModelState.IsValid)
 				return PartialView("_CreateTradePartial", model);
 
-			model.UserId = User.Id();
-			var result = await TradeWriter.CreateTradeAsync(model);
+			var result = await TradeWriter.CreateTrade(User.Id(), model);
 			if (!ModelState.IsWriterResultValid(result))
 				return PartialView("_CreateTradePartial", model);
 
@@ -65,41 +56,35 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CancelTrade(int id, CancelTradeType cancelType)
 		{
-			await TradeWriter.CancelTradeAsync(new CancelTradeModel
+			var result = await TradeWriter.CancelTrade(User.Id(), new CancelTradeModel
 			{
-				UserId = User.Id(),
 				TradeId = id,
 				TradePairId = id,
 				CancelType = cancelType
 			});
 
-			return JsonSuccess();
+			return Json(result);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
+		public ActionResult GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
 		{
 			return DataTable(TradeReader.GetTradePairOrderBookDataTable(param, tradePairId, tradeType));
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> GetMarketHistory(DataTablesModel param, int tradePairId)
+		public ActionResult GetMarketHistory(DataTablesModel param, int tradePairId)
 		{
 			return DataTable(TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
 		}
 
-		[HttpPost]
-		public async Task<ActionResult> GetUserOpenOrders(DataTablesModel param, int tradePairId)
+		[HttpGet]
+		public async Task<ActionResult> GetTradePairChart(int tradePairId)
 		{
-			return DataTable(TradeReader.GetTradePairUserOpenOrdersDataTable(param, tradePairId, User.Id()));
-		}
-
-		[HttpPost]
-		public async Task<ActionResult> GetUserMarketHistory(DataTablesModel param, int tradePairId)
-		{
-			return DataTable(TradeReader.GetUserTradePairTradeHistoryDataTable(param, tradePairId, User.Id()));
+			return Json(await TradeReader.GetTradePairChart(tradePairId), JsonRequestBehavior.AllowGet);
 		}
 	}
 }

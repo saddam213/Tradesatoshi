@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Vote
 {
-	public class VoteModel
+	public class VoteModel : ITradeSidebarModel
 	{
 		public int VotePeriod { get; set; }
 		public DateTime NextVote { get; set; }
@@ -18,5 +18,9 @@ namespace TradeSatoshi.Common.Vote
 		public string LastFree { get; set; }
 
 		public string LastPaid { get; set; }
+
+		public List<Balance.BalanceModel> Balances { get; set; }
+
+		public List<TradePair.TradePairModel> TradePairs { get; set; }
 	}
 }

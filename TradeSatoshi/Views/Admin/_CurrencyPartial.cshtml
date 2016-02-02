@@ -1,0 +1,71 @@
+﻿<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Currencies</h3>
+			</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" onclick="createCurrency();">Create Currency</button>
+				<table id="table-currency" class="table table-condensed">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Name</th>
+							<th>Symbol</th>
+							<th>Status</th>
+							<th>Version</th>
+							<th>Balance</th>
+							<th>Connections</th>
+							<th>Block</th>
+							<th>Error</th>
+							<th>IsEnabled</th>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$('#table-currency').dataTable({
+		"order": [[1, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"sPaginationType": "simple_numbers",
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetCurrencies")',
+		"sServerMethod": "POST",
+		"columnDefs": [{
+			"targets": 10,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				return "<button class='btn btn-info btn-xs' onclick='updateCurrency(\"" + full[0] + "\");'>Edit</button>";
+			}
+		}]
+	});
+
+
+	function createCurrency() {
+		openModal('@Url.Action("Create", "Currency")', { }, function (data) {
+				$("#table-currency").dataTable().fnDraw();
+			});
+		}
+
+	function updateCurrency(currencyId) {
+		openModal('@Url.Action("Update", "Currency")', { currencyId: currencyId }, function (data) {
+			$("#table-currency").dataTable().fnDraw();
+		});
+	}
+</script>

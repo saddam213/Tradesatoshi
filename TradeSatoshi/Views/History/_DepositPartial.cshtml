@@ -1,0 +1,46 @@
+﻿<div class="panel panel-default" style="position:relative; bottom:0;top:0">
+	<div class="panel-heading">
+		<h3 class="panel-title">Deposits</h3>
+	</div>
+	<div class="panel-body">
+		<table id="table-deposit" class="table">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Currency</th>
+					<th>Symbol</th>
+					<th>Amount</th>
+					<th>Status</th>
+					<th>Confimations</th>
+					<th>TxId</th>
+					<th>Timestamp</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script>
+
+	$('#table-deposit').dataTable({
+		"order": [[0, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": true,
+		"searching": true,
+		"scrollCollapse": false,
+		"oSearch": { "sSearch": "@ViewBag.Search" },
+		"sPaginationType": "simple_numbers",
+		"scrollY": '600px',
+		"pageLength": "15",
+		"sort": true,
+		"paging": true,
+		"info": true,
+		"language": { "emptyTable": "No data avaliable." },
+		"sAjaxSource": '@Url.Action("GetDeposits")',
+		"sServerMethod": "POST"
+	});
+
+</script>

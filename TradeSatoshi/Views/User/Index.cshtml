@@ -1,98 +1,71 @@
-﻿@{
+﻿@model TradeSatoshi.Common.User.UserSettingsModel
+@{
 	ViewBag.Title = "User";
 }
 
-<div class="row row-top">
-	<div class="col-md-2">
-		<ul class="nav nav-pills nav-pills-primary nav-stacked" id="tabcontrol-main" style="padding-top: 1px">
-			<li>
-				<a href="#Profile" data-toggle="tab" data-div="#profileTarget" data-action="@Url.Action("UserProfile")">Profile
-					<i id="profileTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Security" data-toggle="tab" data-div="#securityTarget" data-action="@Url.Action("Security")">Security
-					<i id="securityTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Balances" data-toggle="tab" data-div="#balancesTarget" data-action="@Url.Action("Balances")">Balances
-					<i id="balancesTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Deposits" data-toggle="tab" data-div="#depositsTarget" data-action="@Url.Action("Deposit")">Deposits
-					<i id="depositsTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Withdrawals" data-toggle="tab" data-div="#withdrawalsTarget" data-action="@Url.Action("Withdraw")">Withdrawals
-					<i id="withdrawalsTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Trades" data-toggle="tab" data-div="#tradesTarget" data-action="@Url.Action("Trades")">Trades
-					<i id="tradesTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#TradeHistory" data-toggle="tab" data-div="#tradeHistoryTarget" data-action="@Url.Action("TradeHistory")">Trade History
-					<i id="tradeHistoryTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-			<li>
-				<a href="#Transfer" data-toggle="tab" data-div="#transferTarget" data-action="@Url.Action("Transfers")">Transfer History
-					<i id="transferTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
-				</a>
-			</li>
-		</ul>
+
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
 	</div>
-	<div class="col-md-10">
-		<div class="tab-content">
 
-			<!--Profile -->
-			<div class="tab-pane fade" id="Profile">
-				<div id="profileTarget"></div>
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+			<div style="padding: 2px; padding-top: 5px;">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Logons</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div id="changePasswordTarget" class="col-md-6 col-lg-4">
+								@Html.Partial("_PasswordPartial", Model.SecurityModel)
+							</div>
+
+							<div class="col-md-6 col-lg-4">
+								<div class="col-md-12">
+									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Login });}
+								</div>
+								<div class="col-md-12">
+									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Withdraw });}
+								</div>
+								<div class="col-md-12">
+									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Transfer });}
+								</div>
+							</div>
+
+							<div id="changeProfileTarget" class="col-md-6 col-lg-4">
+								@{Html.RenderPartial("_ProfilePartial", Model.UserProfile);}
+							</div>
+
+						</div>
+					</div>
+				</div>
 			</div>
 
-			<!--Security -->
-			<div class="tab-pane fade" id="Security">
-				<div id="securityTarget"></div>
-			</div>
 
-			<!--Balances -->
-			<div class="tab-pane fade" id="Balances">
-				<div id="balancesTarget"></div>
-			</div>
 
-			<!--Deposits -->
-			<div class="tab-pane fade" id="Deposits">
-				<div id="depositsTarget"></div>
-			</div>
-
-			<!--Withdrawals -->
-			<div class="tab-pane fade" id="Withdrawals">
-				<div id="withdrawalsTarget"></div>
-			</div>
-
-			<!--Trades -->
-			<div class="tab-pane fade" id="Trades">
-				<div id="tradesTarget"></div>
-			</div>
-
-			<!--TradeHistory -->
-			<div class="tab-pane fade" id="TradeHistory">
-				<div id="tradeHistoryTarget"></div>
-			</div>
-
-			<!--TransferHistory -->
-			<div class="tab-pane fade" id="Transfer">
-				<div id="transferTarget"></div>
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
 			</div>
 		</div>
 	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
 </div>
 
+
+
 @section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/Project/chat.js")
 	@Scripts.Render("~/Scripts/Project/User/user.js")
 }

@@ -227,6 +227,11 @@
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\history.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\mustache.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -249,8 +254,14 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Project\Admin\admin.js" />
+    <Content Include="Scripts\Project\Balance\balance.js" />
     <Content Include="Scripts\Project\chat.js" />
+    <Content Include="Scripts\Project\exporting.js" />
+    <Content Include="Scripts\Project\highstock.js" />
+    <Content Include="Scripts\Project\History\history.js" />
+    <Content Include="Scripts\Project\Orders\orders.js" />
     <Content Include="Scripts\Project\simplemodal.js" />
+    <Content Include="Scripts\Project\Status\status.js" />
     <Content Include="Scripts\Project\Transfer\transferCreate.js" />
     <Content Include="Scripts\Project\Exchange\tradepairPartial.js" />
     <Content Include="Scripts\Project\Exchange\exchange.js" />
@@ -280,10 +291,19 @@
     <Content Include="Views\Account\PasswordForgot.cshtml" />
     <Content Include="Views\Admin\_TradeHistoryPartial.cshtml" />
     <Content Include="Views\Admin\_TradesPartial.cshtml" />
-    <Content Include="Views\Exchange\_TradePairPartial.cshtml" />
-    <Content Include="Views\Exchange\_CreateTradePartial.cshtml" />
     <Content Include="Views\Admin\_TransferPartial.cshtml" />
     <Content Include="Views\Admin\_SupportPartial.cshtml" />
+    <Content Include="Views\Admin\_CurrencyPartial.cshtml" />
+    <Content Include="Views\Admin\_TradePairPartial.cshtml" />
+    <Content Include="Views\Currency\UpdateCurrencyModal.cshtml" />
+    <Content Include="Views\Currency\CreateCurrencyModal.cshtml" />
+    <Content Include="Views\Balance\Index.cshtml" />
+    <Content Include="Views\History\Index.cshtml" />
+    <Content Include="Views\Exchange\_CreateTradePartial.cshtml" />
+    <Content Include="Views\Exchange\_TradePairPartial.cshtml" />
+    <Content Include="Views\History\_DepositPartial.cshtml" />
+    <Content Include="Views\History\_TransferPartial.cshtml" />
+    <Content Include="Views\History\_WithdrawPartial.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -302,7 +322,13 @@
     <Compile Include="Attributes\AuthorizeAttrubute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BalanceController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\HistoryController.cs" />
+    <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\StatusController.cs" />
+    <Compile Include="Controllers\TradePairController.cs" />
+    <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Controllers\TransferController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -314,7 +340,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Helpers\ModelExtensions.cs" />
     <Compile Include="Helpers\ModelStateHelpers.cs" />
     <Compile Include="Helpers\TwoFactorHelpers.cs" />
     <Compile Include="Helpers\GoogleHelper.cs" />
@@ -322,6 +348,7 @@
     <Compile Include="Helpers\RequestHelpers.cs" />
     <Compile Include="Helpers\ResourceHelper.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
+    <Compile Include="HttpModules\SignalRFormsAuthenticationCleanerModule.cs" />
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Hubs\DataNotificationHub.cs" />
     <Compile Include="ModelBinder\DataTableModelBinder.cs" />
@@ -331,7 +358,9 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\web.config" />
+    <Content Include="Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
@@ -353,16 +382,9 @@
     <Content Include="Views\Shared\_Modal.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\_ProfilePartial.cshtml" />
-    <Content Include="Views\User\_SecurityPartial.cshtml" />
-    <Content Include="Views\User\_BalancesPartial.cshtml" />
-    <Content Include="Views\User\_DepositPartial.cshtml" />
-    <Content Include="Views\User\_WithdrawPartial.cshtml" />
     <Content Include="Views\Withdraw\CreateWithdrawModal.cshtml" />
     <Content Include="Views\Shared\_TwoFactorEntryPartial.cshtml" />
-    <Content Include="Views\User\_TradesPartial.cshtml" />
-    <Content Include="Views\User\_TradeHistoryPartial.cshtml" />
     <Content Include="Views\Transfer\CreateTransferModal.cshtml" />
-    <Content Include="Views\User\_TransferPartial.cshtml" />
     <Content Include="Views\Support\Support.cshtml" />
     <Content Include="Views\Support\Index.cshtml" />
     <Content Include="Views\Support\ViewTicket.cshtml" />
@@ -383,6 +405,13 @@
     <Content Include="Views\Vote\ViewVoteItemModal.cshtml" />
     <Content Include="Views\Vote\AdminUpdateVoteSettingsModal.cshtml" />
     <Content Include="Views\Shared\_ChatPartial.cshtml" />
+    <Content Include="Views\TradePair\CreateTradePairModal.cshtml" />
+    <Content Include="Views\TradePair\UpdateTradePairModal.cshtml" />
+    <Content Include="Views\Shared\_ChatSidebarPartial.cshtml" />
+    <Content Include="Views\Shared\_TradeSidebarPartial.cshtml" />
+    <Content Include="Views\Orders\Index.cshtml" />
+    <Content Include="Views\Status\Index.cshtml" />
+    <Content Include="Views\History\_TradePartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

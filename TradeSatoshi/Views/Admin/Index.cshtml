@@ -24,6 +24,19 @@
 				<hr />
 			</li>
 			<li>
+				<a href="#tabcontrol-main-tab5" data-toggle="tab" data-div="#currencyTarget" data-action="@Url.Action("Currency")">Currency 
+					<i id="currencyTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+				<li>
+				<a href="#tabcontrol-main-tab6" data-toggle="tab" data-div="#tradepairTarget" data-action="@Url.Action("TradePair")">TradePair 
+					<i id="tradepairTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
+				</a>
+			</li>
+			<li>
+				<hr />
+			</li>
+			<li>
 				<a href="#tabcontrol-main-tab10" data-toggle="tab" data-div="#depositTarget" data-action="@Url.Action("Deposits")">Deposits
 					<i id="depositTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
@@ -84,6 +97,16 @@
 			<!--Security -->
 			<div class="tab-pane fade" id="tabcontrol-main-tab3">
 				<div id="securityTarget"></div>
+			</div>
+
+			<!--Currency -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab5">
+				<div id="currencyTarget"></div>
+			</div>
+
+			<!--Tradepair -->
+			<div class="tab-pane fade" id="tabcontrol-main-tab6">
+				<div id="tradepairTarget"></div>
 			</div>
 
 			<!--Deposits -->

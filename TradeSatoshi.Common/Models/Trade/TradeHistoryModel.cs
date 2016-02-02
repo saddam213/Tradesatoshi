@@ -18,4 +18,12 @@ namespace TradeSatoshi.Common.Trade
 		public DateTime Timestamp { get; set; }
 		public bool IsApi { get; set; }
 	}
+
+	public class TradeHistoryDataTableModel
+	{
+		public DateTime Timestamp { get; set; }
+		public TradeType TradeHistoryType { get; set; }
+		public decimal Rate { get; set; }
+		public decimal Amount { get; set; }
+	}
 }

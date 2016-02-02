@@ -1,0 +1,54 @@
+﻿@model TradeSatoshi.Common.TradePair.CreateTradePairModel
+@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<h3 class="modal-title"><span class="symbol"></span>Create TradePair</h3>
+			<small>Create a new exchange tradepair</small>
+		</div>
+		@using (Ajax.BeginForm("Create", "TradePair", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+		{
+			@Html.AntiForgeryToken()
+			for (int i = 0; i < Model.Currencies.Count; i++)
+			{
+				@Html.HiddenFor(m => Model.Currencies[i].Id)
+				@Html.HiddenFor(m => Model.Currencies[i].Symbol)
+			}
+			<div class="row">
+				<div class="col-md-12">
+					@Html.ValidationSummary(true, "", htmlAttributes: new { @class = "alert alert-danger text-center" })
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.CurrencyId1, new { @class = "control-label" })
+								@Html.DropDownListFor(m => m.CurrencyId1, new SelectList(Model.Currencies, "Id", "Symbol"), "-Please Select-", new { @class = " form-control" })
+								@Html.ValidationMessageFor(m => m.CurrencyId1)
+							</div>
+							<div class="col-md-6">
+								@Html.LabelFor(m => m.CurrencyId2, new { @class = "control-label" })
+								@Html.DropDownListFor(m => m.CurrencyId2, new SelectList(Model.Currencies, "Id", "Symbol"), "-Please Select-", new { @class = " form-control" })
+								@Html.ValidationMessageFor(m => m.CurrencyId2)
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<input type="submit" value="@Html.Resource("Create")" class="btn btn-default" />
+				<button type="button" class="btn btn-primary simplemodal-close" onclick="$.modal.close();">Cancel</button>
+			</div>
+		}
+	</div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+

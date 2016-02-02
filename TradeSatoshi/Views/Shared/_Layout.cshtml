@@ -20,32 +20,32 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<img style="padding-top: 5px" height="40" src="../../Content/Images/TradeSatoshi_Badge.png" alt="" />
-				@*  @Html.ResourceActionLink("Tradesatoshi", "Index", "Home", null, new { @class = "navbar-brand" })*@
+				<a href="@Url.Action("Index", "Home")">
+					<img style="padding-top: 10px" height="38" src="../../Content/Images/TradeSatoshi_Badge.png" alt="" />
+				</a>
 			</div>
 			<div class="navbar-collapse collapse">
-				<ul class="nav navbar-nav">
-					<li>@Html.ResourceActionLink("Home", "Index", "Home")</li>
-					<li>@Html.ResourceActionLink("Exchange", "Index", "Exchange")</li>
-					<li>@Html.ResourceActionLink("Contact", "Contact", "Home")</li>
-					<li>@Html.ResourceActionLink("Terms of Service", "Terms", "Home")</li>
-					<li>@Html.ResourceActionLink("Voting", "Index", "Vote")</li>
-					<li>@Html.ResourceActionLink("Support", "Index", "Support")</li>
-					@if (User.IsInRole(SecurityRole.Administrator))
-					{
-						<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
-					}
-				</ul>
 				@Html.Partial("_LoginPartial")
+				<ul class="nav navbar-nav navbar-right">
+					<li>@Html.ResourceActionLink("Market", "Index", "Exchange")</li>
+					@if(User.Identity.IsAuthenticated)
+					{
+						<li>@Html.ResourceActionLink("Balance", "Index", "Balance")</li>
+						<li>@Html.ResourceActionLink("History", "Index", "History")</li>
+						<li>@Html.ResourceActionLink("Orders", "Index", "Orders")</li>
+					}
+					<li>@Html.ResourceActionLink("Status", "Index", "Status")</li>
+					<li>@Html.ResourceActionLink("Vote", "Index", "Vote")</li>
+				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="container-fluid body-content">
 		@RenderBody()
-		<hr />
+		@*	<hr />
 		<footer>
 			<p>&copy; @DateTime.Now.Year - Cryptopia Ltd.</p>
-		</footer>
+		</footer>*@
 	</div>
 
 	@Scripts.Render("~/bundles/jquery")

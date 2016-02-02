@@ -13,9 +13,12 @@ chatHub.client.Messages = function (messages, timestamp) {
 	$.each(messages, function (i, message) {
 		addChatMessage(message, timestamp);
 	});
+	setChatScrollPosition(true);
 };
 chatHub.client.NewMessage = function (message, timestamp) {
+	var shouldScroll = shouldChatScroll();
 	addChatMessage(message, timestamp);
+	setChatScrollPosition(shouldScroll);
 };
 
 chatHub.client.RemoveMessage = function (id) {
@@ -32,6 +35,13 @@ $.connection.hub.start().done(function () {
 		if (message) {
 			chatHub.server.sendMessage(message);
 			input.val('');
+		}
+	});
+
+	$('#chat-input').keydown(function (event) {
+		if (event.keyCode == 13 && !event.shiftKey) {
+			$('#chat-submit').trigger('click');
+			return false;
 		}
 	});
 
@@ -56,8 +66,21 @@ function addChatMessage(message, timestamp) {
 			message: message.Message,
 			id: message.Id
 		}));
-		$('#chat-table-container').scrollTop($('#chat-table-container')[0].scrollHeight);
 	}
+}
+
+function setChatScrollPosition(shouldScroll) {
+	if (shouldScroll) {
+		var container = $('#chat-table-container');
+		container.scrollTop(container[0].scrollHeight);
+	}
+}
+
+function shouldChatScroll() {
+	var container = $('#chat-table-container');
+	var scrollHeight = container[0].scrollHeight;
+	var currentScrollPosition = container.scrollTop() + container.innerHeight() + 100;
+	return scrollHeight < currentScrollPosition;
 }
 
 function containsName(message, name) {
@@ -77,44 +100,19 @@ function containsName(message, name) {
 
 function quoteMessage(user) {
 	var input = $('#chat-input');
+	input.focus();
 	var username = '@' + user;
 	var currentValue = input.val();
-	if(currentValue){
+	if (currentValue) {
 		input.val(input.val() + username + ' ');
-	}else{
+	} else {
 		input.val(username + ',');
 	}
+	input.focus();
 }
 
 function removeMessage(id) {
 	confirmModal('Remove Post?', 'Are you sure you want to remove this post?', function () {
 		chatHub.server.removeMessage(id);
 	});
-}
-
-function timeSince(time1, time2) {
-	var seconds = Math.floor((time1 - time2) / 1000);
-
-	if (seconds < 60) {
-		var val = Math.floor(seconds);
-		if (val > 3) {
-			return '(' + Math.floor(seconds) + ' seconds ago)';
-		}
-		return '(just now)';
-	}
-	if (seconds < 3600) {
-		var val = Math.floor((seconds / 60));
-		if (val > 2) {
-			return '(' + val + ' minutes ago)';
-		}
-		return '(a minute ago)';
-	}
-	if (seconds < 86400) {
-		var val = Math.floor(((seconds / 60) / 60));
-		if (val > 1) {
-			return '(' + val + ' hours ago)';
-		}
-		return '(an hour ago)';
-	}
-	return '(ages ago...)';
 }

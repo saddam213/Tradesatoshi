@@ -8,16 +8,13 @@ using TradeSatoshi.Common.Admin;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Security;
 
-namespace TradeSatoshi.Common.Balance
+namespace TradeSatoshi.Common.Currency
 {
 	public interface ICurrencyReader
 	{
-		CurrencyModel GetCurrency(int currencyId);
-		List<CurrencyModel> GetCurrencies();
-
-		Task<CurrencyModel> GetCurrencyAsync(int currencyId);
-		Task<List<CurrencyModel>> GetCurrenciesAsync();
-
+		Task<CurrencyModel> GetCurrency(int currencyId);
+		Task<List<CurrencyModel>> GetCurrencies();
+		Task<UpdateCurrencyModel> GetCurrencyUpdate(int currencyId);
 		DataTablesResponse GetCurrencyDataTable(DataTablesModel model);
 	}
 }

@@ -1,36 +1,35 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
-using TradeSatoshi.Common.Address;
 using TradeSatoshi.Common.Balance;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Trade;
-using TradeSatoshi.Common.Withdraw;
-using TradeSatoshi.Core.Admin;
 using TradeSatoshi.Web.Helpers;
 using TradeSatoshi.Common.User;
-using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Web.Attributes;
+using TradeSatoshi.Common.TradePair;
+using System.Collections.Generic;
 
 namespace TradeSatoshi.Web.Controllers
 {
 	[AuthorizeSecurityRole(SecurityRole.Standard)]
 	public class UserController : BaseController
 	{
-		public IUserReader UserReader { get; set; }
-		public IUserWriter UserWriter { get; set; }
 		public IBalanceReader BalanceReader { get; set; }
-		public IDepositReader DepositReader { get; set; }
-		public IWithdrawReader WithdrawReader { get; set; }
-		public IAddressWriter AddressWriter { get; set; }
-		public ITradeReader TradeReader { get; set; }
-		public ITransferReader TransferReader { get; set; }
+		public ITradePairReader TradePairReader { get; set; }
 
 		[HttpGet]
-		public ActionResult Index()
+		public async Task<ActionResult> Index()
 		{
-			return View();
+
+			var tradePairs = await TradePairReader.GetTradePairs();
+			var balances = await BalanceReader.GetBalances(User.Id());
+
+			return View(new UserSettingsModel
+			{
+				SecurityModel = new UserSecurityModel(),
+				UserProfile = new UserProfileModel(),
+				TradePairs = new List<TradePairModel>(tradePairs),
+				Balances = new List<BalanceModel>(balances)
+			});
 		}
 
 		#region Profile
@@ -38,7 +37,6 @@ namespace TradeSatoshi.Web.Controllers
 		[HttpGet]
 		public async Task<ActionResult> UserProfile()
 		{
-
 			var user = await UserManager.FindByIdAsync(User.Id());
 			var model = new UserProfileModel
 			{
@@ -85,12 +83,6 @@ namespace TradeSatoshi.Web.Controllers
 
 		#region Security
 
-		[HttpGet]
-		public ActionResult Security()
-		{
-			return PartialView("_SecurityPartial", new UserSecurityModel());
-		}
-
 		[HttpPost]
 		public async Task<ActionResult> ChangePassword(UserSecurityModel model)
 		{
@@ -105,112 +97,6 @@ namespace TradeSatoshi.Web.Controllers
 
 			AddErrors(result);
 			return PartialView("_PasswordPartial", model);
-		}
-
-		#endregion
-
-		#region Balances
-
-		[HttpGet]
-		public ActionResult Balances()
-		{
-			return PartialView("_BalancesPartial", new UserBalancesModel());
-		}
-
-		[HttpPost]
-		public ActionResult GetBalances(DataTablesModel param)
-		{
-			return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
-		}
-
-		[HttpPost]
-		public ActionResult GetAddress(int currencyId)
-		{
-			var result = AddressWriter.GenerateAddress(User.Id(), currencyId);
-			if (!ModelState.IsWriterResultValid(result))
-				return JsonError(result.FirstError);
-			
-			return JsonSuccess(result.Message);
-		}
-
-		#endregion
-
-		#region Deposit
-
-		[HttpGet]
-		public ActionResult Deposit()
-		{
-			return PartialView("_DepositPartial");
-		}
-
-		[HttpPost]
-		public ActionResult GetDeposits(DataTablesModel param)
-		{
-			return DataTable(DepositReader.GetUserDepositDataTable(param, User.Id()));
-		}
-
-		#endregion
-
-		#region Withdraw
-
-		[HttpGet]
-		public ActionResult Withdraw()
-		{
-			return PartialView("_WithdrawPartial");
-		}
-
-		[HttpPost]
-		public ActionResult GetWithdraws(DataTablesModel param)
-		{
-			return DataTable(WithdrawReader.GetUserWithdrawDataTable(param, User.Id()));
-		}
-
-		#endregion
-
-		#region Trades
-
-		[HttpGet]
-		public ActionResult Trades()
-		{
-			return PartialView("_TradesPartial");
-		}
-
-		[HttpPost]
-		public ActionResult GetTrades(DataTablesModel param)
-		{
-			return DataTable(TradeReader.GetUserTradeDataTable(param, User.Id()));
-		}
-
-		#endregion
-
-		#region TradeHistory
-
-		[HttpGet]
-		public ActionResult TradeHistory()
-		{
-			return PartialView("_TradeHistoryPartial");
-		}
-
-		[HttpPost]
-		public ActionResult GetTradeHistory(DataTablesModel param)
-		{
-			return DataTable(TradeReader.GetUserTradeHistoryDataTable(param, User.Id()));
-		}
-
-		#endregion
-
-		#region Transfer
-
-		[HttpGet]
-		public ActionResult Transfers()
-		{
-			return PartialView("_TransferPartial");
-		}
-
-		[HttpPost]
-		public ActionResult GetTransfers(DataTablesModel param)
-		{
-			return DataTable(TransferReader.GetUserTransferDataTable(param, User.Id()));
 		}
 
 		#endregion

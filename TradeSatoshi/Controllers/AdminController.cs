@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using TradeSatoshi.Common.Admin;
+using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Common.Withdraw;
@@ -28,6 +30,8 @@ namespace TradeSatoshi.Web.Controllers
 		public ITransferReader TransferReader { get; set; }
 		public ISupportReader SupportReader { get; set; }
 		public IVoteReader VoteReader { get; set; }
+		public ICurrencyReader CurrencyReader { get; set; }
+		public ITradePairReader TradePairReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -41,6 +45,38 @@ namespace TradeSatoshi.Web.Controllers
 		public ActionResult Status()
 		{
 			return PartialView("_StatusPartial");
+		}
+
+		#endregion
+
+		#region Currency
+
+		[HttpGet]
+		public ActionResult Currency()
+		{
+			return PartialView("_CurrencyPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetCurrencies(DataTablesModel param)
+		{
+			return DataTable(CurrencyReader.GetCurrencyDataTable(param));
+		}
+
+		#endregion
+
+		#region TradePair
+
+		[HttpGet]
+		public ActionResult TradePair()
+		{
+			return PartialView("_TradePairPartial");
+		}
+
+		[HttpPost]
+		public ActionResult GetTradePairs(DataTablesModel param)
+		{
+			return DataTable(TradePairReader.GetTradePairDataTable(param));
 		}
 
 		#endregion

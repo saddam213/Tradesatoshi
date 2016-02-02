@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Data;
 using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
@@ -40,7 +41,7 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			return Json(new { Success = false, Message = message, Title = title, AlertType = alertType.ToString() });
 		}
-	
+
 		protected ViewResult ViewMessage(ViewMessageModel model)
 		{
 			return View("ViewMessage", model);
@@ -78,12 +79,12 @@ namespace TradeSatoshi.Web.Controllers
 
 		protected CloseModalResult CloseModalSuccess(string message = null, string title = null, AlertType alertType = AlertType.Success)
 		{
-			return new CloseModalResult(true, message, title,alertType);
+			return new CloseModalResult(true, message, title, alertType);
 		}
 
 		protected CloseModalResult CloseModalError(string message = null, string title = null, AlertType alertType = AlertType.Danger)
 		{
-			return new CloseModalResult(false, message, title,alertType);
+			return new CloseModalResult(false, message, title, alertType);
 		}
 
 		protected CloseModalRedirectResult CloseModalRedirect(string redirectAction)

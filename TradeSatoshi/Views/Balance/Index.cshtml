@@ -1,0 +1,159 @@
+﻿@model TradeSatoshi.Common.Balance.BalanceViewModel
+@{
+	bool authenticated = User.Identity.IsAuthenticated;
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+
+			<div style="padding: 2px; padding-top: 5px;">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Balances</h3>
+					</div>
+					<div class="@*table-responsive*@" style="padding-top: 2px;">
+						<table id="table-balance" class="table">
+							<thead>
+								<tr>
+									@if (authenticated)
+									{<th></th>}
+									<th>Coin</th>
+									@if (authenticated)
+									{<th>Address</th>}
+									<th>Avaliable</th>
+									<th>Total</th>
+									<th>Unconfirmed</th>
+									<th>Held for orders</th>
+									<th>Pending withdraw</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for (int i = 0; i < Model.Balances.Count; i++)
+								{
+									var balance = Model.Balances[i];
+									var menuOrientation = (i >= (Model.Balances.Count / 2) ? "up" : "down");
+									<tr>
+										@if (authenticated)
+										{<td>@GetBalanceMenu(balance, menuOrientation)</td>}
+										<th title="@balance.Currency">@balance.Symbol</th>
+										@if (authenticated)
+										{<th>@GetBalanceAddress(balance)</th>}
+										<th>@balance.Avaliable</th>
+										<th>@balance.Total</th>
+										<th>@balance.Unconfirmed</th>
+										<th>@balance.HeldForTrades</th>
+										<th>@balance.PendingWithdraw</th>
+									</tr>
+								}
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+
+
+			<div id="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+@helper GetBalanceMenu(TradeSatoshi.Common.Balance.BalanceModel balance, string orientation = "down")
+{
+	<div class="btn-group drop@(orientation)">
+		<a class="btn btn-xs btn-primary dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bars" style="margin-right: 5px"></i><span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a onclick="createTransfer('@balance.CurrencyId');">Transfer</a></li>
+			<li><a onclick="createWithdraw('@balance.CurrencyId');">Withdraw</a></li>
+			<li><a onclick="generateAddress('@balance.CurrencyId');">Create Address</a></li>
+			<li class="divider"></li>
+			@*	<li class="dropdown-header"></li>*@
+			<li><a href="@Url.Action("Index", "History", new { coin = balance.Symbol, area = "Deposit" })">Deposits</a></li>
+			<li><a href="@Url.Action("Index", "History", new { coin = balance.Symbol, area = "Withdraw" })">Withdrawals</a></li>
+			<li><a href="@Url.Action("Index", "History", new { coin = balance.Symbol, area = "Transfer" })">Transfers</a></li>
+		</ul>
+	</div>
+}
+
+@helper GetBalanceAddress(TradeSatoshi.Common.Balance.BalanceModel balance)
+{
+	if (string.IsNullOrEmpty(balance.Address))
+	{
+	<button class="btb btn-xs btn-primary" onclick="generateAddress('@balance.CurrencyId');">Create Address</button>
+	}
+	else
+	{
+	@balance.Address
+	}
+}
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/Balance/balance.js")
+	<script>
+		$('#table-balance').dataTable({
+			"order": [[1, "asc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": false,
+			"searching": true,
+			"scrollCollapse": false,
+			"sort": true,
+			"paging": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable." },
+			"columnDefs": [
+			{ "targets": 0, "searchable": false, "orderable": false, "sort": false },
+			{ "targets": 3, "searchable": false, "orderable": false }
+			]
+		});
+
+		function generateAddress(currencyId) {
+			var target = $('#address-' + currencyId);
+			var targetCell = target.closest('td');
+			target.attr('disabled', 'disabled');
+			targetCell.addClass('info');
+			postJson('@Url.Action("GetAddress")', { currencyId: currencyId }, function (data) {
+				targetCell.removeClass('info');
+				target.removeAttr('disabled');
+				if (data.Success) {
+					targetCell.find('.target').html(data.Message);
+					return;
+				}
+				notifyModal('@Html.Resource("Generate Address Failed!")', data.Message);
+			});
+		}
+
+		function createWithdraw(currencyId) {
+			openModal('@Url.Action("Create", "Withdraw")', { currencyId: currencyId }, function (data) {
+				// reload
+			});
+		}
+
+		function createTransfer(currencyId) {
+			openModal('@Url.Action("Create", "Transfer")', { currencyId: currencyId }, function (data) {
+				// reload
+			});
+		}
+	</script>
+}

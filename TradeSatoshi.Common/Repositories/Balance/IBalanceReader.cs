@@ -12,12 +12,10 @@ namespace TradeSatoshi.Common.Balance
 {
 	public interface IBalanceReader
 	{
-		BalanceModel GetBalance(string userId, int currencyId);
-		List<BalanceModel> GetBalances(string userId);
+		Task<BalanceModel> GetBalance(string userId, int currencyId);
+		Task<List<BalanceModel>> GetBalances(string userId);
 
-		Task<BalanceModel> GetBalanceAsync(string userId, int currencyId);
-		Task<List<BalanceModel>> GetBalancesAsync(string userId);
-
+		DataTablesResponse GetBalanceMenu(DataTablesModel param, string userId);
 		DataTablesResponse GetBalanceDataTable(DataTablesModel model);
 		DataTablesResponse GetUserBalanceDataTable(DataTablesModel model, string userId);
 	}

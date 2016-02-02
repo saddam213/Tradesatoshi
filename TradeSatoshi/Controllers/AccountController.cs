@@ -411,7 +411,7 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 			var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false, }, identity);
+			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true, }, identity);
 
 			await UserManager.AddUserLogon(user, Request.GetIPAddress(), true);
 			await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));

@@ -17,14 +17,16 @@ namespace TradeSatoshi.Core.Trade
 	{
 		public ITradeService TradeService { get; set; }
 
-		public async Task<IWriterResult<bool>> CreateTradeAsync(CreateTradeModel model)
+		public async Task<IWriterResult<bool>> CreateTrade(string userId, CreateTradeModel model)
 		{
+			model.UserId = userId;
 			var result = await TradeService.QueueTradeItem(model);
 			return WriterResult<bool>.SuccessResult();
 		}
 
-		public async Task<IWriterResult<bool>> CancelTradeAsync(CancelTradeModel model)
+		public async Task<IWriterResult<bool>> CancelTrade(string userId, CancelTradeModel model)
 		{
+			model.UserId = userId;
 			var result = await TradeService.QueueTradeItem(model);
 			return WriterResult<bool>.SuccessResult();
 		}
