@@ -14,6 +14,8 @@
 							<th>Status</th>
 							<th>CurrencyId</th>
 							<th>BaseCurrencyId</th>
+							<td>Change</td>
+							<td>LastTrade</td>
 							<td></td>
 						</tr>
 					</thead>
@@ -42,7 +44,7 @@
 		"sAjaxSource": '@Url.Action("GetTradePairs")',
 		"sServerMethod": "POST",
 		"columnDefs": [{
-			"targets": 5,
+			"targets": 7,
 			"searchable": false,
 			"orderable": false,
 			"render": function (data, type, full, meta) {

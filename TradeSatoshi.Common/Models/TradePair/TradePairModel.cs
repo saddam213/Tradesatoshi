@@ -13,5 +13,7 @@ namespace TradeSatoshi.Common.TradePair
 		public TradePairStatus Status { get; set; }
 		public int CurrencyId { get; set; }
 		public int BaseCurrencyId { get; set; }
+		public double Change { get; set; }
+		public decimal LastTrade { get; set; }
 	}
 }

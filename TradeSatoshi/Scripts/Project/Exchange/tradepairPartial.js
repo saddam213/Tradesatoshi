@@ -1,5 +1,8 @@
 ﻿$(function () {
 
+	updateChart(null);
+
+
 	var sum_buy = 0;
 	$('[id^="table-buyOrders-"]').dataTable({
 		"order": [[0, "desc"]],
@@ -102,7 +105,7 @@
 		"bServerSide": true,
 		"searching": false,
 		"scrollCollapse": false,
-		"scrollY": "504px",
+		"scrollY": "472px",
 		"sort": false,
 		"paging": false,
 		"info": false,
@@ -124,53 +127,9 @@
 		}
 	});
 
-	$('[id^="table-userhistory-"]').dataTable({
-		"order": [[0, "desc"]],
-		"lengthChange": false,
-		"processing": true,
-		"bServerSide": false,
-		"searching": false,
-		"scrollCollapse": false,
-		"scrollY": '300px',
-		"sort": false,
-		"paging": false,
-		"info": false,
-		"language": { "emptyTable": "No data avaliable." },
-		//"sAjaxSource": $('#userhistory-host').data('action'),
-		"sServerMethod": "POST",
-		"fnServerParams": function (aoData) {
-			aoData.push({ "name": "tradePairId", "value": $('#userhistory-host').data('tradepair') });
-		},
-		"columnDefs": [{
-			"targets": -1,
-			"visible": false
-		}]
-	});
-	
-	$('[id^="table-useropenorders-"]').dataTable({
-		"order": [[0, "desc"]],
-		"lengthChange": false,
-		"processing": true,
-		"bServerSide": false,
-		"searching": false,
-		"scrollCollapse": false,
-		"scrollY": '300px',
-		"sort": false,
-		"paging": false,
-		"info": false,
-		"language": { "emptyTable": "No data avaliable." },
-		//"sAjaxSource": $('#useropenorders-host').data('action'),
-		"sServerMethod": "POST",
-		"fnServerParams": function (aoData) {
-			aoData.push({ "name": "tradePairId", "value": $('#useropenorders-host').data('tradepair') });
-		},
-		//"columnDefs": [{
-		//	"targets": 6,
-		//	"render": function (data, type, full, meta) {
-		//		var cancelAction = $('#useropenorders-host').data('cancel')
-		//		return '<button class="btn btn-primary btn-xs" onclick="cancelOrder(' + full[0] + ',\'' + cancelAction + '\')" >Cancel</button>'
-		//	}
-		//}]
+	var chartAction = $('#chartdata').data('action');
+	getJson(chartAction, {}, function (data) {
+		updateChart(data);
 	});
 
 	$('#table-canceltradepair').on('click', function () {
@@ -194,3 +153,140 @@ function cancelTradePairOrders(tradePair, action) {
 		});
 	}
 }
+
+function updateChart(chartData) {
+	var cdata = chartData ? chartData.Candle : [[0, 0, 0, 0, 0, 0]];
+	var vdata = chartData ? chartData.Volume : [[0, 0]];
+	$('#chartdata').highcharts('StockChart', {
+		chart: {
+			height: 278,
+			//zoomType: 'xy',
+			backgroundColor: 'transparent',
+
+		},
+
+		credits: {
+			enabled: false
+		},
+
+		rangeSelector: {
+			selected: 1
+		},
+
+		yAxis: [{
+			labels: {
+				format: '{value:.8f}',
+				align: 'right',
+				x: -3
+			},
+			title: {
+				text: 'OHLC'
+			},
+			height: '75%',
+			lineWidth: 2
+		},
+		{
+			labels: {
+				format: '{value:.8f}',
+				align: 'right',
+				x: -3
+			},
+			title: {
+				text: 'Volume'
+			},
+			top: '75%',
+			height: '25%',
+			offset: 0,
+			lineWidth: 2
+		}],
+
+		candlestick: {
+			pointWidth: '4px'
+		},
+
+		series: [{
+			type: 'candlestick',
+			name: $('#chartdata').data('title'),
+			data: cdata,
+			color: '#ee5f5b',
+			upColor: '#5cb85c',
+		},
+			{
+				name: 'Mean',
+				data: cdata,
+				type: 'spline',
+				color: 'rgba(0, 0, 0, 0.2)',
+				tooltip: {
+					valueDecimals: 8
+				}
+			},
+			{
+				type: 'column',
+				color: '#666666',
+				name: 'Volume',
+				data: vdata,
+				yAxis: 1,
+			}],
+
+		tooltip:
+		{
+			changeDecimals: 8,
+			valueDecimals: 8,
+			followPointer: false
+		},
+
+		rangeSelector: {
+			allButtonsEnabled: true,
+			buttons: [{
+				type: 'day',
+				count: 1,
+				text: 'Day',
+				dataGrouping: {
+					forced: true,
+					units: [['hour', [1]]]
+				}
+			},
+			{
+				type: 'week',
+				count: 1,
+				text: 'Week',
+				dataGrouping: {
+					forced: true,
+					units: [['hour', [4]]]
+				}
+			},
+			{
+				type: 'week',
+				text: 'Month',
+				count: 4,
+				dataGrouping: {
+					forced: true,
+					units: [['hour', [12]]]
+				}
+			},
+			{
+				type: 'week',
+				text: '3 Month',
+				count: 12,
+				dataGrouping: {
+					forced: true,
+					units: [['hour', [48]]]
+				}
+			},
+			{
+				type: 'all',
+				text: 'All',
+				dataGrouping: {
+					forced: true,
+					units: [['day', [2]]]
+				}
+			}],
+
+			buttonTheme: {
+				width: 60
+			},
+			selected: 1
+		},
+	});
+}
+

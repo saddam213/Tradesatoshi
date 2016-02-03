@@ -96,10 +96,17 @@ input[type="checkbox"].input-validation-error {
 	cursor: pointer;
 }
 
+.form-horizontal{
+padding: 15px;
+}
+
 .modal-dialog {
 	overflow: hidden !important;
 }
 
+.modal-body {
+	
+}
 
 .modal-large {
 	width: 90%;
@@ -188,36 +195,7 @@ input[type="checkbox"].input-validation-error {
 	}
 
 
-#chat-table-container {
-	overflow-x: hidden;
-	overflow-y: auto;
-}
 
-#chat-table {
-	table-layout: fixed;
-}
-
-#chat-table-footer {
-	display: flex;
-}
-
-#chat-table-footer-offline {
-	padding: 10px 0px;
-}
-
-#chat-input {
-	-ms-flex: 1;
-	-webkit-flex: 1;
-	flex: 1;
-	resize: none;
-}
-
-#chat-submit {
-	-webkit-border-top-left-radius: 0px;
-	border-top-left-radius: 0px;
-	-webkit-border-bottom-left-radius: 0px;
-	border-bottom-left-radius: 0px;
-}
 
 .nopad {
 	margin: 0px;
@@ -225,6 +203,57 @@ input[type="checkbox"].input-validation-error {
 }
 
 
+.panel-heading{
+padding:4px 8px;
+/*border-radius:0px;*/
+}
+
+.panel {
+/*border-radius:0px;*/
+}
+
+.panel-body{
+padding:4px;
+}
+
+.panel-title{
+font-size:15px;
+}
+
+table.dataTable thead th, table.dataTable thead td{
+	padding:5px 9px;
+}
+
+
+.dataTables_wrapper .dataTables_filter input {
+/*padding-left:10px;
+float:left;*/
+}
+
+.dataTables_filter > label > input{
+
+height:24px;
+width:200px!important;
+}
+
+.dataTables_filter > label > input::-moz-placeholder {
+  color: #999;
+  
+  font-style:italic;
+  opacity: 1;
+}
+
+.dataTables_filter > label > input:-ms-input-placeholder {
+ 
+  font-style:italic;
+  color: #999;
+}
+
+.dataTables_filter > label > input::-webkit-input-placeholder {
+ 
+  font-style:italic;
+  color: #999;
+}
 
 /*Home Page*/
 /*----------------------------------------------------------------------------*/
@@ -476,13 +505,12 @@ input[type="checkbox"].input-validation-error {
 	text-align: center;
 	line-height: 18px;
 }
-
+/*----------------------------------------------------------------------------*/
 
 
 
 /*3 Column Layout*/
 /*----------------------------------------------------------------------------*/
-
 #wrapper {
 	position: absolute;
 	top: 0;
@@ -547,7 +575,7 @@ input[type="checkbox"].input-validation-error {
 
 .leftSidebar-body {
 	position: absolute;
-	top: 72px;
+	top: 56px;
 	bottom: 0px;
 	left: 0;
 	right: 0;
@@ -576,7 +604,7 @@ input[type="checkbox"].input-validation-error {
 
 .rightSidebar-top-body {
 	position: absolute;
-	top: 42px;
+	top: 30px;
 	bottom: 56px;
 	left: 0;
 	right: 0;
@@ -597,22 +625,28 @@ input[type="checkbox"].input-validation-error {
 .rightSidebar-top-container {
 	padding: 2px;
 	padding-top: 5px;
-	height: 70%;
+	height: 65%;
 }
 
 .rightSidebar-bottom-container {
 	padding: 2px;
-	height: 30%;
+	height: 35%;
 }
 
 .rightSidebar-bottom-body {
 	position: absolute;
-	top: 45px;
+	top: 27px;
 	bottom: 0px;
 	left: 0;
 	right: 0;
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
+}
+
+#twitter-widget-0 {
+	padding: 0px;
+	margin: 0px;
+	height: 100% !important;
 }
 
 
@@ -632,35 +666,19 @@ input[type="checkbox"].input-validation-error {
 		padding-left: 10px;
 		width: 33%;
 	}
+
+
 /*----------------------------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 /*Exchange Page*/
 /*----------------------------------------------------------------------------*/
-
 .buySell-table-layout {
 	table-layout: fixed;
 	width: 100%;
+	font-size:13px;
 }
-
 
 	.buySell-table-layout > tbody > tr > th,
 	.buySell-table-layout > tfoot > tr > th,
@@ -693,6 +711,111 @@ input[type="checkbox"].input-validation-error {
 	}
 
 
+	/*Tradepair partial*/
+	.chart-container {
+		margin: 0px;
+		padding: 2px;
+		padding-top: 6px;
+		height: 300px;
+	}
+
+		.chart-container .panel {
+			width: 100%;
+			height: 100%;
+		}
+
+	.chart-label {
+		padding: 0px;
+		margin: 0px;
+		padding-left: 10px;
+		padding-top: 5px;
+	}
+
+	.chat-data {
+		width: 100% !important;
+		height: 100%;
+	}
+
+		.exchange-panel {
+		padding: 2px;
+	}
+
+	.exchange-orderPanel {
+		margin-top: 4px; margin-bottom: 0px;
+	}
+
+	.exchange-historyPanel {
+		margin-bottom: 0px;
+	}
+/*----------------------------------------------------------------------------*/
+
+
+
+
+/*History Page*/
+/*----------------------------------------------------------------------------*/
+#history-menu {
+	padding: 2px;
+	padding-top: 5px;
+}
+
+	#history-menu .currencyFilter {
+		display: inline-block;
+		margin-right: 20px;
+		width: 100px;
+		margin-left: 2px;
+	}
+
+	#history-menu .menuOne {
+		width: 300px;
+		padding-top: 2px;
+		padding-bottom: 5px;
+		display: inline-block;
+		margin-right: 20px;
+	}
+
+	#history-menu .menuTwo {
+		width: 100px;
+		padding-top: 2px;
+		padding-bottom: 5px;
+		display: inline-block;
+	}
+/*----------------------------------------------------------------------------*/
+
+
+/*Chat Page*/
+/*----------------------------------------------------------------------------*/
+#chat-table-container {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#chat-table {
+	table-layout: fixed;
+}
+
+#chat-table-footer {
+	display: flex;
+}
+
+#chat-table-footer-offline {
+	padding: 10px 0px;
+}
+
+#chat-input {
+	-ms-flex: 1;
+	-webkit-flex: 1;
+	flex: 1;
+	resize: none;
+}
+
+#chat-submit {
+	-webkit-border-top-left-radius: 0px;
+	border-top-left-radius: 0px;
+	-webkit-border-bottom-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+/*----------------------------------------------------------------------------*/
 
 
 
@@ -707,27 +830,72 @@ input[type="checkbox"].input-validation-error {
 
 
 
+.text-xs-left {
+	text-align: left;
+}
+
+.text-xs-right {
+	text-align: right;
+}
+
+.text-xs-center {
+	text-align: center;
+}
+
+.text-xs-justify {
+	text-align: justify;
+}
 
 @media (min-width: 768px) {
-	div[class^="col"] {
-		padding-left: 2px;
-		padding-right: 2px;
+	.text-sm-left {
+		text-align: left;
+	}
+
+	.text-sm-right {
+		text-align: right;
+	}
+
+	.text-sm-center {
+		text-align: center;
+	}
+
+	.text-sm-justify {
+		text-align: justify;
 	}
 }
 
-/* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-	div[class^="col"] {
-		padding-left: 2px;
-		padding-right: 2px;
+	.text-md-left {
+		text-align: left;
+	}
+
+	.text-md-right {
+		text-align: right;
+	}
+
+	.text-md-center {
+		text-align: center;
+	}
+
+	.text-md-justify {
+		text-align: justify;
 	}
 }
 
-/* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-	/*default so you don't need this*/
-	div[class^="col"] {
-		padding-left: 2px;
-		padding-right: 2px;
+	.text-lg-left {
+		text-align: left;
+	}
+
+	.text-lg-right {
+		text-align: right;
+	}
+
+	.text-lg-center {
+		text-align: center;
+	}
+
+	.text-lg-justify {
+		text-align: justify;
 	}
 }

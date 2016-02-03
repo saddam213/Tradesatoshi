@@ -22,9 +22,7 @@
 	</div>
 </div>
 
-
 <script>
-
 	$('#table-tradehistory').dataTable({
 		"order": [[0, "desc"]],
 		"lengthChange": false,
@@ -39,9 +37,8 @@
 		"sort": true,
 		"paging": true,
 		"info": true,
-		"language": { "emptyTable": "No data avaliable." },
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search trades" },
 		"sAjaxSource": '@Url.Action("GetTrades")',
 		"sServerMethod": "POST"
 	});
-
 </script>

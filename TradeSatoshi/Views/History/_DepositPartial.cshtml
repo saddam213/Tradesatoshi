@@ -1,4 +1,4 @@
-﻿<div class="panel panel-default" style="position:relative; bottom:0;top:0">
+﻿<div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">Deposits</h3>
 	</div>
@@ -23,7 +23,6 @@
 </div>
 
 <script>
-
 	$('#table-deposit').dataTable({
 		"order": [[0, "asc"]],
 		"lengthChange": false,
@@ -38,9 +37,8 @@
 		"sort": true,
 		"paging": true,
 		"info": true,
-		"language": { "emptyTable": "No data avaliable." },
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search deposits" },
 		"sAjaxSource": '@Url.Action("GetDeposits")',
 		"sServerMethod": "POST"
 	});
-
 </script>

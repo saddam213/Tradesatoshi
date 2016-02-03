@@ -20,7 +20,7 @@
 					<div class="panel-heading">
 						<h3 class="panel-title">Balances</h3>
 					</div>
-					<div class="@*table-responsive*@" style="padding-top: 2px;">
+					<div class="panel-body">
 						<table id="table-balance" class="table">
 							<thead>
 								<tr>
@@ -44,14 +44,14 @@
 									<tr>
 										@if (authenticated)
 										{<td>@GetBalanceMenu(balance, menuOrientation)</td>}
-										<th title="@balance.Currency">@balance.Symbol</th>
+										<td title="@balance.Currency"><img src="../../Content/Images/GLD-small.png" alt="" /> @balance.Symbol</td>
 										@if (authenticated)
-										{<th>@GetBalanceAddress(balance)</th>}
-										<th>@balance.Avaliable</th>
-										<th>@balance.Total</th>
-										<th>@balance.Unconfirmed</th>
-										<th>@balance.HeldForTrades</th>
-										<th>@balance.PendingWithdraw</th>
+										{<td>@GetBalanceAddress(balance)</td>}
+										<td>@balance.Avaliable</td>
+										<td>@balance.Total</td>
+										<td>@balance.Unconfirmed</td>
+										<td>@balance.HeldForTrades</td>
+										<td>@balance.PendingWithdraw</td>
 									</tr>
 								}
 
@@ -82,6 +82,8 @@
 	<div class="btn-group drop@(orientation)">
 		<a class="btn btn-xs btn-primary dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bars" style="margin-right: 5px"></i><span class="caret"></span></a>
 		<ul class="dropdown-menu">
+			<li><b style="margin-left:20px;font-size:larger"><img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @balance.Symbol Menu</b></li>
+			<li class="divider" style="padding-top:0px;margin-top:0px"></li>
 			<li><a onclick="createTransfer('@balance.CurrencyId');">Transfer</a></li>
 			<li><a onclick="createWithdraw('@balance.CurrencyId');">Withdraw</a></li>
 			<li><a onclick="generateAddress('@balance.CurrencyId');">Create Address</a></li>
@@ -121,7 +123,7 @@
 			"sort": true,
 			"paging": false,
 			"info": false,
-			"language": { "emptyTable": "No data avaliable." },
+			"language": { "emptyTable": "No data avaliable.", "search": "",searchPlaceholder: "Search balances"},
 			"columnDefs": [
 			{ "targets": 0, "searchable": false, "orderable": false, "sort": false },
 			{ "targets": 3, "searchable": false, "orderable": false }

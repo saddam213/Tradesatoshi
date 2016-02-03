@@ -1,19 +1,16 @@
 ﻿@model TradeSatoshi.Common.Exchange.TradePairExchangeModel
 
-
-<div class="col-xs-12" style="height: 300px; padding-top: 6px">
-	<div class="panel panel-default" style="width: 100%; height: 100%;">
-		<h4 style="padding:0px; margin:0px; padding-left:10px;padding-top:5px">@Model.Symbol / @Model.BaseSymbol</h4>
-		<div id="chartdata" style="width: 100% !important; height: 100%;">
+@*Chart*@
+<div class="col-xs-12 chart-container">
+	<div class="panel panel-default" style="">
+		<h4 class="chart-label"><img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @Model.Symbol / <img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @Model.BaseSymbol</h4>
+		<div id="chartdata" class="chat-data" data-action="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)">
 		</div>
 	</div>
 </div>
 
-
-
-
-
-<div class="col-xs-12 col-sm-6 col-lg-4" style="padding-top: 2px">
+@*Sell*@
+<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
 	<div class="panel panel-default nopad">
 		<div class="panel-heading">
 			<h3 class="panel-title">Sell @Model.Symbol</h3>
@@ -22,7 +19,7 @@
 			@Html.Partial("_CreateTradePartial", Model.SellModel)
 		</div>
 	</div>
-	<div class="panel panel-default" style="padding-top: 4px; margin-bottom: 0px">
+	<div class="panel panel-default exchange-orderPanel">
 		<div class="panel-heading">
 			<h3 class="panel-title">Buy Orders</h3>
 		</div>
@@ -41,20 +38,21 @@
 		</div>
 	</div>
 </div>
-<div class="col-xs-12 col-sm-6 col-lg-4" style="padding-top: 2px">
+
+@*Buy*@
+<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
 	<div class="panel panel-default nopad">
 		<div class="panel-heading">
-			<h3 class="panel-title">Sell @Model.Symbol</h3>
+			<h3 class="panel-title">Buy @Model.Symbol</h3>
 		</div>
 		<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Buy">
 			@Html.Partial("_CreateTradePartial", Model.BuyModel)
 		</div>
 	</div>
-	<div class="panel panel-default" style="padding-top: 4px; margin-bottom: 0px">
+	<div class="panel panel-default exchange-orderPanel">
 		<div class="panel-heading">
 			<h3 class="panel-title">Sell Orders</h3>
 		</div>
-
 		<div id="sellOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Sell">
 			<table id="table-sellOrders-@Model.TradePairId" class="table table-condensed table-hover" >
 				<thead>
@@ -71,8 +69,10 @@
 
 	</div>
 </div>
-<div class="col-xs-12 col-lg-4" style="padding-top: 2px">
-	<div class="panel panel-default" style="margin-bottom: 0px">
+
+@*History*@
+<div class="col-xs-12 col-lg-4 exchange-panel">
+	<div class="panel panel-default exchange-historyPanel">
 		<div class="panel-heading">
 			<h3 class="panel-title">Market History</h3>
 		</div>
@@ -93,153 +93,6 @@
 	</div>
 </div>
 
-<script src="~/Scripts/moment.js"></script>
+
 @Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")
-
-<script>
-	function updateChart(chartData) {
-		var cdata = chartData ? chartData.Candle : [[0, 0, 0, 0, 0, 0]];
-		var vdata = chartData ? chartData.Volume : [[0, 0]];
-		$('#chartdata').highcharts('StockChart', {
-			chart: {
-				height: 280,
-				//zoomType: 'xy',
-				backgroundColor: 'transparent',
-
-			},
-
-			credits: {
-				enabled: false
-			},
-
-			rangeSelector: {
-				selected: 1
-			},
-
-			yAxis: [{
-				labels: {
-					format: '{value:.8f}',
-					align: 'right',
-					x: -3
-				},
-				title: {
-					text: 'OHLC'
-				},
-				height: '75%',
-				lineWidth: 2
-			},
-			{
-				labels: {
-					format: '{value:.8f}',
-					align: 'right',
-					x: -3
-				},
-				title: {
-					text: 'Volume'
-				},
-				top: '75%',
-				height: '25%',
-				offset: 0,
-				lineWidth: 2
-			}],
-
-			candlestick: {
-				pointWidth: '4px'
-			},
-
-			series: [{
-				type: 'candlestick',
-				name: '@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)',
-				data: cdata,
-				color: '#ee5f5b',
-				upColor: '#5cb85c',
-			},
-				{
-					name: 'Mean',
-					data: cdata,
-					type: 'spline',
-					color: 'rgba(0, 0, 0, 0.2)',
-					tooltip: {
-						valueDecimals: 8
-					}
-				},
-				{
-					type: 'column',
-					color: '#666666',
-					name: 'Volume',
-					data: vdata,
-					yAxis: 1,
-				}],
-
-			tooltip:
-			{
-				changeDecimals: 8,
-				valueDecimals: 8,
-				followPointer: false
-			},
-
-			rangeSelector: {
-				allButtonsEnabled: true,
-				buttons: [{
-					type: 'day',
-					count: 1,
-					text: 'Day',
-					dataGrouping: {
-						forced: true,
-						units: [['hour', [1]]]
-					}
-				},
-				{
-					type: 'week',
-					count: 1,
-					text: 'Week',
-					dataGrouping: {
-						forced: true,
-						units: [['hour', [4]]]
-					}
-				},
-				{
-					type: 'week',
-					text: 'Month',
-					count: 4,
-					dataGrouping: {
-						forced: true,
-						units: [['hour', [12]]]
-					}
-				},
-				{
-					type: 'week',
-					text: '3 Month',
-					count: 12,
-					dataGrouping: {
-						forced: true,
-						units: [['hour', [48]]]
-					}
-				},
-				{
-					type: 'all',
-					text: 'All',
-					dataGrouping: {
-						forced: true,
-						units: [['day', [2]]]
-					}
-				}],
-
-				buttonTheme: {
-					width: 60
-				},
-				selected: 1
-			},
-		});
-	}
-
-	$(function () {
-		updateChart(null);
-		$.getJSON('@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })', function (data) {
-			updateChart(data);
-		});
-	});
-
-</script>
-
 

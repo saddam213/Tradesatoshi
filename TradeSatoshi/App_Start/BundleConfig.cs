@@ -14,7 +14,8 @@ namespace TradeSatoshi.Web
 					"~/Scripts/Project/simplemodal.js",
 					"~/Scripts/jquery.dataTables.js",
 					"~/Scripts/mustache.js",
-					"~/Scripts/history.js"));
+					"~/Scripts/history.js",
+					"~/Scripts/moment.js"));
 				
 			bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
 					"~/Scripts/jquery.validate*"));

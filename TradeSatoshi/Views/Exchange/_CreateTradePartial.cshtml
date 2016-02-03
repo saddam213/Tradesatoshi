@@ -9,7 +9,7 @@
 		: Model.Symbol;
 }
 
-@using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = targetDiv, InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
+@using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = targetDiv, InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" , style="padding:5px;"}))
 {
 	@Html.HiddenFor(m => m.TradeType);
 	@Html.HiddenFor(m => m.TradePairId);
@@ -18,7 +18,7 @@
 	@Html.HiddenFor(m => m.MinTrade);
 	@Html.HiddenFor(m => m.Fee);
 	
-	<table class="buySell-table-layout">
+	<table class="buySell-table-layout ">
 		<tbody>
 			<tr>
 				<td class="row-title">

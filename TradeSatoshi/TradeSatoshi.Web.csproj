@@ -192,6 +192,9 @@
     <Content Include="Content\dataTables.bootstrap.min.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\fonts\webhostinghub-glyphs.svg" />
+    <Content Include="Content\Images\GLD-large.png" />
+    <Content Include="Content\Images\GLD-medium.png" />
+    <Content Include="Content\Images\GLD-small.png" />
     <Content Include="Content\Images\sort_asc.png" />
     <Content Include="Content\Images\sort_asc_disabled.png" />
     <Content Include="Content\Images\sort_both.png" />

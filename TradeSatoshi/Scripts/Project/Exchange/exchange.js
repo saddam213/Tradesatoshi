@@ -1,7 +1,7 @@
 ﻿$(function () {
 
-	$('#table-tradepair > tbody > tr').on('click', function (e) {
-		$('#table-tradepair > tbody > tr').removeClass('active');
+	$('#table-tradepair > .tradepair-row').on('click', function (e) {
+		$('#table-tradepair > .tradepair-row').removeClass('active');
 		$(this).addClass('active');
 
 		var marketUrl = $(this).data('marketurl');
@@ -22,8 +22,8 @@
 	
 	var defaultMarket = $('#tradepairTarget').data('default');
 	if (defaultMarket) {
-		$('tr[data-marketurl="' + defaultMarket + '"]').trigger('click');
+		$('.tradepair-row[data-marketurl="' + defaultMarket + '"]').trigger('click');
 	} else {
-		$('#table-tradepair tr:first').trigger('click');
+		$('#table-tradepair .tradepair-row:first').trigger('click');
 	}
 });

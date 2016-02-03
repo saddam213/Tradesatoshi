@@ -14,13 +14,14 @@
 		<div id="main">
 
 			@* Page Content*@
-			<div style="padding: 2px; padding-top: 5px;">
-				<div class="btn-group btn-group-justified" style="width: 300px;padding-top:2px;padding-bottom:5px;display:inline-block;margin-right:20px;">
+			<div id="history-menu">
+				@Html.DropDownList("CurrencyFilter", new SelectList(Model.Balances, "Symbol", "Symbol", Model.Currency), "All", new { @class = "form-control currencyFilter", data_action = Url.Action("Index", "History") })
+				<div class="btn-group btn-group-justified menuOne">
 					<a data-action="@Url.Action("Deposit", new { search = Model.Currency })" data-section="Deposit" class="btn btn-default section-option">Deposit</a>
 					<a data-action="@Url.Action("Withdraw", new { search = Model.Currency })" data-section="Withdraw" class="btn btn-default section-option">Withdraw</a>
 					<a data-action="@Url.Action("Transfers", new { search = Model.Currency })" data-section="Transfer" class="btn btn-default section-option">Transfer</a>
 				</div>
-				<div class="btn-group btn-group-justified" style="width: 100px; padding-top:2px;padding-bottom:5px;display:inline-block">
+				<div class="btn-group btn-group-justified menuTwo">
 					<a data-action="@Url.Action("Trades", new { search = Model.Currency })" data-section="Trade" class="btn btn-default section-option">Trades</a>
 				</div>
 				<div id="historyTarget" data-currency="@Model.Currency" data-section="@Model.Section">
@@ -41,30 +42,7 @@
 </div>
 
 
-
-
 @section Scripts {
 	@Scripts.Render("~/Scripts/Project/chat.js")
 	@Scripts.Render("~/Scripts/Project/History/history.js")
-	<script>
-		$(".section-option").on("click", function () {
-			$(".section-option").removeClass('active');
-			$(this).addClass('active');
-			var url = $(this).data("action");
-			var section = $(this).data("section");
-			if (url) {
-				$('#historyTarget').unbind();
-				$('#historyTarget').empty();
-				getPartial('#historyTarget', url);
-				var currency = $('#historyTarget').data("currency");
-				var queryString = "?area=" + section;
-				if (currency) {
-					queryString += "&coin=" + currency;
-				}
-				History.pushState({}, "TradeSatoshi - History", queryString);
-			}
-		});
-
-		$("[data-section='" + $("#historyTarget").data("section") + "']").trigger("click");
-	</script>
 }

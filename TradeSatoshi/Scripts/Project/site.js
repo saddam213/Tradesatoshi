@@ -58,7 +58,28 @@ function postJson(url, vars, callback, errorCallback) {
 		url: url,
 		cache: false,
 		async: true,
-		type: "post",
+		type: "POST",
+		dataType: 'json',
+		data: vars,
+		success: function (response, textStatus, jqXHR) {
+			if (callback) {
+				callback(response);
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			if (errorCallback) {
+				errorCallback(jqXHR, textStatus, errorThrown);
+			}
+		}
+	});
+}
+
+function getJson(url, vars, callback, errorCallback) {
+	$.ajax({
+		url: url,
+		cache: false,
+		async: true,
+		type: "GET",
 		dataType: 'json',
 		data: vars,
 		success: function (response, textStatus, jqXHR) {

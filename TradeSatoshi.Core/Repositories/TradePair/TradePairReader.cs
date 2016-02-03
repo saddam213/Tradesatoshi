@@ -89,6 +89,8 @@ namespace TradeSatoshi.Core.TradePair
 				return (tradepair) => new TradePairModel
 				{
 					Id = tradepair.Id,
+					Change = tradepair.Change,
+					LastTrade = tradepair.LastTrade,
 					Name = tradepair.Currency1.Symbol + "/" + tradepair.Currency2.Symbol,
 					CurrencyId = tradepair.CurrencyId1,
 					BaseCurrencyId = tradepair.CurrencyId2,

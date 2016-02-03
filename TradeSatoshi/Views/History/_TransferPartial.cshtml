@@ -23,7 +23,6 @@
 </div>
 
 <script>
-
 	$('#table-transfer').dataTable({
 		"order": [[0, "asc"]],
 		"lengthChange": false,
@@ -38,9 +37,8 @@
 		"sort": true,
 		"paging": true,
 		"info": true,
-		"language": { "emptyTable": "No data avaliable." },
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search transfers" },
 		"sAjaxSource": '@Url.Action("GetTransfers")',
 		"sServerMethod": "POST"
 	});
-
 </script>
