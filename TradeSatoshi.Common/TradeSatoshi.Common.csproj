@@ -81,6 +81,7 @@
     <Compile Include="Models\Balance\BalanceViewModel.cs" />
     <Compile Include="Models\Chat\ChatUserModel.cs" />
     <Compile Include="Models\Address\AddressModel.cs" />
+    <Compile Include="Models\Currency\CurrencyStatusModel.cs" />
     <Compile Include="Models\History\HistoryViewModel.cs" />
     <Compile Include="Models\ITradeSidebarModel.cs" />
     <Compile Include="Models\Currency\CurrencyModel.cs" />

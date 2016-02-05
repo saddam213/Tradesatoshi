@@ -77,6 +77,14 @@ namespace TradeSatoshi.Core.Currency
 			}
 		}
 
+		public async Task<List<CurrencyStatusModel>> GetCurrencyStatus()
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				return await context.Currency.Select(MapCurrencyStatus).ToListAsync();
+			}
+		}
+
 		private Expression<Func<Entity.Currency, CurrencyModel>> MapCurrency
 		{
 			get
@@ -93,6 +101,23 @@ namespace TradeSatoshi.Core.Currency
 					Block = currency.Block,
 					Error = currency.Errors,
 					IsEnabled = currency.IsEnabled
+				};
+			}
+		}
+
+		private Expression<Func<Entity.Currency, CurrencyStatusModel>> MapCurrencyStatus
+		{
+			get
+			{
+				return (currency) => new CurrencyStatusModel
+				{
+					CurrencyId = currency.Id,
+					Symbol = currency.Symbol,
+					Status = currency.Status,
+					StatusMessage = currency.StatusMessage,
+					LastBlock = currency.Block,
+					Connections = currency.Connections,
+					Version = currency.Version
 				};
 			}
 		}

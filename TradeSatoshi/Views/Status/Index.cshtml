@@ -15,7 +15,36 @@
 
 
 			<div style="padding: 2px; padding-top: 5px;">
-				<h1>Status</h1>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Status</h3>
+					</div>
+					<div class="panel-body">
+						<table id="table-status" class="table">
+							<thead>
+								<tr>
+									<th>Coin</th>
+									<th>LastBlock</th>
+									<th>Peers</th>
+									<th>Status</th>
+									<th>Status Message</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var currency in Model.CurrencyStatus)
+								{
+								<tr class="@GetCurrencyStatusClass(currency.Status)">
+									<td>@Helpers.CoinLogoWithSymbol(currency.Symbol)</td>
+									<td>@currency.LastBlock</td>
+									<td>@currency.Connections</td>
+									<td>@currency.Status</td>
+									<td>@(currency.StatusMessage)</td>
+								</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 
 
@@ -31,8 +60,38 @@
 	</div>
 </div>
 
+@helper GetCurrencyStatusClass(TradeSatoshi.Enums.CurrencyStatus status)
+{
+	switch (status)
+	{
+		case CurrencyStatus.OK:
+			break;
+		case CurrencyStatus.Maintenance:
+		@:warning
+			break;
+		case CurrencyStatus.Offline:
+		@:danger
+			break;
+		default:
+			break;
+	}
+}
 
 @section Scripts {
 	@Scripts.Render("~/Scripts/Project/chat.js")
 	@Scripts.Render("~/Scripts/Project/Status/status.js")
+	<script>
+		$('#table-status').dataTable({
+			"order": [[1, "asc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": false,
+			"searching": true,
+			"scrollCollapse": false,
+			"sort": true,
+			"paging": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search coins" },
+		});
+	</script>
 }
