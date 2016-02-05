@@ -91,7 +91,13 @@
 		</tbody>
 	</table>
 	<hr class="seperator"/>
+	if(User.Identity.IsAuthenticated)
+	{
 	<button id="submit-@Model.TradeType" type="submit" disabled="disabled" class="btn btn-info">@Model.TradeType @Model.Symbol</button>
+	}
+	else{
+	<a class="btn btn-info" href="@Url.Action("Login", "Account", new{ReturnUrl = Url.Action("Index", "Exchange", new{market = string.Format("{0}_{1}", Model.Symbol, Model.BaseSymbol)})})">Login</a>
+	}
 }
 
 <script>
@@ -101,7 +107,7 @@
 			var price = $('#rate-@Model.TradeType').val();
 			var tradefee = +'@Model.Fee';
 			var minTrade = +'@Model.MinTrade';
-			$('#submit-@Model.TradeType').attr('disabled', 'disabled');
+			$('#submit-Buy, #submit-Sell').attr('disabled', 'disabled');
 			if (!isNaN(amount) && !isNaN(price)) {
 				var total = amount * price;
 				var fee = (total / 100) * tradefee;
@@ -110,7 +116,7 @@
 				$('#fee-@Model.TradeType').html(fee.toFixed(8));
 				$('#net-@Model.TradeType').html(nettotal.toFixed(8));
 				if (nettotal > minTrade) {
-					$('#submit-@Model.TradeType').removeAttr('disabled');
+					$('#submit-Buy, #submit-Sell').removeAttr('disabled');
 				}
 			}
 		});

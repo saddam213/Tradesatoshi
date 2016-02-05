@@ -14,9 +14,5 @@ namespace TradeSatoshi.Common.Balance
 	{
 		Task<BalanceModel> GetBalance(string userId, int currencyId);
 		Task<List<BalanceModel>> GetBalances(string userId);
-
-		DataTablesResponse GetBalanceMenu(DataTablesModel param, string userId);
-		DataTablesResponse GetBalanceDataTable(DataTablesModel model);
-		DataTablesResponse GetUserBalanceDataTable(DataTablesModel model, string userId);
 	}
 }

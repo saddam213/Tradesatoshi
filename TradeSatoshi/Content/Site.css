@@ -203,22 +203,6 @@ padding: 15px;
 }
 
 
-.panel-heading{
-padding:4px 8px;
-/*border-radius:0px;*/
-}
-
-.panel {
-/*border-radius:0px;*/
-}
-
-.panel-body{
-padding:4px;
-}
-
-.panel-title{
-font-size:15px;
-}
 
 table.dataTable thead th, table.dataTable thead td{
 	padding:5px 9px;
@@ -402,14 +386,10 @@ width:200px!important;
 .footer_top {
 	overflow: hidden;
 	padding: 30px 0px 50px;
-	border-bottom: 1px solid #0F0F0F;
-	background: none repeat scroll 0% 0% #333;
-	color: #AAA;
 }
 
 .footer_b {
-	border-top: 1px solid #555;
-	background: #222;
+	
 }
 
 .footer_menu li a:before {
@@ -542,9 +522,8 @@ width:200px!important;
 	padding: 0px;
 	height: 42px;
 	width: 100%;
-	background-color: #333;
-	color: gray;
 }
+
 
 #leftSidebar-wrapper {
 	position: relative;
@@ -672,6 +651,41 @@ width:200px!important;
 
 
 
+.chatfull-container {
+	padding: 2px;
+	padding-top: 5px;
+	height: 100%;
+}
+
+.chatfull-body-wrapper {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	margin-bottom: 0px;
+}
+
+
+.chatfull-top-body {
+	position: absolute;
+	top: 30px;
+	bottom: 56px;
+	left: 0;
+	right: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.chatfull-top-footer {
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	right: 0;
+	height: 56px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+
 /*Exchange Page*/
 /*----------------------------------------------------------------------------*/
 .buySell-table-layout {
@@ -796,6 +810,7 @@ width:200px!important;
 
 #chat-table-footer {
 	display: flex;
+	
 }
 
 #chat-table-footer-offline {

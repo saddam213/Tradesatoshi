@@ -13,13 +13,11 @@ namespace TradeSatoshi.Common.Withdraw
 {
 	public interface IWithdrawWriter
 	{
-		IWriterResult<int> CreateWithdraw(string userId, CreateWithdrawModel model);
-		Task<IWriterResult<int>> CreateWithdrawAsync(string userId, CreateWithdrawModel model);
+		
+		Task<IWriterResult<int>> CreateWithdraw(string userId, CreateWithdrawModel model);
+				
+		Task<IWriterResult<bool>> ConfirmWithdraw(string userId, int withdrawId);
 
-		IWriterResult<bool> ConfirmWithdraw(string userId, int withdrawId);
-		Task<IWriterResult<bool>> ConfirmWithdrawAsync(string userId, int withdrawId);
-
-		IWriterResult<bool> CancelWithdraw(string userId, int withdrawId);
-		Task<IWriterResult<bool>> CancelWithdrawAsync(string userId, int withdrawId);
+		Task<IWriterResult<bool>> CancelWithdraw(string userId, int withdrawId);
 	}
 }

@@ -44,29 +44,7 @@ namespace TradeSatoshi.Core.Admin
 		}
 
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
-		public UserModel GetUser(string userId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = context.Users
-						.Select(x => new UserModel
-						{
-							UserId = x.Id,
-							UserName = x.UserName,
-							Email = x.Email,
-							IsLocked = x.LockoutEndDateUtc.HasValue && x.LockoutEndDateUtc > DateTime.UtcNow,
-							IsEnabled = x.IsEnabled,
-							IsTradeEnabled = x.IsTradeEnabled,
-							IsWithdrawEnabled = x.IsWithdrawEnabled,
-							IsTransferEnabled = x.IsTransferEnabled
-						}).FirstOrDefault(x => x.UserId == userId);
-
-				return query;
-			}
-		}
-
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
-		public async Task<UserModel> GetUserAsync(string userId)
+		public async Task<UserModel> GetUser(string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -88,38 +66,7 @@ namespace TradeSatoshi.Core.Admin
 		}
 
 		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
-		public UpdateUserModel GetUserUpdate(string userId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = context.Users
-					.Include(x => x.Profile)
-					.Select(x => new UpdateUserModel
-					{
-						UserId = x.Id,
-						UserName = x.UserName,
-						Email = x.Email,
-						IsLocked = x.LockoutEndDateUtc.HasValue && x.LockoutEndDateUtc > DateTime.UtcNow,
-						IsEnabled = x.IsEnabled,
-						IsTradeEnabled = x.IsTradeEnabled,
-						IsWithdrawEnabled = x.IsWithdrawEnabled,
-						IsTransferEnabled = x.IsTransferEnabled,
-						FirstName = x.Profile.FirstName,
-						LastName = x.Profile.LastName,
-						Address = x.Profile.Address,
-						BirthDate = x.Profile.BirthDate,
-						City = x.Profile.City,
-						Country = x.Profile.Country,
-						PostCode = x.Profile.PostCode,
-						State = x.Profile.State
-					}).FirstOrDefault(x => x.UserId == userId);
-
-				return query;
-			}
-		}
-
-		//[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
-		public async Task<UpdateUserModel> GetUserUpdateAsync(string userId)
+		public async Task<UpdateUserModel> GetUserUpdate(string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{

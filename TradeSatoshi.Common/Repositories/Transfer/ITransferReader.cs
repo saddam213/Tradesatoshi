@@ -9,7 +9,7 @@ namespace TradeSatoshi.Common.Transfer
 {
 	public interface ITransferReader
 	{
-		Task<CreateTransferModel> GetCreateTransferAsync(string userId, int currencyId);
+		Task<CreateTransferModel> GetCreateTransfer(string userId, int currencyId);
 		DataTablesResponse GetTransferDataTable(DataTablesModel model);
 		DataTablesResponse GetUserTransferDataTable(DataTablesModel model, string userId);
 	}

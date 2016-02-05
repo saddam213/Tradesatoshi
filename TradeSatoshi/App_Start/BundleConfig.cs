@@ -35,7 +35,8 @@ namespace TradeSatoshi.Web
 					"~/Content/dataTables.bootstrap.css",
 					"~/Content/whhg.css",
 					"~/Content/notification.css",
-					"~/Content/site.css"));
+					"~/Content/Site.css",
+					"~/Content/Site-theme.css"));
 		}
 	}
 }

@@ -80,6 +80,7 @@
     <Compile Include="Models\Balance\BalanceMenuModel.cs" />
     <Compile Include="Models\Balance\BalanceViewModel.cs" />
     <Compile Include="Models\Chat\ChatUserModel.cs" />
+    <Compile Include="Models\Address\AddressModel.cs" />
     <Compile Include="Models\History\HistoryViewModel.cs" />
     <Compile Include="Models\ITradeSidebarModel.cs" />
     <Compile Include="Models\Currency\CurrencyModel.cs" />
@@ -195,7 +196,6 @@
     <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Services\TradeService\ITradeService.cs" />
     <Compile Include="Services\VoteService\IVoteService.cs" />
-    <Compile Include="Services\WalletService\AddressModel.cs" />
     <Compile Include="Services\WalletService\IWalletService.cs" />
     <Compile Include="Repositories\Support\ISupportWriter.cs" />
     <Compile Include="Repositories\Support\ISupportReader.cs" />

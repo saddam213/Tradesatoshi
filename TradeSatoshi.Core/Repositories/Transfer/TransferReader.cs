@@ -70,7 +70,7 @@ namespace TradeSatoshi.Core.Transfer
 			}
 		}
 
-		public async Task<CreateTransferModel> GetCreateTransferAsync(string userId, int currencyId)
+		public async Task<CreateTransferModel> GetCreateTransfer(string userId, int currencyId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{

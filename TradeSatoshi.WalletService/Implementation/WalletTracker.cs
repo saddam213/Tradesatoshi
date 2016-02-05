@@ -272,6 +272,7 @@ namespace TradeSatoshi.WalletService.Implementation
 			}
 			catch (Exception ex)
 			{
+				Log.Exception("An exception occured updating withdraw confirmations.", ex);
 			}
 		}
 
@@ -321,20 +322,21 @@ namespace TradeSatoshi.WalletService.Implementation
 					}
 					catch (Exception ex)
 					{
-
+						Log.Exception("An exception occured sending withdraw", ex);
 					}
 				}
 				Log.Message(LogLevel.Info, "Sending pending {0} withdrawals complete.", currency.Symbol);
 			}
 			catch (Exception ex)
 			{
+				Log.Exception("An exception occured sending withdrawals", ex);
 			}
 		}
 
 		private async Task<bool> AuditUser(IDataContext context, int currencyId, string userId)
 		{
 			Log.Message(LogLevel.Info, "Auditing user balance. UserId: {0}, CurrencyId: {1}", userId, currencyId);
-			var result = await AuditService.AuditUserCurrencyAsync(context, userId, currencyId);
+			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
 			Log.Message(LogLevel.Info, "Auditing user balance complete.");
 			return result.Success;
 		}

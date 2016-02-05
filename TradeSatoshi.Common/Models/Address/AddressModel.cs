@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common.Validation;
 
 namespace TradeSatoshi.Common.Address
 {
-	public interface IAddressWriter
+	public class AddressModel
 	{
-		Task<IWriterResult<string>> GenerateAddress(string userId, int currencyId);
+		public string Address { get; set; }
+		public string PrivateKey { get; set; }
 	}
 }

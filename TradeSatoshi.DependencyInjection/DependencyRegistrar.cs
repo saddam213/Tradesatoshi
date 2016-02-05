@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Routing;
 using TradeSatoshi.DependencyInjection.MVC;
-using System.Web.Routing;
 using Microsoft.AspNet.SignalR;
 
 namespace TradeSatoshi.DependencyInjection

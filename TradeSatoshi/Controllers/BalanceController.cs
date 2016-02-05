@@ -30,16 +30,16 @@ namespace TradeSatoshi.Web.Controllers
 			});
 		}
 
-		[HttpPost]
-		public ActionResult GetBalances(DataTablesModel param)
-		{
-			return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
-		}
+		//[HttpPost]
+		//public ActionResult GetBalances(DataTablesModel param)
+		//{
+		//	return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
+		//}
 
 		[HttpPost]
-		public ActionResult GetAddress(int currencyId)
+		public async Task<ActionResult> GetAddress(int currencyId)
 		{
-			var result = AddressWriter.GenerateAddress(User.Id(), currencyId);
+			var result = await AddressWriter.GenerateAddress(User.Id(), currencyId);
 			if (!ModelState.IsWriterResultValid(result))
 				return JsonError(result.FirstError);
 

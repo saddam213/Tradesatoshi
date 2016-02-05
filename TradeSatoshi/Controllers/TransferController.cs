@@ -34,7 +34,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (user == null)
 				return Unauthorized();
 
-			var model = await TransferReader.GetCreateTransferAsync(User.Id(), currencyId);
+			var model = await TransferReader.GetCreateTransfer(User.Id(), currencyId);
 			if (model == null)
 				return ViewMessageModal(new ViewMessageModel(ViewMessageType.Danger, "Invalid Request", "An unknown error occured."));
 
@@ -78,7 +78,7 @@ namespace TradeSatoshi.Web.Controllers
 			model.UserId = user.Id;
 			model.ToUser = recipient.Id;
 			model.TransferType = TransferType.User;
-			var result = await TransferWriter.CreateTransferAsync(model);
+			var result = await TransferWriter.CreateTransfer(model);
 			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateTransferModal", model);
 

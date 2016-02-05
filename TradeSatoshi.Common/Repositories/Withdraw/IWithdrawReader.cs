@@ -12,14 +12,10 @@ namespace TradeSatoshi.Common.Withdraw
 {
 	public interface IWithdrawReader
 	{
-		CreateWithdrawModel GetCreateWithdraw(string userId, int currencyId);
-		Task<CreateWithdrawModel> GetCreateWithdrawAsync(string userId, int currencyId);
+		Task<CreateWithdrawModel> GetCreateWithdraw(string userId, int currencyId);
 
-		List<WithdrawModel> GetWithdrawals(string userId);
-		List<WithdrawModel> GetWithdrawals(string userId, int currencyId);
-
-		Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId);
-		Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId, int currencyId);
+		Task<List<WithdrawModel>> GetWithdrawals(string userId);
+		Task<List<WithdrawModel>> GetWithdrawals(string userId, int currencyId);
 
 		DataTablesResponse GetWithdrawDataTable(DataTablesModel model);
 		DataTablesResponse GetUserWithdrawDataTable(DataTablesModel model, string userId);

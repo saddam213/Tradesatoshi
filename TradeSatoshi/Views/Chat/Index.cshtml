@@ -1,0 +1,62 @@
+﻿@{
+}
+<div id="wrapper">
+	<div class="chatfull-container">
+		<div class="chatfull-body-wrapper panel panel-default">
+			<div class="panel-heading">
+				<span>Chat</span>
+				<small style="font-size:10px" class="pull-right">
+					<span>Users Online: </span>
+					<span id="chat-count">0</span>
+				</small>
+			</div>
+			<div class="chatfull-top-body" id="chat-table-container">
+				<table id="chat-table" class="table table-striped" data-user="@User.Identity.Name">
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+			<div class="chatfull-top-footer panel-footer nopad">
+				@if (User.Identity.IsAuthenticated)
+				{
+					<div id="chat-table-footer">
+						<textarea id="chat-input" rows="3" style="max-width:100%"></textarea>
+						<button id="chat-submit" class="btn btn-info">Send</button>
+					</div>
+				}
+				else
+				{
+					<div id="chat-table-footer-offline" class="text-center">
+						<i>Please @Html.ActionLink("login", "Login", "Account", new { ReturnUrl = Request.Path }, null) to chat.</i>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script id="chatMessageTemplate" type="text/html">
+	<tr id="message-{{id}}">
+		<td class="{{highlight}}">
+			<small>
+				<i class="{{icon}}"></i>
+				<b class="clickable" onclick="quoteMessage('{{user}}');">{{user}}</b>:
+			</small>
+			<span class="pull-right">
+				<small class="time" data-val="{{time}}">{{since}}</small>
+				@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator))
+				{
+					<i class="fa fa-times text-danger clickable" onclick="removeMessage({{id}});"></i>
+				}
+			</span>
+			<p class="paragraph">{{message}}</p>
+		</td>
+	</tr>
+</script>
+
+
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+}

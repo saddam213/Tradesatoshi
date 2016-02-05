@@ -98,7 +98,7 @@ namespace TradeSatoshi.Web.Controllers
 		[HttpGet]
 		public async Task<ActionResult> UpdateUser(string userId)
 		{
-			var userupdateModel = await UserReader.GetUserUpdateAsync(userId);
+			var userupdateModel = await UserReader.GetUserUpdate(userId);
 			if (userupdateModel == null)
 				return ViewMessageModal(new ViewMessageModel(ViewMessageType.Warning, "User Not Found!", "Unable to find user information."));
 
@@ -112,7 +112,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!ModelState.IsValid)
 				return View("UpdateUserModal", model);
 
-			var result = await UserWriter.UpdateUserAsync(model);
+			var result = await UserWriter.UpdateUser(model);
 			if (!ModelState.IsWriterResultValid(result))
 				return View("UpdateUserModal", model);
 
@@ -159,7 +159,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!ModelState.IsValid)
 				return View("UpdateRoleModal", model);
 
-			var result = await UserWriter.AddUserRoleAsync(model);
+			var result = await UserWriter.AddUserRole(model);
 			if (!ModelState.IsWriterResultValid(result))
 			{
 				return View("UpdateRoleModal", new UpdateUserRoleModel
@@ -192,7 +192,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!ModelState.IsValid)
 				return View("UpdateRoleModal", model);
 
-			var result = await UserWriter.RemoveUserRoleAsync(model);
+			var result = await UserWriter.RemoveUserRole(model);
 			if (!ModelState.IsWriterResultValid(result))
 			{
 				return View("UpdateRoleModal", new UpdateUserRoleModel

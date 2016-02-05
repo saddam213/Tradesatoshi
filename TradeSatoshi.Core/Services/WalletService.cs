@@ -4,32 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Common.Address;
 using TradeSatoshi.Common.Services.WalletService;
 
 namespace TradeSatoshi.Core.Services
 {
 	public class WalletService : IWalletService
 	{
-		public AddressModel GenerateAddress(string userId, string ipAddress, int port, string username, string password)
-		{
-			try
-			{
-				var wallerConnector = new WalletConnector(ipAddress, port, username, password);
-				var address = wallerConnector.GenerateAddress(userId, true);
-				var privateKey = wallerConnector.DumpPrivKey(address);
-				return new AddressModel
-				{
-					Address = address,
-					PrivateKey = privateKey
-				};
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-		}
-
-		public async Task<AddressModel> GenerateAddressAsync(string userId, string ipAddress, int port, string username, string password)
+		public async Task<AddressModel> GenerateAddress(string userId, string ipAddress, int port, string username, string password)
 		{
 			try
 			{

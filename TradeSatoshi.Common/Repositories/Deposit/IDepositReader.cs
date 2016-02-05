@@ -12,11 +12,8 @@ namespace TradeSatoshi.Common.Deposit
 {
 	public interface IDepositReader
 	{
-		List<DepositModel> GetDeposits(string userId);
-		List<DepositModel> GetDeposits(string userId, int currencyId);
-
-		Task<List<DepositModel>> GetDepositsAsync(string userId);
-		Task<List<DepositModel>> GetDepositsAsync(string userId, int currencyId);
+		Task<List<DepositModel>> GetDeposits(string userId);
+		Task<List<DepositModel>> GetDeposits(string userId, int currencyId);
 
 		DataTablesResponse GetDepositDataTable(DataTablesModel model);
 		DataTablesResponse GetUserDepositDataTable(DataTablesModel model, string userId);

@@ -81,7 +81,7 @@
 		},
 		{
 			"targets": 3,
-			"visible":false,
+			"visible": false,
 			"render": function (data, type, full, meta) {
 				return sum_sell.toFixed(8);
 			}
@@ -97,7 +97,7 @@
 		}
 	});
 
-	
+
 	$('[id^="table-tradehistory-"]').dataTable({
 		"order": [[0, "desc"]],
 		"lengthChange": false,
@@ -157,136 +157,240 @@ function cancelTradePairOrders(tradePair, action) {
 function updateChart(chartData) {
 	var cdata = chartData ? chartData.Candle : [[0, 0, 0, 0, 0, 0]];
 	var vdata = chartData ? chartData.Volume : [[0, 0]];
-	$('#chartdata').highcharts('StockChart', {
+	var buydata = chartData ? chartData.BuyDepth : [[0, 0]];
+	var selldata = chartData ? chartData.SellDepth : [[0, 0]];
+	var baseSymbol = $('#chartdata').data('basesymbol')
+
+	$('#chartdata').highcharts({
 		chart: {
-			height: 278,
-			//zoomType: 'xy',
-			backgroundColor: 'transparent',
-
+			type: 'area',
+			zoomType: 'xy',
+			height: 260,
+			backgroundColor: 'transparent'
 		},
-
-		credits: {
+		title: {
+			text: ''
+		},
+		legend: {
 			enabled: false
 		},
-
-		rangeSelector: {
-			selected: 1
-		},
-
-		yAxis: [{
+		xAxis: {
+			type: "linear",
+			name: "Price",
 			labels: {
 				format: '{value:.8f}',
 				align: 'right',
 				x: -3
-			},
-			title: {
-				text: 'OHLC'
-			},
-			height: '75%',
-			lineWidth: 2
+			}
 		},
-		{
-			labels: {
-				format: '{value:.8f}',
-				align: 'right',
-				x: -3
-			},
+		yAxis: {
 			title: {
 				text: 'Volume'
 			},
-			top: '75%',
-			height: '25%',
-			offset: 0,
-			lineWidth: 2
-		}],
-
-		candlestick: {
-			pointWidth: '4px'
+			labels: {
+				format: '{value:.8f}',
+				align: 'right',
+				x: -3
+			}
 		},
-
-		series: [{
-			type: 'candlestick',
-			name: $('#chartdata').data('title'),
-			data: cdata,
-			color: '#ee5f5b',
-			upColor: '#5cb85c',
+		credits: {
+			enabled: false
 		},
+		tooltip:
 			{
-				name: 'Mean',
-				data: cdata,
-				type: 'spline',
-				color: 'rgba(0, 0, 0, 0.2)',
-				tooltip: {
-					valueDecimals: 8
-				}
+				changeDecimals: 8,
+				valueDecimals: 8,
+				followPointer: false,
+				headerFormat: '<span>Price: <b>{point.key:.8f}</b> ' + baseSymbol + '</span><br/>',
+				pointFormat: '<span>Volume: <b>{point.y:.8f}</b> ' + baseSymbol + '</span><br/>'
 			},
-			{
-				type: 'column',
-				color: '#666666',
-				name: 'Volume',
-				data: vdata,
-				yAxis: 1,
-			}],
+		series: [{
+			name: 'Sell',
+			data: selldata,
+			color: "#d9534f",
+			fillOpacity: 0.5,
+			marker: {
+				enabled: false
+			}
+		},
+		{
+			name: 'Buy',
+			color: "#5cb85c",
+			fillOpacity: 0.5,
+			data: buydata,
+			marker: {
+				enabled: false
+			}
+		}]
+	});
 
+	//$('#chartdata').highcharts('StockChart', {
+	//	chart: {
+	//		height: 278,
+	//		//zoomType: 'xy',
+	//		backgroundColor: 'transparent',
+
+	//	},
+
+	//	credits: {
+	//		enabled: false
+	//	},
+
+	//	rangeSelector: {
+	//		selected: 1
+	//	},
+
+	//	yAxis: [{
+	//		labels: {
+	//			format: '{value:.8f}',
+	//			align: 'right',
+	//			x: -3
+	//		},
+	//		title: {
+	//			text: 'OHLC'
+	//		},
+	//		height: '75%',
+	//		lineWidth: 2
+	//	},
+	//	{
+	//		labels: {
+	//			format: '{value:.8f}',
+	//			align: 'right',
+	//			x: -3
+	//		},
+	//		title: {
+	//			text: 'Volume'
+	//		},
+	//		top: '75%',
+	//		height: '25%',
+	//		offset: 0,
+	//		lineWidth: 2
+	//	}],
+
+	//	candlestick: {
+	//		pointWidth: '4px'
+	//	},
+
+	//	series: [{
+	//		type: 'candlestick',
+	//		name: $('#chartdata').data('title'),
+	//		data: cdata,
+	//		color: '#ee5f5b',
+	//		upColor: '#5cb85c',
+	//	},
+	//		{
+	//			name: 'Mean',
+	//			data: cdata,
+	//			type: 'spline',
+	//			color: 'rgba(0, 0, 0, 0.2)',
+	//			tooltip: {
+	//				valueDecimals: 8
+	//			}
+	//		},
+	//		{
+	//			type: 'column',
+	//			color: '#666666',
+	//			name: 'Volume',
+	//			data: vdata,
+	//			yAxis: 1,
+	//		}],
+
+	//	tooltip:
+	//	{
+	//		changeDecimals: 8,
+	//		valueDecimals: 8,
+	//		followPointer: false
+	//	},
+
+	//	rangeSelector: {
+	//		allButtonsEnabled: true,
+	//		buttons: [{
+	//			type: 'day',
+	//			count: 1,
+	//			text: 'Day',
+	//			dataGrouping: {
+	//				forced: true,
+	//				units: [['hour', [1]]]
+	//			}
+	//		},
+	//		{
+	//			type: 'week',
+	//			count: 1,
+	//			text: 'Week',
+	//			dataGrouping: {
+	//				forced: true,
+	//				units: [['hour', [4]]]
+	//			}
+	//		},
+	//		{
+	//			type: 'week',
+	//			text: 'Month',
+	//			count: 4,
+	//			dataGrouping: {
+	//				forced: true,
+	//				units: [['hour', [12]]]
+	//			}
+	//		},
+	//		{
+	//			type: 'week',
+	//			text: '3 Month',
+	//			count: 12,
+	//			dataGrouping: {
+	//				forced: true,
+	//				units: [['hour', [48]]]
+	//			}
+	//		},
+	//		{
+	//			type: 'all',
+	//			text: 'All',
+	//			dataGrouping: {
+	//				forced: true,
+	//				units: [['day', [2]]]
+	//			}
+	//		}],
+
+	//		buttonTheme: {
+	//			width: 60
+	//		},
+	//		selected: 1
+	//	},
+	//});
+
+}
+
+function updateDepth(data) {
+	alert(JSON.stringify(data))
+	$('#chartdata').highcharts({
+		chart: {
+			type: 'area'
+		},
+		title: {
+			text: 'Area chart with negative values'
+		},
+		xAxis: {
+			type: "linear",
+
+		},
+		credits: {
+			enabled: false
+		},
 		tooltip:
 		{
 			changeDecimals: 8,
 			valueDecimals: 8,
 			followPointer: false
 		},
-
-		rangeSelector: {
-			allButtonsEnabled: true,
-			buttons: [{
-				type: 'day',
-				count: 1,
-				text: 'Day',
-				dataGrouping: {
-					forced: true,
-					units: [['hour', [1]]]
-				}
-			},
-			{
-				type: 'week',
-				count: 1,
-				text: 'Week',
-				dataGrouping: {
-					forced: true,
-					units: [['hour', [4]]]
-				}
-			},
-			{
-				type: 'week',
-				text: 'Month',
-				count: 4,
-				dataGrouping: {
-					forced: true,
-					units: [['hour', [12]]]
-				}
-			},
-			{
-				type: 'week',
-				text: '3 Month',
-				count: 12,
-				dataGrouping: {
-					forced: true,
-					units: [['hour', [48]]]
-				}
-			},
-			{
-				type: 'all',
-				text: 'All',
-				dataGrouping: {
-					forced: true,
-					units: [['day', [2]]]
-				}
-			}],
-
-			buttonTheme: {
-				width: 60
-			},
-			selected: 1
+		series: [{
+			name: 'Buy',
+			data: [[0.001, 0], [0.001, 0], [0.001, 0], [0.001, 0], [0.001, 4000.00000000], [0.002, 3000.00000000], [0.003, 2000.00000000], [0.004, 1000.00000000], [0.0045, 100.00000000]]
 		},
+		{
+			name: 'Sell',
+			data: [[0.008, 4000.00000000], [0.007, 3000.00000000], [0.006, 2000.00000000], [0.005, 1000.00000000], [0.0045, 100.00000000], [0.005, 0], [0.005, 0], [0.005, 0], [0.005, 0]]
+		}]
 	});
 }
 
+
+
+[["0.00000015", "1000.00000000"], ["0.00000016", "2000.00000000"], ["0.00000020", "100.00000000"], ["12.00000000", "428.00000000"], ["124.00000000", "214.00000000"], ["125.00000000", "15.00000000"]]

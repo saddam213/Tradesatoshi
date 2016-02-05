@@ -9,6 +9,6 @@ namespace TradeSatoshi.Common.Transfer
 {
 	public interface ITransferWriter
 	{
-		Task<IWriterResult<bool>> CreateTransferAsync(CreateTransferModel tradeItem);
+		Task<IWriterResult<bool>> CreateTransfer(CreateTransferModel tradeItem);
 	}
 }

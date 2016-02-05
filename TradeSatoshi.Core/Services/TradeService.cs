@@ -603,7 +603,7 @@ namespace TradeSatoshi.Core.Services
 
 		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair, TradeNotifier notifications)
 		{
-			var result = await AuditService.AuditUserTradePairAsync(context, userId, tradepair);
+			var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
 			if (result.Success)
 			{
 				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), string.Format("{0:F8} {1}", result.Available, result.Symbol));
@@ -614,7 +614,7 @@ namespace TradeSatoshi.Core.Services
 
 		private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId, TradeNotifier notifications)
 		{
-			var result = await AuditService.AuditUserCurrencyAsync(context, userId, currencyId);
+			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
 			if (result.Success)
 			{
 				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), string.Format("{0:F8} {1}", result.Available, result.Symbol));
@@ -624,7 +624,7 @@ namespace TradeSatoshi.Core.Services
 
 		private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId)
 		{
-			var result = await AuditService.AuditUserCurrencyAsync(context, userId, currencyId);
+			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
 			return result.Success;
 		}
 

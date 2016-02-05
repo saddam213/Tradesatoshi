@@ -34,28 +34,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		public ActionResult Index()
 		{
-			if (User.Identity.IsAuthenticated)
-			{
-				//var test = BalanceReader.GetBalance(User.Id(), 2);
-				//var test2 = BalanceReader.GetBalances(User.Id());
-			}
-
-			using (var context = DataContext.CreateContext())
-			{
-				try
-				{
-					//var users = context.Users.FirstOrDefault(x => x.UserName == "test2");
-					//users.EmailConfirmed = true;
-					//context.UserTwoFactor.RemoveRange(users.TwoFactor);
-					//context.SaveChanges();
-				}
-				catch (DbEntityValidationException ex)
-				{
-
-
-				}
-			}
-
+			
 			return View();
 		}
 

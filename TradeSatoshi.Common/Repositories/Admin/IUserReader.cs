@@ -12,11 +12,8 @@ namespace TradeSatoshi.Core.Admin
 {
 	public interface IUserReader
 	{
-		UserModel GetUser(string userId);
-		Task<UserModel> GetUserAsync(string userId);
-		UpdateUserModel GetUserUpdate(string userId);
-		Task<UpdateUserModel> GetUserUpdateAsync(string userId);
-
+		Task<UserModel> GetUser(string userId);
+		Task<UpdateUserModel> GetUserUpdate(string userId);
 		DataTablesResponse GetUserDataTable(DataTablesModel model);
 		DataTablesResponse GetLogonDataTable(DataTablesModel model);
 		DataTablesResponse GetRolesDataTable(DataTablesModel model, SecurityRole securityRole);

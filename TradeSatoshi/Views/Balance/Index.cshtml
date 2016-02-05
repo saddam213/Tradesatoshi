@@ -44,7 +44,7 @@
 									<tr>
 										@if (authenticated)
 										{<td>@GetBalanceMenu(balance, menuOrientation)</td>}
-										<td title="@balance.Currency"><img src="../../Content/Images/GLD-small.png" alt="" /> @balance.Symbol</td>
+										<td title="@balance.Currency">@Helpers.CoinLogoWithSymbol(balance.Symbol)</td>
 										@if (authenticated)
 										{<td>@GetBalanceAddress(balance)</td>}
 										<td>@balance.Avaliable</td>
@@ -64,7 +64,7 @@
 
 
 
-			<div id="main-footer">
+			<div id="main-footer" class="main-footer">
 				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
 			</div>
 		</div>
@@ -80,9 +80,9 @@
 @helper GetBalanceMenu(TradeSatoshi.Common.Balance.BalanceModel balance, string orientation = "down")
 {
 	<div class="btn-group drop@(orientation)">
-		<a class="btn btn-xs btn-primary dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bars" style="margin-right: 5px"></i><span class="caret"></span></a>
+		<a class="btn btn-xs btn-info dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bars" style="margin-right: 5px"></i><span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			<li><b style="margin-left:20px;font-size:larger"><img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @balance.Symbol Menu</b></li>
+			<li><b style="margin-left:20px;font-size:larger">@Helpers.CoinLogoWithSymbol(balance.Symbol) Menu</b></li>
 			<li class="divider" style="padding-top:0px;margin-top:0px"></li>
 			<li><a onclick="createTransfer('@balance.CurrencyId');">Transfer</a></li>
 			<li><a onclick="createWithdraw('@balance.CurrencyId');">Withdraw</a></li>
@@ -100,7 +100,7 @@
 {
 	if (string.IsNullOrEmpty(balance.Address))
 	{
-	<button class="btb btn-xs btn-primary" onclick="generateAddress('@balance.CurrencyId');">Create Address</button>
+	<button class="btn btn-xs btn-info" onclick="generateAddress('@balance.CurrencyId');">Create Address</button>
 	}
 	else
 	{

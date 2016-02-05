@@ -3,8 +3,8 @@
 @*Chart*@
 <div class="col-xs-12 chart-container">
 	<div class="panel panel-default" style="">
-		<h4 class="chart-label"><img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @Model.Symbol / <img src="../../Content/Images/GLD-small.png" alt="" height="18" /> @Model.BaseSymbol</h4>
-		<div id="chartdata" class="chat-data" data-action="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)">
+		<h4 class="chart-label">@Helpers.CoinLogoWithSymbol(Model.Symbol,18) / @Helpers.CoinLogoWithSymbol(Model.BaseSymbol,18)</h4>
+		<div id="chartdata" class="chat-data" data-action="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)" data-basesymbol="@Model.BaseSymbol">
 		</div>
 	</div>
 </div>

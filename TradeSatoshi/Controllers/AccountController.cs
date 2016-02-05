@@ -80,7 +80,7 @@ namespace TradeSatoshi.Web.Controllers
 					if (loginTwoFactor == TwoFactorType.EmailCode)
 					{
 						var emailCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, user.Id);
-						await EmailService.SendAsync(EmailType.TwoFactorLogin, user, Request.GetIPAddress(), emailCode);
+						await EmailService.Send(EmailType.TwoFactorLogin, user, Request.GetIPAddress(), emailCode);
 					}
 
 					// Redirect to code verification page
@@ -97,12 +97,12 @@ namespace TradeSatoshi.Web.Controllers
 				if (await UserManager.IsLockedOutAsync(user.Id))
 				{
 					await UserManager.AddUserLogon(user, Request.GetIPAddress(), false);
-					await EmailService.SendAsync(EmailType.PasswordLockout, user, Request.GetIPAddress());
+					await EmailService.Send(EmailType.PasswordLockout, user, Request.GetIPAddress());
 					return View(model);
 				}
 				ModelState.AddModelError("", string.Format("Email or password was invalid.", UserManager.MaxFailedAccessAttemptsBeforeLockout - user.AccessFailedCount));
 				await UserManager.AddUserLogon(user, Request.GetIPAddress(), false);
-				await EmailService.SendAsync(EmailType.FailedLogon, user, Request.GetIPAddress(), GetLockoutLink(user));
+				await EmailService.Send(EmailType.FailedLogon, user, Request.GetIPAddress(), GetLockoutLink(user));
 				return View(model);
 			}
 		}
@@ -157,7 +157,7 @@ namespace TradeSatoshi.Web.Controllers
 					await UserManager.AddToRoleAsync(user.Id, SecurityRoles.Standard);
 					string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
-					if (await EmailService.SendAsync(EmailType.Registration, user, Request.GetIPAddress(), callbackUrl))
+					if (await EmailService.Send(EmailType.Registration, user, Request.GetIPAddress(), callbackUrl))
 					{
 						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
 					}
@@ -232,7 +232,7 @@ namespace TradeSatoshi.Web.Controllers
 			}
 
 			var resetPasswordToken = Url.Action("PasswordReset", "Account", new { secureToken = await UserManager.GeneratePasswordResetTokenAsync(user.Id) }, protocol: Request.Url.Scheme);
-			await EmailService.SendAsync(EmailType.PasswordReset, user, Request.GetIPAddress(), resetPasswordToken);
+			await EmailService.Send(EmailType.PasswordReset, user, Request.GetIPAddress(), resetPasswordToken);
 			return ViewMessage(message);
 		}
 
@@ -297,7 +297,7 @@ namespace TradeSatoshi.Web.Controllers
 
 			await UserManager.SetLockoutEndDateAsync(user.Id, DateTime.UtcNow.AddYears(1));
 			await UserManager.UpdateSecurityStampAsync(user.Id);
-			await EmailService.SendAsync(EmailType.UserLockout, user, Request.GetIPAddress());
+			await EmailService.Send(EmailType.UserLockout, user, Request.GetIPAddress());
 			return ViewMessage(new ViewMessageModel(ViewMessageType.Warning, "Account Lockdown!", "Your account has been locked at your request,"));
 		}
 
@@ -361,7 +361,7 @@ namespace TradeSatoshi.Web.Controllers
 			await UserManager.AccessFailedAsync(user.Id);
 			if (await UserManager.IsLockedOutAsync(user.Id))
 			{
-				await EmailService.SendAsync(EmailType.PasswordLockout, user, Request.GetIPAddress());
+				await EmailService.Send(EmailType.PasswordLockout, user, Request.GetIPAddress());
 				ModelState.AddModelError("", "Your account is locked.");
 				return View("Login");
 			}
@@ -414,7 +414,7 @@ namespace TradeSatoshi.Web.Controllers
 			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true, }, identity);
 
 			await UserManager.AddUserLogon(user, Request.GetIPAddress(), true);
-			await EmailService.SendAsync(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));
+			await EmailService.Send(EmailType.Logon, user, Request.GetIPAddress(), GetLockoutLink(user));
 		}
 
 

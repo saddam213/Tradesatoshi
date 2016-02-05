@@ -27,7 +27,7 @@
 			<div class="navbar-collapse collapse">
 				@Html.Partial("_LoginPartial")
 				<ul class="nav navbar-nav navbar-right">
-					<li class="visible-md">@Html.ResourceActionLink("Chat", "Index", "Chat")</li>
+					<li class="visible-xs visible-sm visible-md">@Html.ResourceActionLink("Chat", "Index", "Chat")</li>
 					<li>@Html.ResourceActionLink("Market", "Index", "Exchange")</li>
 					@if(User.Identity.IsAuthenticated)
 					{

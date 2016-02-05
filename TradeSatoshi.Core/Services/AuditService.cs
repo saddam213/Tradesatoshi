@@ -14,12 +14,7 @@ namespace TradeSatoshi.Core.Services
 {
 	public class AuditService : IAuditService
 	{
-		public AuditCurrencyResult AuditUserCurrency(IDataContext context, string userId, int currencyId)
-		{
-			return Task.Run(() => AuditUserCurrencyAsync(context, userId, currencyId)).Result;
-		}
-
-		public async Task<AuditCurrencyResult> AuditUserCurrencyAsync(IDataContext context, string userId, int currencyId)
+		public async Task<AuditCurrencyResult> AuditUserCurrency(IDataContext context, string userId, int currencyId)
 		{
 			try
 			{
@@ -128,22 +123,16 @@ namespace TradeSatoshi.Core.Services
 				await context.SaveChangesAsync();
 				return new AuditCurrencyResult(balance.Currency.Symbol, balance.Avaliable);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return new AuditCurrencyResult(false);
 			}
 		}
 
-
-		public AuditTradePairResult AuditUserTradePair(IDataContext context, string userId, Entity.TradePair tradepair)
+		public async Task<AuditTradePairResult> AuditUserTradePair(IDataContext context, string userId, Entity.TradePair tradepair)
 		{
-			return Task.Run(() => AuditUserTradePairAsync(context, userId, tradepair)).Result;
-		}
-
-		public async Task<AuditTradePairResult> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
-		{
-			var result = await AuditUserCurrencyAsync(context, userId, tradepair.CurrencyId1);
-			var baseResult = await AuditUserCurrencyAsync(context, userId, tradepair.CurrencyId2);
+			var result = await AuditUserCurrency(context, userId, tradepair.CurrencyId1);
+			var baseResult = await AuditUserCurrency(context, userId, tradepair.CurrencyId2);
 			if (!result.Success || !baseResult.Success)
 				return new AuditTradePairResult(false);
 

@@ -15,5 +15,13 @@ namespace TradeSatoshi.Web.Helpers
 
 			return model.Name.Replace('/', '_');
 		}
+
+		public static string Symbol(this TradePairModel model)
+		{
+			if (model == null)
+				return string.Empty;
+
+			return model.Name.Split('/')[0];
+		}
 	}
 }

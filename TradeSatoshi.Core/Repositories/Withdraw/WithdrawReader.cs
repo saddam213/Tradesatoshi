@@ -23,55 +23,7 @@ namespace TradeSatoshi.Core.Withdraw
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public List<WithdrawModel> GetWithdrawals(string userId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = context.Withdraw
-							.Where(x => x.UserId == userId)
-							.Select(withdraw =>
-							new WithdrawModel
-							{
-								Address = withdraw.Address,
-								Amount = withdraw.Amount,
-								Confirmations = withdraw.Confirmations,
-								Currency = withdraw.Currency.Name,
-								Fee = withdraw.Fee,
-								Id = withdraw.Id,
-								Symbol = withdraw.Currency.Symbol,
-								TimeStamp = withdraw.TimeStamp,
-								Txid = withdraw.Txid,
-								WithdrawStatus = withdraw.WithdrawStatus
-							});
-				return query.ToList();
-			}
-		}
-
-		public List<WithdrawModel> GetWithdrawals(string userId, int currencyId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var query = context.Withdraw
-							.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
-							.Select(withdraw =>
-							new WithdrawModel
-							{
-								Address = withdraw.Address,
-								Amount = withdraw.Amount,
-								Confirmations = withdraw.Confirmations,
-								Currency = withdraw.Currency.Name,
-								Fee = withdraw.Fee,
-								Id = withdraw.Id,
-								Symbol = withdraw.Currency.Symbol,
-								TimeStamp = withdraw.TimeStamp,
-								Txid = withdraw.Txid,
-								WithdrawStatus = withdraw.WithdrawStatus
-							});
-				return query.ToList();
-			}
-		}
-
-		public async Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId)
+		public async Task<List<WithdrawModel>> GetWithdrawals(string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -95,7 +47,7 @@ namespace TradeSatoshi.Core.Withdraw
 			}
 		}
 
-		public async Task<List<WithdrawModel>> GetWithdrawalsAsync(string userId, int currencyId)
+		public async Task<List<WithdrawModel>> GetWithdrawals(string userId, int currencyId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -166,34 +118,7 @@ namespace TradeSatoshi.Core.Withdraw
 			}
 		}
 
-
-		public CreateWithdrawModel GetCreateWithdraw(string userId, int currencyId)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var userInfo = context.Currency
-						.Where(c => c.Id == currencyId)
-						.Select(x => new CreateWithdrawModel
-						{
-							CurrencyId = x.Id,
-							Fee = x.WithdrawFee,
-							MaxWithdraw = x.MaxWithdraw,
-							MinWithdraw = x.MinWithdraw,
-							Symbol = x.Symbol,
-							WithdrawFeeType = x.WithdrawFeeType
-						}).FirstOrDefault();
-
-				var balance = context.Balance.FirstOrDefault(c => c.UserId == userId && c.CurrencyId == currencyId);
-				if (balance != null)
-				{
-					userInfo.Balance = balance.Avaliable;
-				}
-
-				return userInfo;
-			}
-		}
-
-		public async Task<CreateWithdrawModel> GetCreateWithdrawAsync(string userId, int currencyId)
+		public async Task<CreateWithdrawModel> GetCreateWithdraw(string userId, int currencyId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{

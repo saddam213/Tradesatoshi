@@ -41,10 +41,7 @@
 					<div class="col-xs-12 nopad balance-row" style="border-top: solid 1px #ddd; padding: 5px">
 						<div class="col-xs-12 col-sm-12 col-md-4 nopad col-lg-6 nopad">
 							<div class="text-xs-center text-sm-center text-md-left">
-								<div style="white-space: nowrap">
-									<img src="../../Content/Images/GLD-small.png" alt="" />
-									@balance.Symbol
-								</div>
+								@Helpers.CoinLogoWithSymbol(balance.Symbol)
 							</div>
 						</div>
 						<div class="col-xs-12 col-sm-12 col-md-8 nopad col-lg-6 nopad">
@@ -81,10 +78,7 @@
 					<div class="col-xs-12 nopad tradepair-row" style="border-top: solid 1px #ddd; padding: 5px" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })">
 						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
 							<div class="text-xs-center text-md-left">
-								<div style="white-space: nowrap">
-									<img src="../../Content/Images/GLD-small.png" alt="" />
-									@tradePair.Name
-								</div>
+								@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Name)
 							</div>
 						</div>
 						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">

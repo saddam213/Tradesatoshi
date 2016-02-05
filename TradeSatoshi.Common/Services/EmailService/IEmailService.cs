@@ -10,7 +10,6 @@ namespace TradeSatoshi.Common.Services.EmailService
 {
 	public interface IEmailService
 	{
-		bool Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters);
-		Task<bool> SendAsync(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters);
+		Task<bool> Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters);
 	}
 }

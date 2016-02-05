@@ -27,20 +27,8 @@ namespace TradeSatoshi.Core.Services
 		private readonly int EmailPort = int.Parse(ConfigurationManager.AppSettings["SMTP_Port"]);
 
 		public IDataContextFactory DataContextFactory { get; set; }
-		
-		public bool Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
-		{
-			using (var context = DataContextFactory.CreateContext())
-			{
-				var emailTemplate = context.EmailTemplates.FirstOrDefault(x => x.Type == template && x.IsEnabled);
-				if (emailTemplate == null)
-					return false;
-
-				return Send(emailTemplate, user, ipaddress, formatParameters);
-			}
-		}
-
-		public async Task<bool> SendAsync(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
+	
+		public async Task<bool> Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -49,28 +37,6 @@ namespace TradeSatoshi.Core.Services
 					return false;
 
 				return await SendAsync(emailTemplate, user, ipaddress, formatParameters);
-			}
-		}
-
-		private bool Send(EmailTemplate template, IdentityUser user, string ipaddress, params object[] formatParameters)
-		{
-			using (var email = new MailMessage(new MailAddress(EmailUser, EmailDisplayName), new MailAddress(user.Email)))
-			{
-				var emailParameters = new List<object>();
-				emailParameters.Add(user.UserName);
-				emailParameters.Add(ipaddress);
-				emailParameters.AddRange(formatParameters);
-
-				email.Subject = template.Subject;
-				email.Body = string.Format(template.Template, emailParameters.ToArray()).Replace("{{", "{").Replace("}}", "}");
-				email.IsBodyHtml = template.IsHtml;
-				using (var mailClient = new SmtpClient(EmailServer, EmailPort))
-				{
-					mailClient.Credentials = new NetworkCredential(EmailUser, EmailPassword);
-					mailClient.EnableSsl = true;
-					mailClient.Send(email);
-					return true;
-				}
 			}
 		}
 

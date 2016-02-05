@@ -33,7 +33,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (user == null)
 				return Unauthorized();
 
-			var model = await WithdrawReader.GetCreateWithdrawAsync(User.Id(), currencyId);
+			var model = await WithdrawReader.GetCreateWithdraw(User.Id(), currencyId);
 			if (model == null)
 				return ViewMessageModal(new ViewMessageModel(ViewMessageType.Danger, "Invalid Request", "An unknown error occured."));
 
@@ -69,7 +69,7 @@ namespace TradeSatoshi.Web.Controllers
 			// Create withdraw
 			var twoFactortoken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawConfirm, user.Id);
 			model.ConfirmationToken = twoFactortoken;
-			var result = await WithdrawWriter.CreateWithdrawAsync(user.Id, model);
+			var result = await WithdrawWriter.CreateWithdraw(user.Id, model);
 			if (!ModelState.IsWriterResultValid(result))
 				return View("CreateWithdrawModal", model);
 
@@ -91,7 +91,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!await UserManager.VerifyUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawConfirm, user.Id, secureToken))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Security Token", string.Format("Security token for withdraw #{0} is invalid or has expired, You can send a new one from the withdrawal section in your account page.", withdrawid)));
 
-			var result = await WithdrawWriter.ConfirmWithdrawAsync(user.Id, withdrawid);
+			var result = await WithdrawWriter.ConfirmWithdraw(user.Id, withdrawid);
 			if (!ModelState.IsWriterResultValid(result))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Withdrawal Confirm Failed", string.Format("Failed to confirm withdraw #{0}.", withdrawid)));
 
@@ -109,7 +109,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (!await UserManager.VerifyUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawCancel, user.Id, secureToken))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Invalid Security Token", string.Format("Security token for withdraw #{0} is invalid or has expired, You can send a new one from the withdrawal section in your account page.", withdrawid)));
 
-			var result = await WithdrawWriter.CancelWithdrawAsync(user.Id, withdrawid);
+			var result = await WithdrawWriter.CancelWithdraw(user.Id, withdrawid);
 			if (!ModelState.IsWriterResultValid(result))
 				return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Withdrawal Cancel Failed", string.Format("Failed to cancel withdraw #{0}.", withdrawid)));
 
@@ -123,7 +123,7 @@ namespace TradeSatoshi.Web.Controllers
 			var cancelWithdrawToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawCancel, user.Id);
 			var confirmlink = Url.Action("ConfirmWithdraw", "Withdraw", new { username = user.UserName, secureToken = confirmToken, withdrawid = withdrawId }, protocol: Request.Url.Scheme);
 			var cancellink = Url.Action("CancelWithdraw", "Withdraw", new { username = user.UserName, secureToken = cancelWithdrawToken, withdrawid = withdrawId }, protocol: Request.Url.Scheme);
-			return await EmailService.SendAsync(EmailType.WithdrawConfirmation, user, Request.GetIPAddress(), confirmlink, cancellink);
+			return await EmailService.Send(EmailType.WithdrawConfirmation, user, Request.GetIPAddress(), confirmlink, cancellink);
 		}
 
 		#endregion

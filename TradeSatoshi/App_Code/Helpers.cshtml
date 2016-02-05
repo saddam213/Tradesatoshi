@@ -38,3 +38,33 @@
 		<p></p>
 	</div>
 }
+
+
+@helper CoinLogo(string symbol, int height = 16)
+{
+	<img src="../../Content/Images/@symbol-small.png" onerror="this.src='/Content/Images/GLD-small.png'" alt="@symbol" height="@(height.ToString())" />
+}
+
+@helper CoinLogoWithSymbol(string symbol, int height = 16)
+{
+	<div style="white-space: nowrap;display:inline-block">
+		<img src="../../Content/Images/@symbol-small.png" onerror="this.src='/Content/Images/GLD-small.png'" alt="@symbol" height="@(height.ToString())" />
+		@symbol
+	</div>
+}
+
+@helper CoinLogoWithText(string symbol, string text, int height = 16)
+{
+	<div style="white-space: nowrap;display:inline-block">
+		<img src="../../Content/Images/@symbol-small.png" onerror="this.src='/Content/Images/GLD-small.png'" alt="@text" height="@(height.ToString())" />
+		@text
+	</div>
+}
+
+@helper CoinLogoWithFullName(string name, string symbol, int height = 16)
+{
+	<div style="white-space: nowrap;display:inline-block">
+		<img src="../../Content/Images/@symbol-small.png" onerror="this.src='/Content/Images/GLD-small.png'" alt="@name" height="@(height.ToString())" />
+		@string.Format("{0}({1})", name, symbol)
+	</div>
+}
