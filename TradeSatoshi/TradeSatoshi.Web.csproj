@@ -269,6 +269,7 @@
     <Content Include="Scripts\Project\Admin\admin.js" />
     <Content Include="Scripts\Project\Balance\balance.js" />
     <Content Include="Scripts\Project\chat.js" />
+    <Content Include="Scripts\Project\Exchange\tradepairCharts.js" />
     <Content Include="Scripts\Project\exporting.js" />
     <Content Include="Scripts\Project\highstock.js" />
     <Content Include="Scripts\Project\History\history.js" />

@@ -11,19 +11,40 @@ namespace TradeSatoshi.Web.Hubs
 	{
 		public async Task OnDataNotification(DataNotification notification)
 		{
-			await Clients.All.UpdateData(notification);
+			if (notification.IsElementKey)
+			{
+				await Clients.All.UpdateElementData(notification);
+			}
+			else
+			{
+				await Clients.All.UpdateData(notification);
+			}
 		}
 
 		public async Task OnUserDataNotification(UserDataNotification notification)
 		{
-			await Clients.User(notification.UserId).UpdateData(notification);
+			if (notification.IsElementKey)
+			{
+				await Clients.User(notification.UserId).UpdateElementData(notification);
+			}
+			else
+			{
+				await Clients.User(notification.UserId).UpdateData(notification);
+			}
 		}
 
 		public async Task OnDataNotifications(List<DataNotification> notifications)
 		{
 			foreach (var notification in notifications)
 			{
-				await Clients.All.UpdateData(notification);
+				if (notification.IsElementKey)
+				{
+					await Clients.All.UpdateElementData(notification);
+				}
+				else
+				{
+					await Clients.All.UpdateData(notification);
+				}
 			}
 		}
 
@@ -31,7 +52,14 @@ namespace TradeSatoshi.Web.Hubs
 		{
 			foreach (var notification in notifications)
 			{
-				await Clients.User(notification.UserId).UpdateData(notification);
+				if (notification.IsElementKey)
+				{
+					await Clients.User(notification.UserId).UpdateElementData(notification);
+				}
+				else
+				{
+					await Clients.User(notification.UserId).UpdateData(notification);
+				}
 			}
 		}
 

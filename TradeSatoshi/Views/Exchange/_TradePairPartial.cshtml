@@ -1,10 +1,29 @@
 ﻿@model TradeSatoshi.Common.Exchange.TradePairExchangeModel
+@{
+
+}
+<style>
+	.buysell-balance {
+		padding-top: 2px;
+		float: right;
+		font-size: 12px;
+		cursor: pointer;
+	}
+</style>
 
 @*Chart*@
-<div class="col-xs-12 chart-container">
+<div id="chart-container" class="col-xs-12 chart-container" data-action-chart="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-action-depth="@Url.Action("GetTradePairDepth", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)" data-basesymbol="@Model.BaseSymbol" data-tradepairid="@Model.TradePairId">
 	<div class="panel panel-default" style="">
-		<h4 class="chart-label">@Helpers.CoinLogoWithSymbol(Model.Symbol,18) / @Helpers.CoinLogoWithSymbol(Model.BaseSymbol,18)</h4>
-		<div id="chartdata" class="chat-data" data-action="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)" data-basesymbol="@Model.BaseSymbol">
+		<h4 class="chart-label pull-left">@Helpers.CoinLogoWithSymbol(Model.Symbol, 18) / @Helpers.CoinLogoWithSymbol(Model.BaseSymbol, 18)</h4>
+
+		<div class="chart-option-group btn-group btn-group-xs pull-right">
+			<button class="btn btn-default chart-option chart-option-chart active" data-type="chart">Chart</button>
+			<button class="btn btn-default chart-option chart-option-depth" data-type="depth">Depth</button>
+		</div>
+
+		<div id="chartdata" class="chat-data">
+		</div>
+		<div id="depthdata" class="chat-data" style="display:none;">
 		</div>
 	</div>
 </div>
@@ -13,7 +32,13 @@
 <div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
 	<div class="panel panel-default nopad">
 		<div class="panel-heading">
-			<h3 class="panel-title">Sell @Model.Symbol</h3>
+			<h3 class="panel-title">
+				<span>Sell @Model.Symbol</span>
+				<span class="buysell-balance">
+					<span class="data-balance-@Model.Symbol" >@Model.Balance.ToString("F8")</span>
+					<span>@Model.Symbol</span>
+				</span>
+			</h3>
 		</div>
 		<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Sell">
 			@Html.Partial("_CreateTradePartial", Model.SellModel)
@@ -24,7 +49,7 @@
 			<h3 class="panel-title">Buy Orders</h3>
 		</div>
 		<div id="buyOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Buy">
-			<table id="table-buyOrders-@Model.TradePairId" class=" table table-condensed table-hover" >
+			<table id="table-buyOrders-@Model.TradePairId" class="table table-condensed table-hover">
 				<thead>
 					<tr>
 						<th>Price</th>
@@ -32,8 +57,7 @@
 						<th>@Model.BaseSymbol</th>
 					</tr>
 				</thead>
-				<tbody>
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 	</div>
@@ -43,7 +67,13 @@
 <div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
 	<div class="panel panel-default nopad">
 		<div class="panel-heading">
-			<h3 class="panel-title">Buy @Model.Symbol</h3>
+			<h3 class="panel-title">
+				<span>Buy @Model.Symbol</span>
+				<span class="buysell-balance">
+					<span class="data-balance-@Model.BaseSymbol">@Model.BaseBalance.ToString("F8")</span>
+					<span>@Model.BaseSymbol</span>
+				</span>
+			</h3>
 		</div>
 		<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Buy">
 			@Html.Partial("_CreateTradePartial", Model.BuyModel)
@@ -54,7 +84,7 @@
 			<h3 class="panel-title">Sell Orders</h3>
 		</div>
 		<div id="sellOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Sell">
-			<table id="table-sellOrders-@Model.TradePairId" class="table table-condensed table-hover" >
+			<table id="table-sellOrders-@Model.TradePairId" class="table table-condensed table-hover">
 				<thead>
 					<tr>
 						<th>Price</th>
@@ -62,8 +92,7 @@
 						<th>@Model.BaseSymbol</th>
 					</tr>
 				</thead>
-				<tbody>
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 
@@ -76,8 +105,8 @@
 		<div class="panel-heading">
 			<h3 class="panel-title">Market History</h3>
 		</div>
-		<div id="tradehistory-host" data-action="@Url.Action("GetMarketHistory")" data-tradepair="@Model.TradePairId" >
-			<table id="table-tradehistory-@Model.TradePairId" class="table table-condensed table-hover" >
+		<div id="tradehistory-host" data-action="@Url.Action("GetMarketHistory")" data-tradepair="@Model.TradePairId">
+			<table id="table-tradehistory-@Model.TradePairId" class="table table-condensed table-hover">
 				<thead>
 					<tr>
 						<th>Time</th>
@@ -86,13 +115,13 @@
 						<th>Amount</th>
 					</tr>
 				</thead>
-				<tbody>
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 	</div>
 </div>
 
 
-@Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")
 
+@Scripts.Render("~/Scripts/Project/Exchange/tradepairCharts.js")
+@Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")

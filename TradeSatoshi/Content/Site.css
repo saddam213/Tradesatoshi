@@ -96,8 +96,8 @@ input[type="checkbox"].input-validation-error {
 	cursor: pointer;
 }
 
-.form-horizontal{
-padding: 15px;
+.form-horizontal {
+	padding: 15px;
 }
 
 .modal-dialog {
@@ -105,7 +105,6 @@ padding: 15px;
 }
 
 .modal-body {
-	
 }
 
 .modal-large {
@@ -204,40 +203,36 @@ padding: 15px;
 
 
 
-table.dataTable thead th, table.dataTable thead td{
-	padding:5px 9px;
+table.dataTable thead th, table.dataTable thead td {
+	padding: 5px 9px;
 }
 
 
 .dataTables_wrapper .dataTables_filter input {
-/*padding-left:10px;
+	/*padding-left:10px;
 float:left;*/
 }
 
-.dataTables_filter > label > input{
-
-height:24px;
-width:200px!important;
+.dataTables_filter > label > input {
+	height: 24px;
+	width: 200px !important;
 }
 
-.dataTables_filter > label > input::-moz-placeholder {
-  color: #999;
-  
-  font-style:italic;
-  opacity: 1;
-}
+	.dataTables_filter > label > input::-moz-placeholder {
+		color: #999;
+		font-style: italic;
+		opacity: 1;
+	}
 
-.dataTables_filter > label > input:-ms-input-placeholder {
- 
-  font-style:italic;
-  color: #999;
-}
+	.dataTables_filter > label > input:-ms-input-placeholder {
+		font-style: italic;
+		color: #999;
+	}
 
-.dataTables_filter > label > input::-webkit-input-placeholder {
- 
-  font-style:italic;
-  color: #999;
-}
+	.dataTables_filter > label > input::-webkit-input-placeholder {
+		font-style: italic;
+		color: #999;
+	}
 
 /*Home Page*/
 /*----------------------------------------------------------------------------*/
@@ -300,7 +295,7 @@ width:200px!important;
 }
 
 .feature_content:hover .feature_content:after {
-	border: 2px solid#fff!important;
+	border: 2px solid#fff !important;
 }
 
 .feature_content:hover i {
@@ -358,7 +353,7 @@ width:200px!important;
 	margin: 10px auto;
 	padding-bottom: 10px;
 	width: 45%;
-	color: #EE3B24!important;
+	color: #EE3B24 !important;
 	text-transform: uppercase;
 	font-size: 40px;
 	line-height: 50px;
@@ -389,7 +384,6 @@ width:200px!important;
 }
 
 .footer_b {
-	
 }
 
 .footer_menu li a:before {
@@ -401,7 +395,7 @@ width:200px!important;
 
 .menu_head {
 	margin: 15px 0px 35px 0px;
-	color: #C5C5C2!important;
+	color: #C5C5C2 !important;
 	font-weight: 700;
 	font-size: 18px;
 	line-height: 24px;
@@ -691,7 +685,7 @@ width:200px!important;
 .buySell-table-layout {
 	table-layout: fixed;
 	width: 100%;
-	font-size:13px;
+	font-size: 13px;
 }
 
 	.buySell-table-layout > tbody > tr > th,
@@ -725,42 +719,53 @@ width:200px!important;
 	}
 
 
-	/*Tradepair partial*/
-	.chart-container {
-		margin: 0px;
-		padding: 2px;
-		padding-top: 6px;
-		height: 300px;
-	}
+/*Tradepair partial*/
+.chart-container {
+	margin: 0px;
+	padding: 2px;
+	padding-top: 6px;
+	height: 300px;
+}
 
-		.chart-container .panel {
-			width: 100%;
-			height: 100%;
-		}
-
-	.chart-label {
-		padding: 0px;
-		margin: 0px;
-		padding-left: 10px;
-		padding-top: 5px;
-	}
-
-	.chat-data {
-		width: 100% !important;
+	.chart-container .panel {
+		width: 100%;
 		height: 100%;
 	}
 
-		.exchange-panel {
-		padding: 2px;
+.chart-label {
+	padding: 0px;
+	margin: 0px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+.chart-option-group {
+	padding: 0px;
+	padding-top: 5px;
+	padding-right: 38px;
+}
+
+	.chart-option-group .btn {
+		width: 100px;
 	}
 
-	.exchange-orderPanel {
-		margin-top: 4px; margin-bottom: 0px;
-	}
+.chat-data {
+	width: 100% !important;
+	height: 100%;
+}
 
-	.exchange-historyPanel {
-		margin-bottom: 0px;
-	}
+.exchange-panel {
+	padding: 2px;
+}
+
+.exchange-orderPanel {
+	margin-top: 4px;
+	margin-bottom: 0px;
+}
+
+.exchange-historyPanel {
+	margin-bottom: 0px;
+}
 /*----------------------------------------------------------------------------*/
 
 
@@ -810,7 +815,6 @@ width:200px!important;
 
 #chat-table-footer {
 	display: flex;
-	
 }
 
 #chat-table-footer-offline {

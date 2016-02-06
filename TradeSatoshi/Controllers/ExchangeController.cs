@@ -86,5 +86,11 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			return Json(await TradeReader.GetTradePairChart(tradePairId), JsonRequestBehavior.AllowGet);
 		}
+
+		[HttpGet]
+		public async Task<ActionResult> GetTradePairDepth(int tradePairId)
+		{
+			return Json(await TradeReader.GetTradePairDepth(tradePairId), JsonRequestBehavior.AllowGet);
+		}
 	}
 }

@@ -58,16 +58,7 @@ namespace TradeSatoshi.Core.Services
 				return false;
 			}
 		}
-
-		public bool SendNotification(INotification notification)
-		{
-			return Task.Run(() => SendNotificationAsync(notification)).Result;
-		}
-		public bool SendNotification(List<INotification> notifications)
-		{
-			return Task.Run(() => SendNotificationAsync(notifications)).Result;
-		}
-
+	
 		#endregion
 
 		#region UserNotification
@@ -113,17 +104,7 @@ namespace TradeSatoshi.Core.Services
 				return false;
 			}
 		}
-
-		public bool SendUserNotification(IUserNotification notification)
-		{
-			return Task.Run(() => SendUserNotificationAsync(notification)).Result;
-		}
-
-		public bool SendUserNotification(List<IUserNotification> notifications)
-		{
-			return Task.Run(() => SendUserNotificationAsync(notifications)).Result;
-		}
-
+	
 		#endregion
 
 		#region DataUpdate

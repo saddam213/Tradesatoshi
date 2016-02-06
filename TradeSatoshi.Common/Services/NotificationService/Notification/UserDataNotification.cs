@@ -9,14 +9,19 @@ namespace TradeSatoshi.Common.Services.NotificationService
 	public class UserDataNotification : IUserDataNotification
 	{
 		public UserDataNotification() { }
-		public UserDataNotification(string userId, string elementName, string elementValue)
+		public UserDataNotification(string userId, string dataKey, string dataValue)
 		{
 			UserId = userId;
-			ElementName = elementName;
-			ElementValue = elementValue;
+			DataKey = dataKey;
+			DataValue = dataValue;
+			IsElementKey = dataKey.StartsWith("#") || dataKey.StartsWith(".");
 		}
 		public string UserId { get; set; }
-		public string ElementName { get; set; }
-		public string ElementValue { get; set; }
+	
+		public string DataKey { get; set; }
+
+		public object DataValue { get; set; }
+
+		public bool IsElementKey { get; set; }
 	}
 }

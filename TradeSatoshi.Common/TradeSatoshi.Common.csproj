@@ -110,6 +110,7 @@
     <Compile Include="Models\Trade\CancelTradeModel.cs" />
     <Compile Include="Models\Trade\CancelTradeResponse.cs" />
     <Compile Include="Models\Trade\ChartDataModel.cs" />
+    <Compile Include="Models\Trade\ChartDepthDataViewModel.cs" />
     <Compile Include="Models\Trade\ChartDataViewModel.cs" />
     <Compile Include="Models\Trade\ExchangeModel.cs" />
     <Compile Include="Models\Trade\CreateTradeModel.cs" />

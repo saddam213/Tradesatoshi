@@ -141,6 +141,9 @@ namespace TradeSatoshi.Base.Logging
 			Flush();
 			_terminate.Set();
 			_loggingThread.Join();
+			_hasNewItems.Dispose();
+			_terminate.Dispose();
+			_waiting.Dispose();
 		}
 	}
 }

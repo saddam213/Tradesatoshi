@@ -180,6 +180,7 @@ namespace TradeSatoshi.Core.Services
 
 							response.AddCanceledOrder(trade.Id);
 
+							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.ToString());
 							notifications.AddUserNotification(trade.UserId, "Canceled {0} Order - {2:F8}{3} @ {4:F8}{5}", trade.TradeType, trade.Id, trade.Amount, tradePair.Currency1.Symbol, trade.Rate, tradePair.Currency2.Symbol);
 							notifications.AddDataTableNotification(trade.TradeType == TradeType.Buy ? NotificationConstants.DataTable_BuyOrders : NotificationConstants.DataTable_SellOrders, tradePair.Id);
 							notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, tradePair.Id);
@@ -223,6 +224,7 @@ namespace TradeSatoshi.Core.Services
 							if (trades.Any(x => x.TradeType == TradeType.Sell))
 								notifications.AddDataTableNotification(NotificationConstants.DataTable_SellOrders, tradePair.Id);
 
+							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.ToString());
 							notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, tradePair.Id);
 							//Cache.InvalidateTradeData(tradePair.Id);
 						}
@@ -259,10 +261,13 @@ namespace TradeSatoshi.Core.Services
 								if (group.Any(x => x.TradeType == TradeType.Sell))
 									notifications.AddDataTableNotification(NotificationConstants.DataTable_SellOrders, group.Key);
 
+								notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, group.Key.ToString());
 								notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, group.Key);
-								//Cache.InvalidateTradeData(tradePair.Id);
+								
 							}
 						}
+
+						
 
 						// Submit changes to context
 						Log.Debug("TradeService", "Submitting context changes...");
@@ -329,7 +334,7 @@ namespace TradeSatoshi.Core.Services
 						{
 							throw new Exception(string.Format("Market status is currently {0}, unable to process trade.", tradePair.Status));
 						}
-
+						
 						// Get or cache currency
 						var currency = tradePair.Currency1;
 						var baseCurency = tradePair.Currency2;
@@ -408,6 +413,7 @@ namespace TradeSatoshi.Core.Services
 							}
 
 							response.TradeId = trade.Id;
+							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.Id.ToString());
 						}
 						else
 						{
@@ -529,7 +535,12 @@ namespace TradeSatoshi.Core.Services
 								if (newTransaction != null)
 									response.AddFilledTrade(newTransaction.Id);
 							}
+
+							notifications.AddDataNotification(NotificationConstants.Data_ChartUpdate, tradePair.Id.ToString());
+							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.Id.ToString());
 						}
+
+						
 
 						Log.Debug("TradeService", "Committing database transaction");
 						await context.SaveChangesAsync();
@@ -606,8 +617,8 @@ namespace TradeSatoshi.Core.Services
 			var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
 			if (result.Success)
 			{
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), string.Format("{0:F8} {1}", result.Available, result.Symbol));
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.BaseSymbol), string.Format("{0:F8} {1}", result.BaseAvailable, result.BaseSymbol));
+				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), result.Available.ToString("F8"));
+				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.BaseSymbol), result.BaseAvailable.ToString("F8"));
 			}
 			return result.Success;
 		}
@@ -617,7 +628,7 @@ namespace TradeSatoshi.Core.Services
 			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
 			if (result.Success)
 			{
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), string.Format("{0:F8} {1}", result.Available, result.Symbol));
+				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), result.Available.ToString("F8"));
 			}
 			return result.Success;
 		}

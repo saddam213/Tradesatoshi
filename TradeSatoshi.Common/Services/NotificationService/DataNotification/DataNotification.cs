@@ -9,12 +9,14 @@ namespace TradeSatoshi.Common.Services.NotificationService
 	public class DataNotification : IDataNotification
 	{
 		public DataNotification() { }
-		public DataNotification(string elementName, string elementValue)
+		public DataNotification(string dataKey, object dataValue)
 		{
-			ElementName = elementName;
-			ElementValue = elementValue;
+			DataKey = dataKey;
+			DataValue = dataValue;
+			IsElementKey = dataKey.StartsWith("#") || dataKey.StartsWith(".");
 		}
-		public string ElementName { get; set; }
-		public string ElementValue { get; set; }
+		public string DataKey { get; set; }
+		public object DataValue { get; set; }
+		public bool IsElementKey { get; set; }
 	}
 }

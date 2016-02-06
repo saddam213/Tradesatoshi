@@ -61,33 +61,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		public ActionResult Test()
 		{
-			foreach (NotificationType item in Enum.GetValues(typeof(NotificationType)))
-			{
-				NotificationService.SendNotification(new Notification
-				{
-					Message = "Test message",
-					Title = "Test title",
-					Type = item
-				});
-
-				NotificationService.SendDataNotificationAsync(new DataNotification
- 				{
-					ElementName = "#test",
-					ElementValue = "Hello World!"
-				});
-
-				if (User.Identity.IsAuthenticated)
-				{
-					NotificationService.SendUserNotification(new UserNotification
-					{
-						Message = "Test message",
-						Title = "Test title",
-						Type = item,
-						UserId = User.Id()
-					});
-				}
-			}
-
+			
 
 			return Index();
 		}

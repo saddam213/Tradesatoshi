@@ -8,11 +8,6 @@ namespace TradeSatoshi.Common.Services.NotificationService
 {
 	public interface INotificationService
 	{
-		bool SendNotification(INotification notification);
-		bool SendNotification(List<INotification> notifications);
-		bool SendUserNotification(IUserNotification notification);
-		bool SendUserNotification(List<IUserNotification> notifications);
-
 		Task<bool> SendNotificationAsync(INotification notification);
 		Task<bool> SendNotificationAsync(List<INotification> notifications);
 		Task<bool> SendUserNotificationAsync(IUserNotification notification);

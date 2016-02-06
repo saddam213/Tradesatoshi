@@ -13,6 +13,4 @@ namespace TradeSatoshi.Common.Services.NotificationService
 		Task OnNotifications(List<Notification> notifications);
 		Task OnUserNotifications(List<UserNotification> notifications);
 	}
-
-
 }

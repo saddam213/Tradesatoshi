@@ -280,7 +280,7 @@ namespace TradeSatoshi.Core.Trade
 				}).ToListAsync();
 
 				if (tradePairData.IsNullOrEmpty())
-					return MapChartData(new[] { new ChartDataModel(DateTime.UtcNow.ToJavaTime(), 0, 0, 0, 0, 0) }, new[] { new decimal[] { 0, 0 } }, new[] { new decimal[] { 0, 0 } });
+					return MapChartData(new[] { new ChartDataModel(DateTime.UtcNow.ToJavaTime(), 0, 0, 0, 0, 0) });
 
 				var chartData = new List<ChartDataModel>();
 				var start = tradePairData.Min(x => x.Timestamp);
@@ -305,41 +305,49 @@ namespace TradeSatoshi.Core.Trade
 
 					var max = data.Max(x => x.Rate);
 					lastClose = data.Last().Rate;
-					chartData.Add(new ChartDataModel(date.ToJavaTime(), data.First().Rate, max, data.Min(x => x.Rate), lastClose, data.Sum(x => x.Amount)));
+					chartData.Add(new ChartDataModel(date.ToJavaTime(), data.First().Rate, max, data.Min(x => x.Rate), lastClose, data.Sum(x => x.Amount * x.Rate)));
 				}
 
+				return MapChartData(chartData);
+			}
+		}
 
-				var trades = context.Trade.Where(x => x.TradePairId == tradePairId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending)).ToList();
-				var maxBuy = trades.Where(x => x.TradeType == TradeType.Buy).Max(x => x.Rate);
-				var minSell = trades.Where(x => x.TradeType == TradeType.Sell).Min(x => x.Rate);
+		public async Task<ChartDepthDataViewModel> GetTradePairDepth(int tradePairId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var trades = await context.Trade.Where(x => x.TradePairId == tradePairId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending)).ToListAsync();
+				var buyTrades = trades.Where(x => x.TradeType == TradeType.Buy).ToList();
+				var sellTrades = trades.Where(x => x.TradeType == TradeType.Sell).ToList();
 				var sellData = new List<decimal[]>();
 				var buyData = new List<decimal[]>();
 
 
 				var buyTotal = 0m;
-				foreach (var group in trades.Where(x => x.TradeType == TradeType.Buy).GroupBy(x => x.Rate).OrderByDescending(x => x.Key))
+				foreach (var group in buyTrades.GroupBy(x => x.Rate).OrderByDescending(x => x.Key))
 				{
 					buyTotal += group.Sum(t => t.Remaining * t.Rate);
 					buyData.Insert(0, new decimal[] { group.Key, buyTotal });
 				}
 
-
 				var sellTotal = 0m;
-				foreach (var group in trades.Where(x => x.TradeType == TradeType.Sell).GroupBy(x => x.Rate).OrderBy(x => x.Key))
+				foreach (var group in sellTrades.GroupBy(x => x.Rate).OrderBy(x => x.Key))
 				{
 					sellTotal += group.Sum(t => t.Remaining * t.Rate);
 					sellData.Add(new decimal[] { group.Key, sellTotal });
 				}
 
-				//sellData.Insert(0,new decimal[]{maxBuy, 0 });
-				//buyData.Add(new decimal[]{minSell, 0 });
-				return MapChartData(chartData, sellData, buyData);
+				return new ChartDepthDataViewModel
+				{
+					BuyDepth = new List<decimal[]>(buyData),
+					SellDepth = new List<decimal[]>(sellData)
+				};
 			}
 		}
 
 
 
-		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData, IEnumerable<decimal[]> sellData, IEnumerable<decimal[]> buyData)
+		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData)
 		{
 			return new ChartDataViewModel
 			{
@@ -355,9 +363,7 @@ namespace TradeSatoshi.Core.Trade
 					{
 						x.Timestamp,
 						x.Volume
-					}).ToList(),
-				BuyDepth = new List<decimal[]>(buyData),
-				SellDepth = new List<decimal[]>(sellData)
+					}).ToList()
 			};
 		}
 	}

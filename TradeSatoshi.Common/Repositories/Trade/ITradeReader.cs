@@ -26,5 +26,6 @@ namespace TradeSatoshi.Common.Trade
 		Task<TradePairInfoModel> GetTradePairInfo(int tradePairId, string userId);
 		Task<TradePairExchangeModel> GetTradePairExchange(int tradePairId, string userId);
 		Task<ChartDataViewModel> GetTradePairChart(int tradePairId);
+		Task<ChartDepthDataViewModel> GetTradePairDepth(int tradePairId);
 	}
 }

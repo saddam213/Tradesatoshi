@@ -11,7 +11,7 @@ namespace TradeSatoshi.Base.Queueing
 	/// <summary>
 	/// A synchronous blocking queue for processing items in a FIFO scenario
 	/// </summary>
-	public class ProcessorQueue<T, U> : IDisposable
+	public sealed class ProcessorQueue<T, U> : IDisposable
 	{
 		/// <summary>
 		/// The function to be called when items are processed in the queue
@@ -73,10 +73,12 @@ namespace TradeSatoshi.Base.Queueing
 		public void Dispose()
 		{
 			_processQueue.CompleteAdding();
+			_processQueue.Dispose();
+			GC.SuppressFinalize(this);
 		}
 	}
 
-	public class ProcessorQueue<T> : IDisposable
+	public sealed class ProcessorQueue<T> : IDisposable
 	{
 		/// <summary>
 		/// The function to be called when items are processed in the queue

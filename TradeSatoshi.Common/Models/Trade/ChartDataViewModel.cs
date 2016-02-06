@@ -12,13 +12,9 @@ namespace TradeSatoshi.Common.Trade
 		{
 			Candle = new List<decimal[]>();
 			Volume = new List<decimal[]>();
-			SellDepth = new List<decimal[]>();
-			BuyDepth = new List<decimal[]>();
 		}
 
 		public List<decimal[]> Candle { get; set; }
 		public List<decimal[]> Volume { get; set; }
-		public List<decimal[]> SellDepth { get; set; }
-		public List<decimal[]> BuyDepth { get; set; }
 	}
 }

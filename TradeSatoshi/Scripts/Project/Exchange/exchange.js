@@ -1,4 +1,5 @@
-﻿$(function () {
+﻿var isDepthChartSelected = false;
+$(function () {
 
 	$('#table-tradepair > .tradepair-row').on('click', function (e) {
 		$('#table-tradepair > .tradepair-row').removeClass('active');
@@ -26,4 +27,5 @@
 	} else {
 		$('#table-tradepair .tradepair-row:first').trigger('click');
 	}
+		
 });

@@ -26,10 +26,16 @@ $.ajaxSetup({ cache: false });
 	};
 
 	var dataNotificationHub = $.connection.DataNotification;
+	dataNotificationHub.client.UpdateElementData = function (notification) {
+		console.log('UpdateElementData', notification.DataKey, notification.DataValue)
+		$(htmlEncode(notification.DataKey)).html(htmlEncode(notification.DataValue));
+	};
 	dataNotificationHub.client.UpdateData = function (notification) {
-		$(htmlEncode(notification.ElementName)).html(htmlEncode(notification.ElementValue));
+		console.log('UpdateData', notification.DataKey, notification.DataValue)
+		$(document).trigger(notification.DataKey, notification.DataValue);
 	};
 	dataNotificationHub.client.UpdateDataTable = function (notification) {
+		console.log('UpdateDataTable', notification.DataTableName)
 		$(htmlEncode(notification.DataTableName)).dataTable().fnDraw();
 	};
 

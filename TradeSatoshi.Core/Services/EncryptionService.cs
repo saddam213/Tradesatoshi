@@ -27,6 +27,7 @@ namespace TradeSatoshi.Core.Services
 
 		public string EncryptString(string input, string passPhrase)
 		{
+			byte[] cipherTextBytes = null;
 			byte[] plainTextBytes = Encoding.UTF8.GetBytes(input);
 			using (PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null))
 			{
@@ -36,15 +37,13 @@ namespace TradeSatoshi.Core.Services
 					symmetricKey.Mode = CipherMode.CBC;
 					using (ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, InitVectorBytes))
 					{
-						using (MemoryStream memoryStream = new MemoryStream())
+						MemoryStream memoryStream = new MemoryStream();
+						using (CryptoStream cryptoStream = new CryptoStream(new MemoryStream(), encryptor, CryptoStreamMode.Write))
 						{
-							using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-							{
-								cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-								cryptoStream.FlushFinalBlock();
-								byte[] cipherTextBytes = memoryStream.ToArray();
-								return Convert.ToBase64String(cipherTextBytes);
-							}
+							cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+							cryptoStream.FlushFinalBlock();
+							cipherTextBytes = memoryStream.ToArray();
+							return Convert.ToBase64String(cipherTextBytes);
 						}
 					}
 				}
@@ -62,14 +61,12 @@ namespace TradeSatoshi.Core.Services
 					symmetricKey.Mode = CipherMode.CBC;
 					using (ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, InitVectorBytes))
 					{
-						using (MemoryStream memoryStream = new MemoryStream(cipherTextBytes))
+						MemoryStream memoryStream = new MemoryStream(cipherTextBytes);
+						using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
 						{
-							using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-							{
-								byte[] plainTextBytes = new byte[cipherTextBytes.Length];
-								int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-								return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
-							}
+							byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+							int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+							return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
 						}
 					}
 				}
