@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Common.DataTables;
+﻿using System.Threading.Tasks;
 using TradeSatoshi.Common.Validation;
-using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Vote
 {

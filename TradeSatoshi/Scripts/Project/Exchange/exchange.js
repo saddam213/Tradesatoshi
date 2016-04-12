@@ -16,6 +16,7 @@ $(function () {
 			var tradePairTarget = $(targetName);
 			if (tradePairTarget) {
 				tradePairTarget.unbind();
+				tradePairTarget.off();
 			}
 			getPartial(targetName, targetUrl);
 		}

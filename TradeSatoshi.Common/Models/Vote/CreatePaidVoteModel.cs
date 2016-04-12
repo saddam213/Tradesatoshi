@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Enums;
 
@@ -21,6 +17,7 @@ namespace TradeSatoshi.Common.Vote
 		[Required]
 		[MaxLength(128)]
 		public string Data { get; set; }
+
 		public TwoFactorType TwoFactorType { get; set; }
 		public TwoFactorComponentType TwoFactorComponentType { get; set; }
 

@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common;
-using System.Threading;
-using System.Security.Claims;
-using System.Security.Permissions;
-using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Deposit;
+using System.Linq;
+using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Deposit;
+using TradeSatoshi.Core.Helpers;
 
 namespace TradeSatoshi.Core.Balance
 {
@@ -27,19 +18,18 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
-							.Where(x => x.UserId == userId)
-							.Select(deposit =>
-							new DepositModel
-							{
-								Amount = deposit.Amount,
-								Confirmations = deposit.Confirmations,
-								Currency = deposit.Currency.Name,
-								Id = deposit.Id,
-								Symbol = deposit.Currency.Symbol,
-								TimeStamp = deposit.TimeStamp,
-								Txid = deposit.Txid,
-								DepositStatus = deposit.DepositStatus
-							});
+					.Where(x => x.UserId == userId && x.Currency.IsEnabled)
+					.Select(deposit => new DepositModel
+					{
+						Amount = deposit.Amount,
+						Confirmations = deposit.Confirmations,
+						Currency = deposit.Currency.Name,
+						Id = deposit.Id,
+						Symbol = deposit.Currency.Symbol,
+						TimeStamp = deposit.TimeStamp,
+						Txid = deposit.Txid,
+						DepositStatus = deposit.DepositStatus
+					});
 				return await query.ToListAsync();
 			}
 		}
@@ -49,19 +39,18 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
-							.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
-							.Select(deposit =>
-							new DepositModel
-							{
-								Amount = deposit.Amount,
-								Confirmations = deposit.Confirmations,
-								Currency = deposit.Currency.Name,
-								Id = deposit.Id,
-								Symbol = deposit.Currency.Symbol,
-								TimeStamp = deposit.TimeStamp,
-								Txid = deposit.Txid,
-								DepositStatus = deposit.DepositStatus
-							});
+					.Where(x => x.UserId == userId && x.CurrencyId == currencyId && x.Currency.IsEnabled)
+					.Select(deposit => new DepositModel
+					{
+						Amount = deposit.Amount,
+						Confirmations = deposit.Confirmations,
+						Currency = deposit.Currency.Name,
+						Id = deposit.Id,
+						Symbol = deposit.Currency.Symbol,
+						TimeStamp = deposit.TimeStamp,
+						Txid = deposit.Txid,
+						DepositStatus = deposit.DepositStatus
+					});
 				return await query.ToListAsync();
 			}
 		}
@@ -71,18 +60,18 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
-							.Select(deposit =>
-							new DepositModel
-							{
-								Amount = deposit.Amount,
-								Confirmations = deposit.Confirmations,
-								Currency = deposit.Currency.Name,
-								Id = deposit.Id,
-								Symbol = deposit.Currency.Symbol,
-								TimeStamp = deposit.TimeStamp,
-								Txid = deposit.Txid,
-								DepositStatus = deposit.DepositStatus
-							});
+					.Select(deposit =>
+						new DepositModel
+						{
+							Amount = deposit.Amount,
+							Confirmations = deposit.Confirmations,
+							Currency = deposit.Currency.Name,
+							Id = deposit.Id,
+							Symbol = deposit.Currency.Symbol,
+							TimeStamp = deposit.TimeStamp,
+							Txid = deposit.Txid,
+							DepositStatus = deposit.DepositStatus
+						});
 				return query.GetDataTableResult(model);
 			}
 		}
@@ -92,19 +81,19 @@ namespace TradeSatoshi.Core.Balance
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Deposit
-							.Where(x => x.UserId == userId)
-							.Select(deposit =>
-							new DepositModel
-							{
-								Amount = deposit.Amount,
-								Confirmations = deposit.Confirmations,
-								Currency = deposit.Currency.Name,
-								Id = deposit.Id,
-								Symbol = deposit.Currency.Symbol,
-								TimeStamp = deposit.TimeStamp,
-								Txid = deposit.Txid,
-								DepositStatus = deposit.DepositStatus
-							});
+					.Where(x => x.UserId == userId)
+					.Select(deposit =>
+						new DepositModel
+						{
+							Amount = deposit.Amount,
+							Confirmations = deposit.Confirmations,
+							Currency = deposit.Currency.Name,
+							Id = deposit.Id,
+							Symbol = deposit.Currency.Symbol,
+							TimeStamp = deposit.TimeStamp,
+							Txid = deposit.Txid,
+							DepositStatus = deposit.DepositStatus
+						});
 				return query.GetDataTableResult(model);
 			}
 		}

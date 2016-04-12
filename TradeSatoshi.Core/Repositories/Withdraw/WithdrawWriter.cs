@@ -1,19 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common;
-using System.Threading;
-using System.Security.Claims;
-using System.Security.Permissions;
-using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Common.Data;
@@ -39,7 +26,7 @@ namespace TradeSatoshi.Core.Withdraw
 				if (balance == null || model.Amount > balance.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
 
-				var newWithdraw = new TradeSatoshi.Entity.Withdraw
+				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = false,
 					TimeStamp = DateTime.UtcNow,
@@ -65,8 +52,8 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
-						.Include(x => x.Currency)
-						.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
+					.Include(x => x.Currency)
+					.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
 				if (withdraw == null || withdraw.WithdrawStatus != WithdrawStatus.Unconfirmed)
 					return WriterResult<bool>.ErrorResult("Withdraw #{0} not found or is already confirmed.", withdrawId);
 
@@ -83,8 +70,8 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
-						.Include(x => x.Currency)
-						.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
+					.Include(x => x.Currency)
+					.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
 				if (withdraw == null || withdraw.WithdrawStatus != WithdrawStatus.Unconfirmed)
 					return WriterResult<bool>.ErrorResult("Withdraw #{0} not found or is already canceled.", withdrawId);
 

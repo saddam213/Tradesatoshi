@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
-using TradeSatoshi.Common;
-using TradeSatoshi.Common.TwoFactor;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Enums;
 

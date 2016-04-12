@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Services.TradeService;
-using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Validation;
-using System.Data.Entity;
 
 namespace TradeSatoshi.Core.Currency
 {
@@ -22,7 +16,7 @@ namespace TradeSatoshi.Core.Currency
 			{
 				var existing = await context.Currency.FirstOrDefaultAsync(c => c.Name == model.Name || c.Symbol == model.Symbol);
 				if (existing != null)
-					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? string.Format("Name '{0}'", model.Name) : string.Format("Symbol '{0}'", model.Symbol));
+					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? $"Name '{model.Name}'" : $"Symbol '{model.Symbol}'");
 
 				existing = await context.Currency.FirstOrDefaultAsync(c => c.WalletPort == model.WalletPort && c.WalletHost == model.WalletHost);
 				if (existing != null)
@@ -45,7 +39,6 @@ namespace TradeSatoshi.Core.Currency
 					TransferFee = model.TransferFee,
 					WithdrawFee = model.WithdrawFee,
 					WithdrawFeeType = model.WithdrawFeeType,
-
 					WalletHost = model.WalletHost,
 					WalletPass = model.WalletPass,
 					WalletPort = model.WalletPort,
@@ -68,7 +61,7 @@ namespace TradeSatoshi.Core.Currency
 
 				var existing = await context.Currency.FirstOrDefaultAsync(c => c.Id != currency.Id && (c.Name == model.Name || c.Symbol == model.Symbol));
 				if (existing != null)
-					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? string.Format("Name '{0}'", model.Name) : string.Format("Symbol '{0}'", model.Symbol));
+					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? $"Name '{model.Name}'" : $"Symbol '{model.Symbol}'");
 
 				currency.IsEnabled = model.IsEnabled;
 				currency.MaxTrade = model.MaxTrade;

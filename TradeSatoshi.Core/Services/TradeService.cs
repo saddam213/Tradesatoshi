@@ -1,38 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Base.Queueing;
-using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Logging;
+using TradeSatoshi.Common.Services.AuditService;
+using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Trade;
-using System.Data.Entity;
-using Tables = TradeSatoshi.Entity;
-using TradeSatoshi.Common.Services.AuditService;
-using TradeSatoshi.Base.Extensions;
-using TradeSatoshi.Common.Services.NotificationService;
-using TradeSatoshi.Common.Logging;
-using TradeSatoshi.Data.DataContext;
-using TradeSatoshi.Core.Logger;
 using TradeSatoshi.Common.Transfer;
-using TradeSatoshi.Enums;
+using TradeSatoshi.Core.Logger;
+using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Entity;
+using TradeSatoshi.Enums;
+using Tables = TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Services
 {
 	public class TradeService : ITradeService
 	{
-		private static ProcessorQueue<ITradeItem, ITradeResponse> _tradeProcessor =
-		 new ProcessorQueue<ITradeItem, ITradeResponse>(new TradeService(new DatabaseLogger(new DataContextFactory()), new DataContextFactory(), new AuditService(), new NotificationService()).ProcessTradeItem);
+		private static readonly ProcessorQueue<ITradeItem, ITradeResponse> TradeProcessor =
+			new ProcessorQueue<ITradeItem, ITradeResponse>(new TradeService(new DatabaseLogger(new DataContextFactory()), new DataContextFactory(), new AuditService(), new NotificationService()).ProcessTradeItem);
 
 		public ILogger Log { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 		public IAuditService AuditService { get; set; }
 		public INotificationService NotificationService { get; set; }
 
-		public TradeService() { }
+		public TradeService()
+		{
+		}
+
 		public TradeService(ILogger log, IDataContextFactory contextFactory, IAuditService auditService, INotificationService notificationService)
 		{
 			Log = log;
@@ -43,22 +44,27 @@ namespace TradeSatoshi.Core.Services
 
 		public async Task<ITradeResponse> QueueTradeItem(ITradeItem tradeItem)
 		{
-			return await _tradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			return await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
 		}
 
 		private async Task<ITradeResponse> ProcessTradeItem(ITradeItem tradeItem)
 		{
-			if (tradeItem is CreateTradeModel)
+			var create = tradeItem as CreateTradeModel;
+			if (create != null)
 			{
-				return await CreateTrade(tradeItem as CreateTradeModel);
+				return await CreateTrade(create);
 			}
-			else if (tradeItem is CancelTradeModel)
+
+			var cancel = tradeItem as CancelTradeModel;
+			if (cancel != null)
 			{
-				return await CancelTrade(tradeItem as CancelTradeModel);
+				return await CancelTrade(cancel);
 			}
-			else if (tradeItem is CreateTransferModel)
+
+			var transfer = tradeItem as CreateTransferModel;
+			if (transfer != null)
 			{
-				return await CreateTransfer(tradeItem as CreateTransferModel);
+				return await CreateTransfer(transfer);
 			}
 			return null;
 		}
@@ -92,7 +98,7 @@ namespace TradeSatoshi.Core.Services
 						//Audit the user balance for currency
 						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
 						{
-							throw new Exception(string.Format("Failed to audit user balance, Currency: {0}", currency.Symbol));
+							throw new Exception($"Failed to audit user balance, Currency: {currency.Symbol}");
 						}
 
 						var userBalance = await context.Balance.FirstOrDefaultAsync(b => b.UserId == tradeItem.UserId && b.CurrencyId == tradeItem.CurrencyId);
@@ -117,12 +123,12 @@ namespace TradeSatoshi.Core.Services
 
 						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
 						{
-							throw new Exception(string.Format("Failed to audit User balance, Currency: {0}", currency.Symbol));
+							throw new Exception($"Failed to audit User balance, Currency: {currency.Symbol}");
 						}
 
 						if (!await AuditUserBalanceAsync(context, tradeItem.ToUser, currency.Id))
 						{
-							throw new Exception(string.Format("Failed to audit ToUser balance, Currency: {0}", currency.Symbol));
+							throw new Exception($"Failed to audit ToUser balance, Currency: {currency.Symbol}");
 						}
 
 						transaction.Commit();
@@ -162,7 +168,7 @@ namespace TradeSatoshi.Core.Services
 							var trade = await context.Trade.FirstOrDefaultAsync(x => x.Id == tradeItem.TradeId && x.UserId == tradeItem.UserId);
 							if (trade == null)
 							{
-								throw new Exception(string.Format("Trade #{0} does not exist", tradeItem.TradeId));
+								throw new Exception($"Trade #{tradeItem.TradeId} does not exist");
 							}
 
 							var tradePair = await context.TradePair
@@ -241,7 +247,7 @@ namespace TradeSatoshi.Core.Services
 								throw new Exception("No trades found to cancel for tradepair.");
 							}
 
-							Log.Info("TradeService", "Canceling all trades... TradeCount: {0}", trades.Count());
+							Log.Info("TradeService", "Canceling all trades... TradeCount: {0}", trades.Count);
 
 							foreach (var group in trades.GroupBy(o => o.TradePairId))
 							{
@@ -263,11 +269,9 @@ namespace TradeSatoshi.Core.Services
 
 								notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, group.Key.ToString());
 								notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, group.Key);
-								
 							}
 						}
 
-						
 
 						// Submit changes to context
 						Log.Debug("TradeService", "Submitting context changes...");
@@ -308,7 +312,6 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
-
 						Log.Info("TradeService", "Processing trade request. UserId: {0}, TradeType: {1}, TradePairId: {2}, Amount: {3:F8}, Rate: {4:F8}", tradeRequest.UserId, tradeRequest.TradeType, tradeRequest.TradePairId, tradeRequest.Amount, tradeRequest.Rate);
 						var response = new CreateTradeResponse();
 						var notifications = new TradeNotifier(tradeRequest.TradePairId, NotificationService);
@@ -332,9 +335,9 @@ namespace TradeSatoshi.Core.Services
 
 						if (tradePair.Status != TradePairStatus.OK)
 						{
-							throw new Exception(string.Format("Market status is currently {0}, unable to process trade.", tradePair.Status));
+							throw new Exception($"Market status is currently {tradePair.Status}, unable to process trade.");
 						}
-						
+
 						// Get or cache currency
 						var currency = tradePair.Currency1;
 						var baseCurency = tradePair.Currency2;
@@ -342,11 +345,11 @@ namespace TradeSatoshi.Core.Services
 						int tradeCurrency = tradeRequest.TradeType == TradeType.Buy ? tradePair.CurrencyId2 : tradePair.CurrencyId1;
 						decimal tradeRate = Math.Round(tradeRequest.Rate, 8);
 						decimal tradeAmount = Math.Round(tradeRequest.Amount, 8);
-						decimal tradeTotal = tradeRequest.TradeType == TradeType.Buy ? (tradeAmount * tradeRate).IncludingFees(baseCurency.TradeFee) : tradeAmount;
-						decimal totalTradeAmount = tradeAmount * tradeRate;
+						decimal tradeTotal = tradeRequest.TradeType == TradeType.Buy ? (tradeAmount*tradeRate).IncludingFees(baseCurency.TradeFee) : tradeAmount;
+						decimal totalTradeAmount = tradeAmount*tradeRate;
 						if (totalTradeAmount <= baseCurency.MinBaseTrade)
 						{
-							throw new Exception(string.Format("Invalid trade amount, Minumim total trade is {0} {1}.", baseCurency.MinBaseTrade, baseCurency.Symbol));
+							throw new Exception($"Invalid trade amount, Minumim total trade is {baseCurency.MinBaseTrade} {baseCurency.Symbol}.");
 						}
 
 						if (tradeAmount >= 1000000000 || totalTradeAmount >= 1000000000)
@@ -356,18 +359,18 @@ namespace TradeSatoshi.Core.Services
 
 						if (tradeRate < 0.00000001m)
 						{
-							throw new Exception(string.Format("Invalid trade price, minimum price is 0.00000001 {0}", baseCurency.Symbol));
+							throw new Exception($"Invalid trade price, minimum price is 0.00000001 {baseCurency.Symbol}");
 						}
 
 						if (tradeRate > 1000000000)
 						{
-							throw new Exception(string.Format("Invalid trade price, maximum price is 1000000000 {0}", baseCurency.Symbol));
+							throw new Exception($"Invalid trade price, maximum price is 1000000000 {baseCurency.Symbol}");
 						}
 
 						//Audit the user balance for currency
 						if (!await AuditUserBalanceAsync(context, tradeRequest.UserId, tradeCurrency))
 						{
-							throw new Exception(string.Format("Failed to audit user balance, Currency: {0}", tradeCurrency));
+							throw new Exception($"Failed to audit user balance, Currency: {tradeCurrency}");
 						}
 
 						var tradeRequestBalance = await context.Balance.FirstOrDefaultAsync(b => b.UserId == tradeRequest.UserId && b.CurrencyId == tradeCurrency);
@@ -377,7 +380,7 @@ namespace TradeSatoshi.Core.Services
 						}
 
 						// Get existing trades that can be filled
-						IQueryable<Tables.Trade> trades = null;
+						IQueryable<Tables.Trade> trades;
 						if (tradeType == TradeType.Buy)
 						{
 							// Fetch any trades that can be filled for this request
@@ -417,7 +420,7 @@ namespace TradeSatoshi.Core.Services
 						}
 						else
 						{
-							var audits = new HashSet<string> { user.Id };
+							var audits = new HashSet<string> {user.Id};
 							int tradesLimit = 200;
 							decimal buyersRefund = 0m;
 							decimal tradeRemaining = tradeAmount;
@@ -435,8 +438,8 @@ namespace TradeSatoshi.Core.Services
 								var canFillTrade = trade.Remaining <= tradeRemaining;
 
 								decimal dogeAmount = canFillTrade ? trade.Remaining : tradeRemaining;
-								decimal actualBtcAmount = canFillTrade ? trade.Remaining * trade.Rate : tradeRemaining * trade.Rate;
-								decimal expectedBtcAmount = canFillTrade ? trade.Remaining * tradeRate : tradeRemaining * tradeRate;
+								decimal actualBtcAmount = canFillTrade ? trade.Remaining*trade.Rate : tradeRemaining*trade.Rate;
+								decimal expectedBtcAmount = canFillTrade ? trade.Remaining*tradeRate : tradeRemaining*tradeRate;
 								if (tradeType == TradeType.Buy)
 								{
 									// Create transaction for the buy
@@ -464,7 +467,7 @@ namespace TradeSatoshi.Core.Services
 								{
 									// We can only fill some of this trade, subtract the amount and mark at 'Partial'
 									trade.Remaining -= tradeRemaining;
-									trade.Fee = (trade.Remaining * trade.Rate).GetFees(trade.Fee > 0 ? baseCurency.TradeFee : 0);
+									trade.Fee = (trade.Remaining*trade.Rate).GetFees(trade.Fee > 0 ? baseCurency.TradeFee : 0);
 									trade.Status = TradeStatus.Partial;
 									tradeRemaining = 0;
 									Log.Debug("TradeService", "Partially filled TradeId: {0}", trade.Id);
@@ -540,7 +543,6 @@ namespace TradeSatoshi.Core.Services
 							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.Id.ToString());
 						}
 
-						
 
 						Log.Debug("TradeService", "Committing database transaction");
 						await context.SaveChangesAsync();
@@ -567,39 +569,43 @@ namespace TradeSatoshi.Core.Services
 
 		private Tables.Trade CreateTrade(DbSet<Tables.Trade> tradeTable, TradeType type, string userId, Entity.TradePair tradePair, decimal amount, decimal rate, decimal fee, bool isapi)
 		{
-			var newTrade = new Tables.Trade();
-			newTrade.TradePairId = tradePair.Id;
-			newTrade.Amount = Math.Round(amount, 8);
-			newTrade.Rate = Math.Round(rate, 8);
-			newTrade.Remaining = Math.Round(amount, 8);
-			newTrade.Status = TradeStatus.Pending;
-			newTrade.TradeType = type;
-			newTrade.UserId = userId;
-			newTrade.Timestamp = DateTime.UtcNow;
-			newTrade.Fee = (amount * rate).GetFees(fee);
-			newTrade.IsApi = isapi;
+			var newTrade = new Tables.Trade
+			{
+				TradePairId = tradePair.Id,
+				Amount = Math.Round(amount, 8),
+				Rate = Math.Round(rate, 8),
+				Remaining = Math.Round(amount, 8),
+				Status = TradeStatus.Pending,
+				TradeType = type,
+				UserId = userId,
+				Timestamp = DateTime.UtcNow,
+				Fee = (amount*rate).GetFees(fee),
+				IsApi = isapi
+			};
 			tradeTable.Add(newTrade);
 			Log.Debug("TradeService", "Created new trade, TradeId: {0}, TradeType: {1}, Amount: {2}, Rate: {3}"
-										, newTrade.Id, newTrade.TradeType, newTrade.Amount, newTrade.Rate);
+				, newTrade.Id, newTrade.TradeType, newTrade.Amount, newTrade.Rate);
 			return newTrade;
 		}
 
-		private Tables.TradeHistory CreateTransaction(DbSet<Tables.TradeHistory> transactionTable, TradeType type, string userId, string toUserId, Entity.TradePair tradepair, decimal amount, decimal rate, decimal fee, bool isapi)
+		private TradeHistory CreateTransaction(DbSet<TradeHistory> transactionTable, TradeType type, string userId, string toUserId, Entity.TradePair tradepair, decimal amount, decimal rate, decimal fee, bool isapi)
 		{
-			var transaction = new TradeHistory();
-			transaction.TradePairId = tradepair.Id;
-			transaction.CurrencyId = tradepair.CurrencyId1;
-			transaction.Amount = Math.Round(amount, 8);
-			transaction.Rate = Math.Round(rate, 8);
-			transaction.TradeHistoryType = type;
-			transaction.UserId = userId;
-			transaction.ToUserId = toUserId;
-			transaction.Timestamp = DateTime.UtcNow;
-			transaction.Fee = (amount * rate).GetFees(fee);
-			transaction.IsApi = isapi;
+			var transaction = new TradeHistory
+			{
+				TradePairId = tradepair.Id,
+				CurrencyId = tradepair.CurrencyId1,
+				Amount = Math.Round(amount, 8),
+				Rate = Math.Round(rate, 8),
+				TradeHistoryType = type,
+				UserId = userId,
+				ToUserId = toUserId,
+				Timestamp = DateTime.UtcNow,
+				Fee = (amount*rate).GetFees(fee),
+				IsApi = isapi
+			};
 			transactionTable.Add(transaction);
 			Log.Debug("TradeService", "Created new transaction, CurrencyId: {0}, TransactionType: {1}, Amount: {2}, Rate: {3}, Fee: {4}"
-								  , transaction.CurrencyId, transaction.TradeHistoryType, transaction.Amount, transaction.Rate, transaction.Fee);
+				, transaction.CurrencyId, transaction.TradeHistoryType, transaction.Amount, transaction.Rate, transaction.Fee);
 			return transaction;
 		}
 
@@ -607,7 +613,7 @@ namespace TradeSatoshi.Core.Services
 		{
 			if (lastTrade > 0)
 			{
-				return Math.Round((double)((newTrade - lastTrade) / lastTrade * 100m), 2);
+				return Math.Round((double) ((newTrade - lastTrade)/lastTrade*100m), 2);
 			}
 			return 0.00;
 		}
@@ -653,14 +659,14 @@ namespace TradeSatoshi.Core.Services
 		public int TradePairId { get; set; }
 		public INotificationService NotificationService { get; set; }
 
-		private List<INotification> _notifications = new List<INotification>();
-		private List<IUserNotification> _userNotifications = new List<IUserNotification>();
+		private readonly List<INotification> _notifications = new List<INotification>();
+		private readonly List<IUserNotification> _userNotifications = new List<IUserNotification>();
 
-		private List<IDataNotification> _dataNotifications = new List<IDataNotification>();
-		private List<IUserDataNotification> _userDataNotifications = new List<IUserDataNotification>();
+		private readonly List<IDataNotification> _dataNotifications = new List<IDataNotification>();
+		private readonly List<IUserDataNotification> _userDataNotifications = new List<IUserDataNotification>();
 
-		private List<IDataTableNotification> _dataTableNotifications = new List<IDataTableNotification>();
-		private List<IUserDataTableNotification> _userDataTableNotifications = new List<IUserDataTableNotification>();
+		private readonly List<IDataTableNotification> _dataTableNotifications = new List<IDataTableNotification>();
+		private readonly List<IUserDataTableNotification> _userDataTableNotifications = new List<IUserDataTableNotification>();
 
 
 		public async Task SendNotificationsAsync()

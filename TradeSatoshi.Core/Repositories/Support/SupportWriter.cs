@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Validation;
-using System.Data.Entity;
-using TradeSatoshi.Enums;
 using TradeSatoshi.Entity;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Support
 {
@@ -62,7 +60,6 @@ namespace TradeSatoshi.Core.Support
 				return WriterResult<int>.SuccessResult(reply.Id);
 			}
 		}
-
 
 
 		public async Task<IWriterResult<bool>> UpdateSupportTicketStatus(string userId, UpdateSupportTicketStatusModel model)
@@ -168,7 +165,7 @@ namespace TradeSatoshi.Core.Support
 				if (category != null)
 					return WriterResult<bool>.ErrorResult("Category with name '{0}' already exists.", model.Name);
 
-				category = context.SupportCategory.Add(new SupportCategory
+				context.SupportCategory.Add(new SupportCategory
 				{
 					Name = model.Name,
 					IsEnabled = true
@@ -204,7 +201,7 @@ namespace TradeSatoshi.Core.Support
 					return WriterResult<bool>.ErrorResult("FAQ with question '{0}' already exists.", model.Question);
 
 				int order = context.SupportFaq.Count() + 1;
-				faq = context.SupportFaq.Add(new SupportFaq
+				context.SupportFaq.Add(new SupportFaq
 				{
 					Question = model.Question,
 					Answer = model.Answer,

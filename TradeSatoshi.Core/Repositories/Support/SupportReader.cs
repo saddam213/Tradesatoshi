@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Support;
-using System.Data.Entity;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Support;
 using TradeSatoshi.Core.Helpers;
 
 namespace TradeSatoshi.Core.Support

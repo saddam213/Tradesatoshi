@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TradeSatoshi.Common.Trade
+﻿namespace TradeSatoshi.Common.Trade
 {
 	public class ChartDataModel
 	{
-		public ChartDataModel() { }
+		public ChartDataModel()
+		{
+		}
+
 		public ChartDataModel(long time, decimal open, decimal high, decimal low, decimal close, decimal volume)
 		{
 			Timestamp = time;
@@ -18,6 +15,7 @@ namespace TradeSatoshi.Common.Trade
 			Close = close;
 			Volume = volume;
 		}
+
 		public long Timestamp { get; set; }
 		public decimal Open { get; set; }
 		public decimal High { get; set; }

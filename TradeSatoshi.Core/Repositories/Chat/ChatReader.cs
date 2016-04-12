@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Chat;
 using TradeSatoshi.Common.Data;
-using System.Data.Entity;
 
 namespace TradeSatoshi.Core.Repositories.Chat
 {

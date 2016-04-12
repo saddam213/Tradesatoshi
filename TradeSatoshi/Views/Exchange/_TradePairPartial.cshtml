@@ -28,40 +28,7 @@
 	</div>
 </div>
 
-@*Sell*@
-<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
-	<div class="panel panel-default nopad">
-		<div class="panel-heading">
-			<h3 class="panel-title">
-				<span>Sell @Model.Symbol</span>
-				<span class="buysell-balance">
-					<span class="data-balance-@Model.Symbol" >@Model.Balance.ToString("F8")</span>
-					<span>@Model.Symbol</span>
-				</span>
-			</h3>
-		</div>
-		<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Sell">
-			@Html.Partial("_CreateTradePartial", Model.SellModel)
-		</div>
-	</div>
-	<div class="panel panel-default exchange-orderPanel">
-		<div class="panel-heading">
-			<h3 class="panel-title">Buy Orders</h3>
-		</div>
-		<div id="buyOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Buy">
-			<table id="table-buyOrders-@Model.TradePairId" class="table table-condensed table-hover">
-				<thead>
-					<tr>
-						<th>Price</th>
-						<th>@Model.Symbol</th>
-						<th>@Model.BaseSymbol</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-		</div>
-	</div>
-</div>
+
 
 @*Buy*@
 <div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
@@ -96,6 +63,41 @@
 			</table>
 		</div>
 
+	</div>
+</div>
+
+@*Sell*@
+<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
+	<div class="panel panel-default nopad">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<span>Sell @Model.Symbol</span>
+				<span class="buysell-balance">
+					<span class="data-balance-@Model.Symbol">@Model.Balance.ToString("F8")</span>
+					<span>@Model.Symbol</span>
+				</span>
+			</h3>
+		</div>
+		<div class="panel-body" id="createTrade-@TradeSatoshi.Enums.TradeType.Sell">
+			@Html.Partial("_CreateTradePartial", Model.SellModel)
+		</div>
+	</div>
+	<div class="panel panel-default exchange-orderPanel">
+		<div class="panel-heading">
+			<h3 class="panel-title">Buy Orders</h3>
+		</div>
+		<div id="buyOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Buy">
+			<table id="table-buyOrders-@Model.TradePairId" class="table table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>Price</th>
+						<th>@Model.Symbol</th>
+						<th>@Model.BaseSymbol</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
 	</div>
 </div>
 

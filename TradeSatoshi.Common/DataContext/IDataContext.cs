@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Data
@@ -46,7 +44,7 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entity.SupportTicket> SupportTicket { get; set; }
 		DbSet<Entity.SupportTicketReply> SupportTicketReply { get; set; }
 
-	
+
 		DbSet<Entity.Vote> Vote { get; set; }
 		DbSet<Entity.VoteItem> VoteItem { get; set; }
 		DbSet<Entity.VoteSettings> VoteSetting { get; set; }

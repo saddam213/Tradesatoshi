@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Address;
-using TradeSatoshi.Common.Validation;
-using TradeSatoshi.Data.DataContext;
-using System.Data.Entity;
-using TradeSatoshi.Common.Services.WalletService;
-using TradeSatoshi.Common.Services.EncryptionService;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Services.EncryptionService;
+using TradeSatoshi.Common.Services.WalletService;
+using TradeSatoshi.Common.Validation;
 
 namespace TradeSatoshi.Core.Address
 {
@@ -23,19 +19,19 @@ namespace TradeSatoshi.Core.Address
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currentAddress = await context.Address.FirstOrDefaultAsync(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive);
-				if (currentAddress != null)
-				{
-					currentAddress.IsActive = false;
-				}
-
-				var currency = await context.Currency.FindAsync(currencyId);
+				var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == currencyId && x.IsEnabled);
 				if (currency == null)
 					return WriterResult<string>.ErrorResult("Currency not found.");
 
 				var newAddress = await WalletService.GenerateAddress(userId, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currency.Name);
+
+				var currentAddresses = await context.Address.Where(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive).ToListAsync();
+				foreach (var currentAddress in currentAddresses)
+				{
+					currentAddress.IsActive = false;
+				}
 
 				var addressEntity = new Entity.Address
 				{
@@ -51,6 +47,5 @@ namespace TradeSatoshi.Core.Address
 				return WriterResult<string>.SuccessResult(newAddress.Address);
 			}
 		}
-
 	}
 }

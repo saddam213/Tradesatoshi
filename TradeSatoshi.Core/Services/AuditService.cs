@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using System.Data.Entity;
-using System.Diagnostics;
 using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Services

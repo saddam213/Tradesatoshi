@@ -1,11 +1,8 @@
 ﻿using Mvc.JQuery.Datatables;
 using Mvc.JQuery.Datatables.Models;
 using Mvc.JQuery.Datatables.Reflection;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TradeSatoshi.Common.DataTables;
 
 namespace TradeSatoshi.Core.Helpers
@@ -50,7 +47,7 @@ namespace TradeSatoshi.Core.Helpers
 			dataTablesResponseData.iTotalDisplayRecords = dataTablesResponseData.iTotalRecords;
 			var responseOptions = new ResponseOptions<T>() { ArrayOutputType = null };
 			var dictionaryTransform = DataTablesTypeInfo<T>.ToDictionary(responseOptions);
-			dataTablesResponseData = dataTablesResponseData.Transform<T, Dictionary<string, object>>(dictionaryTransform)
+			dataTablesResponseData = dataTablesResponseData.Transform(dictionaryTransform)
 					   .Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
 			dataTablesResponseData = ApplyOutputRules(dataTablesResponseData, responseOptions);
 			return dataTablesResponseData.ToDataTablesResponse();
@@ -77,7 +74,6 @@ namespace TradeSatoshi.Core.Helpers
 				case ArrayOutputType.ArrayOfObjects:
 					// Nothing is needed
 					break;
-				case ArrayOutputType.BiDimensionalArray:
 				default:
 					outputData = sourceData.Transform<Dictionary<string, object>, object[]>(d => d.Values.ToArray());
 					break;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Trade
@@ -18,12 +13,12 @@ namespace TradeSatoshi.Common.Trade
 		public decimal MinTrade { get; set; }
 		public TradeType TradeType { get; set; }
 
-		[Range(typeof(decimal), "0.00000001", "200000000")]
+		[Range(typeof (decimal), "0.00000001", "200000000")]
 		public decimal Rate { get; set; }
 
-		[Range(typeof(decimal), "0.00000001", "200000000")]
+		[Range(typeof (decimal), "0.00000001", "200000000")]
 		public decimal Amount { get; set; }
-		
+
 		public bool IsApi { get; set; }
 	}
 }

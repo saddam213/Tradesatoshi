@@ -72,7 +72,7 @@
 		<div class="leftSidebar-body">
 
 			<div id="table-tradepair" style="font-size: 12px">
-				@foreach (var tradePair in Model.TradePairs)
+				@foreach (var tradePair in Model.TradePairs.Where(t => t.Status != TradePairStatus.Closed))
 				{
 				var textClass = (tradePair.Change > 0 ? "success" : tradePair.Change < 0 ? "danger" : "");
 					<div class="col-xs-12 nopad tradepair-row" style="border-top: solid 1px #ddd; padding: 5px" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })">

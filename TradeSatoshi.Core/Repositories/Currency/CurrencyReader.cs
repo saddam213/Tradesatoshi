@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common;
-using System.Threading;
-using System.Security.Claims;
-using System.Security.Permissions;
-using TradeSatoshi.Common.Security;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.Data;
-using System.Linq.Expressions;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Core.Helpers;
 
 namespace TradeSatoshi.Core.Currency
 {
@@ -85,11 +77,11 @@ namespace TradeSatoshi.Core.Currency
 			}
 		}
 
-		private Expression<Func<Entity.Currency, CurrencyModel>> MapCurrency
+		private static Expression<Func<Entity.Currency, CurrencyModel>> MapCurrency
 		{
 			get
 			{
-				return (currency) => new CurrencyModel
+				return currency => new CurrencyModel
 				{
 					Id = currency.Id,
 					Name = currency.Name,
@@ -105,11 +97,11 @@ namespace TradeSatoshi.Core.Currency
 			}
 		}
 
-		private Expression<Func<Entity.Currency, CurrencyStatusModel>> MapCurrencyStatus
+		private static Expression<Func<Entity.Currency, CurrencyStatusModel>> MapCurrencyStatus
 		{
 			get
 			{
-				return (currency) => new CurrencyStatusModel
+				return currency => new CurrencyStatusModel
 				{
 					CurrencyId = currency.Id,
 					Symbol = currency.Symbol,

@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Common.Validation;
-using TradeSatoshi.Enums;
-using TradeSatoshi.Common.Vote;
-using TradeSatoshi.Common.Data;
-using TradeSatoshi.Entity;
-using TradeSatoshi.Common.Services.TradeService;
-using TradeSatoshi.Common.Transfer;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Services.VoteService;
+using TradeSatoshi.Common.Transfer;
+using TradeSatoshi.Common.Validation;
+using TradeSatoshi.Common.Vote;
+using TradeSatoshi.Entity;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Vote
 {
@@ -60,11 +57,10 @@ namespace TradeSatoshi.Core.Vote
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
 
 				var lastDate = DateTime.UtcNow.AddDays(-1);
-				var vote = await context.Vote.FirstOrDefaultAsync(x => x.UserId == userId && x.VoteItemId == model.VoteItemId && x.Created > lastDate);
-				if (vote != null)
-					return WriterResult<bool>.ErrorResult("You have already voted for this coin today.");
+				if (await context.Vote.AnyAsync(x => x.UserId == userId && x.Created > lastDate))
+					return WriterResult<bool>.ErrorResult("You have already voted today.");
 
-				vote = new Entity.Vote
+				var vote = new Entity.Vote
 				{
 					Created = DateTime.UtcNow,
 					Count = 1,
@@ -123,7 +119,7 @@ namespace TradeSatoshi.Core.Vote
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				Entity.VoteItem voteItem = context.VoteItem.FirstOrDefault(x => x.Id == model.Id);
+				var voteItem = context.VoteItem.FirstOrDefault(x => x.Id == model.Id);
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem {0} not found.", model.Id);
 

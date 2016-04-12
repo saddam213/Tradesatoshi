@@ -41,9 +41,9 @@
 						@Helpers.ExternalLink(Model.Source, Model.Source)
 					</div>
 				</div>
-				<div class="col-md-12">
+				<div class="col-md-12" >
 					@Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
-					<div class="col-md-12">
+					<div class="col-md-12" style="max-height:200px;overflow-y:auto">
 						<p class="paragraph">@Model.Description</p>
 					</div>
 				</div>

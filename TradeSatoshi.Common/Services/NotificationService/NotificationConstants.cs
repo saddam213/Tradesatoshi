@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TradeSatoshi.Common.Services.NotificationService
+﻿namespace TradeSatoshi.Common.Services.NotificationService
 {
 	public class NotificationConstants
 	{
@@ -17,6 +11,5 @@ namespace TradeSatoshi.Common.Services.NotificationService
 		public const string DataTable_SellOrders = "#table-sellOrders-{0}";
 		public const string DataTable_BuyOrders = "#table-buyOrders-{0}";
 		public const string DataTable_TradeHistory = "#table-tradehistory-{0}";
-
 	}
 }

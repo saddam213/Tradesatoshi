@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.VoteService;
 using System.Data.Entity;
 using TradeSatoshi.Enums;
-using System.Data.Entity.Validation;
 
 namespace TradeSatoshi.Core.Services
 {
@@ -31,9 +28,9 @@ namespace TradeSatoshi.Core.Services
 						.Where(vi => vi.Status == VoteItemStatus.Voting)
 						.Select(voteItem => new
 						{
-							Id = voteItem.Id,
-							FreeVoteCount = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
-							PaidVoteCount = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
+							voteItem.Id,
+							FreeVoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
+							PaidVoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
 						}).ToListAsync();
 
 					var winningPaid = votes.OrderByDescending(x => x.PaidVoteCount).FirstOrDefault();

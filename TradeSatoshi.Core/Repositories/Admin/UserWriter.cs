@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
-using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common.Validation;
-using TradeSatoshi.Common.Security;
-using System.Data.Entity.Validation;
-using System.Security.Permissions;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Core.Admin
@@ -59,7 +53,7 @@ namespace TradeSatoshi.Core.Admin
 			}
 		}
 
-	
+
 		[PrincipalPermission(SecurityAction.Demand, Role = SecurityRoles.Administrator)]
 		public async Task<IWriterResult<bool>> AddUserRole(UserRoleModel model)
 		{
@@ -77,7 +71,7 @@ namespace TradeSatoshi.Core.Admin
 				if (exists != null)
 					return WriterResult<bool>.ErrorResult("{0} is already assigned to {1} role.", model.UserName, model.SecurityRole);
 
-				context.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
+				context.UserRoles.Add(new UserRole {UserId = user.Id, RoleId = role.Id});
 				await context.SaveChangesAsync();
 
 				return WriterResult<bool>.SuccessResult();

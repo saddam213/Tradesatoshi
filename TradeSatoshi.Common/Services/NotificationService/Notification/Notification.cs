@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Enums;
+﻿using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Services.NotificationService
 {
 	public class Notification : INotification
 	{
-		public Notification() { }
-		public Notification(NotificationType type, string userId, string title, string message, params object[] messageFormatParams)
+		public Notification()
+		{
+		}
+
+		public Notification(NotificationType type, string title, string message, params object[] messageFormatParams)
 		{
 			Type = type;
 			Title = title;

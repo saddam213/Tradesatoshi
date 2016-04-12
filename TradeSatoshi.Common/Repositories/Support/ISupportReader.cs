@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.DataTables;
 
@@ -14,7 +11,7 @@ namespace TradeSatoshi.Common.Support
 		Task<List<SupportCategoryModel>> GetSupportCategories();
 		Task<List<SupportFaqModel>> GetSupportFaq();
 
-		
+
 		Task<SupportFaqModel> AdminGetSupportFaq(int id);
 		Task<SupportRequestModel> AdminGetSupportRequest(int requestId);
 		Task<SupportCategoryModel> AdminGetSupportCategory(int id);

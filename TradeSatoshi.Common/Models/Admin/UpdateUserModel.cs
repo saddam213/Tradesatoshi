@@ -1,10 +1,5 @@
-﻿using Mvc.JQuery.Datatables;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Admin
 {
@@ -19,6 +14,7 @@ namespace TradeSatoshi.Common.Admin
 		[Required]
 		[EmailAddress]
 		public string Email { get; set; }
+
 		public bool IsLocked { get; set; }
 		public bool IsEnabled { get; set; }
 		public bool IsTradeEnabled { get; set; }

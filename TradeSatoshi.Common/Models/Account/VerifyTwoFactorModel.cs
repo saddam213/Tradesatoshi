@@ -1,5 +1,4 @@
-﻿using TradeSatoshi.Common;
-using TradeSatoshi.Enums;
+﻿using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Account
 {

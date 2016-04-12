@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Currency
 {
 	public class CreateCurrencyModel
 	{
-
-	[Required]
+		[Required]
 		public string Name { get; set; }
 
 		[Required]
 		public string Symbol { get; set; }
+
 		public CurrencyStatus Status { get; set; }
 		public string StatusMessage { get; set; }
 		public int MinConfirmations { get; set; }
@@ -33,6 +29,7 @@ namespace TradeSatoshi.Common.Currency
 
 		[Required]
 		public string WalletHost { get; set; }
+
 		public string WalletPass { get; set; }
 		public int WalletPort { get; set; }
 		public string WalletUser { get; set; }

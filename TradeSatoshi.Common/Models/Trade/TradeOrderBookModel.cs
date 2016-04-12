@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TradeSatoshi.Common.Trade
+﻿namespace TradeSatoshi.Common.Trade
 {
 	public class TradeOrderBookModel
 	{
@@ -13,7 +6,7 @@ namespace TradeSatoshi.Common.Trade
 		public decimal Total { get; set; }
 		//public int OrderCount { get; set; }
 
-		
+
 		//public decimal SumTotal { get; set; }
 	}
 }

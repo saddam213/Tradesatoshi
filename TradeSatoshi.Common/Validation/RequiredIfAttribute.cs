@@ -1,14 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TradeSatoshi.Common.Validation
 {
 	public class RequiredIfAttribute : RequiredAttribute
 	{
-		private String PropertyName { get; set; }
-		private Object DesiredValue { get; set; }
+		private string PropertyName { get; }
+		private object DesiredValue { get; }
 
-		public RequiredIfAttribute(String propertyName, Object desiredvalue)
+		public RequiredIfAttribute(string propertyName, object desiredvalue)
 		{
 			PropertyName = propertyName;
 			DesiredValue = desiredvalue;
@@ -16,12 +15,12 @@ namespace TradeSatoshi.Common.Validation
 
 		protected override ValidationResult IsValid(object value, ValidationContext context)
 		{
-			Object instance = context.ObjectInstance;
-			Type type = instance.GetType();
-			Object proprtyvalue = type.GetProperty(PropertyName).GetValue(instance, null);
+			var instance = context.ObjectInstance;
+			var type = instance.GetType();
+			var proprtyvalue = type.GetProperty(PropertyName).GetValue(instance, null);
 			if (proprtyvalue.ToString() == DesiredValue.ToString())
 			{
-				ValidationResult result = base.IsValid(value, context);
+				var result = base.IsValid(value, context);
 				return result;
 			}
 			return ValidationResult.Success;

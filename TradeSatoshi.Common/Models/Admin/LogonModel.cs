@@ -1,13 +1,7 @@
-﻿using Mvc.JQuery.Datatables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace TradeSatoshi.Common.Admin
 {
-
 	public class LogonModel
 	{
 		public string UserName { get; set; }

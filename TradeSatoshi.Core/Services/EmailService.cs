@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
-using TradeSatoshi.Common;
-using TradeSatoshi.Common.Services;
 using TradeSatoshi.Common.Services.EmailService;
 using Microsoft.AspNet.Identity.EntityFramework;
-using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
 using System.Net;
 using TradeSatoshi.Common.Data;
@@ -20,14 +14,14 @@ namespace TradeSatoshi.Core.Services
 {
 	public class EmailService : IEmailService
 	{
-		private readonly string EmailDisplayName = ConfigurationManager.AppSettings["SMTP_DisplayName"];
-		private readonly string EmailUser = ConfigurationManager.AppSettings["SMTP_User"];
-		private readonly string EmailPassword = ConfigurationManager.AppSettings["SMTP_Password"];
-		private readonly string EmailServer = ConfigurationManager.AppSettings["SMTP_Server"];
-		private readonly int EmailPort = int.Parse(ConfigurationManager.AppSettings["SMTP_Port"]);
+		private readonly string _emailDisplayName = ConfigurationManager.AppSettings["SMTP_DisplayName"];
+		private readonly string _emailUser = ConfigurationManager.AppSettings["SMTP_User"];
+		private readonly string _emailPassword = ConfigurationManager.AppSettings["SMTP_Password"];
+		private readonly string _emailServer = ConfigurationManager.AppSettings["SMTP_Server"];
+		private readonly int _emailPort = int.Parse(ConfigurationManager.AppSettings["SMTP_Port"]);
 
 		public IDataContextFactory DataContextFactory { get; set; }
-	
+
 		public async Task<bool> Send(EmailType template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{
 			using (var context = DataContextFactory.CreateContext())
@@ -42,19 +36,16 @@ namespace TradeSatoshi.Core.Services
 
 		private async Task<bool> SendAsync(EmailTemplate template, IdentityUser user, string ipaddress, params object[] formatParameters)
 		{
-			using (var email = new MailMessage(new MailAddress(EmailUser, EmailDisplayName), new MailAddress(user.Email)))
+			using (var email = new MailMessage(new MailAddress(_emailUser, _emailDisplayName), new MailAddress(user.Email)))
 			{
-				var emailParameters = new List<object>();
-				emailParameters.Add(user.UserName);
-				emailParameters.Add(ipaddress);
+				var emailParameters = new List<object> {user.UserName, ipaddress};
 				emailParameters.AddRange(formatParameters);
-
 				email.Subject = template.Subject;
 				email.Body = string.Format(template.Template, emailParameters.ToArray()).Replace("{{", "{").Replace("}}", "}");
 				email.IsBodyHtml = template.IsHtml;
-				using (var mailClient = new SmtpClient(EmailServer, EmailPort))
+				using (var mailClient = new SmtpClient(_emailServer, _emailPort))
 				{
-					mailClient.Credentials = new NetworkCredential(EmailUser, EmailPassword);
+					mailClient.Credentials = new NetworkCredential(_emailUser, _emailPassword);
 					mailClient.EnableSsl = true;
 					await mailClient.SendMailAsync(email);
 					return true;

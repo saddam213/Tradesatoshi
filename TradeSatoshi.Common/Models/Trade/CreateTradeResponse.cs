@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TradeSatoshi.Common.Trade
 {
@@ -24,6 +19,7 @@ namespace TradeSatoshi.Common.Trade
 		public List<int> FilledTrades { get; set; }
 
 		public string Error { get; set; }
+
 		public bool HasError
 		{
 			get { return !string.IsNullOrEmpty(Error); }

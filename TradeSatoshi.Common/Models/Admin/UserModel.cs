@@ -1,11 +1,4 @@
-﻿using Mvc.JQuery.Datatables;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TradeSatoshi.Common.Admin
+﻿namespace TradeSatoshi.Common.Admin
 {
 	public class UserModel
 	{

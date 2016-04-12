@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TradeSatoshi.Common.Trade
+﻿namespace TradeSatoshi.Common.Trade
 {
 	public interface ITradeItem
 	{

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Common.Vote;
-using TradeSatoshi.Enums;
-using System.Data.Entity;
-using TradeSatoshi.Core.Helpers;
 using TradeSatoshi.Common.Services.VoteService;
+using TradeSatoshi.Common.Vote;
+using TradeSatoshi.Core.Helpers;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Vote
 {
@@ -146,10 +143,10 @@ namespace TradeSatoshi.Core.Vote
 					LastFreeId = settings.LastFreeId,
 					LastPaidId = settings.LastPaidId,
 					LastFree = settings.LastFree != null
-						? string.Format("{0}({1})", settings.LastFree.Name, settings.LastFree.Symbol)
+						? $"{settings.LastFree.Name}({settings.LastFree.Symbol})"
 						: string.Empty,
 					LastPaid = settings.LastPaid != null
-						? string.Format("{0}({1})", settings.LastPaid.Name, settings.LastPaid.Symbol)
+						? $"{settings.LastPaid.Name}({settings.LastPaid.Symbol})"
 						: string.Empty
 				};
 			}

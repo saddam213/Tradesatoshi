@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using TradeSatoshi.Common.Balance;
-using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.TradePair;
 
 namespace TradeSatoshi.Common.Exchange

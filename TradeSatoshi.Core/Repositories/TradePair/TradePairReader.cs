@@ -1,23 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
 using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common;
-using System.Threading;
-using System.Security.Claims;
-using System.Security.Permissions;
-using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Deposit;
-using TradeSatoshi.Common.Data;
-using TradeSatoshi.Common.Transfer;
-using TradeSatoshi.Common.TradePair;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.TradePair;
+using TradeSatoshi.Core.Helpers;
 
 namespace TradeSatoshi.Core.TradePair
 {
@@ -30,6 +20,7 @@ namespace TradeSatoshi.Core.TradePair
 			using (var context = DataContextFactory.CreateContext())
 			{
 				return await context.TradePair
+					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
@@ -42,6 +33,7 @@ namespace TradeSatoshi.Core.TradePair
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var tradepair = await context.TradePair
+					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.FirstOrDefaultAsync(t => t.Id == tradePairId);
@@ -63,9 +55,11 @@ namespace TradeSatoshi.Core.TradePair
 			using (var context = DataContextFactory.CreateContext())
 			{
 				return await context.TradePair
+					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
+					.OrderBy(t => t.Name)
 					.ToListAsync();
 			}
 		}
@@ -75,6 +69,7 @@ namespace TradeSatoshi.Core.TradePair
 			using (var context = DataContextFactory.CreateContext())
 			{
 				return context.TradePair
+					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
@@ -86,7 +81,7 @@ namespace TradeSatoshi.Core.TradePair
 		{
 			get
 			{
-				return (tradepair) => new TradePairModel
+				return tradepair => new TradePairModel
 				{
 					Id = tradepair.Id,
 					Change = tradepair.Change,
@@ -98,7 +93,5 @@ namespace TradeSatoshi.Core.TradePair
 				};
 			}
 		}
-
-
 	}
 }

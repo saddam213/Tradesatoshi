@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Chat;
 using TradeSatoshi.Common.Data;
@@ -11,7 +8,6 @@ namespace TradeSatoshi.Core.Repositories.Chat
 {
 	public class ChatWriter : IChatWriter
 	{
-
 		public IDataContextFactory DataContextFactory { get; set; }
 
 		public async Task<WriterResult<int>> CreateChatMessage(string userId, ChatMessageModel model)

@@ -30,12 +30,6 @@ namespace TradeSatoshi.Web.Controllers
 			});
 		}
 
-		//[HttpPost]
-		//public ActionResult GetBalances(DataTablesModel param)
-		//{
-		//	return DataTable(BalanceReader.GetUserBalanceDataTable(param, User.Id()));
-		//}
-
 		[HttpPost]
 		public async Task<ActionResult> GetAddress(int currencyId)
 		{

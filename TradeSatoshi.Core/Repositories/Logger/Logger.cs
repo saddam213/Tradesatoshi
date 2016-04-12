@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Logging;
 
@@ -12,7 +8,10 @@ namespace TradeSatoshi.Core.Logger
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public DatabaseLogger() { }
+		public DatabaseLogger()
+		{
+		}
+
 		public DatabaseLogger(IDataContextFactory dataContextFactory)
 		{
 			DataContextFactory = dataContextFactory;

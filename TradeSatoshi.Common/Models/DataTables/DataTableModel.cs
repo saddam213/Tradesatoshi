@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TradeSatoshi.Common.DataTables
 {
@@ -35,15 +31,15 @@ namespace TradeSatoshi.Common.DataTables
 		}
 
 		public DataTablesModel(int iColumns)
-        {
-            this.iColumns = iColumns;
-            sColumnNames = new List<string>(iColumns);
-            bSortable = new List<bool>(iColumns);
-            bSearchable = new List<bool>(iColumns);
-            sSearchValues = new List<string>(iColumns);
-            iSortCol = new List<int>(iColumns);
-            sSortDir = new List<string>(iColumns);
-            bEscapeRegexColumns = new List<bool>(iColumns);
-        }
+		{
+			this.iColumns = iColumns;
+			sColumnNames = new List<string>(iColumns);
+			bSortable = new List<bool>(iColumns);
+			bSearchable = new List<bool>(iColumns);
+			sSearchValues = new List<string>(iColumns);
+			iSortCol = new List<int>(iColumns);
+			sSortDir = new List<string>(iColumns);
+			bEscapeRegexColumns = new List<bool>(iColumns);
+		}
 	}
 }

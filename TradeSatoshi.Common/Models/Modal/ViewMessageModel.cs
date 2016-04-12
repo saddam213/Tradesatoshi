@@ -1,12 +1,11 @@
-﻿
-using System.Web.Mvc;
-namespace TradeSatoshi.Common.Modal
+﻿namespace TradeSatoshi.Common.Modal
 {
 	public class ViewMessageModel
 	{
 		public ViewMessageModel()
 		{
 		}
+
 		public ViewMessageModel(ViewMessageType type, string title, string message, string returnUrl = "/")
 		{
 			Type = type;

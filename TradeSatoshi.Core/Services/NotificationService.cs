@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Services.NotificationService;
 
@@ -11,9 +9,9 @@ namespace TradeSatoshi.Core.Services
 {
 	public class NotificationService : INotificationService
 	{
-		private readonly string NotificationProxyName = "Notification";
-		private readonly string DataNotificationProxyName = "DataNotification";
-		private readonly string ConnectionUrl = ConfigurationManager.AppSettings["ClientNotificationUrl"];
+		private readonly string _notificationProxyName = "Notification";
+		private readonly string _dataNotificationProxyName = "DataNotification";
+		private readonly string _connectionUrl = ConfigurationManager.AppSettings["ClientNotificationUrl"];
 
 		#region Notification
 
@@ -21,9 +19,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(NotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -42,9 +40,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(NotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -58,7 +56,7 @@ namespace TradeSatoshi.Core.Services
 				return false;
 			}
 		}
-	
+
 		#endregion
 
 		#region UserNotification
@@ -67,9 +65,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(NotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -88,9 +86,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(NotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -104,7 +102,7 @@ namespace TradeSatoshi.Core.Services
 				return false;
 			}
 		}
-	
+
 		#endregion
 
 		#region DataUpdate
@@ -113,9 +111,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -134,9 +132,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -155,9 +153,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -176,9 +174,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -201,9 +199,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -222,9 +220,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -243,9 +241,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 
@@ -264,9 +262,9 @@ namespace TradeSatoshi.Core.Services
 		{
 			try
 			{
-				using (var connection = new HubConnection(ConnectionUrl))
+				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(DataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
 					if (proxy == null)
 						return false;
 

@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Admin;
-using TradeSatoshi.Data.DataContext;
-using System.Data.Entity;
-using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Core.Helpers;
-using TradeSatoshi.Common;
-using System.Threading;
-using System.Security.Claims;
-using System.Security.Permissions;
-using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Security;
+using TradeSatoshi.Core.Helpers;
 
 namespace TradeSatoshi.Core.Admin
 {

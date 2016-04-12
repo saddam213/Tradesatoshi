@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TradeSatoshi.Common.Support
+﻿namespace TradeSatoshi.Common.Support
 {
 	public class SupportTicketReplyModel
 	{

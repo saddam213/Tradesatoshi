@@ -40,7 +40,7 @@
 								@for (int i = 0; i < Model.Balances.Count; i++)
 								{
 									var balance = Model.Balances[i];
-									var menuOrientation = (i >= (Model.Balances.Count / 2) ? "up" : "down");
+									var menuOrientation = (i> 8 && i >= (Model.Balances.Count / 2) ? "up" : "down");
 									<tr>
 										@if (authenticated)
 										{<td>@GetBalanceMenu(balance, menuOrientation)</td>}
@@ -86,7 +86,7 @@
 			<li class="divider" style="padding-top:0px;margin-top:0px"></li>
 			<li><a onclick="createTransfer('@balance.CurrencyId');">Transfer</a></li>
 			<li><a onclick="createWithdraw('@balance.CurrencyId');">Withdraw</a></li>
-			<li><a onclick="generateAddress('@balance.CurrencyId');">Create Address</a></li>
+			<li><a class="address-generate" data-currency="@balance.CurrencyId">Create Address</a></li>
 			<li class="divider"></li>
 			@*	<li class="dropdown-header"></li>*@
 			<li><a href="@Url.Action("Index", "History", new { coin = balance.Symbol, area = "Deposit" })">Deposits</a></li>
@@ -98,14 +98,16 @@
 
 @helper GetBalanceAddress(TradeSatoshi.Common.Balance.BalanceModel balance)
 {
-	if (string.IsNullOrEmpty(balance.Address))
-	{
-	<button class="btn btn-xs btn-info" onclick="generateAddress('@balance.CurrencyId');">Create Address</button>
-	}
-	else
-	{
-	@balance.Address
-	}
+	<div id="address-@balance.CurrencyId">
+		@if (string.IsNullOrEmpty(balance.Address))
+		{
+		<button class="btn btn-xs btn-info address-generate" data-currency="@balance.CurrencyId">Create Address</button>
+		}
+		else
+		{
+		@balance.Address
+		}
+	</div>
 }
 
 
@@ -123,37 +125,38 @@
 			"sort": true,
 			"paging": false,
 			"info": false,
-			"language": { "emptyTable": "No data avaliable.", "search": "",searchPlaceholder: "Search balances"},
+			"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search balances" },
 			"columnDefs": [
-			{ "targets": 0, "searchable": false, "orderable": false, "sort": false },
-			{ "targets": 3, "searchable": false, "orderable": false }
+				{ "targets": 0, "searchable": false, "orderable": false, "sort": false },
+				{ "targets": 3, "searchable": false, "orderable": false }
 			]
 		});
 
-		function generateAddress(currencyId) {
-			var target = $('#address-' + currencyId);
-			var targetCell = target.closest('td');
-			target.attr('disabled', 'disabled');
-			targetCell.addClass('info');
-			postJson('@Url.Action("GetAddress")', { currencyId: currencyId }, function (data) {
-				targetCell.removeClass('info');
-				target.removeAttr('disabled');
-				if (data.Success) {
-					targetCell.find('.target').html(data.Message);
-					return;
-				}
-				notifyModal('@Html.Resource("Generate Address Failed!")', data.Message);
-			});
-		}
+		$(".address-generate").on("click", function () {
+			var button = $(this);
+			var currencyId = button.data("currency");
+			var target = $("#address-" + currencyId);
+			if (currencyId) {
+				button.attr('disabled', 'disabled');
+				postJson('@Url.Action("GetAddress")', { currencyId: currencyId }, function(data) {
+					button.removeAttr('disabled');
+					if (data.Success) {
+						target.html(data.Message);
+						return;
+					}
+					notifyModal('@Html.Resource("Generate Address Failed!")', data.Message);
+				});
+			}
+		});
 
 		function createWithdraw(currencyId) {
-			openModal('@Url.Action("Create", "Withdraw")', { currencyId: currencyId }, function (data) {
+			openModal('@Url.Action("Create", "Withdraw")', { currencyId: currencyId }, function(data) {
 				// reload
 			});
 		}
 
 		function createTransfer(currencyId) {
-			openModal('@Url.Action("Create", "Transfer")', { currencyId: currencyId }, function (data) {
+			openModal('@Url.Action("Create", "Transfer")', { currencyId: currencyId }, function(data) {
 				// reload
 			});
 		}

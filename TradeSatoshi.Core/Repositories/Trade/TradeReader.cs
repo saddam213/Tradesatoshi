@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.DataTables;
-using TradeSatoshi.Common.Services.TradeService;
-using TradeSatoshi.Common.Trade;
-using TradeSatoshi.Common.Validation;
-using TradeSatoshi.Core.Services;
-using TradeSatoshi.Core.Helpers;
-using System.Data.Entity;
-using TradeSatoshi.Common;
-using TradeSatoshi.Enums;
-using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Common.Exchange;
+using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Core.Helpers;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Trade
 {
@@ -27,9 +22,7 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Trade
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
-					.Where(x => x.UserId == userId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
+					.Where(x => x.UserId == userId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending) && x.TradePair.Status != TradePairStatus.Closed)
 					.Select(x => new TradeModel
 					{
 						Amount = x.Amount,
@@ -52,9 +45,7 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.TradeHistory
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
-					.Where(x => x.UserId == userId || x.ToUserId == userId)
+					.Where(x => (x.UserId == userId || x.ToUserId == userId) && x.TradePair.Status != TradePairStatus.Closed)
 					.Select(x => new TradeHistoryModel
 					{
 						Amount = x.Amount,
@@ -75,8 +66,7 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Trade
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
+					.Where(x => x.TradePair.Status != TradePairStatus.Closed)
 					.Select(x => new TradeModel
 					{
 						Amount = x.Amount,
@@ -99,8 +89,7 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.TradeHistory
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
+					.Where(x => x.TradePair.Status != TradePairStatus.Closed)
 					.Select(x => new TradeHistoryModel
 					{
 						Amount = x.Amount,
@@ -121,7 +110,7 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.TradeHistory
-					.Where(x => x.TradePairId == tradePairId)
+					.Where(x => x.TradePairId == tradePairId && x.TradePair.Status != TradePairStatus.Closed)
 					.Select(x => new TradeHistoryDataTableModel
 					{
 						Amount = x.Amount,
@@ -138,8 +127,6 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Trade
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
 					.Where(x => x.TradePairId == tradePairId && x.TradeType == tradeType && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 					.GroupBy(t => t.Rate)
 					.Select(x => new TradeOrderBookModel
@@ -158,14 +145,12 @@ namespace TradeSatoshi.Core.Trade
 			}
 		}
 
-		public DataTablesResponse GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string UserId)
+		public DataTablesResponse GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.Trade
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
-					.Where(x => x.TradePairId == tradePairId && x.UserId == UserId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
+					.Where(x => x.TradePairId == tradePairId && x.UserId == userId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 					.Select(x => new TradeOpenOrderModel
 					{
 						Id = x.Id,
@@ -185,8 +170,6 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.TradeHistory
-					.Include(t => t.TradePair.Currency1)
-					.Include(t => t.TradePair.Currency2)
 					.Where(x => x.TradePairId == tradePairId && x.UserId == userId)
 					.Select(x => new TradeHistoryModel
 					{
@@ -227,8 +210,8 @@ namespace TradeSatoshi.Core.Trade
 					var balances = context.Balance.Where(x => x.UserId == userId && (x.CurrencyId == tradePair.CurrencyId1 || x.CurrencyId == tradePair.CurrencyId2)).ToList();
 					var balance1 = balances.FirstOrDefault(x => x.CurrencyId == tradePair.CurrencyId1);
 					var balance2 = balances.FirstOrDefault(x => x.CurrencyId == tradePair.CurrencyId2);
-					model.Balance = balance1 != null ? balance1.Avaliable : 0m;
-					model.BaseBalance = balance2 != null ? balance2.Avaliable : 0m;
+					model.Balance = balance1?.Avaliable ?? 0m;
+					model.BaseBalance = balance2?.Avaliable ?? 0m;
 				}
 
 				return model;
@@ -271,16 +254,16 @@ namespace TradeSatoshi.Core.Trade
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var tradePairData = await context.TradeHistory
-				.Where(x => x.TradePairId == tradePairId)
-				.Select(x => new
-				{
-					Amount = x.Amount,
-					Rate = x.Rate,
-					Timestamp = x.Timestamp
-				}).ToListAsync();
+					.Where(x => x.TradePairId == tradePairId)
+					.Select(x => new
+					{
+						Amount = x.Amount,
+						Rate = x.Rate,
+						Timestamp = x.Timestamp
+					}).ToListAsync();
 
 				if (tradePairData.IsNullOrEmpty())
-					return MapChartData(new[] { new ChartDataModel(DateTime.UtcNow.ToJavaTime(), 0, 0, 0, 0, 0) });
+					return MapChartData(new[] {new ChartDataModel(DateTime.UtcNow.ToJavaTime(), 0, 0, 0, 0, 0)});
 
 				var chartData = new List<ChartDataModel>();
 				var start = tradePairData.Min(x => x.Timestamp);
@@ -288,7 +271,7 @@ namespace TradeSatoshi.Core.Trade
 				var totalhours = (finish - start).TotalHours;
 				var lastClose = 0m;
 				var interval = TimeSpan.FromHours(1);
-				var tickData = tradePairData.GroupBy(s => s.Timestamp.Ticks / interval.Ticks);
+				var tickData = tradePairData.GroupBy(s => s.Timestamp.Ticks/interval.Ticks);
 				for (int i = 0; i < totalhours; i++)
 				{
 					var date = start.AddHours(i);
@@ -297,7 +280,8 @@ namespace TradeSatoshi.Core.Trade
 					{
 						if (lastClose == 0)
 						{
-							lastClose = tradePairData.FirstOrDefault().Rate;
+							var firstOrDefault = tradePairData.FirstOrDefault();
+							if (firstOrDefault != null) lastClose = firstOrDefault.Rate;
 						}
 						chartData.Add(new ChartDataModel(date.ToJavaTime(), lastClose, lastClose, lastClose, lastClose, 0));
 						continue;
@@ -305,7 +289,7 @@ namespace TradeSatoshi.Core.Trade
 
 					var max = data.Max(x => x.Rate);
 					lastClose = data.Last().Rate;
-					chartData.Add(new ChartDataModel(date.ToJavaTime(), data.First().Rate, max, data.Min(x => x.Rate), lastClose, data.Sum(x => x.Amount * x.Rate)));
+					chartData.Add(new ChartDataModel(date.ToJavaTime(), data.First().Rate, max, data.Min(x => x.Rate), lastClose, data.Sum(x => x.Amount*x.Rate)));
 				}
 
 				return MapChartData(chartData);
@@ -326,15 +310,15 @@ namespace TradeSatoshi.Core.Trade
 				var buyTotal = 0m;
 				foreach (var group in buyTrades.GroupBy(x => x.Rate).OrderByDescending(x => x.Key))
 				{
-					buyTotal += group.Sum(t => t.Remaining * t.Rate);
-					buyData.Insert(0, new decimal[] { group.Key, buyTotal });
+					buyTotal += group.Sum(t => t.Remaining*t.Rate);
+					buyData.Insert(0, new[] {group.Key, buyTotal});
 				}
 
 				var sellTotal = 0m;
 				foreach (var group in sellTrades.GroupBy(x => x.Rate).OrderBy(x => x.Key))
 				{
-					sellTotal += group.Sum(t => t.Remaining * t.Rate);
-					sellData.Add(new decimal[] { group.Key, sellTotal });
+					sellTotal += group.Sum(t => t.Remaining*t.Rate);
+					sellData.Add(new[] {group.Key, sellTotal});
 				}
 
 				return new ChartDepthDataViewModel
@@ -346,24 +330,23 @@ namespace TradeSatoshi.Core.Trade
 		}
 
 
-
 		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData)
 		{
 			return new ChartDataViewModel
 			{
 				Candle = chartData.Select(x => new[]
-					{
-						x.Timestamp,
-						x.Open,
-						x.High,
-						x.Low,
-						x.Close
-					}).ToList(),
+				{
+					x.Timestamp,
+					x.Open,
+					x.High,
+					x.Low,
+					x.Close
+				}).ToList(),
 				Volume = chartData.Select(x => new[]
-					{
-						x.Timestamp,
-						x.Volume
-					}).ToList()
+				{
+					x.Timestamp,
+					x.Volume
+				}).ToList()
 			};
 		}
 	}

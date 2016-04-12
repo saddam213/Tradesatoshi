@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TradeSatoshi.Common.Validation
 {
@@ -9,7 +7,7 @@ namespace TradeSatoshi.Common.Validation
 		public override bool IsValid(object value)
 		{
 			if (value is bool)
-				return (bool)value;
+				return (bool) value;
 			else
 				return true;
 		}
@@ -24,6 +22,5 @@ namespace TradeSatoshi.Common.Validation
 		//		ValidationType = "booleanrequired"
 		//	};
 		//}
-
 	}
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TradeSatoshi.Common.Validation
 {
@@ -51,75 +49,74 @@ namespace TradeSatoshi.Common.Validation
 
 		public static WriterResult<T> SuccessResult(string message = null)
 		{
-			return new WriterResult<T> { Message = message };
+			return new WriterResult<T> {Message = message};
 		}
 
 		public static WriterResult<T> ErrorResult(string error = null)
 		{
-			return new WriterResult<T> { Errors = new List<string> { error } };
+			return new WriterResult<T> {Errors = new List<string> {error}};
 		}
 
 		public static WriterResult<T> SuccessResult(string message, params object[] param)
 		{
-			return new WriterResult<T> { Message = string.Format(message, param) };
+			return new WriterResult<T> {Message = string.Format(message, param)};
 		}
 
 		public static WriterResult<T> ErrorResult(string error, params object[] param)
 		{
-			return new WriterResult<T> { Errors = new List<string> { string.Format(error, param) } };
+			return new WriterResult<T> {Errors = new List<string> {string.Format(error, param)}};
 		}
 
 		public static WriterResult<T> ErrorResult(List<string> errors)
 		{
-			return new WriterResult<T> { Errors = errors };
+			return new WriterResult<T> {Errors = errors};
 		}
 
 		public static WriterResult<T> SuccessResult(T data)
 		{
-			return new WriterResult<T> { Data = data };
+			return new WriterResult<T> {Data = data};
 		}
 
 		public static WriterResult<T> SuccessResult(T data, string message)
 		{
-			return new WriterResult<T> { Data = data, Message = message };
+			return new WriterResult<T> {Data = data, Message = message};
 		}
 
-	
 
 		public static WriterResult<T> ContextResult(List<string> contextResults)
 		{
 			if (contextResults.Any())
 			{
-				return WriterResult<T>.ErrorResult(contextResults);
+				return ErrorResult(contextResults);
 			}
-			return WriterResult<T>.SuccessResult();
+			return SuccessResult();
 		}
 
 		public static WriterResult<T> ContextResult(List<string> contextResults, string successMessage, params object[] formatParams)
 		{
 			if (contextResults.Any())
 			{
-				return WriterResult<T>.ErrorResult(contextResults);
+				return ErrorResult(contextResults);
 			}
-			return WriterResult<T>.SuccessResult(successMessage, formatParams);
+			return SuccessResult(successMessage, formatParams);
 		}
 
 		public static WriterResult<T> ContextResult(T data, List<string> contextResults)
 		{
 			if (contextResults.Any())
 			{
-				return WriterResult<T>.ErrorResult(contextResults);
+				return ErrorResult(contextResults);
 			}
-			return WriterResult<T>.SuccessResult(data);
+			return SuccessResult(data);
 		}
 
 		public static WriterResult<T> ContextResult(T data, List<string> contextResults, string successMessage)
 		{
 			if (contextResults.Any())
 			{
-				return WriterResult<T>.ErrorResult(contextResults);
+				return ErrorResult(contextResults);
 			}
-			return WriterResult<T>.SuccessResult(data, successMessage);
+			return SuccessResult(data, successMessage);
 		}
 	}
 }
