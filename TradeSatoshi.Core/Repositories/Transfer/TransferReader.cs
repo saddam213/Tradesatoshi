@@ -12,7 +12,7 @@ namespace TradeSatoshi.Core.Transfer
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public DataTablesResponse GetTransferDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetTransferDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -28,11 +28,11 @@ namespace TradeSatoshi.Core.Transfer
 						Receiver = transfer.ToUser.UserName,
 						TimeStamp = transfer.Timestamp
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetUserTransferDataTable(DataTablesModel model, string userId)
+		public async Task<DataTablesResponse> GetUserTransferDataTable(DataTablesModel model, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -49,7 +49,7 @@ namespace TradeSatoshi.Core.Transfer
 						Receiver = transfer.ToUser.UserName,
 						TimeStamp = transfer.Timestamp
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 

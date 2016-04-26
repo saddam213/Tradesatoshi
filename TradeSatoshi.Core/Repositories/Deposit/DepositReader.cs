@@ -55,7 +55,7 @@ namespace TradeSatoshi.Core.Balance
 			}
 		}
 
-		public DataTablesResponse GetDepositDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetDepositDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -72,11 +72,11 @@ namespace TradeSatoshi.Core.Balance
 							Txid = deposit.Txid,
 							DepositStatus = deposit.DepositStatus
 						});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetUserDepositDataTable(DataTablesModel model, string userId)
+		public async Task<DataTablesResponse> GetUserDepositDataTable(DataTablesModel model, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -94,7 +94,7 @@ namespace TradeSatoshi.Core.Balance
 							Txid = deposit.Txid,
 							DepositStatus = deposit.DepositStatus
 						});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 	}

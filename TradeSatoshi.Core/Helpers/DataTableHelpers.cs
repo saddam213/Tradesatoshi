@@ -1,9 +1,10 @@
-﻿using Mvc.JQuery.Datatables;
-using Mvc.JQuery.Datatables.Models;
-using Mvc.JQuery.Datatables.Reflection;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Cryptopia.Datatables;
+using Cryptopia.Datatables.Models;
+using Cryptopia.Datatables.Reflection;
 using TradeSatoshi.Common.DataTables;
+using System.Threading.Tasks;
 
 namespace TradeSatoshi.Core.Helpers
 {
@@ -45,28 +46,69 @@ namespace TradeSatoshi.Core.Helpers
 		{
 			var dataTablesResponseData = param.ToDataTablesParam().GetDataTablesResponse(query);
 			dataTablesResponseData.iTotalDisplayRecords = dataTablesResponseData.iTotalRecords;
-			var responseOptions = new ResponseOptions<T>() { ArrayOutputType = null };
+			var responseOptions = new ResponseOptions<T>() {ArrayOutputType = null};
 			var dictionaryTransform = DataTablesTypeInfo<T>.ToDictionary(responseOptions);
-			dataTablesResponseData = dataTablesResponseData.Transform(dictionaryTransform)
-					   .Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
+			dataTablesResponseData = dataTablesResponseData.Transform<T, Dictionary<string, object>>(dictionaryTransform)
+				.Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
 			dataTablesResponseData = ApplyOutputRules(dataTablesResponseData, responseOptions);
 			return dataTablesResponseData.ToDataTablesResponse();
 		}
 
-		public static DataTablesResponse GetEmptyDataTableResult(DataTablesModel param)
+		public static DataTablesResponse GetDataTableResultNoLock<T>(this IQueryable<T> query, DataTablesModel param)
+		{
+			var dataTablesResponseData = param.ToDataTablesParam().GetDataTablesResponseNoLock(query);
+			dataTablesResponseData.iTotalDisplayRecords = dataTablesResponseData.iTotalRecords;
+			var responseOptions = new ResponseOptions<T>() {ArrayOutputType = null};
+			var dictionaryTransform = DataTablesTypeInfo<T>.ToDictionary(responseOptions);
+			dataTablesResponseData = dataTablesResponseData.Transform<T, Dictionary<string, object>>(dictionaryTransform)
+				.Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
+			dataTablesResponseData = ApplyOutputRules(dataTablesResponseData, responseOptions);
+			return dataTablesResponseData.ToDataTablesResponse();
+		}
+
+		public static async Task<DataTablesResponse> GetDataTableResultAsync<T>(this IQueryable<T> query,
+			DataTablesModel param)
+		{
+			var dataTablesResponseData = await param.ToDataTablesParam().GetDataTablesResponseAsync(query);
+			dataTablesResponseData.iTotalDisplayRecords = dataTablesResponseData.iTotalRecords;
+			var responseOptions = new ResponseOptions<T>() {ArrayOutputType = null};
+			var dictionaryTransform = DataTablesTypeInfo<T>.ToDictionary(responseOptions);
+			dataTablesResponseData = dataTablesResponseData.Transform<T, Dictionary<string, object>>(dictionaryTransform)
+				.Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
+			dataTablesResponseData = ApplyOutputRules(dataTablesResponseData, responseOptions);
+			return dataTablesResponseData.ToDataTablesResponse();
+		}
+
+		public static async Task<DataTablesResponse> GetDataTableResultNoLockAsync<T>(this IQueryable<T> query,
+			DataTablesModel param)
+		{
+			var dataTablesResponseData =
+				await param.ToDataTablesParam().GetDataTablesResponseNoLockAsync(query);
+			dataTablesResponseData.iTotalDisplayRecords = dataTablesResponseData.iTotalRecords;
+			var responseOptions = new ResponseOptions<T>() {ArrayOutputType = null};
+			var dictionaryTransform = DataTablesTypeInfo<T>.ToDictionary(responseOptions);
+			dataTablesResponseData = dataTablesResponseData.Transform<T, Dictionary<string, object>>(dictionaryTransform)
+				.Transform<Dictionary<string, object>, Dictionary<string, object>>(StringTransformers.StringifyValues);
+			dataTablesResponseData = ApplyOutputRules(dataTablesResponseData, responseOptions);
+			return dataTablesResponseData.ToDataTablesResponse();
+		}
+
+		public static DataTablesResponse GetEmptyDataTableResult(this DataTablesModel param)
 		{
 			return new DataTablesResponse
 			{
-				sEcho = param.sEcho,
-				aaData = new object[]{},
+				sEcho = param?.sEcho ?? 0,
+				aaData = new object[] {},
 				iTotalDisplayRecords = 0,
 				iTotalRecords = 0
 			};
 		}
 
-		private static DataTablesResponseData ApplyOutputRules<TSource>(DataTablesResponseData sourceData, ResponseOptions<TSource> responseOptions)
+		private static DataTablesResponseData ApplyOutputRules<TSource>(DataTablesResponseData sourceData,
+			ResponseOptions<TSource> responseOptions)
 		{
-			responseOptions = responseOptions ?? new ResponseOptions<TSource>() { ArrayOutputType = ArrayOutputType.BiDimensionalArray };
+			responseOptions = responseOptions ??
+			                  new ResponseOptions<TSource>() {ArrayOutputType = ArrayOutputType.BiDimensionalArray};
 			DataTablesResponseData outputData = sourceData;
 
 			switch (responseOptions.ArrayOutputType)
@@ -74,6 +116,7 @@ namespace TradeSatoshi.Core.Helpers
 				case ArrayOutputType.ArrayOfObjects:
 					// Nothing is needed
 					break;
+				case ArrayOutputType.BiDimensionalArray:
 				default:
 					outputData = sourceData.Transform<Dictionary<string, object>, object[]>(d => d.Values.ToArray());
 					break;

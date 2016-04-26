@@ -17,7 +17,7 @@ namespace TradeSatoshi.Core.Trade
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public DataTablesResponse GetUserTradeDataTable(DataTablesModel model, string userId)
+		public async Task<DataTablesResponse> GetUserTradeDataTable(DataTablesModel model, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -36,11 +36,11 @@ namespace TradeSatoshi.Core.Trade
 						Remaining = x.Remaining,
 						TradeType = x.TradeType
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetUserTradeHistoryDataTable(DataTablesModel model, string userId)
+		public async Task<DataTablesResponse> GetUserTradeHistoryDataTable(DataTablesModel model, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -57,11 +57,11 @@ namespace TradeSatoshi.Core.Trade
 						TradeHistoryType = x.TradeHistoryType,
 						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetTradeDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetTradeDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -80,11 +80,11 @@ namespace TradeSatoshi.Core.Trade
 						Remaining = x.Remaining,
 						TradeType = x.TradeType
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetTradeHistoryDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetTradeHistoryDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -101,11 +101,11 @@ namespace TradeSatoshi.Core.Trade
 						TradeHistoryType = x.TradeHistoryType,
 						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId)
+		public async Task<DataTablesResponse> GetTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -118,11 +118,11 @@ namespace TradeSatoshi.Core.Trade
 						Timestamp = x.Timestamp,
 						TradeHistoryType = x.TradeHistoryType,
 					}).OrderByDescending(x => x.Timestamp);
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetTradePairOrderBookDataTable(DataTablesModel model, int tradePairId, TradeType tradeType)
+		public async Task<DataTablesResponse> GetTradePairOrderBookDataTable(DataTablesModel model, int tradePairId, TradeType tradeType)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -141,11 +141,11 @@ namespace TradeSatoshi.Core.Trade
 					? query.OrderByDescending(o => o.Rate)
 					: query.OrderBy(x => x.Rate);
 
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string userId)
+		public async Task<DataTablesResponse> GetTradePairUserOpenOrdersDataTable(DataTablesModel model, int tradePairId, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -161,11 +161,11 @@ namespace TradeSatoshi.Core.Trade
 						Timestamp = x.Timestamp
 					}).OrderByDescending(x => x.Id);
 
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetUserTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId, string userId)
+		public async Task<DataTablesResponse> GetUserTradePairTradeHistoryDataTable(DataTablesModel model, int tradePairId, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -182,7 +182,7 @@ namespace TradeSatoshi.Core.Trade
 						TradeHistoryType = x.TradeHistoryType,
 						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
 					}).OrderByDescending(x => x.Id);
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
@@ -234,8 +234,8 @@ namespace TradeSatoshi.Core.Trade
 					TradeType = TradeType.Buy,
 					Symbol = model.Symbol,
 					BaseSymbol = model.BaseSymbol,
-					Fee = 0.2m,
-					MinTrade = 0.00002000m
+					Fee = model.Fee,
+					MinTrade = model.MinTrade
 				},
 				SellModel = new CreateTradeModel
 				{

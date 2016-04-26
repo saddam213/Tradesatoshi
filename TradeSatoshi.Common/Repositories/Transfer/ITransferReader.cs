@@ -6,7 +6,7 @@ namespace TradeSatoshi.Common.Transfer
 	public interface ITransferReader
 	{
 		Task<CreateTransferModel> GetCreateTransfer(string userId, int currencyId);
-		DataTablesResponse GetTransferDataTable(DataTablesModel model);
-		DataTablesResponse GetUserTransferDataTable(DataTablesModel model, string userId);
+		Task<DataTablesResponse> GetTransferDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetUserTransferDataTable(DataTablesModel model, string userId);
 	}
 }

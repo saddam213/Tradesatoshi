@@ -9,7 +9,7 @@ namespace TradeSatoshi.Common.Deposit
 		Task<List<DepositModel>> GetDeposits(string userId);
 		Task<List<DepositModel>> GetDeposits(string userId, int currencyId);
 
-		DataTablesResponse GetDepositDataTable(DataTablesModel model);
-		DataTablesResponse GetUserDepositDataTable(DataTablesModel model, string userId);
+		Task<DataTablesResponse> GetDepositDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetUserDepositDataTable(DataTablesModel model, string userId);
 	}
 }

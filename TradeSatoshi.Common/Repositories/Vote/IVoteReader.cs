@@ -8,11 +8,11 @@ namespace TradeSatoshi.Common.Vote
 	{
 		Task<VoteModel> GetVoteSettings();
 		Task<ViewVoteItemModel> GetVoteItem(int voteItemId);
-		DataTablesResponse GetVoteDataTable(DataTablesModel model, VoteType type);
-		DataTablesResponse GetPendingDataTable(DataTablesModel model);
-		DataTablesResponse GetRejectedDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetVoteDataTable(DataTablesModel model, VoteType type);
+		Task<DataTablesResponse> GetPendingDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetRejectedDataTable(DataTablesModel model);
 
 		Task<UpdateVoteItemModel> AdminGetVoteItem(int voteItemId);
-		DataTablesResponse AdminGetVoteDataTable(DataTablesModel model);
+		Task<DataTablesResponse> AdminGetVoteDataTable(DataTablesModel model);
 	}
 }

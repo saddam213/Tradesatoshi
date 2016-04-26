@@ -61,11 +61,12 @@ namespace TradeSatoshi.Core.Currency
 			}
 		}
 
-		public DataTablesResponse GetCurrencyDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetCurrencyDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return context.Currency.Select(MapCurrency).GetDataTableResult(model);
+				return await context.Currency.Select(MapCurrency).GetDataTableResultNoLockAsync(model);
+				;
 			}
 		}
 

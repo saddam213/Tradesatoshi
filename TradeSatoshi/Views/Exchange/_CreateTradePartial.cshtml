@@ -47,7 +47,7 @@
 
 			<tr>
 				<td class="row-header">
-					<span>Total</span>
+					<span>Net</span>
 				</td>
 				<td>
 					<div class="row-content">
@@ -77,7 +77,7 @@
 			</tr>
 			<tr>
 				<td class="row-header">
-					<span>Net</span>
+					<span>Total</span>
 				</td>
 				<td>
 					<div class="row-content">
@@ -101,24 +101,44 @@
 }
 
 <script>
-	$(function () {
-		$('#rate-@Model.TradeType, #amount-@Model.TradeType').on('change paste keyup', function () {
-			var amount = $('#amount-@Model.TradeType').val();
-			var price = $('#rate-@Model.TradeType').val();
+
+		$('#rate-Buy, #amount-Buy').on('change paste keyup', function () {
+			var amount = $('#amount-Buy').val();
+			var price = $('#rate-Buy').val();
 			var tradefee = +'@Model.Fee';
 			var minTrade = +'@Model.MinTrade';
-			$('#submit-Buy, #submit-Sell').attr('disabled', 'disabled');
+			$('#submit-Buy').attr('disabled', 'disabled');
+			if (!isNaN(amount) && !isNaN(price)) {
+				var total = amount * price;
+				var fee = (total / 100) * tradefee;
+				var nettotal = total + fee;
+				$('#total-Buy').html(total.toFixed(8));
+				$('#fee-Buy').html(fee.toFixed(8));
+				$('#net-Buy').html(nettotal.toFixed(8));
+				if (nettotal >= minTrade) {
+					$('#submit-Buy').removeAttr('disabled');
+				}
+			}
+		}).trigger("change");
+
+
+		$('#rate-Sell, #amount-Sell').on('change paste keyup', function () {
+			var amount = $('#amount-Sell').val();
+			var price = $('#rate-Sell').val();
+			var tradefee = +'@Model.Fee';
+			var minTrade = +'@Model.MinTrade';
+			$('#submit-Sell').attr('disabled', 'disabled');
 			if (!isNaN(amount) && !isNaN(price)) {
 				var total = amount * price;
 				var fee = (total / 100) * tradefee;
 				var nettotal = total - fee;
-				$('#total-@Model.TradeType').html(total.toFixed(8));
-				$('#fee-@Model.TradeType').html(fee.toFixed(8));
-				$('#net-@Model.TradeType').html(nettotal.toFixed(8));
-				if (nettotal > minTrade) {
-					$('#submit-Buy, #submit-Sell').removeAttr('disabled');
+				$('#total-Sell').html(total.toFixed(8));
+				$('#fee-Sell').html(fee.toFixed(8));
+				$('#net-Sell').html(nettotal.toFixed(8));
+				if (nettotal >= minTrade) {
+					$('#submit-Sell').removeAttr('disabled');
 				}
 			}
-		});
-	});
+		}).trigger("change");;
+
 </script>

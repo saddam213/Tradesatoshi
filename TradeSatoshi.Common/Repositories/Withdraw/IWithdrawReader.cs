@@ -11,7 +11,7 @@ namespace TradeSatoshi.Common.Withdraw
 		Task<List<WithdrawModel>> GetWithdrawals(string userId);
 		Task<List<WithdrawModel>> GetWithdrawals(string userId, int currencyId);
 
-		DataTablesResponse GetWithdrawDataTable(DataTablesModel model);
-		DataTablesResponse GetUserWithdrawDataTable(DataTablesModel model, string userId);
+		Task<DataTablesResponse> GetWithdrawDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetUserWithdrawDataTable(DataTablesModel model, string userId);
 	}
 }

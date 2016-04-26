@@ -9,7 +9,7 @@ namespace TradeSatoshi.Common.Currency
 		Task<CurrencyModel> GetCurrency(int currencyId);
 		Task<List<CurrencyModel>> GetCurrencies();
 		Task<UpdateCurrencyModel> GetCurrencyUpdate(int currencyId);
-		DataTablesResponse GetCurrencyDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetCurrencyDataTable(DataTablesModel model);
 
 		Task<List<CurrencyStatusModel>> GetCurrencyStatus();
 	}

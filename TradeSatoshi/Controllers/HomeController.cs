@@ -28,22 +28,18 @@ namespace TradeSatoshi.Web.Controllers
 		public IBalanceReader BalanceReader { get; set; }
 		public ITradeWriter TradeWriter { get; set; }
 		public ITradeReader TradeReader { get; set; }
-	
+
 		public ITradePairReader TradePairReader { get; set; }
 
 
 		public ActionResult Index()
 		{
-			
 			return View();
 		}
 
 
 		public async Task<ActionResult> Contact()
 		{
-
-
-
 			var tradePairs = await TradePairReader.GetTradePairs();
 			var balances = await BalanceReader.GetBalances(User.Id());
 			return View(new ExchangeModel
@@ -61,8 +57,6 @@ namespace TradeSatoshi.Web.Controllers
 
 		public ActionResult Test()
 		{
-			
-
 			return Index();
 		}
 
@@ -76,17 +70,6 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			return CloseModalRedirect(Url.Action("Voting", "Home"));
 		}
-
-
-
-
-
-
-
-
-
-
-
 
 
 		[HttpGet]
@@ -124,15 +107,15 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
+		public async Task<ActionResult> GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
 		{
-			return DataTable(TradeReader.GetTradePairOrderBookDataTable(param, tradePairId, tradeType));
+			return DataTable(await TradeReader.GetTradePairOrderBookDataTable(param, tradePairId, tradeType));
 		}
 
 		[HttpPost]
-		public ActionResult GetMarketHistory(DataTablesModel param, int tradePairId)
+		public async Task<ActionResult> GetMarketHistory(DataTablesModel param, int tradePairId)
 		{
-			return DataTable(TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
+			return DataTable(await TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
 		}
 
 		[HttpGet]

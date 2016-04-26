@@ -99,5 +99,5 @@ namespace TradeSatoshi.Web.ModelBinder
 		}
 	}
 
-	
+
 }

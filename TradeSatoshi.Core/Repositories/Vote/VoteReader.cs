@@ -15,25 +15,25 @@ namespace TradeSatoshi.Core.Vote
 		public IVoteService VoteService { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public DataTablesResponse GetVoteDataTable(DataTablesModel model, VoteType type)
+		public async Task<DataTablesResponse> GetVoteDataTable(DataTablesModel model, VoteType type)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var query = context.VoteItem
-				.Include(vi => vi.Votes)
-				.Where(vi => vi.Status == VoteItemStatus.Voting)
-				.Select(voteItem => new VoteItemModel
-				{
-					Id = voteItem.Id,
-					Name = voteItem.Name,
-					VoteType = type,
-					VoteCount = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == type).Sum(x => x.Count) ?? 0
-				});
-				return query.GetDataTableResult(model);
+					.Include(vi => vi.Votes)
+					.Where(vi => vi.Status == VoteItemStatus.Voting)
+					.Select(voteItem => new VoteItemModel
+					{
+						Id = voteItem.Id,
+						Name = voteItem.Name,
+						VoteType = type,
+						VoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == type).Sum(x => x.Count) ?? 0
+					});
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetPendingDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetPendingDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -45,11 +45,11 @@ namespace TradeSatoshi.Core.Vote
 						Status = VoteItemStatus.Pending
 					})
 					.OrderBy(x => x.Name);
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetRejectedDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetRejectedDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -61,7 +61,7 @@ namespace TradeSatoshi.Core.Vote
 						Reason = voteItem.AdminNote
 					})
 					.OrderBy(x => x.Name);
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace TradeSatoshi.Core.Vote
 			}
 		}
 
-		public DataTablesResponse AdminGetVoteDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> AdminGetVoteDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -119,10 +119,10 @@ namespace TradeSatoshi.Core.Vote
 						Status = voteItem.Status,
 						CreatedBy = voteItem.User.UserName,
 						Created = voteItem.Created,
-						VoteCountFree = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
-						VoteCountPaid = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
+						VoteCountFree = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
+						VoteCountPaid = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 

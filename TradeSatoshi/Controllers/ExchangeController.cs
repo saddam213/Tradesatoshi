@@ -70,15 +70,15 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
+		public async Task<ActionResult> GetOrderBook(DataTablesModel param, int tradePairId, TradeType tradeType)
 		{
-			return DataTable(TradeReader.GetTradePairOrderBookDataTable(param, tradePairId, tradeType));
+			return DataTable(await TradeReader.GetTradePairOrderBookDataTable(param, tradePairId, tradeType));
 		}
 
 		[HttpPost]
-		public ActionResult GetMarketHistory(DataTablesModel param, int tradePairId)
+		public async Task<ActionResult> GetMarketHistory(DataTablesModel param, int tradePairId)
 		{
-			return DataTable(TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
+			return DataTable(await TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
 		}
 
 		[HttpGet]

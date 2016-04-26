@@ -64,16 +64,16 @@ namespace TradeSatoshi.Core.TradePair
 			}
 		}
 
-		public DataTablesResponse GetTradePairDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetTradePairDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return context.TradePair
+				return await context.TradePair
 					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
-					.GetDataTableResult(model);
+					.GetDataTableResultNoLockAsync(model);
 			}
 		}
 

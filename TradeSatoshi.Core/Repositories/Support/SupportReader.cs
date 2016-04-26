@@ -110,7 +110,7 @@ namespace TradeSatoshi.Core.Support
 			}
 		}
 
-		public DataTablesResponse AdminGetSupportTicketDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> AdminGetSupportTicketDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -127,7 +127,7 @@ namespace TradeSatoshi.Core.Support
 						Created = ticket.Created,
 						LastUpdate = ticket.LastUpdate
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
@@ -150,7 +150,7 @@ namespace TradeSatoshi.Core.Support
 			}
 		}
 
-		public DataTablesResponse AdminGetSupportRequestDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> AdminGetSupportRequestDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -163,7 +163,7 @@ namespace TradeSatoshi.Core.Support
 						Replied = ticket.Replied,
 						Created = ticket.Created,
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace TradeSatoshi.Core.Support
 			}
 		}
 
-		public DataTablesResponse AdminGetSupportFaqDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> AdminGetSupportFaqDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -210,11 +210,11 @@ namespace TradeSatoshi.Core.Support
 						Order = ticket.Order,
 						IsEnabled = ticket.IsEnabled
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse AdminGetSupportCategoryDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> AdminGetSupportCategoryDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -225,7 +225,7 @@ namespace TradeSatoshi.Core.Support
 						Name = ticket.Name,
 						IsEnabled = ticket.IsEnabled
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 	}

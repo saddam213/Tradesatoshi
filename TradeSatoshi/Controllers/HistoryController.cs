@@ -48,9 +48,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetDeposits(DataTablesModel param)
+		public async Task<ActionResult> GetDeposits(DataTablesModel param)
 		{
-			return DataTable(DepositReader.GetUserDepositDataTable(param, User.Id()));
+			return DataTable(await DepositReader.GetUserDepositDataTable(param, User.Id()));
 		}
 
 		#endregion
@@ -65,9 +65,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetWithdraws(DataTablesModel param)
+		public async Task<ActionResult> GetWithdraws(DataTablesModel param)
 		{
-			return DataTable(WithdrawReader.GetUserWithdrawDataTable(param, User.Id()));
+			return DataTable(await WithdrawReader.GetUserWithdrawDataTable(param, User.Id()));
 		}
 
 		#endregion
@@ -82,9 +82,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTransfers(DataTablesModel param)
+		public async Task<ActionResult> GetTransfers(DataTablesModel param)
 		{
-			return DataTable(TransferReader.GetUserTransferDataTable(param, User.Id()));
+			return DataTable(await TransferReader.GetUserTransferDataTable(param, User.Id()));
 		}
 
 		#endregion
@@ -99,9 +99,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTrades(DataTablesModel param)
+		public async Task<ActionResult> GetTrades(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetUserTradeHistoryDataTable(param, User.Id()));
+			return DataTable(await TradeReader.GetUserTradeHistoryDataTable(param, User.Id()));
 		}
 
 		#endregion

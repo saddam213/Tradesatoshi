@@ -33,9 +33,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTrades(DataTablesModel param)
+		public async Task<ActionResult> GetTrades(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetUserTradeDataTable(param, User.Id()));
+			return DataTable(await TradeReader.GetUserTradeDataTable(param, User.Id()));
 		}
 	}
 }

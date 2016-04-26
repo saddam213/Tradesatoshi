@@ -9,8 +9,8 @@ namespace TradeSatoshi.Core.Admin
 	{
 		Task<UserModel> GetUser(string userId);
 		Task<UpdateUserModel> GetUserUpdate(string userId);
-		DataTablesResponse GetUserDataTable(DataTablesModel model);
-		DataTablesResponse GetLogonDataTable(DataTablesModel model);
-		DataTablesResponse GetRolesDataTable(DataTablesModel model, SecurityRole securityRole);
+		Task<DataTablesResponse> GetUserDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetLogonDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetRolesDataTable(DataTablesModel model, SecurityRole securityRole);
 	}
 }

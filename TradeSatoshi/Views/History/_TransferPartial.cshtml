@@ -24,7 +24,7 @@
 
 <script>
 	$('#table-transfer').dataTable({
-		"order": [[0, "asc"]],
+		"order": [[0, "desc"]],
 		"lengthChange": false,
 		"processing": true,
 		"bServerSide": true,
@@ -33,7 +33,7 @@
 		"sPaginationType": "simple_numbers",
 		"oSearch": { "sSearch": "@ViewBag.Search" },
 		"scrollY": '600px',
-		"pageLength": "15",
+		"pageLength": 15,
 		"sort": true,
 		"paging": true,
 		"info": true,

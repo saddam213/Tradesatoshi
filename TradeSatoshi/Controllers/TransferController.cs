@@ -91,8 +91,8 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			var recipient = await UserManager.FindByNameAsync(searchTerm);
 			return recipient != null
-				? JsonSuccess("Sucessfully found user '{0}'", recipient.UserName)
-				: JsonError("UserName '{0}' not found.", searchTerm);
+				? JsonSuccess($"Sucessfully found user '{recipient.UserName}'")
+				: JsonError($"UserName '{searchTerm}' not found.");
 		}
 	}
 }

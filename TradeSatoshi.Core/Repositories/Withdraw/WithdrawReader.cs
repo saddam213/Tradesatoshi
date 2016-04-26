@@ -59,7 +59,7 @@ namespace TradeSatoshi.Core.Withdraw
 			}
 		}
 
-		public DataTablesResponse GetWithdrawDataTable(DataTablesModel model)
+		public async Task<DataTablesResponse> GetWithdrawDataTable(DataTablesModel model)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -78,11 +78,11 @@ namespace TradeSatoshi.Core.Withdraw
 						Txid = withdraw.Txid,
 						WithdrawStatus = withdraw.WithdrawStatus
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
-		public DataTablesResponse GetUserWithdrawDataTable(DataTablesModel model, string userId)
+		public async Task<DataTablesResponse> GetUserWithdrawDataTable(DataTablesModel model, string userId)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -101,7 +101,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Txid = withdraw.Txid,
 						WithdrawStatus = withdraw.WithdrawStatus
 					});
-				return query.GetDataTableResult(model);
+				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 

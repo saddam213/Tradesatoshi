@@ -51,15 +51,15 @@
 
 
 <script>
-	$('#table-logons').dataTable({
+	$('#table-logons').DataTable({
 		"order": [[3, "desc"]],
 		"lengthChange": false,
-		"processing": true,
+		"processing": false,
 		"bServerSide": true,
 		"searching": true,
 		"scrollCollapse": false,
 		"sPaginationType": "simple_numbers",
-		"pageLength": "15",
+		"pageLength": 15,
 		"sort": true,
 		"paging": true,
 		"info": true,
@@ -76,7 +76,7 @@
 		"searching": true,
 		"scrollCollapse": false,
 		"sPaginationType": "simple_numbers",
-		"pageLength": "15",
+		"pageLength": 15,
 		"sort": true,
 		"paging": true,
 		"info": true,

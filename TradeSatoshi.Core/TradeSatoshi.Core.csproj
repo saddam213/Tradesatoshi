@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Cryptopia.Datatables">
+      <HintPath>..\..\Cryptopia\Cryptopia.Datatables\bin\Debug\Cryptopia.Datatables.dll</HintPath>
+    </Reference>
     <Reference Include="Cryptopia.WalletAPI">
       <HintPath>..\..\Cryptopia\WalletAPI\bin\Debug\Cryptopia.WalletAPI.dll</HintPath>
     </Reference>
@@ -53,9 +56,6 @@
     <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Mvc.JQuery.DataTables.Core">
-      <HintPath>..\..\mvc.jquery.datatables\Mvc.JQuery.Datatables.Core\bin\Debug\Mvc.JQuery.DataTables.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>

@@ -2,7 +2,7 @@
 
 namespace TradeSatoshi.Common.DataTables
 {
-	public class DataTablesModel
+	public class DataTablesModel : IDataTablesModel
 	{
 		public int iDisplayStart { get; set; }
 		public int iDisplayLength { get; set; }

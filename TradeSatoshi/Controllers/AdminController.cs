@@ -58,9 +58,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetCurrencies(DataTablesModel param)
+		public async Task<ActionResult> GetCurrencies(DataTablesModel param)
 		{
-			return DataTable(CurrencyReader.GetCurrencyDataTable(param));
+			return DataTable(await CurrencyReader.GetCurrencyDataTable(param));
 		}
 
 		#endregion
@@ -74,9 +74,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTradePairs(DataTablesModel param)
+		public async Task<ActionResult> GetTradePairs(DataTablesModel param)
 		{
-			return DataTable(TradePairReader.GetTradePairDataTable(param));
+			return DataTable(await TradePairReader.GetTradePairDataTable(param));
 		}
 
 		#endregion
@@ -90,9 +90,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetUsers(DataTablesModel param)
+		public async Task<ActionResult> GetUsers(DataTablesModel param)
 		{
-			return DataTable(UserReader.GetUserDataTable(param));
+			return DataTable(await UserReader.GetUserDataTable(param));
 		}
 
 		[HttpGet]
@@ -130,15 +130,15 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetLogons(DataTablesModel param)
+		public async Task<ActionResult> GetLogons(DataTablesModel param)
 		{
-			return DataTable(UserReader.GetLogonDataTable(param));
+			return DataTable(await UserReader.GetLogonDataTable(param));
 		}
 
 		[HttpPost]
-		public ActionResult GetSecurityRoles(DataTablesModel param, SecurityRole securityRole)
+		public async Task<ActionResult> GetSecurityRoles(DataTablesModel param, SecurityRole securityRole)
 		{
-			return DataTable(UserReader.GetRolesDataTable(param, securityRole));
+			return DataTable(await UserReader.GetRolesDataTable(param, securityRole));
 		}
 
 		[HttpGet]
@@ -218,9 +218,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetDeposits(DataTablesModel param)
+		public async Task<ActionResult> GetDeposits(DataTablesModel param)
 		{
-			return DataTable(DepositReader.GetDepositDataTable(param));
+			return DataTable(await DepositReader.GetDepositDataTable(param));
 		}
 
 
@@ -231,9 +231,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetWithdrawals(DataTablesModel param)
+		public async Task<ActionResult> GetWithdrawals(DataTablesModel param)
 		{
-			return DataTable(WithdrawReader.GetWithdrawDataTable(param));
+			return DataTable(await WithdrawReader.GetWithdrawDataTable(param));
 		}
 
 		#endregion
@@ -247,9 +247,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTrades(DataTablesModel param)
+		public async Task<ActionResult> GetTrades(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetTradeDataTable(param));
+			return DataTable(await TradeReader.GetTradeDataTable(param));
 		}
 
 
@@ -260,9 +260,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTradeHistory(DataTablesModel param)
+		public async Task<ActionResult> GetTradeHistory(DataTablesModel param)
 		{
-			return DataTable(TradeReader.GetTradeHistoryDataTable(param));
+			return DataTable(await TradeReader.GetTradeHistoryDataTable(param));
 		}
 
 		#endregion
@@ -276,9 +276,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetTransfers(DataTablesModel param)
+		public async Task<ActionResult> GetTransfers(DataTablesModel param)
 		{
-			return DataTable(TransferReader.GetTransferDataTable(param));
+			return DataTable(await TransferReader.GetTransferDataTable(param));
 		}
 
 		#endregion
@@ -292,27 +292,27 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetSupportTickets(DataTablesModel param)
+		public async Task<ActionResult> GetSupportTickets(DataTablesModel param)
 		{
-			return DataTable(SupportReader.AdminGetSupportTicketDataTable(param));
+			return DataTable(await SupportReader.AdminGetSupportTicketDataTable(param));
 		}
 
 		[HttpPost]
-		public ActionResult GetSupportRequests(DataTablesModel param)
+		public async Task<ActionResult> GetSupportRequests(DataTablesModel param)
 		{
-			return DataTable(SupportReader.AdminGetSupportRequestDataTable(param));
+			return DataTable(await SupportReader.AdminGetSupportRequestDataTable(param));
 		}
 
 		[HttpPost]
-		public ActionResult GetSupportCategory(DataTablesModel param)
+		public async Task<ActionResult> GetSupportCategory(DataTablesModel param)
 		{
-			return DataTable(SupportReader.AdminGetSupportCategoryDataTable(param));
+			return DataTable(await SupportReader.AdminGetSupportCategoryDataTable(param));
 		}
 
 		[HttpPost]
-		public ActionResult GetSupportFaq(DataTablesModel param)
+		public async Task<ActionResult> GetSupportFaq(DataTablesModel param)
 		{
-			return DataTable(SupportReader.AdminGetSupportFaqDataTable(param));
+			return DataTable(await SupportReader.AdminGetSupportFaqDataTable(param));
 		}
 
 		#endregion
@@ -336,9 +336,9 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetVoteItems(DataTablesModel param)
+		public async Task<ActionResult> GetVoteItems(DataTablesModel param)
 		{
-			return DataTable(VoteReader.AdminGetVoteDataTable(param));
+			return DataTable(await VoteReader.AdminGetVoteDataTable(param));
 		}
 
 		#endregion

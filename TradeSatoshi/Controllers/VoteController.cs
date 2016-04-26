@@ -32,27 +32,27 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult GetPaidVotes(DataTablesModel param)
+		public async Task<ActionResult> GetPaidVotes(DataTablesModel param)
 		{
-			return DataTable(VoteReader.GetVoteDataTable(param, VoteType.Paid));
+			return DataTable(await VoteReader.GetVoteDataTable(param, VoteType.Paid));
 		}
 
 		[HttpPost]
-		public ActionResult GetFreeVotes(DataTablesModel param)
+		public async Task<ActionResult> GetFreeVotes(DataTablesModel param)
 		{
-			return DataTable(VoteReader.GetVoteDataTable(param, VoteType.Free));
+			return DataTable(await VoteReader.GetVoteDataTable(param, VoteType.Free));
 		}
 
 		[HttpPost]
-		public ActionResult GetRejects(DataTablesModel param)
+		public async Task<ActionResult> GetRejects(DataTablesModel param)
 		{
-			return DataTable(VoteReader.GetRejectedDataTable(param));
+			return DataTable(await VoteReader.GetRejectedDataTable(param));
 		}
 
 		[HttpPost]
-		public ActionResult GetPending(DataTablesModel param)
+		public async Task<ActionResult> GetPending(DataTablesModel param)
 		{
-			return DataTable(VoteReader.GetPendingDataTable(param));
+			return DataTable(await VoteReader.GetPendingDataTable(param));
 		}
 
 

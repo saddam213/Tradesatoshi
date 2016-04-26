@@ -15,9 +15,9 @@ namespace TradeSatoshi.Common.Support
 		Task<SupportFaqModel> AdminGetSupportFaq(int id);
 		Task<SupportRequestModel> AdminGetSupportRequest(int requestId);
 		Task<SupportCategoryModel> AdminGetSupportCategory(int id);
-		DataTablesResponse AdminGetSupportFaqDataTable(DataTablesModel model);
-		DataTablesResponse AdminGetSupportCategoryDataTable(DataTablesModel model);
-		DataTablesResponse AdminGetSupportRequestDataTable(DataTablesModel model);
-		DataTablesResponse AdminGetSupportTicketDataTable(DataTablesModel model);
+		Task<DataTablesResponse> AdminGetSupportFaqDataTable(DataTablesModel model);
+		Task<DataTablesResponse> AdminGetSupportCategoryDataTable(DataTablesModel model);
+		Task<DataTablesResponse> AdminGetSupportRequestDataTable(DataTablesModel model);
+		Task<DataTablesResponse> AdminGetSupportTicketDataTable(DataTablesModel model);
 	}
 }

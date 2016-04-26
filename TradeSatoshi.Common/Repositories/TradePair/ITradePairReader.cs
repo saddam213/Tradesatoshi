@@ -9,6 +9,6 @@ namespace TradeSatoshi.Common.TradePair
 		Task<UpdateTradePairModel> GetTradePairUpdate(int tradePairId);
 		Task<TradePairModel> GetTradePair(int tradePairId);
 		Task<List<TradePairModel>> GetTradePairs();
-		DataTablesResponse GetTradePairDataTable(DataTablesModel model);
+		Task<DataTablesResponse> GetTradePairDataTable(DataTablesModel model);
 	}
 }
