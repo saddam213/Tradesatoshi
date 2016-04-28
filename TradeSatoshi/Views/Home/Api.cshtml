@@ -1,0 +1,201 @@
+﻿@{
+	var Domain = $"{Request.Url.Scheme}://{Request.Url.Authority}";
+
+	var GetCurrencies = Url.HttpRouteUrl("GetCurrencies", null);
+	var GetTicker = Url.HttpRouteUrl("GetTicker", new { market = "LTC_BTC" });
+	var GetMarketHistory = Url.HttpRouteUrl("GetMarketHistory", new { market = "LTC_BTC", count = 20 });
+	var GetMarketSummary = Url.HttpRouteUrl("GetMarketSummary", new { market = "LTC_BTC" });
+	var GetMarketSummaries = Url.HttpRouteUrl("GetMarketSummaries", null);
+	var GetOrderBook = Url.HttpRouteUrl("GetOrderBook", new { market = "LTC_BTC", type = "both", depth = 20 });
+}
+
+<h2>Public Api</h2>
+
+<div>
+	<h4>GetCurrencies</h4>
+	<a target="_blank" href="@GetCurrencies">@($"{Domain}{GetCurrencies}")</a>
+	<div>
+<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":[  
+      {  
+         "currency":"BOLI",
+         "currencyLong":"Bolivarcoin",
+         "minConfirmation":3,
+         "txFee":0.00000000,
+         "status":"OK"
+      },
+      {  
+         "currency":"BTC",
+         "currencyLong":"Bitcoin",
+         "minConfirmation":6,
+         "txFee":0.00000000,
+         "status":"OK"
+      }  
+    ]
+}
+</pre>
+	</div>
+</div>
+
+<div>
+	<h4>GetTicker</h4>
+	<a target="_blank" href="@GetTicker">@($"{Domain}{GetTicker}")</a>
+	<div>
+		<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":{  
+      "bid":0.01500000,
+      "ask":100.00000000,
+      "last":0.01000000,
+      "market":"LTC_BTC"
+   }
+}
+</pre>
+	</div>
+</div>
+
+<div>
+	<h4>GetMarketHistory</h4>
+	<a target="_blank" href="@GetMarketHistory">@($"{Domain}{GetMarketHistory}")</a>
+	<div>
+		<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":[{  
+         "id":512,
+         "timeStamp":"2016-04-28T01:34:02.397",
+         "quantity":0.00784797,
+         "price":0.01000000,
+         "orderType":"Buy",
+         "total":0.00007848
+      },
+      {  
+         "id":503,
+         "timeStamp":"2016-04-23T08:16:38.087",
+         "quantity":0.00134797,
+         "price":0.08555000,
+         "orderType":"Buy",
+         "total":0.00011532
+      },
+      {  
+         "id":502,
+         "timeStamp":"2016-04-23T08:16:34.91",
+         "quantity":0.00650000,
+         "price":0.07900000,
+         "orderType":"Buy",
+         "total":0.00051350
+      }]
+}
+</pre>
+	</div>
+</div>
+
+<div>
+	<h4>GetMarketSummary</h4>
+	<a target="_blank" href="@GetMarketSummary">@($"{Domain}{GetMarketSummary}")</a>
+	<div>
+		<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":{  
+      "market":"LTC_BTC",
+      "high":0.01000000,
+      "low":0.01000000,
+      "volume":0.00784797,
+      "baseVolume":0.00007848,
+      "last":0.01000000,
+      "bid":0.01500000,
+      "ask":100.00000000,
+      "openBuyOrders":2,
+      "openSellOrders":7
+   }
+}
+</pre>
+
+	</div>
+</div>
+
+<div>
+	<h4>GetMarketSummaries</h4>
+	<a target="_blank" href="@GetMarketSummaries">@($"{Domain}{GetMarketSummaries}")</a>
+	<div>
+		<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":[  
+      {  
+         "market":"TRAD_BTC",
+         "high":0.00000000,
+         "low":0.00000000,
+         "volume":0.00000000,
+         "baseVolume":0.00000000,
+         "last":0.00000000,
+         "bid":0.00000000,
+         "ask":0.00000000,
+         "openBuyOrders":0,
+         "openSellOrders":0
+      },
+      {  
+         "market":"BUMBA_BTC",
+         "high":0.00000000,
+         "low":0.00000000,
+         "volume":0.00000000,
+         "baseVolume":0.00000000,
+         "last":0.00000000,
+         "bid":0.00000000,
+         "ask":0.00000000,
+         "openBuyOrders":0,
+         "openSellOrders":0
+      }]
+}
+</pre>
+	</div>
+</div>
+
+<div>
+	<h4>GetOrderBook</h4>
+	<a target="_blank" href="@GetOrderBook">@($"{Domain}{GetOrderBook}")</a>
+	<div>
+		<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":{  
+      "buy":[  
+         {  
+            "quantity":0.00000000,
+            "rate":0.01500000
+         },
+         {  
+            "quantity":1.00000000,
+            "rate":0.00750000
+         }
+      ],
+      "sell":[  
+         {  
+            "quantity":0.00000000,
+            "rate":0.00756150
+         },
+         {  
+            "quantity":0.00000000,
+            "rate":0.00770000
+         },
+         {  
+            "quantity":0.00000000,
+            "rate":0.01000000
+         }
+      ]
+   }
+}
+</pre>
+	</div>
+</div>
+

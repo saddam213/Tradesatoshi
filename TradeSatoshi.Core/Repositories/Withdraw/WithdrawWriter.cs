@@ -6,6 +6,7 @@ using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Enums;
+using System.Linq;
 
 namespace TradeSatoshi.Core.Withdraw
 {
@@ -43,6 +44,43 @@ namespace TradeSatoshi.Core.Withdraw
 				context.Withdraw.Add(newWithdraw);
 				await context.SaveChangesAsync();
 				await AuditService.AuditUserCurrency(context, userId, model.CurrencyId);
+				return WriterResult<int>.SuccessResult(newWithdraw.Id);
+			}
+		}
+
+		public async Task<IWriterResult<int>> CreateApiWithdraw(string userId, string currency, string address, decimal amount)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var currencyEntity = await context.Currency.Where(w => w.Symbol == currency).FirstOrDefaultNoLockAsync();
+				if(currencyEntity == null)
+					return WriterResult<int>.ErrorResult("Currency not found.");
+
+				var auditResult = await AuditService.AuditUserCurrency(context, userId, currencyEntity.Id);
+				if (!auditResult.Success)
+					return WriterResult<int>.ErrorResult("Failed to audit balance.");
+
+				var balance = await context.Balance.Where(x => x.UserId == userId && x.CurrencyId == currencyEntity.Id).FirstOrDefaultNoLockAsync();
+				if (balance == null || amount > balance.Avaliable)
+					return WriterResult<int>.ErrorResult("Insufficient funds.");
+
+				var newWithdraw = new Entity.Withdraw
+				{
+					IsApi = true,
+					TimeStamp = DateTime.UtcNow,
+					TwoFactorToken = string.Empty,
+					Address = address,
+					CurrencyId = currencyEntity.Id,
+					Amount = amount,
+					Fee = currencyEntity.WithdrawFee,
+					WithdrawType = WithdrawType.Normal,
+					WithdrawStatus = WithdrawStatus.Pending,
+					UserId = userId
+				};
+
+				context.Withdraw.Add(newWithdraw);
+				await context.SaveChangesAsync();
+				await AuditService.AuditUserCurrency(context, userId, currencyEntity.Id);
 				return WriterResult<int>.SuccessResult(newWithdraw.Id);
 			}
 		}

@@ -89,6 +89,8 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.ToUser);
 			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.TradePair);
 			modelBuilder.Entity<TradeHistory>().HasRequired(p => p.Currency);
+			modelBuilder.Entity<TradeHistory>().Property(x => x.Amount).HasPrecision(38, 8);
+			modelBuilder.Entity<TradeHistory>().Property(x => x.Rate).HasPrecision(38, 8);
 			modelBuilder.Entity<Trade>().HasRequired(p => p.User).WithMany(b => b.Trade).HasForeignKey(p => p.UserId);
 
 			modelBuilder.Entity<TransferHistory>().HasRequired(p => p.User);

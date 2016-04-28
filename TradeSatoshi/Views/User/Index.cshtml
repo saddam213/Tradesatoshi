@@ -43,6 +43,10 @@
 								@{Html.RenderPartial("_ProfilePartial", Model.UserProfile);}
 							</div>
 
+							<div id="apiSettingsTarget">
+								@{Html.RenderAction("GetUserApiSettings");}
+							</div>
+
 						</div>
 					</div>
 				</div>

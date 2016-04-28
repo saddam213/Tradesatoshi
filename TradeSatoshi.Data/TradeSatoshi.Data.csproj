@@ -145,6 +145,14 @@
     <Compile Include="Migrations\201601091109423_Chat.Designer.cs">
       <DependentUpon>201601091109423_Chat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604271157183_TradePairName.cs" />
+    <Compile Include="Migrations\201604271157183_TradePairName.Designer.cs">
+      <DependentUpon>201604271157183_TradePairName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604280920536_ApiKetSecret.cs" />
+    <Compile Include="Migrations\201604280920536_ApiKetSecret.Designer.cs">
+      <DependentUpon>201604280920536_ApiKetSecret.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -230,6 +238,15 @@
     <EmbeddedResource Include="Migrations\201601091109423_Chat.resx">
       <DependentUpon>201601091109423_Chat.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604271157183_TradePairName.resx">
+      <DependentUpon>201604271157183_TradePairName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604280920536_ApiKetSecret.resx">
+      <DependentUpon>201604280920536_ApiKetSecret.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

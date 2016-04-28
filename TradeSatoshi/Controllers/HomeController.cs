@@ -37,6 +37,11 @@ namespace TradeSatoshi.Web.Controllers
 			return View();
 		}
 
+		public ActionResult Api()
+		{
+			return View();
+		}
+
 
 		public async Task<ActionResult> Contact()
 		{

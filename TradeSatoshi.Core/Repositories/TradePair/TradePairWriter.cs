@@ -19,15 +19,20 @@ namespace TradeSatoshi.Core.TradePair
 				if (existing.Any())
 					return WriterResult<bool>.ErrorResult("{0} already exists", existing.Any(x => x.CurrencyId1 == model.CurrencyId1) ? "TradePair" : "Inverse TradePair");
 
-				var currencies = await context.Currency.Where(x => x.Id == model.CurrencyId1 || x.Id == model.CurrencyId2).ToListAsync();
-				if (currencies.Count != 2)
-					return WriterResult<bool>.ErrorResult("Currency '{0}' not found", currencies.Any(x => x.Id == model.CurrencyId1) ? model.CurrencyId2 : model.CurrencyId1);
+				var currency = await context.Currency.Where(x => x.Id == model.CurrencyId1).FirstOrDefaultNoLockAsync();
+				if (currency == null)
+					return WriterResult<bool>.ErrorResult("Currency '{0}' not found", model.CurrencyId1);
+
+				var baseCurrency = await context.Currency.Where(x => x.Id == model.CurrencyId2).FirstOrDefaultNoLockAsync();
+				if (baseCurrency == null)
+					return WriterResult<bool>.ErrorResult("Currency '{0}' not found", model.CurrencyId2);
 
 				var entity = new Entity.TradePair
 				{
 					CurrencyId1 = model.CurrencyId1,
 					CurrencyId2 = model.CurrencyId2,
 					Status = model.Status,
+					Name = $"{currency.Symbol}_{baseCurrency.Symbol}"
 				};
 
 				context.TradePair.Add(entity);
@@ -40,7 +45,6 @@ namespace TradeSatoshi.Core.TradePair
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-
 				var tradePair = await context.TradePair.FirstOrDefaultAsync(x => x.Id == model.Id);
 				if (tradePair == null)
 					return WriterResult<bool>.ErrorResult("TradePair '{0}' not found");

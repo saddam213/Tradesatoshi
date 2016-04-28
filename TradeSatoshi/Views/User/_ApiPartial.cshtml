@@ -1,0 +1,42 @@
+﻿@model TradeSatoshi.Common.Services.EncryptionService.UserApiModel
+@{
+
+}
+
+@using (Ajax.BeginForm("UpdateUserApiSettings", "User", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "apiSettingsTarget" }, new { @class = "form-horizontal", role = "form" }))
+{
+	@Html.AntiForgeryToken()
+	<h4>@Html.Resource("Api Settings")</h4>
+	<hr />
+	@Html.ValidationSummary(true)
+
+	<div class="col-md-10">
+		@Html.CheckBoxFor(model => model.IsEnabled)
+		@Html.LabelFor(model => model.IsEnabled)
+	</div>
+	<button id="newApiKey" class="btn btn-default btn-sm" type="button" data-action="@Url.Action("GetNewApiKey")">New Api Key</button>
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.Key, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.Key, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.Key)
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.Secret, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.Secret, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.Secret)
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="@Html.Resource("Update Api")" cla class="btn btn-default" />
+		</div>
+	</div>
+
+}
+
+

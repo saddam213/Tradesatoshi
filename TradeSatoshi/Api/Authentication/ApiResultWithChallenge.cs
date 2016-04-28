@@ -13,7 +13,7 @@ namespace TradeSatoshi.Web.Api.Authentication
 {
 	public class ApiResultWithChallenge : IHttpActionResult
 	{
-		private readonly string _authenticationScheme = "amx";
+		private readonly string _authenticationScheme = "";
 		private readonly IHttpActionResult _next;
 
 		public ApiResultWithChallenge(IHttpActionResult next)

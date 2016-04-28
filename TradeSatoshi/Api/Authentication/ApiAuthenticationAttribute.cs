@@ -122,19 +122,15 @@ namespace TradeSatoshi.Web.Api.Authentication
 				return false;
 			}
 
-			string requestContentBase64String = "";
+			string requestContentBase64String = Convert.ToBase64String(await request.Content.ReadAsByteArrayAsync());
 			string requestUri = HttpUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower());
 			string requestHttpMethod = request.Method.Method;
-			byte[] hash = await ComputeHash(request.Content);
-			if (hash != null)
-			{
-				requestContentBase64String = Convert.ToBase64String(hash);
-			}
+		
 
-			string data = String.Format("{0}{1}{2}{3}{4}", apiAuthKey.Key, requestHttpMethod, requestUri, nonce, requestContentBase64String);
+			string data = string.Format("{0}{1}{2}{3}{4}", apiAuthKey.Key, requestHttpMethod, requestUri, nonce, requestContentBase64String);
 			var secretKeyBytes = Convert.FromBase64String(apiAuthKey.Secret);
 			byte[] signature = Encoding.UTF8.GetBytes(data);
-			using (HMACSHA256 hmac = new HMACSHA256(secretKeyBytes))
+			using (var hmac = new HMACSHA512(secretKeyBytes))
 			{
 				byte[] signatureBytes = hmac.ComputeHash(signature);
 				return (incomingBase64Signature.Equals(Convert.ToBase64String(signatureBytes), StringComparison.Ordinal));
@@ -155,25 +151,6 @@ namespace TradeSatoshi.Web.Api.Authentication
 			}
 			MemoryCache.Default.Add(key + nonce, "", DateTimeOffset.UtcNow.AddMinutes(_requestMaxAgeInSeconds));
 			return false;
-		}
-
-		/// <summary>
-		/// Computes the hash.
-		/// </summary>
-		/// <param name="httpContent">Content of the HTTP.</param>
-		/// <returns></returns>
-		private static async Task<byte[]> ComputeHash(HttpContent httpContent)
-		{
-			using (var md5 = MD5.Create())
-			{
-				byte[] hash = null;
-				var content = await httpContent.ReadAsByteArrayAsync();
-				if (content.Length != 0)
-				{
-					hash = md5.ComputeHash(content);
-				}
-				return hash;
-			}
 		}
 	}
 }

@@ -3,6 +3,7 @@ using hbehr.recaptcha;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Newtonsoft.Json.Serialization;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.DependencyInjection;
 
@@ -15,6 +16,7 @@ namespace TradeSatoshi.Web
 			DependencyRegistrar.Register();
 			AreaRegistration.RegisterAllAreas();
 			GlobalConfiguration.Configure(WebApiConfig.Register);
+			GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			BundleConfig.RegisterBundles(BundleTable.Bundles);

@@ -319,7 +319,7 @@
     <Content Include="Views\Admin\_DepositsPartial.cshtml" />
     <Content Include="Views\Admin\_WithdrawalsPartial.cshtml" />
     <Content Include="Views\Admin\_StatisticsPartial.cshtml" />
-    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Home\Api.cshtml" />
     <Content Include="Views\Admin\UpdateUserModal.cshtml" />
     <Content Include="Views\Admin\UpdateRoleModal.cshtml" />
     <Content Include="Views\Account\PasswordReset.cshtml" />
@@ -354,6 +354,7 @@
     <Compile Include="Api\Authentication\ApiResultWithChallenge.cs" />
     <Compile Include="Api\Authentication\ApiKeyStore.cs" />
     <Compile Include="Api\Authentication\UserApiAuthKey.cs" />
+    <Compile Include="Api\Controllers\PrivateController.cs" />
     <Compile Include="Api\Controllers\PublicController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -454,6 +455,7 @@
     <Content Include="Views\Orders\Index.cshtml" />
     <Content Include="Views\Status\Index.cshtml" />
     <Content Include="Views\History\_TradePartial.cshtml" />
+    <Content Include="Views\User\_ApiPartial.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

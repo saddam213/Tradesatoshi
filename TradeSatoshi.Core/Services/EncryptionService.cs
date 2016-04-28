@@ -27,7 +27,7 @@ namespace TradeSatoshi.Core.Services
 			var plainTextBytes = Encoding.UTF8.GetBytes(input);
 			using (var password = new PasswordDeriveBytes(passPhrase, null))
 			{
-				var keyBytes = password.GetBytes(Keysize/8);
+				var keyBytes = password.GetBytes(Keysize / 8);
 				using (var symmetricKey = new RijndaelManaged())
 				{
 					symmetricKey.Mode = CipherMode.CBC;
@@ -51,7 +51,7 @@ namespace TradeSatoshi.Core.Services
 			var cipherTextBytes = Convert.FromBase64String(input);
 			using (var password = new PasswordDeriveBytes(passPhrase, null))
 			{
-				var keyBytes = password.GetBytes(Keysize/8);
+				var keyBytes = password.GetBytes(Keysize / 8);
 				using (var symmetricKey = new RijndaelManaged())
 				{
 					symmetricKey.Mode = CipherMode.CBC;
@@ -68,5 +68,26 @@ namespace TradeSatoshi.Core.Services
 				}
 			}
 		}
+
+
+		public EncryptionKeyPair GenerateEncryptionKeyPair()
+		{
+			using (var cryptoProvider = new RNGCryptoServiceProvider())
+			{
+				var key = Guid.NewGuid().ToString("N");
+				byte[] secretKeyByteArray = new byte[32]; //256 bit
+				cryptoProvider.GetBytes(secretKeyByteArray);
+				var secret = Convert.ToBase64String(secretKeyByteArray);
+				var result = new EncryptionKeyPair
+				{
+					PublicKey = key,
+					PrivateKey = secret
+				};
+
+				return result;
+			}
+		}
 	}
+
+
 }
