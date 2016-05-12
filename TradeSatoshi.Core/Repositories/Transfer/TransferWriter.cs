@@ -11,7 +11,6 @@ namespace TradeSatoshi.Core.Transfer
 
 		public async Task<IWriterResult<bool>> CreateTransfer(CreateTransferModel model)
 		{
-			var result = await TradeService.QueueTradeItem(model);
 			return WriterResult<bool>.SuccessResult();
 		}
 	}

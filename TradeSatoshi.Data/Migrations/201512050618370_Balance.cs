@@ -18,10 +18,10 @@ namespace TradeSatoshi.Data.Migrations
             AlterColumn("dbo.Withdraw", "UserId", c => c.String(nullable: false, maxLength: 128));
             CreateIndex("dbo.Balance", "UserId");
             CreateIndex("dbo.Deposit", "UserId");
-            CreateIndex("dbo.Withdraw", "UserId");
-            AddForeignKey("dbo.Balance", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: true);
-            AddForeignKey("dbo.Deposit", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: true);
-            AddForeignKey("dbo.Withdraw", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: true);
+			CreateIndex("dbo.Withdraw", "UserId");
+            AddForeignKey("dbo.Balance", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: false);
+            AddForeignKey("dbo.Deposit", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: false);
+            AddForeignKey("dbo.Withdraw", "UserId", "dbo.AspNetUsers", "Id", cascadeDelete: false);
         }
         
         public override void Down()

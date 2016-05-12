@@ -9,10 +9,12 @@ using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Logging;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Common.Services.NotificationService;
+using TradeSatoshi.Common.Services.TradeNotificationService;
 using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Core.Logger;
+using TradeSatoshi.Data;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
@@ -22,29 +24,46 @@ namespace TradeSatoshi.Core.Services
 {
 	public class TradeService : ITradeService
 	{
-		private static readonly ProcessorQueue<ITradeItem, ITradeResponse> TradeProcessor =
-			new ProcessorQueue<ITradeItem, ITradeResponse>(new TradeService(new DatabaseLogger(new DataContextFactory()), new DataContextFactory(), new AuditService(), new NotificationService()).ProcessTradeItem);
+		private static readonly ProcessorQueue<ITradeItem, ITradeResponse> TradeProcessor = new ProcessorQueue<ITradeItem, ITradeResponse>(TradeService.Processor());
 
+		private static Func<ITradeItem, Task<ITradeResponse>> Processor()
+		{
+			var service = new TradeService();
+			return service.ProcessTradeItem;
+		}
 		public ILogger Log { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 		public IAuditService AuditService { get; set; }
+
 		public INotificationService NotificationService { get; set; }
+		public ITradeNotificationService TradeNotificationService { get; set; }
 
 		public TradeService()
 		{
+			DataContextFactory = new DataContextFactory();
+			Log = new DatabaseLogger(DataContextFactory);
+			AuditService = new AuditService();
+
+			NotificationService = new NotificationService();
+			TradeNotificationService = new TradeNotificationService();
 		}
 
-		public TradeService(ILogger log, IDataContextFactory contextFactory, IAuditService auditService, INotificationService notificationService)
+		public async Task<CreateTradeResponse> QueueTrade(CreateTradeModel tradeItem)
 		{
-			Log = log;
-			AuditService = auditService;
-			DataContextFactory = contextFactory;
-			NotificationService = notificationService;
+			var result = await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			return result as CreateTradeResponse;
 		}
 
-		public async Task<ITradeResponse> QueueTradeItem(ITradeItem tradeItem)
+		public async Task<CancelTradeResponse> QueueCancel(CancelTradeModel tradeItem)
 		{
-			return await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			var result = await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			return result as CancelTradeResponse;
+		}
+
+		public async Task<CreateTransferResponse> QueueTransfer(CreateTransferModel tradeItem)
+		{
+			var result = await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			return result as CreateTransferResponse;
 		}
 
 		private async Task<ITradeResponse> ProcessTradeItem(ITradeItem tradeItem)
@@ -77,75 +96,108 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
-						var user = await context.Users.FindAsync(tradeItem.UserId);
-						if (user == null)
-						{
-							throw new Exception("User does not exist");
-						}
+						var userBalance = await context.Balance
+							.Include(b => b.User)
+							.Include(b => b.Currency)
+							.FirstOrDefaultAsync(b => b.UserId == tradeItem.UserId && b.CurrencyId == tradeItem.CurrencyId);
+						if (userBalance == null || tradeItem.Amount.IncludingFees(userBalance.Currency.TransferFee) > userBalance.Avaliable)
+							throw new TradeException("Insufficient funds for transfer.");
 
-						var toUser = await context.Users.FindAsync(tradeItem.ToUser);
+						var toUser = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
 						if (toUser == null)
-						{
-							throw new Exception("Receiver does not exist");
-						}
-
-						var currency = await context.Currency.FindAsync(tradeItem.CurrencyId);
-						if (currency == null)
-						{
-							throw new Exception("Currency does not exist");
-						}
+							throw new TradeException("Reciver does not exist");
 
 						//Audit the user balance for currency
-						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
-						{
-							throw new Exception($"Failed to audit user balance, Currency: {currency.Symbol}");
-						}
-
-						var userBalance = await context.Balance.FirstOrDefaultAsync(b => b.UserId == tradeItem.UserId && b.CurrencyId == tradeItem.CurrencyId);
-						if (userBalance == null || userBalance.Avaliable < tradeItem.Amount.ExcludingFees(currency.TransferFee))
-						{
-							throw new Exception("Insufficient funds for transfer.");
-						}
+						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, userBalance.CurrencyId))
+							throw new Exception($"Failed to audit user balance, Currency: {userBalance.Currency.Symbol}");
 
 						var transfer = new TransferHistory
 						{
 							Amount = tradeItem.Amount,
-							Fee = tradeItem.Amount.GetFees(currency.TransferFee),
-							CurrencyId = currency.Id,
+							Fee = tradeItem.Amount.GetFees(userBalance.Currency.TransferFee),
+							CurrencyId = tradeItem.CurrencyId,
 							Timestamp = DateTime.UtcNow,
 							ToUserId = toUser.Id,
 							TransferType = TransferType.User,
-							UserId = user.Id,
+							UserId = tradeItem.UserId,
 						};
 
 						context.TransferHistory.Add(transfer);
 						await context.SaveChangesAsync();
 
-						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, currency.Id))
-						{
-							throw new Exception($"Failed to audit User balance, Currency: {currency.Symbol}");
-						}
 
-						if (!await AuditUserBalanceAsync(context, tradeItem.ToUser, currency.Id))
+						var userNotifications = new List<NotifyUser>();
+						var balanceNotifications = new List<NotifyBalanceUpdate>();
+						var senderAudit = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
+						if (!senderAudit.Success)
+							throw new Exception($"Failed to audit User balance, Currency: {userBalance.Currency.Symbol}");
+						balanceNotifications.Add(new NotifyBalanceUpdate
 						{
-							throw new Exception($"Failed to audit ToUser balance, Currency: {currency.Symbol}");
-						}
+							CurrencyId = senderAudit.CurrencyId,
+							Symbol = senderAudit.Symbol,
+							HeldForTrades = senderAudit.HeldForTrades,
+							PendingWithdraw = senderAudit.PendingWithdraw,
+							Total = senderAudit.Total,
+							Unconfirmed = senderAudit.Unconfirmed,
+							UserId = senderAudit.UserId,
+							Avaliable = senderAudit.Avaliable
+						});
+						userNotifications.Add(new NotifyUser
+						{
+							UserId = tradeItem.UserId,
+							Type = NotificationType.Info,
+							Title = "New Transfer",
+							Message = $"Sent {transfer.Amount} {userBalance.Currency.Symbol} to {toUser.UserName}"
+						});
+
+						var receiverAudit = await AuditService.AuditUserCurrency(context, toUser.Id, tradeItem.CurrencyId);
+						if (!receiverAudit.Success)
+							throw new Exception($"Failed to audit ToUser balance, Currency: {userBalance.Currency.Symbol}");
+						balanceNotifications.Add(new NotifyBalanceUpdate
+						{
+							CurrencyId = receiverAudit.CurrencyId,
+							Symbol = receiverAudit.Symbol,
+							HeldForTrades = receiverAudit.HeldForTrades,
+							PendingWithdraw = receiverAudit.PendingWithdraw,
+							Total = receiverAudit.Total,
+							Unconfirmed = receiverAudit.Unconfirmed,
+							UserId = receiverAudit.UserId,
+							Avaliable = receiverAudit.Avaliable
+						});
+						userNotifications.Add(new NotifyUser
+						{
+							UserId = toUser.Id,
+							Type = NotificationType.Info,
+							Title = "New Transfer",
+							Message = $"Received {transfer.Amount} {userBalance.Currency.Symbol} from {userBalance.User.UserName}"
+						});
 
 						transaction.Commit();
+
+						await TradeNotificationService.SendNotification(userNotifications);
+						await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
+
 						return new CreateTransferResponse();
+					}
+					catch (TradeException ex)
+					{
+						Log.Warn("TradeService", "Rollback database Transaction");
+						transaction.Rollback();
+						Log.Warn("TradeService", ex.Message);
+						return new CreateTransferResponse { Error = ex.Message };
 					}
 					catch (Exception ex)
 					{
 						Log.Error("TradeService", "Rollback databaseTransaction");
-						transaction.Rollback();
+						transaction.TryRollback();
 						Log.Exception("TradeService", ex);
 					}
 				}
 			}
-			return new CreateTransferResponse("Failed to create transfer.");
+			return new CreateTransferResponse { Error = "Failed to create transfer." };
 		}
 
-		private async Task<ITradeResponse> CancelTrade(CancelTradeModel tradeItem)
+		private async Task<CancelTradeResponse> CancelTrade(CancelTradeModel tradeItem)
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
@@ -153,156 +205,126 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
+						var audits = new HashSet<int>();
+						var notifications = new List<INotify>();
 						var user = await context.Users.FindAsync(tradeItem.UserId);
 						if (user == null)
-						{
 							throw new Exception("User does not exist");
-						}
 
-						var audits = new HashSet<int>();
-						var response = new CancelTradeResponse();
-						var notifications = new TradeNotifier(tradeItem.TradePairId, NotificationService);
-						if (tradeItem.CancelType == CancelTradeType.Trade)
+						var cancelMessage = "Successfully canceled all orders";
+						var orderQuery = context.Trade
+							.Include(x => x.TradePair)
+							.Where(x => x.UserId == user.Id && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending));
+						switch (tradeItem.CancelType)
 						{
-							Log.Info("TradeService", "Processing cancel trade request. UserId: {0}, CancelType: Trade, TradeId: {1}", tradeItem.UserId, tradeItem.TradeId);
-							var trade = await context.Trade.FirstOrDefaultAsync(x => x.Id == tradeItem.TradeId && x.UserId == tradeItem.UserId);
-							if (trade == null)
-							{
-								throw new Exception($"Trade #{tradeItem.TradeId} does not exist");
-							}
-
-							var tradePair = await context.TradePair
-								.Include(t => t.Currency1)
-								.Include(t => t.Currency2)
-								.FirstOrDefaultAsync(x => x.Id == trade.TradePairId);
-							if (tradePair == null)
-							{
-								throw new Exception("TradePair does not exist");
-							}
-
-							Log.Info("TradeService", "Canceling trade. UserId: {0}, TradeId: {1}", tradeItem.UserId, trade.Id);
-							trade.Status = TradeStatus.Canceled;
-							audits.Add(trade.TradeType == TradeType.Buy ? tradePair.CurrencyId2 : tradePair.CurrencyId1);
-
-							response.AddCanceledOrder(trade.Id);
-
-							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.ToString());
-							notifications.AddUserNotification(trade.UserId, "Canceled {0} Order - {2:F8}{3} @ {4:F8}{5}", trade.TradeType, trade.Id, trade.Amount, tradePair.Currency1.Symbol, trade.Rate, tradePair.Currency2.Symbol);
-							notifications.AddDataTableNotification(trade.TradeType == TradeType.Buy ? NotificationConstants.DataTable_BuyOrders : NotificationConstants.DataTable_SellOrders, tradePair.Id);
-							notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, tradePair.Id);
-
-							//Cache.InvalidateTradeData(tradePair.Id);
+							case TradeCancelType.Single:
+								orderQuery = orderQuery.Where(x => x.Id == tradeItem.OrderId.Value);
+								cancelMessage = $"Successfully canceled order #{tradeItem.OrderId.Value}";
+								break;
+							case TradeCancelType.Market:
+								orderQuery = orderQuery.Where(x => x.TradePair.Name == tradeItem.Market);
+								cancelMessage = $"Successfully canceled {tradeItem.Market} orders";
+								break;
+							case TradeCancelType.MarketBuys:
+								orderQuery = orderQuery.Where(x => x.TradePair.Name == tradeItem.Market && x.TradeType == TradeType.Buy);
+								cancelMessage = $"Successfully canceled {tradeItem.Market} buy orders";
+								break;
+							case TradeCancelType.MarketSells:
+								orderQuery = orderQuery.Where(x => x.TradePair.Name == tradeItem.Market && x.TradeType == TradeType.Sell);
+								cancelMessage = $"Successfully canceled {tradeItem.Market} sell orders";
+								break;
+							case TradeCancelType.AllBuys:
+								orderQuery = orderQuery.Where(x => x.TradeType == TradeType.Buy);
+								cancelMessage = "Successfully canceled all buy orders";
+								break;
+							case TradeCancelType.AllSells:
+								orderQuery = orderQuery.Where(x => x.TradeType == TradeType.Sell);
+								cancelMessage = "Successfully canceled all sell orders";
+								break;
+							default:
+								break;
 						}
-						else if (tradeItem.CancelType == CancelTradeType.TradePair)
+
+						notifications.Add(new NotifyUser
 						{
-							Log.Info("TradeService", "Processing cancel trade request. UserId: {0}, CancelType: TradePair, TradePairId: {1}", tradeItem.UserId, tradeItem.TradePairId);
+							UserId = user.Id,
+							Type = NotificationType.Success,
+							Title = "Trade Cancel",
+							Message = cancelMessage
+						});
 
-							var tradePair = await context.TradePair
-								.Include(t => t.Currency1)
-								.Include(t => t.Currency2)
-								.FirstOrDefaultAsync(x => x.Id == tradeItem.TradePairId);
-							if (tradePair == null)
-							{
-								throw new Exception("TradePair does not exist");
-							}
-
-							var trades = await context.Trade
-								.Where(o => o.UserId == tradeItem.UserId && o.TradePairId == tradeItem.TradePairId && (o.Status == TradeStatus.Partial || o.Status == TradeStatus.Pending))
-								.ToListAsync();
-							if (trades.IsNullOrEmpty())
-							{
-								throw new Exception("No trades found to cancel for tradepair.");
-							}
-
-							foreach (var trade in trades)
-							{
-								Log.Info("TradeService", "Canceling trade. UserId: {0}, TradeId: {1}", tradeItem.UserId, trade.Id);
-								trade.Status = TradeStatus.Canceled;
-								response.AddCanceledOrder(trade.Id);
-								notifications.AddUserNotification(trade.UserId, "Canceled {0} Trade #{1}", trade.TradeType, trade.Id);
-							}
-							audits.Add(tradePair.CurrencyId1);
-							audits.Add(tradePair.CurrencyId2);
-
-							if (trades.Any(x => x.TradeType == TradeType.Buy))
-								notifications.AddDataTableNotification(NotificationConstants.DataTable_BuyOrders, tradePair.Id);
-
-							if (trades.Any(x => x.TradeType == TradeType.Sell))
-								notifications.AddDataTableNotification(NotificationConstants.DataTable_SellOrders, tradePair.Id);
-
-							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.ToString());
-							notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, tradePair.Id);
-							//Cache.InvalidateTradeData(tradePair.Id);
-						}
-						else if (tradeItem.CancelType == CancelTradeType.All)
+						//var orderNotifications = new List<NotifyOrderBookUpdate>();
+						//var openOrderNotifications = new List<NotifyOpenOrderUserUpdate>();
+						var orders = await orderQuery.ToListAsync();
+						foreach (var order in orders)
 						{
-							Log.Info("TradeService", "Processing cancel trade request. UserId: {0}, CancelType: All", tradeItem.UserId);
+							audits.Add(order.TradePair.CurrencyId1);
+							audits.Add(order.TradePair.CurrencyId2);
+							order.Status = TradeStatus.Canceled;
 
-							var trades = await context.Trade
-								.Include(t => t.TradePair)
-								.Where(o => o.UserId == tradeItem.UserId && (o.Status == TradeStatus.Partial || o.Status == TradeStatus.Pending))
-								.ToListAsync();
-							if (trades.IsNullOrEmpty())
+							// Notify orderbook of open order cancel
+							notifications.Add(new NotifyOrderBookUpdate
 							{
-								throw new Exception("No trades found to cancel for tradepair.");
-							}
+								Action = "Cancel",
+								Type = order.TradeType.ToString(),
+								Market = order.TradePair.Name,
+								TradePairId = order.TradePairId,
+								Amount = order.Remaining,
+								Price = order.Rate
+							});
 
-							Log.Info("TradeService", "Canceling all trades... TradeCount: {0}", trades.Count);
-
-							foreach (var group in trades.GroupBy(o => o.TradePairId))
+							// Notify user of open order cancel
+							notifications.Add(new NotifyOpenOrderUserUpdate
 							{
-								foreach (var trade in group)
-								{
-									Log.Info("TradeService", "Canceling trade. UserId: {0}, TradeId: {1}", tradeItem.UserId, trade.Id);
-									trade.Status = TradeStatus.Canceled;
-									response.AddCanceledOrder(trade.Id);
-									notifications.AddUserNotification(trade.UserId, "Canceled {0} Trade #{1}", trade.TradeType, trade.Id);
-									audits.Add(trade.TradePair.CurrencyId1);
-									audits.Add(trade.TradePair.CurrencyId2);
-								}
-
-								if (group.Any(x => x.TradeType == TradeType.Buy))
-									notifications.AddDataTableNotification(NotificationConstants.DataTable_BuyOrders, group.Key);
-
-								if (group.Any(x => x.TradeType == TradeType.Sell))
-									notifications.AddDataTableNotification(NotificationConstants.DataTable_SellOrders, group.Key);
-
-								notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, group.Key.ToString());
-								notifications.AddUserDataTableNotification(tradeItem.UserId, NotificationConstants.DataTable_UserOpenOrders, group.Key);
-							}
+								Action = "Cancel",
+								UserId = user.Id,
+								OrderId = order.Id,
+								TradePairId = order.TradePairId
+							});
 						}
 
-
-						// Submit changes to context
-						Log.Debug("TradeService", "Submitting context changes...");
+						// Save changes
 						await context.SaveChangesAsync();
 
-
+						//var balanceNotifications = new List<NotifyBalanceUpdate>();
 						//Audit the currency associated with the canceled trade
 						foreach (var auditCurrency in audits)
 						{
-							if (!await AuditUserBalanceAsync(context, tradeItem.UserId, auditCurrency, notifications))
-							{
+							var auditResult = await AuditService.AuditUserCurrency(context, user.Id, auditCurrency);
+							if (!auditResult.Success)
 								throw new Exception("Failed to audit user balance.");
-							}
+
+							notifications.Add(new NotifyBalanceUpdate
+							{
+								CurrencyId = auditResult.CurrencyId,
+								Symbol = auditResult.Symbol,
+								HeldForTrades = auditResult.HeldForTrades,
+								PendingWithdraw = auditResult.PendingWithdraw,
+								Total = auditResult.Total,
+								Unconfirmed = auditResult.Unconfirmed,
+								UserId = auditResult.UserId,
+								Avaliable = auditResult.Avaliable
+							});
 						}
 
 						transaction.Commit();
 
-						await notifications.SendNotificationsAsync();
-
-						return response;
+						await TradeNotificationService.SendNotificationCollection(notifications);
+						//await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
+						//await TradeNotificationService.SendOrderBookUpdate(orderNotifications);
+						//await TradeNotificationService.SendOpenOrderUserUpdate(openOrderNotifications);
 					}
 					catch (Exception ex)
 					{
 						Log.Error("TradeService", "Rollback databaseTransaction");
-						transaction.Rollback();
+						transaction.TryRollback();
 						Log.Exception("TradeService", ex);
 					}
 				}
 			}
-			return null;
+			return new CancelTradeResponse();
 		}
+
 
 		private async Task<ITradeResponse> CreateTrade(CreateTradeModel tradeRequest)
 		{
@@ -314,14 +336,18 @@ namespace TradeSatoshi.Core.Services
 					{
 						Log.Info("TradeService", "Processing trade request. UserId: {0}, TradeType: {1}, TradePairId: {2}, Amount: {3:F8}, Rate: {4:F8}", tradeRequest.UserId, tradeRequest.TradeType, tradeRequest.TradePairId, tradeRequest.Amount, tradeRequest.Rate);
 						var response = new CreateTradeResponse();
-						var notifications = new TradeNotifier(tradeRequest.TradePairId, NotificationService);
+						var notifications = new List<INotify>();
+						//var userNotifications = new List<NotifyUser>();
+						//var orderNotifications = new List<NotifyOrderBookUpdate>();
+						//var openOrderNotifications = new List<NotifyOpenOrderUserUpdate>();
+						//var balanceNotifications = new List<NotifyBalanceUpdate>();
+						//var tradeHistoryNotifications = new List<NotifyTradeHistoryUpdate>();
+						//var userTradeHistoryNotifications = new List<NotifyTradeUserHistoryUpdate>();
 
 						var tradeType = tradeRequest.TradeType;
 						var user = await context.Users.FindAsync(tradeRequest.UserId);
 						if (user == null)
-						{
 							throw new Exception("User not found.");
-						}
 
 						// Get or cache tradepair
 						var tradePair = await context.TradePair
@@ -329,9 +355,7 @@ namespace TradeSatoshi.Core.Services
 							.Include(t => t.Currency2)
 							.FirstOrDefaultAsync(x => x.Id == tradeRequest.TradePairId);
 						if (tradePair == null)
-						{
 							throw new Exception("Market not found.");
-						}
 
 						if (tradePair.Status != TradePairStatus.OK)
 						{
@@ -345,39 +369,24 @@ namespace TradeSatoshi.Core.Services
 						int tradeCurrency = tradeRequest.TradeType == TradeType.Buy ? tradePair.CurrencyId2 : tradePair.CurrencyId1;
 						decimal tradeRate = Math.Round(tradeRequest.Rate, 8);
 						decimal tradeAmount = Math.Round(tradeRequest.Amount, 8);
-						decimal tradeTotal = tradeRequest.TradeType == TradeType.Buy ? (tradeAmount*tradeRate).IncludingFees(baseCurency.TradeFee) : tradeAmount;
-						decimal totalTradeAmount = tradeAmount*tradeRate;
+						decimal tradeTotal = tradeRequest.TradeType == TradeType.Buy ? (tradeAmount * tradeRate).IncludingFees(baseCurency.TradeFee) : tradeAmount;
+						decimal totalTradeAmount = tradeAmount * tradeRate;
 						if (totalTradeAmount <= baseCurency.MinBaseTrade)
-						{
-							throw new Exception($"Invalid trade amount, Minumim total trade is {baseCurency.MinBaseTrade} {baseCurency.Symbol}.");
-						}
+							throw new TradeException($"Invalid trade amount, Minumim total trade is {baseCurency.MinBaseTrade} {baseCurency.Symbol}.");
 
 						if (tradeAmount >= 1000000000 || totalTradeAmount >= 1000000000)
-						{
-							throw new Exception("Invalid trade amount, Maximum single trade is 1000000000 coins");
-						}
+							throw new TradeException("Invalid trade amount, Maximum single trade is 1000000000 coins");
 
 						if (tradeRate < 0.00000001m)
-						{
-							throw new Exception($"Invalid trade price, minimum price is 0.00000001 {baseCurency.Symbol}");
-						}
+							throw new TradeException($"Invalid trade price, minimum price is 0.00000001 {baseCurency.Symbol}");
 
 						if (tradeRate > 1000000000)
-						{
-							throw new Exception($"Invalid trade price, maximum price is 1000000000 {baseCurency.Symbol}");
-						}
+							throw new TradeException($"Invalid trade price, maximum price is 1000000000 {baseCurency.Symbol}");
 
 						//Audit the user balance for currency
-						if (!await AuditUserBalanceAsync(context, tradeRequest.UserId, tradeCurrency))
-						{
-							throw new Exception($"Failed to audit user balance, Currency: {tradeCurrency}");
-						}
-
-						var tradeRequestBalance = await context.Balance.FirstOrDefaultAsync(b => b.UserId == tradeRequest.UserId && b.CurrencyId == tradeCurrency);
-						if (tradeRequestBalance == null || tradeRequestBalance.Avaliable < tradeTotal)
-						{
-							throw new Exception("Insufficient funds for trade.");
-						}
+						var auditResult = await AuditService.AuditUserCurrency(context, tradeRequest.UserId, tradeCurrency);
+						if (!auditResult.Success || auditResult.Avaliable < tradeTotal)
+							throw new TradeException("Insufficient funds for trade.");
 
 						// Get existing trades that can be filled
 						IQueryable<Tables.Trade> trades;
@@ -402,26 +411,78 @@ namespace TradeSatoshi.Core.Services
 						{
 							// There are no trades to fill, so create trade
 							var trade = CreateTrade(context.Trade, tradeType, tradeRequest.UserId, tradePair, tradeAmount, tradeRate, baseCurency.TradeFee, tradeRequest.IsApi);
-
-							notifications.AddUserNotification(tradeRequest.UserId, "Trade placed.{0}{1} {2:F8} {3} @ {4:F8} {5}", Environment.NewLine, tradeType, tradeAmount, currency.Symbol, tradeRate, baseCurency.Symbol);
-							notifications.AddDataTableNotification(tradeType == TradeType.Sell ? NotificationConstants.DataTable_SellOrders : NotificationConstants.DataTable_BuyOrders);
-							notifications.AddDataTableNotification(NotificationConstants.DataTable_UserOpenOrders);
-
 							Log.Debug("TradeService", "Submitting context changes...");
 							await context.SaveChangesAsync();
 
-							if (!await AuditUserTradePairAsync(context, tradeRequest.UserId, tradePair, notifications))
-							{
+							var userAudit = await AuditService.AuditUserTradePair(context, tradeRequest.UserId, tradePair);
+							if (!userAudit.Success)
 								throw new Exception("Failed to audit user balances.");
-							}
 
 							response.TradeId = trade.Id;
-							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.Id.ToString());
+
+							// notify user of balance change
+							notifications.Add(new NotifyBalanceUpdate
+							{
+								CurrencyId = userAudit.Currency.CurrencyId,
+								Symbol = userAudit.Currency.Symbol,
+								HeldForTrades = userAudit.Currency.HeldForTrades,
+								PendingWithdraw = userAudit.Currency.PendingWithdraw,
+								Total = userAudit.Currency.Total,
+								Unconfirmed = userAudit.Currency.Unconfirmed,
+								UserId = userAudit.Currency.UserId,
+								Avaliable = userAudit.Currency.Avaliable
+							});
+							notifications.Add(new NotifyBalanceUpdate
+							{
+								CurrencyId = userAudit.BaseCurrency.CurrencyId,
+								Symbol = userAudit.BaseCurrency.Symbol,
+								HeldForTrades = userAudit.BaseCurrency.HeldForTrades,
+								PendingWithdraw = userAudit.BaseCurrency.PendingWithdraw,
+								Total = userAudit.BaseCurrency.Total,
+								Unconfirmed = userAudit.BaseCurrency.Unconfirmed,
+								UserId = userAudit.BaseCurrency.UserId,
+								Avaliable = userAudit.BaseCurrency.Avaliable
+							});
+
+							// notify user of order
+							notifications.Add(new NotifyUser
+							{
+								Type = NotificationType.Info,
+								UserId = tradeRequest.UserId,
+								Title = "Order Placed",
+								Message = $"{tradeType} {tradeAmount:F8} {currency.Symbol} @ {tradeRate:F8} {baseCurency.Symbol}",
+							});
+
+							// Notify order book of new order
+							notifications.Add(new NotifyOrderBookUpdate
+							{
+								Action = "New",
+								Type = trade.TradeType.ToString(),
+								Market = tradePair.Name,
+								TradePairId = tradePair.Id,
+								Amount = trade.Remaining,
+								Price = trade.Rate
+							});
+
+							// Notify user of new open order
+							notifications.Add(new NotifyOpenOrderUserUpdate
+							{
+								Action = "New",
+								UserId = user.Id,
+								OrderId = trade.Id,
+								Amount = trade.Amount,
+								Market = tradePair.Name,
+								TradePairId = tradePair.Id,
+								Price = trade.Rate,
+								Remaining = trade.Remaining,
+								Type = trade.TradeType.ToString(),
+								Timestamp = trade.Timestamp
+							});
 						}
 						else
 						{
-							var audits = new HashSet<string> {user.Id};
-							int tradesLimit = 200;
+							var audits = new HashSet<string> { user.Id };
+							int tradesLimit = 20000;
 							decimal buyersRefund = 0m;
 							decimal tradeRemaining = tradeAmount;
 							Tables.Trade remainingTrade = null;
@@ -438,8 +499,8 @@ namespace TradeSatoshi.Core.Services
 								var canFillTrade = trade.Remaining <= tradeRemaining;
 
 								decimal dogeAmount = canFillTrade ? trade.Remaining : tradeRemaining;
-								decimal actualBtcAmount = canFillTrade ? trade.Remaining*trade.Rate : tradeRemaining*trade.Rate;
-								decimal expectedBtcAmount = canFillTrade ? trade.Remaining*tradeRate : tradeRemaining*tradeRate;
+								decimal actualBtcAmount = canFillTrade ? trade.Remaining * trade.Rate : tradeRemaining * trade.Rate;
+								decimal expectedBtcAmount = canFillTrade ? trade.Remaining * tradeRate : tradeRemaining * tradeRate;
 								if (tradeType == TradeType.Buy)
 								{
 									// Create transaction for the buy
@@ -462,12 +523,33 @@ namespace TradeSatoshi.Core.Services
 									trade.Status = TradeStatus.Complete;
 									tradeRemaining -= dogeAmount;
 									Log.Debug("TradeService", "Filled TradeId: {0}", trade.Id);
+
+									// Notify user orders of filled order
+									notifications.Add(new NotifyOpenOrderUserUpdate
+									{
+										Action = "Fill",
+										UserId = trade.UserId,
+										OrderId = trade.Id,
+										TradePairId = tradePair.Id,
+									});
+
+									// Notify orderbook of filled order
+									notifications.Add(new NotifyOrderBookUpdate
+									{
+										Action = "Fill",
+										Type = trade.TradeType.ToString(),
+										Market = tradePair.Name,
+										TradePairId = tradePair.Id,
+										Amount = trade.Amount,
+										Price = trade.Rate
+									});
 								}
 								else
 								{
 									// We can only fill some of this trade, subtract the amount and mark at 'Partial'
+									var lastTradeAmount = tradeRemaining;
 									trade.Remaining -= tradeRemaining;
-									trade.Fee = (trade.Remaining*trade.Rate).GetFees(trade.Fee > 0 ? baseCurency.TradeFee : 0);
+									trade.Fee = (trade.Remaining * trade.Rate).GetFees(trade.Fee > 0 ? baseCurency.TradeFee : 0);
 									trade.Status = TradeStatus.Partial;
 									tradeRemaining = 0;
 									Log.Debug("TradeService", "Partially filled TradeId: {0}", trade.Id);
@@ -480,6 +562,27 @@ namespace TradeSatoshi.Core.Services
 										trade.Status = TradeStatus.Complete;
 										Log.Debug("TradeService", "Partially filled resulted in 0.00000000 remaining, Filling TradeId: {0}", trade.Id);
 									}
+
+									// Notify user orders of partial filled order
+									notifications.Add(new NotifyOpenOrderUserUpdate
+									{
+										Action = "Partial",
+										UserId = trade.UserId,
+										OrderId = trade.Id,
+										TradePairId = tradePair.Id,
+										Remaining = trade.Remaining,
+									});
+
+									// Notify orderbook of partial filled order
+									notifications.Add(new NotifyOrderBookUpdate
+									{
+										Action = "Partial",
+										Type = trade.TradeType.ToString(),
+										Market = tradePair.Name,
+										TradePairId = tradePair.Id,
+										Amount = lastTradeAmount,
+										Price = trade.Rate
+									});
 								}
 
 								// Update tradepair stats
@@ -489,9 +592,23 @@ namespace TradeSatoshi.Core.Services
 								// Add to Audit list
 								audits.Add(trade.UserId);
 
-								// Add Notifications
-								notifications.AddUserNotification(tradeRequest.UserId, "You {0} {1:F8} {2} for {3:F8} {4}", tradeType == TradeType.Buy ? "bought" : "sold", dogeAmount, currency.Symbol, actualBtcAmount, baseCurency.Symbol);
-								notifications.AddUserNotification(trade.UserId, "You {0} {1:F8} {2} for {3:F8} {4}", tradeType == TradeType.Buy ? "Sold" : "bought", dogeAmount, currency.Symbol, actualBtcAmount, baseCurency.Symbol);
+								// Notify buyer
+								notifications.Add(new NotifyUser
+								{
+									Type = NotificationType.Info,
+									UserId = tradeRequest.UserId,
+									Title = "Order Filled",
+									Message = $"You {(tradeType == TradeType.Buy ? "bought" : "sold")} {dogeAmount:F8} {currency.Symbol} for {actualBtcAmount:F8} {baseCurency.Symbol}",
+								});
+
+								// Notify seller
+								notifications.Add(new NotifyUser
+								{
+									Type = NotificationType.Info,
+									UserId = trade.UserId,
+									Title = "Order Filled",
+									Message = $"You {(tradeType == TradeType.Buy ? "Sold" : "bought")} {dogeAmount:F8} {currency.Symbol} for {actualBtcAmount:F8} {baseCurency.Symbol}",
+								});
 
 								// Update trade limiter
 								tradesLimit--;
@@ -502,17 +619,54 @@ namespace TradeSatoshi.Core.Services
 							{
 								// create trade for remaining
 								remainingTrade = CreateTrade(context.Trade, tradeType, tradeRequest.UserId, tradePair, tradeRemaining, tradeRate, baseCurency.TradeFee, tradeRequest.IsApi);
+
+								// notify user of order
+								notifications.Add(new NotifyUser
+								{
+									Type = NotificationType.Info,
+									UserId = tradeRequest.UserId,
+									Title = "Order Placed",
+									Message = $"{tradeType} {remainingTrade.Remaining:F8} {currency.Symbol} @ {tradeRate:F8} {baseCurency.Symbol}",
+								});
+
+								// Notify orderbook of new order
+								notifications.Add(new NotifyOrderBookUpdate
+								{
+									Action = "New",
+									Type = remainingTrade.TradeType.ToString(),
+									Market = tradePair.Name,
+									TradePairId = tradePair.Id,
+									Amount = remainingTrade.Remaining,
+									Price = remainingTrade.Rate
+								});
+
+								// Notify user of new open order
+								notifications.Add(new NotifyOpenOrderUserUpdate
+								{
+									Action = "New",
+									UserId = user.Id,
+									OrderId = remainingTrade.Id,
+									Amount = remainingTrade.Amount,
+									Market = tradePair.Name,
+									TradePairId = tradePair.Id,
+									Price = remainingTrade.Rate,
+									Remaining = remainingTrade.Remaining,
+									Type = remainingTrade.TradeType.ToString(),
+									Timestamp = remainingTrade.Timestamp
+								});
 							}
 
+							// If there is any change, notify user of refund
 							if (tradeType == TradeType.Buy && buyersRefund > 0)
 							{
-								notifications.AddUserNotification(tradeRequest.UserId, "Refunded {0:F8} {1} form buy trade", buyersRefund, baseCurency.Symbol);
+								notifications.Add(new NotifyUser
+								{
+									Type = NotificationType.Info,
+									UserId = tradeRequest.UserId,
+									Title = "Trade Refund",
+									Message = $"Refunded {buyersRefund:F8} {baseCurency.Symbol} from buy trade",
+								});
 							}
-
-							notifications.AddDataNotification(string.Format(NotificationConstants.Data_LastPrice, tradePair.Id), tradePair.LastTrade.ToString("F8"));
-							notifications.AddDataTableNotification(NotificationConstants.DataTable_BuyOrders);
-							notifications.AddDataTableNotification(NotificationConstants.DataTable_SellOrders);
-							notifications.AddDataTableNotification(NotificationConstants.DataTable_TradeHistory);
 
 							Log.Debug("TradeService", "Submitting context changes...");
 							await context.SaveChangesAsync();
@@ -520,12 +674,35 @@ namespace TradeSatoshi.Core.Services
 							// Audit all users involved
 							foreach (var userAudit in audits)
 							{
-								if (!await AuditUserTradePairAsync(context, userAudit, tradePair, notifications))
+								var userAuditResult = await AuditService.AuditUserTradePair(context, userAudit, tradePair);
+								if (!userAuditResult.Success)
 								{
 									throw new Exception("Failed to audit user balances.");
 								}
-								notifications.AddUserDataTableNotification(userAudit, NotificationConstants.DataTable_UserOpenOrders);
-								notifications.AddUserDataTableNotification(userAudit, NotificationConstants.DataTable_UserTradeHistory);
+
+								// notify user of balance change
+								notifications.Add(new NotifyBalanceUpdate
+								{
+									CurrencyId = userAuditResult.Currency.CurrencyId,
+									Symbol = userAuditResult.Currency.Symbol,
+									HeldForTrades = userAuditResult.Currency.HeldForTrades,
+									PendingWithdraw = userAuditResult.Currency.PendingWithdraw,
+									Total = userAuditResult.Currency.Total,
+									Unconfirmed = userAuditResult.Currency.Unconfirmed,
+									UserId = userAuditResult.Currency.UserId,
+									Avaliable = userAuditResult.Currency.Avaliable
+								});
+								notifications.Add(new NotifyBalanceUpdate
+								{
+									CurrencyId = userAuditResult.BaseCurrency.CurrencyId,
+									Symbol = userAuditResult.BaseCurrency.Symbol,
+									HeldForTrades = userAuditResult.BaseCurrency.HeldForTrades,
+									PendingWithdraw = userAuditResult.BaseCurrency.PendingWithdraw,
+									Total = userAuditResult.BaseCurrency.Total,
+									Unconfirmed = userAuditResult.BaseCurrency.Unconfirmed,
+									UserId = userAuditResult.BaseCurrency.UserId,
+									Avaliable = userAuditResult.BaseCurrency.Avaliable
+								});
 							}
 
 							//Add filled and new order ids to response
@@ -537,32 +714,92 @@ namespace TradeSatoshi.Core.Services
 							{
 								if (newTransaction != null)
 									response.AddFilledTrade(newTransaction.Id);
+
+								// Notify trade history
+								notifications.Add(new NotifyTradeHistoryUpdate
+								{
+									Amount = newTransaction.Amount,
+									Market = tradePair.Name,
+									TradePairId = tradePair.Id,
+									Price = newTransaction.Rate,
+									Type = newTransaction.TradeHistoryType.ToString(),
+									Timestamp = newTransaction.Timestamp
+								});
+
+								// Notify user trade history
+								notifications.Add(new NotifyTradeUserHistoryUpdate
+								{
+								  UserId = newTransaction.UserId,
+									Amount = newTransaction.Amount,
+									Market = tradePair.Name,
+									TradePairId = tradePair.Id,
+									Price = newTransaction.Rate,
+									Type = newTransaction.TradeHistoryType.ToString(),
+									Timestamp = newTransaction.Timestamp
+								});
+								notifications.Add(new NotifyTradeUserHistoryUpdate
+								{
+									UserId = newTransaction.ToUserId,
+									Amount = newTransaction.Amount,
+									Market = tradePair.Name,
+									TradePairId = tradePair.Id,
+									Price = newTransaction.Rate,
+									Type = newTransaction.TradeHistoryType.ToString(),
+									Timestamp = newTransaction.Timestamp
+								});
 							}
-
-							notifications.AddDataNotification(NotificationConstants.Data_ChartUpdate, tradePair.Id.ToString());
-							notifications.AddDataNotification(NotificationConstants.Data_ChartDepthUpdate, tradePair.Id.ToString());
 						}
-
 
 						Log.Debug("TradeService", "Committing database transaction");
 						await context.SaveChangesAsync();
 						transaction.Commit();
 
-						await notifications.SendNotificationsAsync();
+						await TradeNotificationService.SendNotificationCollection(notifications);
+						//await TradeNotificationService.SendNotification(userNotifications);
+						//await TradeNotificationService.SendOrderBookUpdate(orderNotifications);
+						//await TradeNotificationService.SendOpenOrderUserUpdate(openOrderNotifications);
+						//await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
+						//await TradeNotificationService.SendTradeHistoryUpdate(tradeHistoryNotifications);
+						//await TradeNotificationService.SendTradeUserHistoryUpdate(userTradeHistoryNotifications);
 
 						Log.Info("TradeService", "Process trade success.");
 						return response;
 					}
+					catch (TradeException ex)
+					{
+						Log.Warn("TradeService", "Rollback database Transaction");
+						transaction.TryRollback();
+						Log.Warn("TradeService", ex.Message);
+
+						// Notify user
+						await TradeNotificationService.SendNotification(new NotifyUser
+						{
+							Type = NotificationType.Error,
+							UserId = tradeRequest.UserId,
+							Title = "Order Failed",
+							Message = ex.Message,
+						});
+
+					}
 					catch (Exception ex)
 					{
-						Log.Error("TradeService", "Rollback databaseTransaction");
-						transaction.Rollback();
+						Log.Error("TradeService", "Rollback database Transaction");
+						transaction.TryRollback();
 						Log.Exception("TradeService", ex);
+
+						// Notify user
+						await TradeNotificationService.SendNotification(new NotifyUser
+						{
+							Type = NotificationType.Error,
+							UserId = tradeRequest.UserId,
+							Title = "Order Failed",
+							Message = "An unknown error occured.",
+						});
 					}
 				}
 			}
 
-			return null;
+			return new CreateTradeResponse {  Error = "An unknown error occured" };
 		}
 
 		#region Helpers
@@ -579,12 +816,11 @@ namespace TradeSatoshi.Core.Services
 				TradeType = type,
 				UserId = userId,
 				Timestamp = DateTime.UtcNow,
-				Fee = (amount*rate).GetFees(fee),
+				Fee = (amount * rate).GetFees(fee),
 				IsApi = isapi
 			};
 			tradeTable.Add(newTrade);
-			Log.Debug("TradeService", "Created new trade, TradeId: {0}, TradeType: {1}, Amount: {2}, Rate: {3}"
-				, newTrade.Id, newTrade.TradeType, newTrade.Amount, newTrade.Rate);
+			Log.Debug("TradeService", "Created new trade, TradeId: {0}, TradeType: {1}, Amount: {2}, Rate: {3}", newTrade.Id, newTrade.TradeType, newTrade.Amount, newTrade.Rate);
 			return newTrade;
 		}
 
@@ -600,12 +836,11 @@ namespace TradeSatoshi.Core.Services
 				UserId = userId,
 				ToUserId = toUserId,
 				Timestamp = DateTime.UtcNow,
-				Fee = (amount*rate).GetFees(fee),
+				Fee = (amount * rate).GetFees(fee),
 				IsApi = isapi
 			};
 			transactionTable.Add(transaction);
-			Log.Debug("TradeService", "Created new transaction, CurrencyId: {0}, TransactionType: {1}, Amount: {2}, Rate: {3}, Fee: {4}"
-				, transaction.CurrencyId, transaction.TradeHistoryType, transaction.Amount, transaction.Rate, transaction.Fee);
+			Log.Debug("TradeService", "Created new transaction, CurrencyId: {0}, TransactionType: {1}, Amount: {2}, Rate: {3}, Fee: {4}", transaction.CurrencyId, transaction.TradeHistoryType, transaction.Amount, transaction.Rate, transaction.Fee);
 			return transaction;
 		}
 
@@ -613,29 +848,14 @@ namespace TradeSatoshi.Core.Services
 		{
 			if (lastTrade > 0)
 			{
-				return Math.Round((double) ((newTrade - lastTrade)/lastTrade*100m), 2);
+				return Math.Round((double)((newTrade - lastTrade) / lastTrade * 100m), 2);
 			}
 			return 0.00;
 		}
 
-		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair, TradeNotifier notifications)
+		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
 		{
 			var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
-			if (result.Success)
-			{
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), result.Available.ToString("F8"));
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.BaseSymbol), result.BaseAvailable.ToString("F8"));
-			}
-			return result.Success;
-		}
-
-		private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId, TradeNotifier notifications)
-		{
-			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
-			if (result.Success)
-			{
-				notifications.AddUserDataNotification(userId, string.Format(NotificationConstants.Data_UserBalance, result.Symbol), result.Available.ToString("F8"));
-			}
 			return result.Success;
 		}
 
@@ -646,6 +866,13 @@ namespace TradeSatoshi.Core.Services
 		}
 
 		#endregion
+	}
+
+	public class TradeException : Exception
+	{
+		public TradeException(string message) : base(message)
+		{
+		}
 	}
 
 	public class TradeNotifier

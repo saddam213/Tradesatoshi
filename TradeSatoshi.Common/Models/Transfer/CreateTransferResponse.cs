@@ -2,11 +2,6 @@
 {
 	public class CreateTransferResponse : ITradeResponse
 	{
-		public CreateTransferResponse(string error = null)
-		{
-			Error = error;
-		}
-
 		public string Error { get; set; }
 
 		public bool HasError

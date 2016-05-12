@@ -102,6 +102,7 @@ namespace TradeSatoshi.Core.Services
 				var balance = await context.Balance.Include(b => b.Currency).FirstOrDefaultAsync(x => x.CurrencyId == currencyId && x.UserId == userId);
 				if (balance == null)
 				{
+					var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == currencyId);
 					balance = context.Balance.Add(new Entity.Balance
 					{
 						UserId = userId,
@@ -117,7 +118,18 @@ namespace TradeSatoshi.Core.Services
 
 				// Save changes
 				await context.SaveChangesAsync();
-				return new AuditCurrencyResult(balance.Currency.Symbol, balance.Avaliable);
+				return new AuditCurrencyResult
+				{
+					Success = true,
+					UserId = balance.UserId,
+					CurrencyId = balance.CurrencyId,
+					Symbol = balance.Currency.Symbol,
+					Total = balance.Total,
+					Unconfirmed = balance.Unconfirmed,
+					HeldForTrades = balance.HeldForTrades,
+					PendingWithdraw = balance.PendingWithdraw,
+					Avaliable = balance.Avaliable
+				};
 			}
 			catch (Exception)
 			{
@@ -132,7 +144,12 @@ namespace TradeSatoshi.Core.Services
 			if (!result.Success || !baseResult.Success)
 				return new AuditTradePairResult(false);
 
-			return new AuditTradePairResult(result.Symbol, baseResult.Symbol, result.Available, baseResult.Available);
+			return new AuditTradePairResult
+			{
+				Success = true,
+				Currency = result,
+				BaseCurrency = baseResult
+			};
 		}
 	}
 }

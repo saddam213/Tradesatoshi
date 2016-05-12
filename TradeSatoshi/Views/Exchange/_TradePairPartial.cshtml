@@ -9,10 +9,67 @@
 		font-size: 12px;
 		cursor: pointer;
 	}
+
+	@@keyframes sellhighlight {
+		0% {
+			background: #f2dede;
+		}
+
+		100% {
+			background: none;
+		}
+	}
+
+	.sellhighlight {
+		animation: sellhighlight .2s;
+	}
+
+
+	@@keyframes sellhighlight2 {
+		0% {
+			background: #f2dede;
+		}
+
+		100% {
+			background: none;
+		}
+	}
+
+	.sellhighlight2 {
+		animation: sellhighlight2 .2s;
+	}
+
+	@@keyframes buyhighlight {
+		0% {
+			background: #dff0d8;
+		}
+
+		100% {
+			background: none;
+		}
+	}
+
+	@@keyframes buyhighlight2 {
+		0% {
+			background: #dff0d8;
+		}
+
+		100% {
+			background: none;
+		}
+	}
+
+	.buyhighlight {
+		animation: buyhighlight .2s;
+	}
+
+	.buyhighlight2 {
+		animation: buyhighlight2 .2s;
+	}
 </style>
 
 @*Chart*@
-<div id="chart-container" class="col-xs-12 chart-container" data-action-chart="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-action-depth="@Url.Action("GetTradePairDepth", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)" data-basesymbol="@Model.BaseSymbol" data-tradepairid="@Model.TradePairId">
+<div id="chart-container" class="col-xs-12 chart-container" data-action-chart="@Url.Action("GetTradePairChart", "Exchange", new { tradePairId = Model.TradePairId })" data-action-depth="@Url.Action("GetTradePairDepth", "Exchange", new { tradePairId = Model.TradePairId })" data-title="@string.Format("{0}/{1}", Model.Symbol, Model.BaseSymbol)" data-basesymbol="@Model.BaseSymbol" data-tradepairid="@Model.TradePairId" data-tradefee="@Model.BuyModel.Fee">
 	<div class="panel panel-default" style="">
 		<h4 class="chart-label pull-left">@Helpers.CoinLogoWithSymbol(Model.Symbol, 18) / @Helpers.CoinLogoWithSymbol(Model.BaseSymbol, 18)</h4>
 
@@ -37,7 +94,7 @@
 			<h3 class="panel-title">
 				<span>Buy @Model.Symbol</span>
 				<span class="buysell-balance">
-					<span class="data-balance-@Model.BaseSymbol">@Model.BaseBalance.ToString("F8")</span>
+					<span class="data-balance-buy data-balance-@Model.BaseSymbol">@Model.BaseBalance.ToString("F8")</span>
 					<span>@Model.BaseSymbol</span>
 				</span>
 			</h3>
@@ -73,7 +130,7 @@
 			<h3 class="panel-title">
 				<span>Sell @Model.Symbol</span>
 				<span class="buysell-balance">
-					<span class="data-balance-@Model.Symbol">@Model.Balance.ToString("F8")</span>
+					<span class="data-balance-sell data-balance-@Model.Symbol">@Model.Balance.ToString("F8")</span>
 					<span>@Model.Symbol</span>
 				</span>
 			</h3>
@@ -123,7 +180,22 @@
 	</div>
 </div>
 
-
-
 @Scripts.Render("~/Scripts/Project/Exchange/tradepairCharts.js")
 @Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")
+
+<script id="tradeHistoryTemplate" type="text/html">
+	<tr class="odd {{type}} {{highlight}}" role="row" >
+		<td>{{time}}</td>
+		<td>{{typeText}}</td>
+		<td>{{price}}</td>
+		<td>{{amount}}</td>
+	</tr>
+</script>
+
+<script id="orderTemplate" type="text/html">
+	<tr class="odd {{highlight}}" role="row">
+		<td>{{price}}</td>
+		<td>{{amount}}</td>
+		<td>{{total}}</td>
+	</tr>
+</script>

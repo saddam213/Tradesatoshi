@@ -17,7 +17,7 @@ namespace TradeSatoshi.Data.Migrations
                         Timestamp = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: false)
                 .Index(t => t.UserId);
             
             AddColumn("dbo.AspNetUsers", "IsEnabled", c => c.Boolean(nullable: false));

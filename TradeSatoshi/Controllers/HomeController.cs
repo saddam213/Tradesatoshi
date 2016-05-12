@@ -99,12 +99,12 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[AuthorizeSecurityRole(SecurityRole.Standard)]
-		public async Task<ActionResult> CancelTrade(int id, CancelTradeType cancelType)
+		public async Task<ActionResult> CancelTrade(int id, TradeCancelType cancelType)
 		{
 			var result = await TradeWriter.CancelTrade(User.Id(), new CancelTradeModel
 			{
-				TradeId = id,
-				TradePairId = id,
+				//TradeId = id,
+				//TradePairId = id,
 				CancelType = cancelType
 			});
 

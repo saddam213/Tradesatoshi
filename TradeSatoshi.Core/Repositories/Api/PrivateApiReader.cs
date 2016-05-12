@@ -37,7 +37,6 @@ namespace TradeSatoshi.Core.Repositories.Api
 					var result = await query.FirstOrDefaultNoLockAsync();
 					return new ApiResult<ApiBalanceResponse>(false, result);
 				}
-				return new ApiResult<ApiBalanceResponse>(false, "Not Implemented");
 			}
 			catch (Exception ex)
 			{

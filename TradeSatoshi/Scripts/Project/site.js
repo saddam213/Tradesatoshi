@@ -5,7 +5,7 @@
 });
 $.ajaxSetup({ cache: false });
 
-(function () {
+//(function () {
 	var notificationHub = $.connection.Notification;
 	notificationHub.client.SendNotification = function (notification) {
 		var icon = 'fa-info';
@@ -39,8 +39,55 @@ $.ajaxSetup({ cache: false });
 		$(htmlEncode(notification.DataTableName)).dataTable().fnDraw();
 	};
 
+
+	var tradeNotificationHub = $.connection.TradeNotification;
+	tradeNotificationHub.client.OnNotification = function (notification) {
+		console.log(notification.Message)
+		showNotificationPopup(notification);
+	};
+	tradeNotificationHub.client.OnBalanceUpdate = function (notification) {
+		console.log("OnBalanceUpdate")
+		$(document).trigger("OnBalanceUpdate", notification);
+	};
+	tradeNotificationHub.client.OnOrderBookUpdate = function (notification) {
+		console.log("OnOrderBookUpdate" + notification.TradePairId)
+		$(document).trigger("OnOrderBookUpdate" + notification.TradePairId, notification);
+	};
+	tradeNotificationHub.client.OnTradeHistoryUpdate = function (notification) {
+		console.log("OnTradeHistoryUpdate" + notification.TradePairId)
+		$(document).trigger("OnTradeHistoryUpdate" + notification.TradePairId, notification);
+	};
+	//tradeNotificationHub.client.OnOpenOrderUserUpdate = function (notification) {
+	//	console.log("OnOpenOrderUserUpdate")
+	//	$(document).trigger("OnOpenOrderUserUpdate", notification);
+	//};
+	//tradeNotificationHub.client.OnTradeUserHistoryUpdate = function (notification) {
+	//	console.log("OnTradeUserHistoryUpdate")
+	//	$(document).trigger("OnTradeUserHistoryUpdate", notification);
+	//};
+
+
 	$.connection.hub.start().done(function () {	});
-})();
+//})();
+
+function showNotificationPopup(notification) {
+	var icon = 'fa-info';
+	var type = 'alert-info';
+	if (notification.Type == 1) {
+		icon = 'fa-check';
+		type = 'alert-success';
+	}
+	if (notification.Type == 2) {
+		icon = 'fa-exclamation-triangle';
+		type = 'alert-warning';
+	}
+	if (notification.Type == 3) {
+		icon = 'fa-times-circle';
+		type = 'alert-danger';
+	}
+	$.jGrowl(htmlEncode(notification.Message), { position: "bottom-left", header: htmlEncode(notification.Title), icon: icon, type: type });
+}
+
 
 function getPartial(div, url, callback) {
 	$.ajax({

@@ -117,7 +117,7 @@ namespace TradeSatoshi.Core.Trade
 						Rate = x.Rate,
 						Timestamp = x.Timestamp,
 						TradeHistoryType = x.TradeHistoryType,
-					}).OrderByDescending(x => x.Timestamp);
+					}).OrderByDescending(x => x.Timestamp).Take(500);
 				return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}

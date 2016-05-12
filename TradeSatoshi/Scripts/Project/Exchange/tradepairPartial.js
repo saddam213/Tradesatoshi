@@ -1,6 +1,7 @@
 ﻿var sum_buyOrders = 0;
 var sum_sellOrders = 0;
-
+var tradefee = $('#chart-container').data('tradefee')
+var tradePairId = $('#chart-container').data('tradepairid')
 
 $('[id^="table-buyOrders-"]').dataTable({
 	"order": [[0, "desc"]],
@@ -158,3 +159,168 @@ function cancelTradePairOrders(tradePair, action) {
 		});
 	}
 }
+
+
+var orderTemplate = $('#orderTemplate').html();
+var historyTemplate = $('#tradeHistoryTemplate').html();
+
+$(document).off("OnTradeHistoryUpdate" + tradePairId).on("OnTradeHistoryUpdate" + tradePairId, function (event, notification) {
+	var table = '#table-tradehistory-' + tradePairId;
+	prependTradeHistory(table, notification);
+});
+
+$(document).off("OnOrderBookUpdate" + tradePairId).on("OnOrderBookUpdate" + tradePairId, function (event, notification) {
+	var type = notification.Type;
+	var table = type === "Buy"
+		? "#table-buyOrders-" + tradePairId
+		: "#table-sellOrders-" + tradePairId;
+
+	var existingRow = $(table + " > tbody td").filter(function (index) {
+		return +$(this).text() == notification.Price;
+	}).closest("tr");
+
+	if (notification.Action === "Fill" || notification.Action === "Partial" || notification.Action === "Cancel") {
+		mergeOrder(existingRow, notification);
+	}
+	else if (notification.Action === "New") {
+
+		// If no rows exist, create one
+		var firstPrice = $(table + " > tbody tr:first > td:nth-child(1)").text() || "No data avaliable."
+		if (firstPrice === "No data avaliable.") {
+			$(table + " > tbody tr:first").remove();
+			appendOrder(table, notification);
+			return;
+		}
+		
+		var lastPrice = $(table + " > tbody tr:last > td:nth-child(1)").text()
+		var existingRowPrice = existingRow.find("td:nth-child(1)").text()
+		if (existingRow && existingRowPrice == notification.Price) {
+			// update existing
+			mergeOrder(existingRow, notification);
+		}
+		else if ((notification.Type === "Sell" && firstPrice > notification.Price) || (notification.Type === "Buy" && notification.Price > firstPrice)) {
+			// less than first
+			prependOrder(table, notification);
+		}
+		else if ((notification.Type === "Sell" && notification.Price > +lastPrice) || (notification.Type === "Buy" && notification.Price < +lastPrice)) {
+			// more than last
+			appendOrder(table, notification);
+		}
+		else {
+			// somewhere in middle
+			insertOrder(table, notification)
+		}
+	}
+});
+
+function appendOrder(table, notification) {
+	$(table + ' > tbody').append(Mustache.render(orderTemplate, {
+		highlight: "buyhighlight",
+		price: notification.Price.toFixed(8),
+		amount: notification.Amount.toFixed(8),
+		total: (notification.Amount * notification.Price).toFixed(8)
+	}));
+	$(table + " > tbody tr:last").on('click', function () {
+		calculateOrder(notification.Amount, notification.Price)
+	});
+}
+
+function prependOrder(table, notification) {
+	var row = $(table + ' > tbody').prepend(Mustache.render(orderTemplate, {
+		highlight: "buyhighlight",
+		price: notification.Price.toFixed(8),
+		amount: notification.Amount.toFixed(8),
+		total: (notification.Amount * notification.Price).toFixed(8)
+	}));
+	$(table + " > tbody tr:first").on('click', function () {
+		calculateOrder(notification.Amount, notification.Price)
+	});
+}
+
+function insertOrder(table, notification) {
+	var row = $(table + " > tbody td:nth-child(1)").filter(function () {
+		return notification.Type === "Buy"
+		? +$(this).text() < notification.Price
+		: +$(this).text() > notification.Price;
+	}).first().closest("tr");
+
+	var html = Mustache.render(orderTemplate, {
+		highlight: "buyhighlight",
+		price: notification.Price.toFixed(8),
+		amount: notification.Amount.toFixed(8),
+		total: (notification.Amount * notification.Price).toFixed(8)
+	});
+	row.before(html);
+	$(row.prev()).on('click', function () {
+		calculateOrder(notification.Amount, notification.Price)
+	});
+}
+
+function mergeOrder(existingRow, notification) {
+	var amountColumn = existingRow.find("td:nth-child(2)");
+	var totalColumn = existingRow.find("td:nth-child(3)");
+	var existingAmount = +amountColumn.text();
+
+	var newAmount = notification.Action == "Cancel" || notification.Action == "Fill" || notification.Action == "Partial"
+		? (existingAmount - notification.Amount).toFixed(8)
+		: (existingAmount + notification.Amount).toFixed(8);
+
+	var newTotal = (newAmount * notification.Price).toFixed(8)
+	if (newAmount <= 0) {
+		existingRow.remove();
+	}
+	else {
+		amountColumn.text(newAmount);
+		totalColumn.text(newTotal);
+		if (notification.Action !== "Fill" && notification.Action !== "Partial") {
+			if (existingRow.hasClass("buyhighlight") || existingRow.hasClass("sellhighlight")) {
+				existingRow.removeClass("buyhighlight sellhighlight").addClass(notification.Action == "Cancel" ? "sellhighlight2" : "buyhighlight2");
+			} else {
+				existingRow.removeClass("buyhighlight2 sellhighlight2").addClass(notification.Action == "Cancel" ? "sellhighlight" : "buyhighlight")
+			}
+		}
+
+		$(existingRow).off().on('click', function () {
+			calculateOrder(newAmount, notification.Price)
+		});
+	}
+}
+
+function prependTradeHistory(table, notification) {
+	$(table + ' > tbody').prepend(Mustache.render(historyTemplate, {
+		time: moment(new Date(notification.Timestamp)).format('h:mm:ss a'),
+		type: notification.Type === 'Buy' ? 'text-success' : 'text-danger',
+		highlight: notification.Type === 'Buy' ? 'buyhighlight' : 'sellhighlight',
+		typeText: notification.Type,
+		price: notification.Price.toFixed(8),
+		amount: notification.Amount.toFixed(8)
+	}));
+}
+
+function calculateOrder(amount, price) {
+	$('#amount-Sell, #amount-Buy').val((+amount).toFixed(8));
+	$('#rate-Sell, #rate-Buy').val((+price).toFixed(8)).trigger('change');
+}
+
+$(".data-balance-sell").on("click", function () {
+	var rate = $('#rate-Sell').val();
+	var balance = $(this).html();
+	if (balance && rate) {
+		var total = balance / rate;
+		calculateOrder(balance / rate, rate)
+	}
+});
+
+$(".data-balance-buy").on("click", function () {
+	var fee = +tradefee
+	var rate = +$('#rate-Buy').val();
+	var balance = +$(this).html();
+	if (balance && rate) {
+		var rateWithFee = rate + (rate / 100.00000000 * fee);
+		var amount = balance.toFixed(8) / rateWithFee.toFixed(8);
+		if ((amount.toFixed(8) * rateWithFee.toFixed(8)) > balance.toFixed(8)) {
+			amount = amount - 0.00000001;
+		}
+		calculateOrder(amount, rate)
+	}
+});

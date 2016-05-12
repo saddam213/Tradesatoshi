@@ -206,10 +206,14 @@
 			close: function () { },
 			click: function () { },
 			animateOpen: {
-				opacity: 'show'
+				opacity: 'show',
+				width: "show",
+				height: "show"
 			},
 			animateClose: {
-				opacity: 'hide'
+				opacity: 'hide',
+				width: "hide",
+				height: "hide"
 			}
 		},
 

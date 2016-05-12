@@ -11,6 +11,7 @@ using TradeSatoshi.Common.Services.WalletService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Common.Withdraw;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Core.Repositories.Api
 {
@@ -21,43 +22,31 @@ namespace TradeSatoshi.Core.Repositories.Api
 		public IWithdrawWriter WithdrawWriter { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public async Task<ApiResult<CancelOrderResponse>> CancelOrder(string userId, int orderId)
+		public async Task<ApiResult<CancelOrderResponse>> CancelOrder(string userId, TradeCancelType cancelType, int? orderId, string market)
 		{
 			try
 			{
-				var result = await TradeService.QueueTradeItem(new CancelTradeModel
+				var result = await TradeService.QueueCancel(new CancelTradeModel
 				{
-					CancelType = Enums.CancelTradeType.Trade,
-					IsApi = true,
-					TradeId = orderId,
-					UserId = userId
+					UserId = userId,
+					Market = market,
+					OrderId = orderId,
+					CancelType = cancelType,
+					IsApi = true
 				});
 
+				if (result.HasError)
+					return new ApiResult<CancelOrderResponse>(false, result.Error);
 
-				return new ApiResult<CancelOrderResponse>(true, "");
+				var response = new CancelOrderResponse
+				{
+					OrderId = result.CanceledOrders
+				};
+				return new ApiResult<CancelOrderResponse>(true, response);
 			}
 			catch (Exception ex)
 			{
 				return new ApiResult<CancelOrderResponse>(ex);
-			}
-		}
-
-		public async Task<ApiResult<List<CancelOrderResponse>>> CancelOrders(string userId, string market, string type)
-		{
-			try
-			{
-				//var result = await TradeService.QueueTradeItem(new CancelTradeModel
-				//{
-				//	CancelType = Enums.CancelTradeType.Trade,
-				//	IsApi = true,
-				//	TradeId = orderId,
-				//	UserId = userId
-				//});
-				return new ApiResult<List<CancelOrderResponse>>(false, "Not Implemented");
-			}
-			catch (Exception ex)
-			{
-				return new ApiResult<List<CancelOrderResponse>>(ex);
 			}
 		}
 

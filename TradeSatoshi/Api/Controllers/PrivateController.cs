@@ -26,13 +26,7 @@ namespace TradeSatoshi.Web.Api.Controllers
 		[HttpPost]
 		public async Task<ApiResult<CancelOrderResponse>> CancelOrder(ApiCancelOrderRequest request)
 		{
-			return await PrivateApiWriter.CancelOrder(User.Identity.Name, request.OrderId);
-		}
-
-		[HttpPost]
-		public async Task<ApiResult<List<CancelOrderResponse>>> CancelOrders(ApiCancelOrdersRequest request)
-		{
-			return await PrivateApiWriter.CancelOrders(User.Identity.Name, request.Market, request.Type);
+			return await PrivateApiWriter.CancelOrder(User.Identity.Name, request.Type, request.OrderId, request.Market);
 		}
 
 		[HttpPost]
