@@ -1,23 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using TradeSatoshi.Enums;
 
 namespace TradeSatoshi.Common.Services.NotificationService
 {
 	public interface INotificationService
 	{
-		Task<bool> SendNotificationAsync(INotification notification);
-		Task<bool> SendNotificationAsync(List<INotification> notifications);
-		Task<bool> SendUserNotificationAsync(IUserNotification notification);
-		Task<bool> SendUserNotificationAsync(List<IUserNotification> notifications);
-
-		Task<bool> SendDataNotificationAsync(IDataNotification notification);
-		Task<bool> SendDataNotificationAsync(List<IDataNotification> notifications);
-		Task<bool> SendUserNotificationDataAsync(IUserDataNotification notification);
-		Task<bool> SendUserNotificationDataAsync(List<IUserDataNotification> notifications);
-
-		Task<bool> SendDataTableNotificationAsync(IDataTableNotification notification);
-		Task<bool> SendDataTableNotificationAsync(List<IDataTableNotification> notifications);
-		Task<bool> SendUserDataTableNotificationAsync(IUserDataTableNotification notification);
-		Task<bool> SendUserDataTableNotificationAsync(List<IUserDataTableNotification> notifications);
+		Task<bool> SendNotification(NotifyUser notification);
+		Task<bool> SendNotification(List<NotifyUser> notifications);
+		Task<bool> SendBalanceUpdate(NotifyBalanceUpdate notification);
+		Task<bool> SendBalanceUpdate(List<NotifyBalanceUpdate> notifications);
+		Task<bool> SendOrderBookUpdate(NotifyOrderBookUpdate notification);
+		Task<bool> SendOrderBookUpdate(List<NotifyOrderBookUpdate> notifications);
+		Task<bool> SendTradeHistoryUpdate(NotifyTradeHistoryUpdate notification);
+		Task<bool> SendTradeHistoryUpdate(List<NotifyTradeHistoryUpdate> notifications);
+		Task<bool> SendOpenOrderUserUpdate(NotifyOpenOrderUserUpdate notification);
+		Task<bool> SendOpenOrderUserUpdate(List<NotifyOpenOrderUserUpdate> notifications);
+		Task<bool> SendTradeUserHistoryUpdate(NotifyTradeUserHistoryUpdate notification);
+		Task<bool> SendTradeUserHistoryUpdate(List<NotifyTradeUserHistoryUpdate> notifications);
+		Task<bool> SendNotificationCollection(List<INotify> notifications);
 	}
 }

@@ -7,9 +7,10 @@ using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Base.Queueing;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Logging;
+using TradeSatoshi.Common.Repositories.Trade;
+using TradeSatoshi.Common.Services;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Common.Services.NotificationService;
-using TradeSatoshi.Common.Services.TradeNotificationService;
 using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Transfer;
@@ -34,18 +35,16 @@ namespace TradeSatoshi.Core.Services
 		public ILogger Log { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 		public IAuditService AuditService { get; set; }
-
-		public INotificationService NotificationService { get; set; }
-		public ITradeNotificationService TradeNotificationService { get; set; }
+		public ICacheService CacheService { get; set; }
+		public INotificationService TradeNotificationService { get; set; }
 
 		public TradeService()
 		{
 			DataContextFactory = new DataContextFactory();
 			Log = new DatabaseLogger(DataContextFactory);
 			AuditService = new AuditService();
-
-			NotificationService = new NotificationService();
-			TradeNotificationService = new TradeNotificationService();
+			CacheService = new CacheService();
+		  TradeNotificationService = new NotificationService();
 		}
 
 		public async Task<CreateTradeResponse> QueueTrade(CreateTradeModel tradeItem)
@@ -96,25 +95,21 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
-						var userBalance = await context.Balance
-							.Include(b => b.User)
-							.Include(b => b.Currency)
-							.FirstOrDefaultAsync(b => b.UserId == tradeItem.UserId && b.CurrencyId == tradeItem.CurrencyId);
-						if (userBalance == null || tradeItem.Amount.IncludingFees(userBalance.Currency.TransferFee) > userBalance.Avaliable)
+						var auditResult = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
+						if (!auditResult.Success)
+							throw new Exception($"Failed to audit user balance, Currency: {tradeItem.Symbol}");
+
+						if (tradeItem.Amount > auditResult.Avaliable)
 							throw new TradeException("Insufficient funds for transfer.");
 
 						var toUser = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
 						if (toUser == null)
 							throw new TradeException("Reciver does not exist");
 
-						//Audit the user balance for currency
-						if (!await AuditUserBalanceAsync(context, tradeItem.UserId, userBalance.CurrencyId))
-							throw new Exception($"Failed to audit user balance, Currency: {userBalance.Currency.Symbol}");
-
 						var transfer = new TransferHistory
 						{
 							Amount = tradeItem.Amount,
-							Fee = tradeItem.Amount.GetFees(userBalance.Currency.TransferFee),
+							Fee = 0,
 							CurrencyId = tradeItem.CurrencyId,
 							Timestamp = DateTime.UtcNow,
 							ToUserId = toUser.Id,
@@ -130,7 +125,7 @@ namespace TradeSatoshi.Core.Services
 						var balanceNotifications = new List<NotifyBalanceUpdate>();
 						var senderAudit = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
 						if (!senderAudit.Success)
-							throw new Exception($"Failed to audit User balance, Currency: {userBalance.Currency.Symbol}");
+							throw new Exception($"Failed to audit User balance, Currency: {tradeItem.Symbol}");
 						balanceNotifications.Add(new NotifyBalanceUpdate
 						{
 							CurrencyId = senderAudit.CurrencyId,
@@ -147,12 +142,12 @@ namespace TradeSatoshi.Core.Services
 							UserId = tradeItem.UserId,
 							Type = NotificationType.Info,
 							Title = "New Transfer",
-							Message = $"Sent {transfer.Amount} {userBalance.Currency.Symbol} to {toUser.UserName}"
+							Message = $"Sent {transfer.Amount} {tradeItem.Symbol} to {toUser.UserName}"
 						});
 
 						var receiverAudit = await AuditService.AuditUserCurrency(context, toUser.Id, tradeItem.CurrencyId);
 						if (!receiverAudit.Success)
-							throw new Exception($"Failed to audit ToUser balance, Currency: {userBalance.Currency.Symbol}");
+							throw new Exception($"Failed to audit ToUser balance, Currency: {tradeItem.Symbol}");
 						balanceNotifications.Add(new NotifyBalanceUpdate
 						{
 							CurrencyId = receiverAudit.CurrencyId,
@@ -169,7 +164,7 @@ namespace TradeSatoshi.Core.Services
 							UserId = toUser.Id,
 							Type = NotificationType.Info,
 							Title = "New Transfer",
-							Message = $"Received {transfer.Amount} {userBalance.Currency.Symbol} from {userBalance.User.UserName}"
+							Message = $"Received {transfer.Amount} {tradeItem.Symbol} from {senderAudit.UserName}"
 						});
 
 						transaction.Commit();
@@ -309,10 +304,16 @@ namespace TradeSatoshi.Core.Services
 
 						transaction.Commit();
 
+						// Send notification ans invalidate cache
 						await TradeNotificationService.SendNotificationCollection(notifications);
-						//await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
-						//await TradeNotificationService.SendOrderBookUpdate(orderNotifications);
-						//await TradeNotificationService.SendOpenOrderUserUpdate(openOrderNotifications);
+						foreach (var tradePairId in orders.Where(x => x.TradeType == TradeType.Buy).Select(x => x.TradePairId).Distinct())
+						{
+							CacheService.Invalidate(TradeCacheKeys.GetOpenBuyOrdersKey(tradePairId));
+						}
+						foreach (var tradePairId in orders.Where(x => x.TradeType == TradeType.Sell).Select(x => x.TradePairId).Distinct())
+						{
+							CacheService.Invalidate(TradeCacheKeys.GetOpenSellOrdersKey(tradePairId));
+						}
 					}
 					catch (Exception ex)
 					{
@@ -335,14 +336,9 @@ namespace TradeSatoshi.Core.Services
 					try
 					{
 						Log.Info("TradeService", "Processing trade request. UserId: {0}, TradeType: {1}, TradePairId: {2}, Amount: {3:F8}, Rate: {4:F8}", tradeRequest.UserId, tradeRequest.TradeType, tradeRequest.TradePairId, tradeRequest.Amount, tradeRequest.Rate);
-						var response = new CreateTradeResponse();
+
 						var notifications = new List<INotify>();
-						//var userNotifications = new List<NotifyUser>();
-						//var orderNotifications = new List<NotifyOrderBookUpdate>();
-						//var openOrderNotifications = new List<NotifyOpenOrderUserUpdate>();
-						//var balanceNotifications = new List<NotifyBalanceUpdate>();
-						//var tradeHistoryNotifications = new List<NotifyTradeHistoryUpdate>();
-						//var userTradeHistoryNotifications = new List<NotifyTradeUserHistoryUpdate>();
+						var response = new CreateTradeResponse();
 
 						var tradeType = tradeRequest.TradeType;
 						var user = await context.Users.FindAsync(tradeRequest.UserId);
@@ -729,7 +725,7 @@ namespace TradeSatoshi.Core.Services
 								// Notify user trade history
 								notifications.Add(new NotifyTradeUserHistoryUpdate
 								{
-								  UserId = newTransaction.UserId,
+									UserId = newTransaction.UserId,
 									Amount = newTransaction.Amount,
 									Market = tradePair.Name,
 									TradePairId = tradePair.Id,
@@ -754,13 +750,11 @@ namespace TradeSatoshi.Core.Services
 						await context.SaveChangesAsync();
 						transaction.Commit();
 
+						// Send notifications and invalidate cache
 						await TradeNotificationService.SendNotificationCollection(notifications);
-						//await TradeNotificationService.SendNotification(userNotifications);
-						//await TradeNotificationService.SendOrderBookUpdate(orderNotifications);
-						//await TradeNotificationService.SendOpenOrderUserUpdate(openOrderNotifications);
-						//await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
-						//await TradeNotificationService.SendTradeHistoryUpdate(tradeHistoryNotifications);
-						//await TradeNotificationService.SendTradeUserHistoryUpdate(userTradeHistoryNotifications);
+						CacheService.Invalidate(TradeCacheKeys.GetTradeHistoryKey(tradePair.Id));
+						CacheService.Invalidate(TradeCacheKeys.GetOpenBuyOrdersKey(tradePair.Id));
+						CacheService.Invalidate(TradeCacheKeys.GetOpenSellOrdersKey(tradePair.Id));
 
 						Log.Info("TradeService", "Process trade success.");
 						return response;
@@ -799,7 +793,7 @@ namespace TradeSatoshi.Core.Services
 				}
 			}
 
-			return new CreateTradeResponse {  Error = "An unknown error occured" };
+			return new CreateTradeResponse { Error = "An unknown error occured" };
 		}
 
 		#region Helpers
@@ -853,17 +847,17 @@ namespace TradeSatoshi.Core.Services
 			return 0.00;
 		}
 
-		private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
-		{
-			var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
-			return result.Success;
-		}
+		//private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
+		//{
+		//	var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
+		//	return result.Success;
+		//}
 
-		private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId)
-		{
-			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
-			return result.Success;
-		}
+		//private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId)
+		//{
+		//	var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
+		//	return result.Success;
+		//}
 
 		#endregion
 	}
@@ -875,89 +869,89 @@ namespace TradeSatoshi.Core.Services
 		}
 	}
 
-	public class TradeNotifier
-	{
-		public TradeNotifier(int tradePairId, INotificationService notificationService)
-		{
-			TradePairId = tradePairId;
-			NotificationService = notificationService;
-		}
+	//public class TradeNotifier
+	//{
+	//	public TradeNotifier(int tradePairId, INotificationService notificationService)
+	//	{
+	//		TradePairId = tradePairId;
+	//		NotificationService = notificationService;
+	//	}
 
-		public int TradePairId { get; set; }
-		public INotificationService NotificationService { get; set; }
+	//	public int TradePairId { get; set; }
+	//	public INotificationService NotificationService { get; set; }
 
-		private readonly List<INotification> _notifications = new List<INotification>();
-		private readonly List<IUserNotification> _userNotifications = new List<IUserNotification>();
+	//	private readonly List<INotification> _notifications = new List<INotification>();
+	//	private readonly List<IUserNotification> _userNotifications = new List<IUserNotification>();
 
-		private readonly List<IDataNotification> _dataNotifications = new List<IDataNotification>();
-		private readonly List<IUserDataNotification> _userDataNotifications = new List<IUserDataNotification>();
+	//	private readonly List<IDataNotification> _dataNotifications = new List<IDataNotification>();
+	//	private readonly List<IUserDataNotification> _userDataNotifications = new List<IUserDataNotification>();
 
-		private readonly List<IDataTableNotification> _dataTableNotifications = new List<IDataTableNotification>();
-		private readonly List<IUserDataTableNotification> _userDataTableNotifications = new List<IUserDataTableNotification>();
+	//	private readonly List<IDataTableNotification> _dataTableNotifications = new List<IDataTableNotification>();
+	//	private readonly List<IUserDataTableNotification> _userDataTableNotifications = new List<IUserDataTableNotification>();
 
 
-		public async Task SendNotificationsAsync()
-		{
-			if (_dataTableNotifications.Any())
-				await NotificationService.SendDataTableNotificationAsync(_dataTableNotifications);
+	//	public async Task SendNotificationsAsync()
+	//	{
+	//		if (_dataTableNotifications.Any())
+	//			await NotificationService.SendDataTableNotificationAsync(_dataTableNotifications);
 
-			if (_userDataTableNotifications.Any())
-				await NotificationService.SendUserDataTableNotificationAsync(_userDataTableNotifications);
+	//		if (_userDataTableNotifications.Any())
+	//			await NotificationService.SendUserDataTableNotificationAsync(_userDataTableNotifications);
 
-			if (_dataNotifications.Any())
-				await NotificationService.SendDataNotificationAsync(_dataNotifications);
+	//		if (_dataNotifications.Any())
+	//			await NotificationService.SendDataNotificationAsync(_dataNotifications);
 
-			if (_userDataNotifications.Any())
-				await NotificationService.SendUserNotificationDataAsync(_userDataNotifications);
+	//		if (_userDataNotifications.Any())
+	//			await NotificationService.SendUserNotificationDataAsync(_userDataNotifications);
 
-			if (_notifications.Any())
-				await NotificationService.SendNotificationAsync(_notifications);
+	//		if (_notifications.Any())
+	//			await NotificationService.SendNotificationAsync(_notifications);
 
-			if (_userNotifications.Any())
-				await NotificationService.SendUserNotificationAsync(_userNotifications);
-		}
+	//		if (_userNotifications.Any())
+	//			await NotificationService.SendUserNotificationAsync(_userNotifications);
+	//	}
 
-		internal void AddUserNotification(string userId, string message, params object[] format)
-		{
-			_userNotifications.Add(new UserNotification(NotificationType.Info, userId, "Trade Notification", string.Format(message, format)));
-		}
+	//	internal void AddUserNotification(string userId, string message, params object[] format)
+	//	{
+	//		_userNotifications.Add(new UserNotification(NotificationType.Info, userId, "Trade Notification", string.Format(message, format)));
+	//	}
 
-		internal void AddDataTableNotification(string dataTable)
-		{
-			var tableName = string.Format(dataTable, TradePairId);
-			if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
-				_dataTableNotifications.Add(new DataTableNotification(tableName));
-		}
+	//	internal void AddDataTableNotification(string dataTable)
+	//	{
+	//		var tableName = string.Format(dataTable, TradePairId);
+	//		if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
+	//			_dataTableNotifications.Add(new DataTableNotification(tableName));
+	//	}
 
-		internal void AddDataTableNotification(string dataTable, int tradPairId)
-		{
-			var tableName = string.Format(dataTable, tradPairId);
-			if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
-				_dataTableNotifications.Add(new DataTableNotification(tableName));
-		}
+	//	internal void AddDataTableNotification(string dataTable, int tradPairId)
+	//	{
+	//		var tableName = string.Format(dataTable, tradPairId);
+	//		if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
+	//			_dataTableNotifications.Add(new DataTableNotification(tableName));
+	//	}
 
-		internal void AddUserDataTableNotification(string userId, string dataTable)
-		{
-			var tableName = string.Format(dataTable, TradePairId);
-			if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
-				_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
-		}
+	//	internal void AddUserDataTableNotification(string userId, string dataTable)
+	//	{
+	//		var tableName = string.Format(dataTable, TradePairId);
+	//		if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
+	//			_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
+	//	}
 
-		internal void AddUserDataTableNotification(string userId, string dataTable, int tradePairId)
-		{
-			var tableName = string.Format(dataTable, tradePairId);
-			if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
-				_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
-		}
+	//	internal void AddUserDataTableNotification(string userId, string dataTable, int tradePairId)
+	//	{
+	//		var tableName = string.Format(dataTable, tradePairId);
+	//		if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
+	//			_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
+	//	}
 
-		internal void AddDataNotification(string element, string value)
-		{
-			_dataNotifications.Add(new DataNotification(element, value));
-		}
+	//	internal void AddDataNotification(string element, string value)
+	//	{
+	//		_dataNotifications.Add(new DataNotification(element, value));
+	//	}
 
-		internal void AddUserDataNotification(string userId, string element, string value)
-		{
-			_userDataNotifications.Add(new UserDataNotification(userId, element, value));
-		}
-	}
+	//	internal void AddUserDataNotification(string userId, string element, string value)
+	//	{
+	//		_userDataNotifications.Add(new UserDataNotification(userId, element, value));
+	//	}
+	//}
 }

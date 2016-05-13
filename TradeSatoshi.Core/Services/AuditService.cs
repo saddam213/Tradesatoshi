@@ -74,8 +74,8 @@ namespace TradeSatoshi.Core.Services
 				var totalSell = userTradeHistory.Where(x => x.ToUserId == userId && x.CurrencyId1 == currencyId).Sum(x => x.Amount);
 				var totalSellFee = userTradeHistory.Where(x => x.ToUserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Fee);
 				var totalSellBase = userTradeHistory.Where(x => x.UserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Amount * x.Rate);
-				var heldForOrders = userTrades.Where(x => x.TradeType == TradeType.Sell && x.CurrencyId1 == currencyId).Sum(x => x.Remaining);
-				var heldForOrdersBase = userTrades.Where(x => x.TradeType == TradeType.Buy && x.CurrencyId2 == currencyId).Sum(x => (x.Remaining * x.Rate) + x.Fee);
+				var heldForOrders = userTrades.Where(x => x.CurrencyId1 == currencyId && x.TradeType == TradeType.Sell).Sum(x => x.Remaining);
+				var heldForOrdersBase = userTrades.Where(x => x.CurrencyId2 == currencyId && x.TradeType == TradeType.Buy).Sum(x => (x.Remaining * x.Rate) + x.Fee);
 				var transferIn = userTransfers.Where(x => x.ToUserId == userId).Sum(x => x.Amount);
 				var transferOut = userTransfers.Where(x => x.UserId == userId).Sum(x => x.Amount);
 
@@ -88,9 +88,13 @@ namespace TradeSatoshi.Core.Services
 				var total = totalIn - totalOut;
 
 				// Get or create user balance
-				var balance = await context.Balance.Include(b => b.Currency).FirstOrDefaultAsync(x => x.CurrencyId == currencyId && x.UserId == userId);
+				var balance = await context.Balance
+				.Include(x => x.User)
+				.Include(b => b.Currency)
+				.FirstOrDefaultAsync(x => x.CurrencyId == currencyId && x.UserId == userId);
 				if (balance == null)
 				{
+					var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 					var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == currencyId);
 					balance = context.Balance.Add(new Entity.Balance
 					{
@@ -117,7 +121,8 @@ namespace TradeSatoshi.Core.Services
 					Unconfirmed = balance.Unconfirmed,
 					HeldForTrades = balance.HeldForTrades,
 					PendingWithdraw = balance.PendingWithdraw,
-					Avaliable = balance.Avaliable
+					Avaliable = balance.Avaliable,
+					UserName = balance.User.UserName
 				};
 			}
 			catch (Exception ex)

@@ -5,73 +5,37 @@
 });
 $.ajaxSetup({ cache: false });
 
-//(function () {
-	var notificationHub = $.connection.Notification;
-	notificationHub.client.SendNotification = function (notification) {
-		var icon = 'fa-info';
-		var type = 'alert-info';
-		if (notification.Type == 1) {
-			icon = 'fa-check';
-			type = 'alert-success';
-		}
-		if (notification.Type == 2) {
-			icon = 'fa-exclamation-triangle';
-			type = 'alert-warning';
-		}
-		if (notification.Type == 3) {
-			icon = 'fa-times-circle';
-			type = 'alert-danger';
-		}
-		$.jGrowl(htmlEncode(notification.Message), { position: "bottom-right", header: htmlEncode(notification.Title), icon: icon, type: type });
-	};
+var notificationHub = $.connection.Notification;
+notificationHub.client.OnNotification = function (notification) {
+	console.log(notification.Message)
+	showNotificationPopup(notification);
+};
+notificationHub.client.OnBalanceUpdate = function (notification) {
+	console.log("OnBalanceUpdate")
+	$(document).trigger("OnBalanceUpdate", notification);
+	$(document).trigger("OnBalanceUpdateGlobal", notification);
+};
+notificationHub.client.OnOrderBookUpdate = function (notification) {
+	console.log("OnOrderBookUpdate" + notification.TradePairId)
+	$(document).trigger("OnOrderBookUpdate", notification);
+	$(document).trigger("OnOrderBookUpdateGlobal", notification);
+};
+notificationHub.client.OnTradeHistoryUpdate = function (notification) {
+	console.log("OnTradeHistoryUpdate" + notification.TradePairId)
+	$(document).trigger("OnTradeHistoryUpdate", notification);
+	$(document).trigger("OnTradeHistoryUpdateGlobal", notification);
+};
+//notificationHub.client.OnOpenOrderUserUpdate = function (notification) {
+//	console.log("OnOpenOrderUserUpdate")
+//	$(document).trigger("OnOpenOrderUserUpdate", notification);
+//};
+//notificationHub.client.OnTradeUserHistoryUpdate = function (notification) {
+//	console.log("OnTradeUserHistoryUpdate")
+//	$(document).trigger("OnTradeUserHistoryUpdate", notification);
+//};
 
-	var dataNotificationHub = $.connection.DataNotification;
-	dataNotificationHub.client.UpdateElementData = function (notification) {
-		console.log('UpdateElementData', notification.DataKey, notification.DataValue)
-		$(htmlEncode(notification.DataKey)).html(htmlEncode(notification.DataValue));
-	};
-	dataNotificationHub.client.UpdateData = function (notification) {
-		console.log('UpdateData', notification.DataKey, notification.DataValue)
-		$(document).trigger(notification.DataKey, notification.DataValue);
-	};
-	dataNotificationHub.client.UpdateDataTable = function (notification) {
-		console.log('UpdateDataTable', notification.DataTableName)
-		$(htmlEncode(notification.DataTableName)).dataTable().fnDraw();
-	};
+$.connection.hub.start().done(function () { });
 
-
-	var tradeNotificationHub = $.connection.TradeNotification;
-	tradeNotificationHub.client.OnNotification = function (notification) {
-		console.log(notification.Message)
-		showNotificationPopup(notification);
-	};
-	tradeNotificationHub.client.OnBalanceUpdate = function (notification) {
-		console.log("OnBalanceUpdate")
-		$(document).trigger("OnBalanceUpdate", notification);
-		$(document).trigger("OnBalanceUpdateGlobal", notification);
-	};
-	tradeNotificationHub.client.OnOrderBookUpdate = function (notification) {
-		console.log("OnOrderBookUpdate" + notification.TradePairId)
-		$(document).trigger("OnOrderBookUpdate", notification);
-		$(document).trigger("OnOrderBookUpdateGlobal", notification);
-	};
-	tradeNotificationHub.client.OnTradeHistoryUpdate = function (notification) {
-		console.log("OnTradeHistoryUpdate" + notification.TradePairId)
-		$(document).trigger("OnTradeHistoryUpdate", notification);
-		$(document).trigger("OnTradeHistoryUpdateGlobal", notification);
-	};
-	//tradeNotificationHub.client.OnOpenOrderUserUpdate = function (notification) {
-	//	console.log("OnOpenOrderUserUpdate")
-	//	$(document).trigger("OnOpenOrderUserUpdate", notification);
-	//};
-	//tradeNotificationHub.client.OnTradeUserHistoryUpdate = function (notification) {
-	//	console.log("OnTradeUserHistoryUpdate")
-	//	$(document).trigger("OnTradeUserHistoryUpdate", notification);
-	//};
-
-
-	$.connection.hub.start().done(function () {	});
-//})();
 
 function showNotificationPopup(notification) {
 	var icon = 'fa-info';

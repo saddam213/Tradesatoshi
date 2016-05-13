@@ -20,5 +20,6 @@
 		public decimal Total { get; set; }
 		public decimal Unconfirmed { get; set; }
 		public string UserId { get; set; }
+		public string UserName { get; set; }
 	}
 }

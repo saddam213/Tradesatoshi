@@ -1,38 +1,46 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Services.NotificationService;
 
 namespace TradeSatoshi.Web.Hubs
 {
 	[HubName("Notification")]
-	public class NotificationHub : Hub, INotificationClient
+	public class NotificationHub : Hub
 	{
-		public async Task OnNotification(Notification notification)
+		public async Task OnNotification(NotifyUser notification)
 		{
-			await Clients.All.SendNotification(notification);
+			await Clients.User(notification.UserId).OnNotification(notification);
 		}
 
-		public async Task OnUserNotification(UserNotification notification)
+		public async Task OnBalanceUpdate(NotifyBalanceUpdate notification)
 		{
-			await Clients.User(notification.UserId).SendNotification(notification);
+			await Clients.User(notification.UserId).OnBalanceUpdate(notification);
 		}
 
-		public async Task OnNotifications(List<Notification> notifications)
+		public async Task OnOrderBookUpdate(NotifyOrderBookUpdate notification)
 		{
-			foreach (var notification in notifications)
-			{
-				await Clients.All.SendNotification(notification);
-			}
+			await Clients.All.OnOrderBookUpdate(notification);
 		}
 
-		public async Task OnUserNotifications(List<UserNotification> notifications)
+		public async Task OnTradeHistoryUpdate(NotifyTradeHistoryUpdate notification)
 		{
-			foreach (var notification in notifications)
-			{
-				await Clients.User(notification.UserId).SendNotification(notification);
-			}
+			await Clients.All.OnTradeHistoryUpdate(notification);
+		}
+
+		public async Task OnOpenOrderUserUpdate(NotifyOpenOrderUserUpdate notification)
+		{
+			await Clients.User(notification.UserId).OnOpenOrderUserUpdate(notification);
+		}
+
+		public async Task OnTradeUserHistoryUpdate(NotifyTradeUserHistoryUpdate notification)
+		{
+			await Clients.User(notification.UserId).OnTradeUserHistoryUpdate(notification);
 		}
 	}
 }
+

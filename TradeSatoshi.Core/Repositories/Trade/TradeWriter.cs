@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Common.Services.TradeService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.Transfer;
@@ -11,8 +10,7 @@ namespace TradeSatoshi.Core.Trade
 	public class TradeWriter : ITradeWriter
 	{
 		public ITradeService TradeService { get; set; }
-		public INotificationService NotificationService { get; set; }
-
+	
 		public async Task<IWriterResult<bool>> CreateTrade(string userId, CreateTradeModel model)
 		{
 			model.UserId = userId;
