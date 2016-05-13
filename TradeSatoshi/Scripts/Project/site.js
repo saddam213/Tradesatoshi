@@ -48,14 +48,17 @@ $.ajaxSetup({ cache: false });
 	tradeNotificationHub.client.OnBalanceUpdate = function (notification) {
 		console.log("OnBalanceUpdate")
 		$(document).trigger("OnBalanceUpdate", notification);
+		$(document).trigger("OnBalanceUpdateGlobal", notification);
 	};
 	tradeNotificationHub.client.OnOrderBookUpdate = function (notification) {
 		console.log("OnOrderBookUpdate" + notification.TradePairId)
-		$(document).trigger("OnOrderBookUpdate" + notification.TradePairId, notification);
+		$(document).trigger("OnOrderBookUpdate", notification);
+		$(document).trigger("OnOrderBookUpdateGlobal", notification);
 	};
 	tradeNotificationHub.client.OnTradeHistoryUpdate = function (notification) {
 		console.log("OnTradeHistoryUpdate" + notification.TradePairId)
-		$(document).trigger("OnTradeHistoryUpdate" + notification.TradePairId, notification);
+		$(document).trigger("OnTradeHistoryUpdate", notification);
+		$(document).trigger("OnTradeHistoryUpdateGlobal", notification);
 	};
 	//tradeNotificationHub.client.OnOpenOrderUserUpdate = function (notification) {
 	//	console.log("OnOpenOrderUserUpdate")
@@ -251,15 +254,6 @@ function notifyModal(header, message, callback) {
 	});
 }
 
-function truncateDecimals(num, digits) {
-	var numS = num.toString(),
-        decPos = numS.indexOf('.'),
-        substrLength = decPos == -1 ? numS.length : 1 + decPos + digits,
-        trimmedResult = numS.substr(0, substrLength),
-        finalResult = isNaN(trimmedResult) ? 0 : trimmedResult;
-
-	return parseFloat(finalResult);
-}
 
 function htmlEncode(val) {
 	return $('<div/>').text(val).html();
@@ -308,4 +302,26 @@ function timeSince(time1, time2) {
 		return '(an hour ago)';
 	}
 	return '(ages ago...)';
+}
+
+
+function highlightChange(element, red) {
+	var item = $(element);
+	if (item.hasClass("greenhighlight") || item.hasClass("redhighlight")) {
+		item.removeClass("greenhighlight redhighlight").addClass(red ? "redhighlight2" : "greenhighlight2");
+	} else {
+		item.removeClass("greenhighlight2 redhighlight2").addClass(red ? "redhighlight" : "greenhighlight")
+	}
+}
+
+function truncateDecimal(decimal) {
+	var value = decimal.toString();
+	if (value.indexOf(".") > -1) {
+		var arr = value.split('.');
+		if (arr[1].length > 8) {
+			arr[1] = arr[1].substring(0, 8);
+			return (+(arr[0] + "." + arr[1])).toFixed(8)
+		}
+	}
+	return (+value).toFixed(8);
 }

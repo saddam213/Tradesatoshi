@@ -15,14 +15,12 @@ namespace TradeSatoshi.Core.Services
 			try
 			{
 				var deposits = await context.Deposit
-						.Where(x => x.CurrencyId == currencyId && x.UserId == userId)
-						.Select(x => new
-						{
-							Status = x.DepositStatus,
-							Amount = (decimal?)x.Amount ?? 0m
-						}).ToListAsync();
-				var depositsConfirmed = deposits.Where(x => x.Status == DepositStatus.Confirmed).Sum(x => x.Amount);
-				var depositsUnconfirmed = deposits.Where(x => x.Status == DepositStatus.UnConfirmed).Sum(x => x.Amount);
+					.Where(x => x.CurrencyId == currencyId && x.UserId == userId)
+					.Select(x => new
+					{
+						Status = x.DepositStatus,
+						Amount = (decimal?)x.Amount ?? 0m
+					}).ToListAsync();
 
 				var withdraws = await context.Withdraw
 					.Where(x => x.CurrencyId == currencyId && x.UserId == userId)
@@ -32,63 +30,54 @@ namespace TradeSatoshi.Core.Services
 						Amount = (decimal?)x.Amount ?? 0m
 					}).ToListAsync();
 
+				var userTradeHistory = await context.TradeHistory
+					.Where(x => (x.UserId == userId || x.ToUserId == userId) && (x.TradePair.CurrencyId1 == currencyId || x.TradePair.CurrencyId2 == currencyId))
+					.Select(t => new
+					{
+						t.UserId,
+						t.ToUserId,
+						Fee = t.Fee,
+						Amount = t.Amount,
+						Rate = t.Rate,
+						CurrencyId1 = t.TradePair.CurrencyId1,
+						CurrencyId2 = t.TradePair.CurrencyId2
+					}).ToListAsync();
+
+				var userTrades = await context.Trade
+					.Where(x => x.UserId == userId && (x.Status == TradeStatus.Pending || x.Status == TradeStatus.Partial) && (x.TradePair.CurrencyId1 == currencyId || x.TradePair.CurrencyId2 == currencyId))
+					.Select(t => new
+					{
+						t.TradeType,
+						Remaining = t.Remaining,
+						Rate = t.Rate,
+						Fee = t.Fee,
+						t.TradePair.CurrencyId1,
+						t.TradePair.CurrencyId2
+					}).ToListAsync();
+
+				var userTransfers = await context.TransferHistory
+					.Where(x => x.CurrencyId == currencyId && (x.UserId == userId || x.ToUserId == userId))
+					.Select(t => new
+					{
+						t.UserId,
+						t.ToUserId,
+						t.Amount
+					}).ToListAsync();
+
+				var depositsConfirmed = deposits.Where(x => x.Status == DepositStatus.Confirmed).Sum(x => x.Amount);
+				var depositsUnconfirmed = deposits.Where(x => x.Status == DepositStatus.UnConfirmed).Sum(x => x.Amount);
 				var withdrawPending = withdraws.Where(x => x.Status == WithdrawStatus.Pending || x.Status == WithdrawStatus.Processing || x.Status == WithdrawStatus.Unconfirmed).Sum(x => x.Amount);
 				var withdrawConfirmed = withdraws.Where(x => x.Status == WithdrawStatus.Complete).Sum(x => x.Amount);
-
-				var totalBuy = await context.TradeHistory
-					.Where(x => x.CurrencyId == currencyId && x.UserId == userId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Amount ?? 0m);
-
-				var totalBuyFee = await context.TradeHistory
-					.Include(t => t.TradePair)
-					.Where(x => x.UserId == userId && x.TradePair.CurrencyId2 == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Fee ?? 0m);
-
-				var totalBuyBase = await context.TradeHistory
-					.Where(x => x.ToUserId == userId && x.TradePair.CurrencyId2 == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => ((decimal?)x.Amount ?? 0m) * ((decimal?)x.Rate ?? 0m));
-
-				var totalSell = await context.TradeHistory
-					.Where(x => x.CurrencyId == currencyId && x.ToUserId == userId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Amount ?? 0m);
-
-				var totalSellFee = await context.TradeHistory
-					.Include(t => t.TradePair)
-					.Where(x => x.ToUserId == userId && x.TradePair.CurrencyId2 == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Fee ?? 0m);
-
-				var totalSellBase = await context.TradeHistory
-					.Include(t => t.TradePair)
-					.Where(x => x.UserId == userId && x.TradePair.CurrencyId2 == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => ((decimal?)x.Amount ?? 0m) * ((decimal?)x.Rate ?? 0m));
-
-				var heldForOrders = await context.Trade
-					.Include(t => t.TradePair)
-					.Where(x => x.UserId == userId && x.TradeType == TradeType.Sell && x.TradePair.CurrencyId1 == currencyId && (x.Status == TradeStatus.Pending || x.Status == TradeStatus.Partial))
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Remaining ?? 0m);
-
-				var heldForOrdersBase = await context.Trade
-					.Include(t => t.TradePair)
-					.Where(x => x.UserId == userId && x.TradeType == TradeType.Buy && x.TradePair.CurrencyId2 == currencyId && (x.Status == TradeStatus.Pending || x.Status == TradeStatus.Partial))
-					.DefaultIfEmpty()
-					.SumAsync(x => (((decimal?)x.Remaining ?? 0m) * ((decimal?)x.Rate ?? 0m)) + (decimal?)x.Fee ?? 0m);
-
-				var transferIn = await context.TransferHistory
-					.Where(x => x.ToUserId == userId && x.CurrencyId == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Amount ?? 0m);
-
-				var transferOut = await context.TransferHistory
-					.Where(x => x.UserId == userId && x.CurrencyId == currencyId)
-					.DefaultIfEmpty()
-					.SumAsync(x => (decimal?)x.Amount ?? 0m);
+				var totalBuy = userTradeHistory.Where(x => x.UserId == userId && x.CurrencyId1 == currencyId).Sum(x => x.Amount);
+				var totalBuyFee = userTradeHistory.Where(x => x.UserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Fee);
+				var totalBuyBase = userTradeHistory.Where(x => x.ToUserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Amount * x.Rate);
+				var totalSell = userTradeHistory.Where(x => x.ToUserId == userId && x.CurrencyId1 == currencyId).Sum(x => x.Amount);
+				var totalSellFee = userTradeHistory.Where(x => x.ToUserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Fee);
+				var totalSellBase = userTradeHistory.Where(x => x.UserId == userId && x.CurrencyId2 == currencyId).Sum(x => x.Amount * x.Rate);
+				var heldForOrders = userTrades.Where(x => x.TradeType == TradeType.Sell && x.CurrencyId1 == currencyId).Sum(x => x.Remaining);
+				var heldForOrdersBase = userTrades.Where(x => x.TradeType == TradeType.Buy && x.CurrencyId2 == currencyId).Sum(x => (x.Remaining * x.Rate) + x.Fee);
+				var transferIn = userTransfers.Where(x => x.ToUserId == userId).Sum(x => x.Amount);
+				var transferOut = userTransfers.Where(x => x.UserId == userId).Sum(x => x.Amount);
 
 				// Sum sub totals
 				var totalIn = depositsConfirmed + depositsUnconfirmed + totalBuy + totalBuyBase + transferIn;
@@ -131,7 +120,7 @@ namespace TradeSatoshi.Core.Services
 					Avaliable = balance.Avaliable
 				};
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				return new AuditCurrencyResult(false);
 			}

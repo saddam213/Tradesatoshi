@@ -918,3 +918,89 @@ float:left;*/
 		text-align: justify;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes sellhighlight {
+	0% {
+		background: #f2dede;
+	}
+
+	100% {
+		background: none;
+	}
+}
+
+
+
+@keyframes sellhighlight2 {
+	0% {
+		background: #f2dede;
+	}
+
+	100% {
+		background: none;
+	}
+}
+
+
+
+@keyframes buyhighlight {
+	0% {
+		background: #dff0d8;
+	}
+
+	100% {
+		background: none;
+	}
+}
+
+@keyframes buyhighlight2 {
+	0% {
+		background: #dff0d8;
+	}
+
+	100% {
+		background: none;
+	}
+}
+
+.sellhighlight {
+	animation: sellhighlight .2s;
+}
+.sellhighlight2 {
+	animation: sellhighlight2 .2s;
+}
+
+.buyhighlight {
+	animation: buyhighlight .2s;
+}
+
+.buyhighlight2 {
+	animation: buyhighlight2 .2s;
+}
+
+
+.redhighlight {
+	animation: sellhighlight .2s;
+}
+.redhighlight2 {
+	animation: sellhighlight2 .2s;
+}
+
+.greenhighlight {
+	animation: buyhighlight .2s;
+}
+
+.greenhighlight2 {
+	animation: buyhighlight2 .2s;
+}

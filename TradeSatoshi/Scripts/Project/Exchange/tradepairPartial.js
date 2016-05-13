@@ -164,12 +164,18 @@ function cancelTradePairOrders(tradePair, action) {
 var orderTemplate = $('#orderTemplate').html();
 var historyTemplate = $('#tradeHistoryTemplate').html();
 
-$(document).off("OnTradeHistoryUpdate" + tradePairId).on("OnTradeHistoryUpdate" + tradePairId, function (event, notification) {
+$(document).off("OnTradeHistoryUpdate").on("OnTradeHistoryUpdate", function (event, notification) {
+	if (tradePairId !== notification.TradePairId)
+		return;
+
 	var table = '#table-tradehistory-' + tradePairId;
 	prependTradeHistory(table, notification);
 });
 
-$(document).off("OnOrderBookUpdate" + tradePairId).on("OnOrderBookUpdate" + tradePairId, function (event, notification) {
+$(document).off("OnOrderBookUpdate").on("OnOrderBookUpdate", function (event, notification) {
+	if (tradePairId !== notification.TradePairId)
+		return;
+
 	var type = notification.Type;
 	var table = type === "Buy"
 		? "#table-buyOrders-" + tradePairId
@@ -306,8 +312,7 @@ $(".data-balance-sell").on("click", function () {
 	var rate = $('#rate-Sell').val();
 	var balance = $(this).html();
 	if (balance && rate) {
-		var total = balance / rate;
-		calculateOrder(balance / rate, rate)
+		calculateOrder(balance, rate)
 	}
 });
 
@@ -316,11 +321,12 @@ $(".data-balance-buy").on("click", function () {
 	var rate = +$('#rate-Buy').val();
 	var balance = +$(this).html();
 	if (balance && rate) {
-		var rateWithFee = rate + (rate / 100.00000000 * fee);
-		var amount = balance.toFixed(8) / rateWithFee.toFixed(8);
-		if ((amount.toFixed(8) * rateWithFee.toFixed(8)) > balance.toFixed(8)) {
+		var rateWithFee = rate + (rate / 100.0 * fee);
+		var amount = balance / rateWithFee;
+		if ((amount * rateWithFee) > balance) {
 			amount = amount - 0.00000001;
 		}
-		calculateOrder(amount, rate)
+		calculateOrder(truncateDecimal(amount), rate)
 	}
 });
+
