@@ -7,6 +7,9 @@ using TradeSatoshi.Common.User;
 using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Common.TradePair;
 using System.Collections.Generic;
+using TradeSatoshi.Common.Services.EncryptionService;
+using TradeSatoshi.Web.Api.Authentication;
+using System.Linq;
 
 namespace TradeSatoshi.Web.Controllers
 {
@@ -15,6 +18,7 @@ namespace TradeSatoshi.Web.Controllers
 	{
 		public IBalanceReader BalanceReader { get; set; }
 		public ITradePairReader TradePairReader { get; set; }
+		public IEncryptionService EncryptionService { get; set; }
 
 		[HttpGet]
 		public async Task<ActionResult> Index()
@@ -100,5 +104,63 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		#endregion
+
+		[HttpGet]
+		public ActionResult GetUserApiSettings()
+		{
+			var userId = User.Id();
+			var user = UserManager.Users.FirstOrDefault(x => x.Id == userId);
+			var model = new UserApiModel
+			{
+				IsEnabled = user.IsApiEnabled,
+				Key = user.ApiKey,
+				Secret = user.ApiSecret
+			};
+			return PartialView("_ApiPartial", model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> UpdateUserApiSettings(UserApiModel model)
+		{
+			if (!ModelState.IsValid)
+				return PartialView("_ApiPartial", model);
+
+			var user = await UserManager.FindByIdAsync(User.Id());
+			var oldKey = user.ApiKey;
+
+			if (model.IsEnabled)
+			{
+				user.ApiKey = model.Key;
+				user.ApiSecret = model.Secret;
+				user.IsApiEnabled = model.IsEnabled;
+			}
+			else
+			{
+				user.ApiKey = string.Empty;
+				user.ApiSecret = string.Empty;
+				user.IsApiEnabled = model.IsEnabled;
+			}
+			var newKey = EncryptionService.GenerateEncryptionKeyPair();
+
+
+			await UserManager.UpdateAsync(user);
+			ApiKeyStore.InvalidateApiKey(oldKey);
+			ApiKeyStore.GetApiAuthKey(user.ApiKey);
+
+			return PartialView("_ApiPartial", model);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult GetNewApiKey()
+		{
+			var newKey = EncryptionService.GenerateEncryptionKeyPair();
+			return Json(new
+			{
+				Key = newKey.PublicKey,
+				Secret = newKey.PrivateKey
+			});
+		}
 	}
 }

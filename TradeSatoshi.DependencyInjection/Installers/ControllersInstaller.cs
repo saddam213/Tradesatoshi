@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http.Controllers;
 using System.Web.Mvc;
 
 namespace TradeSatoshi.DependencyInjection.Installers
@@ -19,7 +20,12 @@ namespace TradeSatoshi.DependencyInjection.Installers
 			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Web")
 				.BasedOn<IController>()
 				.LifestyleTransient()
-			);
+				);
+
+			container.Register(Classes.FromAssemblyNamed("TradeSatoshi.Web")
+				.BasedOn<IHttpController>()
+				.LifestyleTransient()
+				);
 		}
 	}
 }

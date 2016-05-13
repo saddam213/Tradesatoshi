@@ -10,13 +10,13 @@ using TradeSatoshi.Common;
 using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Base.Extensions;
 using System.Data.Entity;
-using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Core.Services;
 using TradeSatoshi.Base.Logging;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Entity;
+using TradeSatoshi.Common.Services.NotificationService;
 
 namespace TradeSatoshi.WalletService.Implementation
 {
@@ -28,6 +28,7 @@ namespace TradeSatoshi.WalletService.Implementation
 		private bool _isEnabled = false;
 		private int _pollPeriod = 30;
 		public IAuditService AuditService { get; set; }
+		//public INotificationService NotificationService { get; set; }
 		public INotificationService NotificationService { get; set; }
 
 		public WalletTracker(CancellationToken cancelToken)
@@ -54,6 +55,7 @@ namespace TradeSatoshi.WalletService.Implementation
 					Log.Message(LogLevel.Info, "Processing wallets...");
 					await ProcessInfo();
 					await ProcessDeposits();
+					await ProcessWithdrawals();
 					Log.Message(LogLevel.Info, "Processing wallets complete.");
 					await Task.Delay(TimeSpan.FromSeconds(_pollPeriod), _cancelToken);
 				}
@@ -123,6 +125,7 @@ namespace TradeSatoshi.WalletService.Implementation
 			Log.Message(LogLevel.Info, "Processing deposits...");
 			using (var context = new DataContext())
 			{
+				var notifications = new List<INotify>();
 				var userIds = await context.Users.Select(x => x.Id).ToListAsync();
 				var currencies = await context.Currency.Where(x => x.IsEnabled).ToListAsync();
 				foreach (var currency in currencies)
@@ -169,8 +172,8 @@ namespace TradeSatoshi.WalletService.Implementation
 									};
 									context.Deposit.Add(newDeposit);
 									await context.SaveChangesAsync();
-									await AuditUser(context, currency.Id, userId);
-									await NotificationService.SendUserNotificationAsync(new UserNotification
+									notifications.Add(GetBalanceNotification(await AuditUser(context, currency.Id, userId)));
+									notifications.Add(new NotifyUser
 									{
 										Title = "New Deposit",
 										Message = string.Format("{0} Deposit #{1}, {2:F8} {3}", newDeposit.DepositStatus, newDeposit.Id, newDeposit.Amount, currency.Symbol),
@@ -202,8 +205,8 @@ namespace TradeSatoshi.WalletService.Implementation
 									if (existingDeposit.DepositStatus == DepositStatus.Confirmed)
 									{
 										Log.Message(LogLevel.Info, "Deposit #{0} confirmed.", existingDeposit.Id);
-										await AuditUser(context, currency.Id, userId);
-										await NotificationService.SendUserNotificationAsync(new UserNotification
+										notifications.Add(GetBalanceNotification(await AuditUser(context, currency.Id, userId)));
+										notifications.Add(new NotifyUser
 										{
 											Title = "Deposit Confirmed",
 											Message = string.Format("Deposit #{0}, {1:F8} {2} has now been confirmed", existingDeposit.Id, existingDeposit.Amount, existingDeposit.Currency.Symbol),
@@ -225,6 +228,9 @@ namespace TradeSatoshi.WalletService.Implementation
 						Log.Exception("An exception occured processing wallet transactions. Currency: {0}", ex, currency.Symbol);
 					}
 				}
+
+				// Send notifications
+				await NotificationService.SendNotificationCollection(notifications);
 			}
 		}
 
@@ -292,33 +298,48 @@ namespace TradeSatoshi.WalletService.Implementation
 				}
 				await context.SaveChangesAsync();
 
+				if(!pendingWithdraws.Any())
+				{
+					Log.Message(LogLevel.Info, "No pending {0} withdrawals found.", currency.Symbol);
+					return;
+				}
+
 				foreach (var pendingWithdraw in pendingWithdraws)
 				{
 					try
 					{
-						if(!await AuditUser(context, pendingWithdraw.CurrencyId, pendingWithdraw.UserId))
+						Log.Message(LogLevel.Info, "Processing pending withdrawal. Currency: {0}, Amount: {1}, Address: {2}", currency.Symbol, pendingWithdraw.Amount, pendingWithdraw.Address);
+						var auditResult = await AuditUser(context, pendingWithdraw.CurrencyId, pendingWithdraw.UserId);
+						if (!auditResult.Success)
 						{
+							Log.Message(LogLevel.Error, "Failed to audit user balance. Currency: {0}, User: {1}", currency.Symbol, pendingWithdraw.UserId);
 							continue;
 						}
 
-						var balance = await context.Balance.FirstOrDefaultAsync(x => x.UserId == pendingWithdraw.UserId && x.CurrencyId == pendingWithdraw.CurrencyId);
-						if (balance == null || balance.Total <= 0)
+						if (auditResult.Total <= 0 || auditResult.Total < pendingWithdraw.Amount || auditResult.PendingWithdraw < pendingWithdraw.Amount || auditResult.PendingWithdraw > auditResult.Total)
+						{
+							Log.Message(LogLevel.Error, "User has insufficiant funds for withdraw: Currency:{0}, User: {1}", currency.Symbol, pendingWithdraw.UserId);
 							continue;
-
-						if (balance.Total < pendingWithdraw.Amount || balance.PendingWithdraw < pendingWithdraw.Amount || balance.PendingWithdraw > balance.Total)
-							continue;
+						}
 
 						decimal withdrawFee = GetWithdrawFee(currency, pendingWithdraw.Amount);
 						decimal amountExcludingFees = pendingWithdraw.Amount - withdrawFee;
+						Log.Message(LogLevel.Info, "Sending wallet transaction. Currency: {0}, Host: {1}, Port: {2}", currency.Symbol, currency.WalletHost, currency.WalletPort);
 						var withdrawResult = await connector.SendToAddressAsync(pendingWithdraw.Address, amountExcludingFees);
 						if (withdrawResult == null || string.IsNullOrEmpty(withdrawResult.Txid))
+						{
+							Log.Message(LogLevel.Error, "Received no response from wallet, CAUTION: Withdraw status unknown!");
 							continue;
+						}
 
 						// Update the withdraw with the txid and set to completed
 						pendingWithdraw.Txid = withdrawResult.Txid;
+						pendingWithdraw.WithdrawStatus = WithdrawStatus.Complete;
 						await context.SaveChangesAsync();
+						Log.Message(LogLevel.Info, "Sending wallet transaction complete. Currency: {0}, TransactionId: {1}", currency.Symbol, withdrawResult.Txid);
 
-						await AuditUser(context, pendingWithdraw.CurrencyId, pendingWithdraw.UserId);
+						auditResult = await AuditUser(context, pendingWithdraw.CurrencyId, pendingWithdraw.UserId);
+						await NotificationService.SendBalanceUpdate(GetBalanceNotification(auditResult));
 					}
 					catch (Exception ex)
 					{
@@ -333,16 +354,29 @@ namespace TradeSatoshi.WalletService.Implementation
 			}
 		}
 
-		private async Task<bool> AuditUser(IDataContext context, int currencyId, string userId)
+		private async Task<AuditCurrencyResult> AuditUser(IDataContext context, int currencyId, string userId)
 		{
 			Log.Message(LogLevel.Info, "Auditing user balance. UserId: {0}, CurrencyId: {1}", userId, currencyId);
 			var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
 			Log.Message(LogLevel.Info, "Auditing user balance complete.");
-			return result.Success;
+			return result;
 		}
 
 
-
+		public NotifyBalanceUpdate GetBalanceNotification(AuditCurrencyResult auditResult)
+		{
+			return new NotifyBalanceUpdate
+			{
+				Avaliable = auditResult.Avaliable,
+				CurrencyId = auditResult.CurrencyId,
+				HeldForTrades = auditResult.HeldForTrades,
+				PendingWithdraw = auditResult.PendingWithdraw,
+				Symbol = auditResult.Symbol,
+				Total = auditResult.Total,
+				Unconfirmed = auditResult.Unconfirmed,
+				UserId = auditResult.UserId
+			};
+		}
 
 		private async Task<List<TransactionData>> GetTransactions(Currency currency, TransactionDataType type)
 		{

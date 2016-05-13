@@ -86,7 +86,7 @@ namespace TradeSatoshi.Core.Vote
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
 
-				var transferResult = await TradeService.QueueTradeItem(new CreateTransferModel
+				var transferResult = await TradeService.QueueTransfer(new CreateTransferModel
 				{
 					UserId = userId,
 					ToUser = Constants.SystemVoteUserId,

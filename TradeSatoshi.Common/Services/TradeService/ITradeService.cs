@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
 using TradeSatoshi.Common.Trade;
+using TradeSatoshi.Common.Transfer;
 
 namespace TradeSatoshi.Common.Services.TradeService
 {
 	public interface ITradeService
 	{
-		Task<ITradeResponse> QueueTradeItem(ITradeItem tradeItem);
+		Task<CreateTradeResponse> QueueTrade(CreateTradeModel tradeItem);
+		Task<CancelTradeResponse> QueueCancel(CancelTradeModel tradeItem);
+		Task<CreateTransferResponse> QueueTransfer(CreateTransferModel tradeItem);
 	}
 }

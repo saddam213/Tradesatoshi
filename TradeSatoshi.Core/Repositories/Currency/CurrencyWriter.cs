@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.Data;
@@ -73,11 +74,27 @@ namespace TradeSatoshi.Core.Currency
 				currency.Name = model.Name;
 				currency.Status = model.Status;
 				currency.StatusMessage = model.StatusMessage;
-				currency.Symbol = model.Symbol;
 				currency.TradeFee = model.TradeFee;
 				currency.TransferFee = model.TransferFee;
 				currency.WithdrawFee = model.WithdrawFee;
 				currency.WithdrawFeeType = model.WithdrawFeeType;
+
+				// Id the symbol has changed update the tradepair names
+				if (currency.Symbol != model.Symbol)
+				{
+					currency.Symbol = model.Symbol;
+					var tradePairs = await context.TradePair
+						.Include(testc => testc.Currency1)
+						.Include(testc => testc.Currency2)
+						.Where(t => t.CurrencyId1 == model.Id || t.CurrencyId2 == model.Id)
+						.ToListNoLockAsync();
+					foreach (var tradePair in tradePairs)
+					{
+						tradePair.Name = tradePair.CurrencyId1 == model.Id
+							? $"{currency.Symbol}_{tradePair.Currency2.Symbol}"
+							: $"{tradePair.Currency1.Symbol}_{currency.Symbol}";
+					}
+				}
 
 				await context.SaveChangesAsync();
 				return WriterResult<bool>.SuccessResult();

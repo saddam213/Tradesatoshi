@@ -38,7 +38,7 @@
 			<div id="table-balancemenu" style="font-size: 12px">
 				@foreach (var balance in Model.Balances)
 				{
-					<div class="col-xs-12 nopad balance-row" style="border-top: solid 1px #ddd; padding: 5px">
+					<div class="data-currency-@balance.CurrencyId col-xs-12 nopad balance-row" style="border-top: solid 1px #ddd; padding: 5px">
 						<div class="col-xs-12 col-sm-12 col-md-4 nopad col-lg-6 nopad">
 							<div class="text-xs-center text-sm-center text-md-left">
 								@Helpers.CoinLogoWithSymbol(balance.Symbol)
@@ -75,7 +75,7 @@
 				@foreach (var tradePair in Model.TradePairs.Where(t => t.Status != TradePairStatus.Closed))
 				{
 				var textClass = (tradePair.Change > 0 ? "success" : tradePair.Change < 0 ? "danger" : "");
-					<div class="col-xs-12 nopad tradepair-row" style="border-top: solid 1px #ddd; padding: 5px" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })">
+					<div class="col-xs-12 nopad tradepair-row tradepair-row-@tradePair.Id" style="border-top: solid 1px #ddd; padding: 5px" data-tradepair="@tradePair.Id" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })">
 						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
 							<div class="text-xs-center text-md-left">
 								@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Name)
@@ -83,12 +83,12 @@
 						</div>
 						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
 							<div class="text-xs-center text-md-left">
-								<span class="text-@textClass">@tradePair.LastTrade.ToString("F8")</span>
+								<span class="data-tradepair-val-@tradePair.Id data-tradepair-last-@tradePair.Id text-@textClass">@tradePair.LastTrade.ToString("F8")</span>
 							</div>
 						</div>
 						<div class="col-md-1 nopad col-lg-2 visible-lg">
 							<div>
-								<span class="text-@textClass" >@tradePair.Change.ToString("F1")%</span>
+								<span class="data-tradepair-val-@tradePair.Id data-tradepair-change-@tradePair.Id text-@textClass" >@tradePair.Change.ToString("F1")%</span>
 							</div>
 						</div>
 					</div>

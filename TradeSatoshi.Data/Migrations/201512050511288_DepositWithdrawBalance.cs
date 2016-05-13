@@ -20,7 +20,7 @@ namespace TradeSatoshi.Data.Migrations
                         PendingWithdraw = c.Decimal(nullable: false, precision: 38, scale: 8),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: true)
+                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: false)
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.CurrencyId);
@@ -40,7 +40,7 @@ namespace TradeSatoshi.Data.Migrations
                         TimeStamp = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: true)
+                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: false)
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.CurrencyId);
@@ -64,7 +64,7 @@ namespace TradeSatoshi.Data.Migrations
                         TimeStamp = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: true)
+                .ForeignKey("dbo.Currency", t => t.CurrencyId, cascadeDelete: false)
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.CurrencyId);

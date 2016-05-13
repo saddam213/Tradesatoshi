@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
 using System.Web.Routing;
 using TradeSatoshi.DependencyInjection.MVC;
@@ -37,6 +39,7 @@ namespace TradeSatoshi.DependencyInjection
 			var cryptopiaDependencyResolver = new MVCDependencyResolver(_container.Kernel);
 			DependencyResolver.SetResolver(cryptopiaDependencyResolver);
 			GlobalHost.DependencyResolver = new SignalrDependencyResolver(_container.Kernel);
+			GlobalConfiguration.Configuration.Services.Replace(typeof (IHttpControllerActivator), new WindsorCompositionRoot(_container));
 		}
 
 		public static void Deregister()
@@ -48,8 +51,8 @@ namespace TradeSatoshi.DependencyInjection
 		{
 			_container
 				.Register(Component.For<T>()
-				.UsingFactoryMethod(factoryCreate)
-				.LifestyleTransient());
+					.UsingFactoryMethod(factoryCreate)
+					.LifestyleTransient());
 		}
 	}
 }

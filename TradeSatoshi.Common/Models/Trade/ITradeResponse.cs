@@ -1,4 +1,6 @@
-﻿namespace TradeSatoshi.Common.Trade
+﻿using System.Collections.Generic;
+
+namespace TradeSatoshi.Common.Trade
 {
 	public interface ITradeResponse
 	{
@@ -6,3 +8,4 @@
 		string Error { get; set; }
 	}
 }
+

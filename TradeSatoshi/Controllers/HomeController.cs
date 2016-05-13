@@ -10,7 +10,6 @@ using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Exchange;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Security;
-using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Common.Vote;
@@ -24,7 +23,6 @@ namespace TradeSatoshi.Web.Controllers
 	public class HomeController : BaseController
 	{
 		public IDataContext DataContext { get; set; }
-		public INotificationService NotificationService { get; set; }
 		public IBalanceReader BalanceReader { get; set; }
 		public ITradeWriter TradeWriter { get; set; }
 		public ITradeReader TradeReader { get; set; }
@@ -33,6 +31,11 @@ namespace TradeSatoshi.Web.Controllers
 
 
 		public ActionResult Index()
+		{
+			return View();
+		}
+
+		public ActionResult Api()
 		{
 			return View();
 		}
@@ -94,12 +97,12 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[AuthorizeSecurityRole(SecurityRole.Standard)]
-		public async Task<ActionResult> CancelTrade(int id, CancelTradeType cancelType)
+		public async Task<ActionResult> CancelTrade(int id, TradeCancelType cancelType)
 		{
 			var result = await TradeWriter.CancelTrade(User.Id(), new CancelTradeModel
 			{
-				TradeId = id,
-				TradePairId = id,
+				//TradeId = id,
+				//TradePairId = id,
 				CancelType = cancelType
 			});
 

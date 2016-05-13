@@ -22,7 +22,7 @@
 					</div>
 					<div class="panel-body">
 						<button style="position:absolute;z-index:1001" onclick='cancelAllOrders();' class='btn btn-xs btn-danger'>Cancel All</button>
-						<table id="table-trades" class="table">
+						<table id="table-trades" class="table" data-action="@Url.Action("GetTrades")" data-action-cancel="@Url.Action("CancelTrade", "Exchange")" >
 							<thead>
 								<tr>
 									<th>Id</th>
@@ -65,7 +65,10 @@
 	@Scripts.Render("~/Scripts/Project/Orders/orders.js")
 
 	<script>
-		$('#table-trades').dataTable({
+		var table = $('#table-trades');
+		var tableDataAction = table.data("action");
+		var tableCancelAction = table.data("action-cancel");
+		var dataTable = table.dataTable({
 			"order": [[0, "desc"]],
 			"lengthChange": false,
 			"processing": true,
@@ -79,7 +82,7 @@
 			"paging": true,
 			"info": true,
 			"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search orders" },
-			"sAjaxSource": '@Url.Action("GetTrades")',
+			"sAjaxSource": tableDataAction,
 			"sServerMethod": "POST",
 			"columnDefs": [{
 				"targets": 0,
@@ -93,7 +96,7 @@
 
 		function cancelOrder(tradeId) {
 			confirmModal("Cancel Order", "Are you sure you want to cancel order #" + tradeId + "?", function () {
-				postJson('@Url.Action("CancelTrade", "Exchange")', { id: tradeId, cancelType: 'Trade' }, function (data) {
+				postJson(tableCancelAction, { orderId: tradeId, cancelType: 'Single' }, function (data) {
 					$('#table-trades').dataTable().fnDraw();
 				});
 			});
@@ -101,7 +104,7 @@
 
 		function cancelAllOrders() {
 			confirmModal("Cancel All Open Orders", "Are you sure you want to cancel ALL open orders?", function () {
-				postJson('@Url.Action("CancelTrade", "Exchange")', { id: 0, cancelType: 'All' }, function (data) {
+				postJson(tableCancelAction, { cancelType: 'All' }, function (data) {
 					$('#table-trades').dataTable().fnDraw();
 				});
 			});

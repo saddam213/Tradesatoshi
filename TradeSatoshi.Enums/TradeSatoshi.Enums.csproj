@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AlertType.cs" />
     <Compile Include="AlgoType.cs" />
+    <Compile Include="TradeCancelType.cs" />
     <Compile Include="TwoFactorTokenType.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CurrencyStatus.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="TradeStatus.cs" />
     <Compile Include="TradeType.cs" />
     <Compile Include="TradePairStatus.cs" />
-    <Compile Include="CancelTradeType.cs" />
     <Compile Include="TransferType.cs" />
     <Compile Include="SupportTicketStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

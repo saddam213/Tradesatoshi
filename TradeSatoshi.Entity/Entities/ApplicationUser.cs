@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -18,7 +19,14 @@ namespace TradeSatoshi.Entity
 
 		public string ChatIcon { get; set; }
 		public DateTime? ChatBanEnd { get; set; }
-		
+
+		[MaxLength(128)]
+		public string ApiKey { get; set; }
+
+		[MaxLength(256)]
+		public string ApiSecret { get; set; }
+		public bool IsApiEnabled { get; set; }
+
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }
 		public virtual ICollection<UserLogon> Logons { get; set; }

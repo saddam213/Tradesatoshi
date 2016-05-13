@@ -50,11 +50,39 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -148,6 +176,34 @@
     <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="DataContext\IDataContextFactory.cs" />
     <Compile Include="Models\Chat\ChatMessageModel.cs" />
+    <Compile Include="Repositories\Api\ApiAddressRequest.cs" />
+    <Compile Include="Repositories\Api\ApiAddressResponse.cs" />
+    <Compile Include="Repositories\Api\ApiBalanceRequest.cs" />
+    <Compile Include="Repositories\Api\ApiBalanceResponse.cs" />
+    <Compile Include="Repositories\Api\ApiCancelOrderRequest.cs" />
+    <Compile Include="Repositories\Api\ApiCancelOrdersRequest.cs" />
+    <Compile Include="Repositories\Api\ApiCurrency.cs" />
+    <Compile Include="Repositories\Api\ApiDepositRequest.cs" />
+    <Compile Include="Repositories\Api\ApiDepositResponse.cs" />
+    <Compile Include="Repositories\Api\ApiMarketHistory.cs" />
+    <Compile Include="Repositories\Api\ApiMarketSummary.cs" />
+    <Compile Include="Repositories\Api\ApiOrderBookResponse.cs" />
+    <Compile Include="Repositories\Api\ApiOrderBookItem.cs" />
+    <Compile Include="Repositories\Api\ApiOrderRequest.cs" />
+    <Compile Include="Repositories\Api\ApiOrderResponse.cs" />
+    <Compile Include="Repositories\Api\ApiOrdersRequest.cs" />
+    <Compile Include="Repositories\Api\ApiSubmitOrderRequest.cs" />
+    <Compile Include="Repositories\Api\ApiSubmitWithdrawRequest.cs" />
+    <Compile Include="Repositories\Api\ApiSubmitWithdrawResponse.cs" />
+    <Compile Include="Repositories\Api\ApiTicker.cs" />
+    <Compile Include="Repositories\Api\ApiTradeRequest.cs" />
+    <Compile Include="Repositories\Api\ApiWithdrawRequest.cs" />
+    <Compile Include="Repositories\Api\ApiWithdrawResponse.cs" />
+    <Compile Include="Repositories\Api\CancelOrderResponse.cs" />
+    <Compile Include="Repositories\Api\ApiTradeResponse.cs" />
+    <Compile Include="Repositories\Api\IPrivateApiWriter.cs" />
+    <Compile Include="Repositories\Api\IPrivateApiReader.cs" />
+    <Compile Include="Repositories\Api\IPublicApiReader.cs" />
     <Compile Include="Repositories\Chat\IChatWriter.cs" />
     <Compile Include="Repositories\Chat\IChatReader.cs" />
     <Compile Include="Models\Chat\UpdateChatMessageModel.cs" />
@@ -162,6 +218,7 @@
     <Compile Include="Repositories\TradePair\ITradePairWriter.cs" />
     <Compile Include="Models\TradePair\TradePairModel.cs" />
     <Compile Include="Models\TradePair\UpdateTradePairModel.cs" />
+    <Compile Include="Repositories\Trade\TradeCacheKeys.cs" />
     <Compile Include="Repositories\Vote\IVoteWriter.cs" />
     <Compile Include="Repositories\Vote\IVoteReader.cs" />
     <Compile Include="Models\Vote\UpdateVoteItemModel.cs" />
@@ -177,24 +234,20 @@
     <Compile Include="Security\ITwoFactorEntry.cs" />
     <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Repositories\Address\IAddressWriter.cs" />
+    <Compile Include="Repositories\Api\ApiCacheKeys.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EncryptionService\EncryptionKeyPair.cs" />
     <Compile Include="Services\EncryptionService\IEncryptionService.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\DataTableNotification.cs" />
-    <Compile Include="Services\NotificationService\NotificationConstants.cs" />
-    <Compile Include="Services\NotificationService\Notification\UserDataTableNotification.cs" />
-    <Compile Include="Services\NotificationService\IDataNotificationClient.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\IUserDataNotification.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\DataNotification.cs" />
-    <Compile Include="Services\NotificationService\Notification\UserDataNotification.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\IDataTableNotification.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\IUserDataTableNotification.cs" />
-    <Compile Include="Services\NotificationService\DataNotification\IDataNotification.cs" />
-    <Compile Include="Services\NotificationService\Notification\UserNotification.cs" />
-    <Compile Include="Services\NotificationService\Notification\INotification.cs" />
-    <Compile Include="Services\NotificationService\Notification\IUserNotification.cs" />
-    <Compile Include="Services\NotificationService\INotificationClient.cs" />
-    <Compile Include="Services\NotificationService\Notification\Notification.cs" />
+    <Compile Include="Services\CacheService\ICacheService.cs" />
+    <Compile Include="Services\EncryptionService\UserApiModel.cs" />
+    <Compile Include="Services\NotificationService\INotify.cs" />
+    <Compile Include="Services\NotificationService\NotifyUser.cs" />
+    <Compile Include="Services\NotificationService\NotifyBalanceUpdate.cs" />
+    <Compile Include="Services\NotificationService\NotifyOrderBookUpdate.cs" />
+    <Compile Include="Services\NotificationService\NotifyTradeHistoryUpdate.cs" />
+    <Compile Include="Services\NotificationService\NotifyTradeUserHistoryUpdate.cs" />
+    <Compile Include="Services\NotificationService\NotifyOpenOrderUserUpdate.cs" />
     <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Services\TradeService\ITradeService.cs" />
     <Compile Include="Services\VoteService\IVoteService.cs" />
@@ -205,6 +258,7 @@
     <Compile Include="Repositories\Trade\ITradeWriter.cs" />
     <Compile Include="Repositories\Transfer\ITransferReader.cs" />
     <Compile Include="Repositories\Transfer\ITransferWriter.cs" />
+    <Compile Include="Validation\IApiResult.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
     <Compile Include="Validation\RequiredIfAttribute.cs" />
     <Compile Include="Validation\RequiredToBeTrueAttribute.cs" />

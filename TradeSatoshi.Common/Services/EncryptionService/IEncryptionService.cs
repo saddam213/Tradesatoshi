@@ -6,5 +6,7 @@
 		string DecryptString(string input);
 		string EncryptString(string input, string passphrase);
 		string DecryptString(string input, string passphrase);
+
+		EncryptionKeyPair GenerateEncryptionKeyPair();
 	}
 }

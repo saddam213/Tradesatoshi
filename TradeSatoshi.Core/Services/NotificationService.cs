@@ -2,20 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Services.NotificationService;
 
 namespace TradeSatoshi.Core.Services
 {
+
 	public class NotificationService : INotificationService
 	{
 		private readonly string _notificationProxyName = "Notification";
-		private readonly string _dataNotificationProxyName = "DataNotification";
 		private readonly string _connectionUrl = ConfigurationManager.AppSettings["ClientNotificationUrl"];
 
-		#region Notification
 
-		public async Task<bool> SendNotificationAsync(INotification notification)
+		public async Task<bool> SendOrderBookUpdate(NotifyOrderBookUpdate notification)
+		{
+			return await SendOrderBookUpdate(new List<NotifyOrderBookUpdate> { notification });
+		}
+
+		public async Task<bool> SendOrderBookUpdate(List<NotifyOrderBookUpdate> notifications)
 		{
 			try
 			{
@@ -26,7 +33,10 @@ namespace TradeSatoshi.Core.Services
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnNotification", notification);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnOrderBookUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -36,7 +46,14 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		public async Task<bool> SendNotificationAsync(List<INotification> notifications)
+
+
+		public async Task<bool> SendTradeHistoryUpdate(NotifyTradeHistoryUpdate notification)
+		{
+			return await SendTradeHistoryUpdate(new List<NotifyTradeHistoryUpdate> { notification });
+		}
+
+		public async Task<bool> SendTradeHistoryUpdate(List<NotifyTradeHistoryUpdate> notifications)
 		{
 			try
 			{
@@ -47,7 +64,10 @@ namespace TradeSatoshi.Core.Services
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnNotifications", notifications);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnTradeHistoryUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -57,11 +77,13 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		#endregion
 
-		#region UserNotification
+		public async Task<bool> SendTradeUserHistoryUpdate(NotifyTradeUserHistoryUpdate notification)
+		{
+			return await SendTradeUserHistoryUpdate(new List<NotifyTradeUserHistoryUpdate> { notification });
+		}
 
-		public async Task<bool> SendUserNotificationAsync(IUserNotification notification)
+		public async Task<bool> SendTradeUserHistoryUpdate(List<NotifyTradeUserHistoryUpdate> notifications)
 		{
 			try
 			{
@@ -72,7 +94,10 @@ namespace TradeSatoshi.Core.Services
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnUserNotification", notification);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnTradeUserHistoryUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -82,7 +107,12 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		public async Task<bool> SendUserNotificationAsync(List<IUserNotification> notifications)
+		public async Task<bool> SendNotification(NotifyUser notification)
+		{
+			return await SendNotification(new List<NotifyUser> { notification });
+		}
+
+		public async Task<bool> SendNotification(List<NotifyUser> notifications)
 		{
 			try
 			{
@@ -93,7 +123,10 @@ namespace TradeSatoshi.Core.Services
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnUserNotifications", notifications);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnNotification", notification);
+					}
 					return true;
 				}
 			}
@@ -103,22 +136,26 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		#endregion
+		public async Task<bool> SendBalanceUpdate(NotifyBalanceUpdate notification)
+		{
+			return await SendBalanceUpdate(new List<NotifyBalanceUpdate> { notification });
+		}
 
-		#region DataUpdate
-
-		public async Task<bool> SendDataNotificationAsync(IDataNotification notification)
+		public async Task<bool> SendBalanceUpdate(List<NotifyBalanceUpdate> notifications)
 		{
 			try
 			{
 				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnDataNotification", notification);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnBalanceUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -128,18 +165,26 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		public async Task<bool> SendUserNotificationDataAsync(IUserDataNotification notification)
+		public async Task<bool> SendOpenOrderUserUpdate(NotifyOpenOrderUserUpdate notification)
+		{
+			return await SendOpenOrderUserUpdate(new List<NotifyOpenOrderUserUpdate> { notification });
+		}
+
+		public async Task<bool> SendOpenOrderUserUpdate(List<NotifyOpenOrderUserUpdate> notifications)
 		{
 			try
 			{
 				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnUserDataNotification", notification);
+					foreach (var notification in notifications)
+					{
+						await proxy.Invoke("OnOpenOrderUserUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -149,18 +194,35 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
-		public async Task<bool> SendDataNotificationAsync(List<IDataNotification> notifications)
+
+
+		public async Task<bool> SendNotificationCollection(List<INotify> notifications)
 		{
 			try
 			{
 				using (var connection = new HubConnection(_connectionUrl))
 				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
+					ServicePointManager.DefaultConnectionLimit = 100000;
+					var proxy = connection.CreateHubProxy(_notificationProxyName);
 					if (proxy == null)
 						return false;
 
 					await connection.Start();
-					await proxy.Invoke("OnDataNotifications", notifications);
+					foreach (var notification in notifications)
+					{
+						if (notification is NotifyOrderBookUpdate)
+							await proxy.Invoke("OnOrderBookUpdate", notification);
+						else if (notification is NotifyTradeHistoryUpdate)
+							await proxy.Invoke("OnTradeHistoryUpdate", notification);
+						else if (notification is NotifyTradeUserHistoryUpdate)
+							await proxy.Invoke("OnTradeUserHistoryUpdate", notification);
+						else if (notification is NotifyUser)
+							await proxy.Invoke("OnNotification", notification);
+						else if (notification is NotifyBalanceUpdate)
+							await proxy.Invoke("OnBalanceUpdate", notification);
+						else if (notification is NotifyOpenOrderUserUpdate)
+							await proxy.Invoke("OnOpenOrderUserUpdate", notification);
+					}
 					return true;
 				}
 			}
@@ -169,116 +231,5 @@ namespace TradeSatoshi.Core.Services
 				return false;
 			}
 		}
-
-		public async Task<bool> SendUserNotificationDataAsync(List<IUserDataNotification> notifications)
-		{
-			try
-			{
-				using (var connection = new HubConnection(_connectionUrl))
-				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
-					if (proxy == null)
-						return false;
-
-					await connection.Start();
-					await proxy.Invoke("OnUserDataNotifications", notifications);
-					return true;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		#endregion
-
-		#region DataTables
-
-		public async Task<bool> SendDataTableNotificationAsync(IDataTableNotification notification)
-		{
-			try
-			{
-				using (var connection = new HubConnection(_connectionUrl))
-				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
-					if (proxy == null)
-						return false;
-
-					await connection.Start();
-					await proxy.Invoke("OnDataTableNotification", notification);
-					return true;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		public async Task<bool> SendDataTableNotificationAsync(List<IDataTableNotification> notifications)
-		{
-			try
-			{
-				using (var connection = new HubConnection(_connectionUrl))
-				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
-					if (proxy == null)
-						return false;
-
-					await connection.Start();
-					await proxy.Invoke("OnDataTableNotifications", notifications);
-					return true;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		public async Task<bool> SendUserDataTableNotificationAsync(IUserDataTableNotification notification)
-		{
-			try
-			{
-				using (var connection = new HubConnection(_connectionUrl))
-				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
-					if (proxy == null)
-						return false;
-
-					await connection.Start();
-					await proxy.Invoke("OnUserDataTableNotification", notification);
-					return true;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		public async Task<bool> SendUserDataTableNotificationAsync(List<IUserDataTableNotification> notifications)
-		{
-			try
-			{
-				using (var connection = new HubConnection(_connectionUrl))
-				{
-					var proxy = connection.CreateHubProxy(_dataNotificationProxyName);
-					if (proxy == null)
-						return false;
-
-					await connection.Start();
-					await proxy.Invoke("OnUserDataTableNotifications", notifications);
-					return true;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		#endregion
 	}
 }

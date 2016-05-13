@@ -11,15 +11,15 @@
 			Success = success;
 		}
 
-		public AuditCurrencyResult(string symbol, decimal available)
-		{
-			Success = true;
-			Symbol = symbol;
-			Available = available;
-		}
-
+		public decimal Avaliable { get; set; }
+		public int CurrencyId { get; set; }
+		public decimal HeldForTrades { get; set; }
+		public decimal PendingWithdraw { get; set; }
 		public bool Success { get; set; }
 		public string Symbol { get; set; }
-		public decimal Available { get; set; }
+		public decimal Total { get; set; }
+		public decimal Unconfirmed { get; set; }
+		public string UserId { get; set; }
+		public string UserName { get; set; }
 	}
 }
