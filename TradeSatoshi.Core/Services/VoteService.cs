@@ -16,7 +16,7 @@ namespace TradeSatoshi.Core.Services
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var settings = await context.VoteSetting.FirstOrDefaultAsync();
+				var settings = await context.VoteSetting.FirstOrDefaultNoLockAsync();
 				if (settings == null)
 					return;
 

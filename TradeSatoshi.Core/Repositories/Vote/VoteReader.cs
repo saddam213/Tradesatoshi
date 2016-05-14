@@ -78,7 +78,7 @@ namespace TradeSatoshi.Core.Vote
 						Description = voteItem.Description,
 						Symbol = voteItem.Symbol,
 						Website = voteItem.Website,
-					}).FirstOrDefaultAsync();
+					}).FirstOrDefaultNoLockAsync();
 				return query;
 			}
 		}
@@ -99,7 +99,7 @@ namespace TradeSatoshi.Core.Vote
 						Symbol = voteItem.Symbol,
 						Website = voteItem.Website,
 						Note = voteItem.AdminNote
-					}).FirstOrDefaultAsync(x => x.Id == voteItemId);
+					}).FirstOrDefaultNoLockAsync(x => x.Id == voteItemId);
 				return query;
 			}
 		}
@@ -135,7 +135,7 @@ namespace TradeSatoshi.Core.Vote
 				var settings = await context.VoteSetting
 					.Include(v => v.LastFree).DefaultIfEmpty()
 					.Include(v => v.LastPaid).DefaultIfEmpty()
-					.FirstOrDefaultAsync();
+					.FirstOrDefaultNoLockAsync();
 				return new VoteModel
 				{
 					NextVote = settings.Next,

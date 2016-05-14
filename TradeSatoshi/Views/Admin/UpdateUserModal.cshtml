@@ -12,7 +12,7 @@
 		@using (Ajax.BeginForm("UpdateUser", "Admin", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
 		{
 			@Html.AntiForgeryToken()
-			@Html.HiddenFor(m => m.userId)
+			@Html.HiddenFor(m => m.UserId)
 			@Html.ValidationSummary(true)
 			<div class="modal-body">
 				<div class="row">

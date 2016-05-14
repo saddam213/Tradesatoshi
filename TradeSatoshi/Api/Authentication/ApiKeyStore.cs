@@ -11,7 +11,7 @@ namespace TradeSatoshi.Web.Api.Authentication
 {
 	public class ApiKeyStore
 	{
-		private static MemoryCache _apiKeyCache = new MemoryCache("CacheService");
+		private static MemoryCache _apiKeyCache = new MemoryCache("ApiKeyStore");
 
 		public static UserApiAuthKey GetApiAuthKey(string apiKey)
 		{

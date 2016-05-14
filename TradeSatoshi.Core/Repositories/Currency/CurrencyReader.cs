@@ -19,7 +19,7 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return await context.Currency.Select(MapCurrency).FirstOrDefaultAsync(c => c.Id == currencyId);
+				return await context.Currency.Select(MapCurrency).FirstOrDefaultNoLockAsync(c => c.Id == currencyId);
 			}
 		}
 
@@ -27,7 +27,7 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currency = await context.Currency.FirstOrDefaultAsync(c => c.Id == currencyId);
+				var currency = await context.Currency.FirstOrDefaultNoLockAsync(c => c.Id == currencyId);
 				if (currency == null)
 					return null;
 
@@ -57,7 +57,7 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return await context.Currency.Select(MapCurrency).ToListAsync();
+				return await context.Currency.Select(MapCurrency).ToListNoLockAsync();
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return await context.Currency.Select(MapCurrencyStatus).ToListAsync();
+				return await context.Currency.Select(MapCurrencyStatus).ToListNoLockAsync();
 			}
 		}
 

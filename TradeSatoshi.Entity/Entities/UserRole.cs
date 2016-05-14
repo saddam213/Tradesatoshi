@@ -21,6 +21,6 @@ namespace TradeSatoshi.Entity
 		public virtual IdentityRole Role { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

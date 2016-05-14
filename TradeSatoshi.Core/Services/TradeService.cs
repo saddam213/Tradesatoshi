@@ -42,7 +42,7 @@ namespace TradeSatoshi.Core.Services
 		{
 			DataContextFactory = new DataContextFactory();
 			Log = new DatabaseLogger(DataContextFactory);
-			AuditService = new AuditService();
+			AuditService = new AuditService(Log);
 			CacheService = new CacheService();
 		  TradeNotificationService = new NotificationService();
 		}
@@ -95,16 +95,20 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
+						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
+						if (user == null || !user.IsTransferEnabled)
+							throw new TradeException("Your transfers are currently disabled.");
+
+						var toUser = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
+						if (toUser == null || !toUser.IsTransferEnabled)
+							throw new TradeException("Receiver does not have transfers enabled.");
+
 						var auditResult = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
 						if (!auditResult.Success)
 							throw new Exception($"Failed to audit user balance, Currency: {tradeItem.Symbol}");
 
 						if (tradeItem.Amount > auditResult.Avaliable)
 							throw new TradeException("Insufficient funds for transfer.");
-
-						var toUser = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
-						if (toUser == null)
-							throw new TradeException("Reciver does not exist");
 
 						var transfer = new TransferHistory
 						{
@@ -176,16 +180,16 @@ namespace TradeSatoshi.Core.Services
 					}
 					catch (TradeException ex)
 					{
-						Log.Warn("TradeService", "Rollback database Transaction");
+						await Log.Warn("TradeService", "Rollback database Transaction");
 						transaction.Rollback();
-						Log.Warn("TradeService", ex.Message);
+						await Log.Warn("TradeService", ex.Message);
 						return new CreateTransferResponse { Error = ex.Message };
 					}
 					catch (Exception ex)
 					{
-						Log.Error("TradeService", "Rollback databaseTransaction");
+						await Log.Error("TradeService", "Rollback databaseTransaction");
 						transaction.TryRollback();
-						Log.Exception("TradeService", ex);
+						await Log.Exception("TradeService", ex);
 					}
 				}
 			}
@@ -202,9 +206,9 @@ namespace TradeSatoshi.Core.Services
 					{
 						var audits = new HashSet<int>();
 						var notifications = new List<INotify>();
-						var user = await context.Users.FindAsync(tradeItem.UserId);
-						if (user == null)
-							throw new Exception("User does not exist");
+						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.UserId);
+						if (user == null || !user.IsTradeEnabled)
+							throw new TradeException("Your trades are currently disabled.");
 
 						var cancelMessage = "Successfully canceled all orders";
 						var orderQuery = context.Trade
@@ -317,9 +321,9 @@ namespace TradeSatoshi.Core.Services
 					}
 					catch (Exception ex)
 					{
-						Log.Error("TradeService", "Rollback databaseTransaction");
+						await Log.Error("TradeService", "Rollback databaseTransaction");
 						transaction.TryRollback();
-						Log.Exception("TradeService", ex);
+						await Log.Exception("TradeService", ex);
 					}
 				}
 			}
@@ -335,21 +339,21 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
-						Log.Info("TradeService", "Processing trade request. UserId: {0}, TradeType: {1}, TradePairId: {2}, Amount: {3:F8}, Rate: {4:F8}", tradeRequest.UserId, tradeRequest.TradeType, tradeRequest.TradePairId, tradeRequest.Amount, tradeRequest.Rate);
+						await Log.Info("TradeService", $"Processing trade request. UserId: {tradeRequest.UserId}, TradeType: {tradeRequest.TradeType}, TradePairId: {tradeRequest.TradePairId}, Amount: {tradeRequest.Amount:F8}, Rate: {tradeRequest.Rate:F8}");
 
 						var notifications = new List<INotify>();
 						var response = new CreateTradeResponse();
 
 						var tradeType = tradeRequest.TradeType;
-						var user = await context.Users.FindAsync(tradeRequest.UserId);
-						if (user == null)
-							throw new Exception("User not found.");
+						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeRequest.UserId);
+						if (user == null || !user.IsTradeEnabled)
+							throw new TradeException("Your trades are currently disabled.");
 
 						// Get or cache tradepair
 						var tradePair = await context.TradePair
 							.Include(t => t.Currency1)
 							.Include(t => t.Currency2)
-							.FirstOrDefaultAsync(x => x.Id == tradeRequest.TradePairId);
+							.FirstOrDefaultAsync(x => x.Id == tradeRequest.TradePairId || x.Name == tradeRequest.Market);
 						if (tradePair == null)
 							throw new Exception("Market not found.");
 
@@ -407,7 +411,7 @@ namespace TradeSatoshi.Core.Services
 						{
 							// There are no trades to fill, so create trade
 							var trade = CreateTrade(context.Trade, tradeType, tradeRequest.UserId, tradePair, tradeAmount, tradeRate, baseCurency.TradeFee, tradeRequest.IsApi);
-							Log.Debug("TradeService", "Submitting context changes...");
+							await Log.Debug("TradeService", "Submitting context changes...");
 							await context.SaveChangesAsync();
 
 							var userAudit = await AuditService.AuditUserTradePair(context, tradeRequest.UserId, tradePair);
@@ -518,7 +522,7 @@ namespace TradeSatoshi.Core.Services
 									trade.Fee = 0;
 									trade.Status = TradeStatus.Complete;
 									tradeRemaining -= dogeAmount;
-									Log.Debug("TradeService", "Filled TradeId: {0}", trade.Id);
+									await Log.Debug("TradeService", $"Filled TradeId: {trade.Id}");
 
 									// Notify user orders of filled order
 									notifications.Add(new NotifyOpenOrderUserUpdate
@@ -548,7 +552,7 @@ namespace TradeSatoshi.Core.Services
 									trade.Fee = (trade.Remaining * trade.Rate).GetFees(trade.Fee > 0 ? baseCurency.TradeFee : 0);
 									trade.Status = TradeStatus.Partial;
 									tradeRemaining = 0;
-									Log.Debug("TradeService", "Partially filled TradeId: {0}", trade.Id);
+									await Log.Debug("TradeService", $"Partially filled TradeId: {trade.Id}");
 
 									//BUGFIX: if the remaining rounds out to 0.00000000 the trade is complete not partial
 									if (Math.Round(trade.Remaining, 8) == 0)
@@ -556,7 +560,7 @@ namespace TradeSatoshi.Core.Services
 										trade.Remaining = 0;
 										trade.Fee = 0;
 										trade.Status = TradeStatus.Complete;
-										Log.Debug("TradeService", "Partially filled resulted in 0.00000000 remaining, Filling TradeId: {0}", trade.Id);
+										await Log.Debug("TradeService", $"Partially filled resulted in 0.00000000 remaining, Filling TradeId: {trade.Id}");
 									}
 
 									// Notify user orders of partial filled order
@@ -615,7 +619,7 @@ namespace TradeSatoshi.Core.Services
 							{
 								// create trade for remaining
 								remainingTrade = CreateTrade(context.Trade, tradeType, tradeRequest.UserId, tradePair, tradeRemaining, tradeRate, baseCurency.TradeFee, tradeRequest.IsApi);
-
+								await Log.Debug("TradeService", $"Created new trade, TradeId: {remainingTrade.Id}, TradeType: {remainingTrade.TradeType}, Amount: {remainingTrade.Amount}, Rate: {remainingTrade.Rate}");
 								// notify user of order
 								notifications.Add(new NotifyUser
 								{
@@ -664,7 +668,7 @@ namespace TradeSatoshi.Core.Services
 								});
 							}
 
-							Log.Debug("TradeService", "Submitting context changes...");
+							await Log.Debug("TradeService", "Submitting context changes...");
 							await context.SaveChangesAsync();
 
 							// Audit all users involved
@@ -711,6 +715,7 @@ namespace TradeSatoshi.Core.Services
 								if (newTransaction != null)
 									response.AddFilledTrade(newTransaction.Id);
 
+								await Log.Debug("TradeService", $"Created new transaction, CurrencyId: {newTransaction.CurrencyId}, TransactionType: {newTransaction.TradeHistoryType}, Amount: {newTransaction.Amount}, Rate: {newTransaction.Rate}, Fee: {newTransaction.Fee}");
 								// Notify trade history
 								notifications.Add(new NotifyTradeHistoryUpdate
 								{
@@ -746,7 +751,7 @@ namespace TradeSatoshi.Core.Services
 							}
 						}
 
-						Log.Debug("TradeService", "Committing database transaction");
+						await Log.Debug("TradeService", "Committing database transaction");
 						await context.SaveChangesAsync();
 						transaction.Commit();
 
@@ -756,14 +761,14 @@ namespace TradeSatoshi.Core.Services
 						CacheService.Invalidate(TradeCacheKeys.GetOpenBuyOrdersKey(tradePair.Id));
 						CacheService.Invalidate(TradeCacheKeys.GetOpenSellOrdersKey(tradePair.Id));
 
-						Log.Info("TradeService", "Process trade success.");
+						await Log.Info("TradeService", "Process trade success.");
 						return response;
 					}
 					catch (TradeException ex)
 					{
-						Log.Warn("TradeService", "Rollback database Transaction");
+						await Log.Warn("TradeService", "Rollback database Transaction");
 						transaction.TryRollback();
-						Log.Warn("TradeService", ex.Message);
+						await Log.Warn("TradeService", ex.Message);
 
 						// Notify user
 						await TradeNotificationService.SendNotification(new NotifyUser
@@ -777,9 +782,9 @@ namespace TradeSatoshi.Core.Services
 					}
 					catch (Exception ex)
 					{
-						Log.Error("TradeService", "Rollback database Transaction");
+						await Log.Error("TradeService", "Rollback database Transaction");
 						transaction.TryRollback();
-						Log.Exception("TradeService", ex);
+						await Log.Exception("TradeService", ex);
 
 						// Notify user
 						await TradeNotificationService.SendNotification(new NotifyUser
@@ -814,7 +819,6 @@ namespace TradeSatoshi.Core.Services
 				IsApi = isapi
 			};
 			tradeTable.Add(newTrade);
-			Log.Debug("TradeService", "Created new trade, TradeId: {0}, TradeType: {1}, Amount: {2}, Rate: {3}", newTrade.Id, newTrade.TradeType, newTrade.Amount, newTrade.Rate);
 			return newTrade;
 		}
 
@@ -834,7 +838,6 @@ namespace TradeSatoshi.Core.Services
 				IsApi = isapi
 			};
 			transactionTable.Add(transaction);
-			Log.Debug("TradeService", "Created new transaction, CurrencyId: {0}, TransactionType: {1}, Amount: {2}, Rate: {3}, Fee: {4}", transaction.CurrencyId, transaction.TradeHistoryType, transaction.Amount, transaction.Rate, transaction.Fee);
 			return transaction;
 		}
 
@@ -847,18 +850,6 @@ namespace TradeSatoshi.Core.Services
 			return 0.00;
 		}
 
-		//private async Task<bool> AuditUserTradePairAsync(IDataContext context, string userId, Entity.TradePair tradepair)
-		//{
-		//	var result = await AuditService.AuditUserTradePair(context, userId, tradepair);
-		//	return result.Success;
-		//}
-
-		//private async Task<bool> AuditUserBalanceAsync(IDataContext context, string userId, int currencyId)
-		//{
-		//	var result = await AuditService.AuditUserCurrency(context, userId, currencyId);
-		//	return result.Success;
-		//}
-
 		#endregion
 	}
 
@@ -868,90 +859,4 @@ namespace TradeSatoshi.Core.Services
 		{
 		}
 	}
-
-	//public class TradeNotifier
-	//{
-	//	public TradeNotifier(int tradePairId, INotificationService notificationService)
-	//	{
-	//		TradePairId = tradePairId;
-	//		NotificationService = notificationService;
-	//	}
-
-	//	public int TradePairId { get; set; }
-	//	public INotificationService NotificationService { get; set; }
-
-	//	private readonly List<INotification> _notifications = new List<INotification>();
-	//	private readonly List<IUserNotification> _userNotifications = new List<IUserNotification>();
-
-	//	private readonly List<IDataNotification> _dataNotifications = new List<IDataNotification>();
-	//	private readonly List<IUserDataNotification> _userDataNotifications = new List<IUserDataNotification>();
-
-	//	private readonly List<IDataTableNotification> _dataTableNotifications = new List<IDataTableNotification>();
-	//	private readonly List<IUserDataTableNotification> _userDataTableNotifications = new List<IUserDataTableNotification>();
-
-
-	//	public async Task SendNotificationsAsync()
-	//	{
-	//		if (_dataTableNotifications.Any())
-	//			await NotificationService.SendDataTableNotificationAsync(_dataTableNotifications);
-
-	//		if (_userDataTableNotifications.Any())
-	//			await NotificationService.SendUserDataTableNotificationAsync(_userDataTableNotifications);
-
-	//		if (_dataNotifications.Any())
-	//			await NotificationService.SendDataNotificationAsync(_dataNotifications);
-
-	//		if (_userDataNotifications.Any())
-	//			await NotificationService.SendUserNotificationDataAsync(_userDataNotifications);
-
-	//		if (_notifications.Any())
-	//			await NotificationService.SendNotificationAsync(_notifications);
-
-	//		if (_userNotifications.Any())
-	//			await NotificationService.SendUserNotificationAsync(_userNotifications);
-	//	}
-
-	//	internal void AddUserNotification(string userId, string message, params object[] format)
-	//	{
-	//		_userNotifications.Add(new UserNotification(NotificationType.Info, userId, "Trade Notification", string.Format(message, format)));
-	//	}
-
-	//	internal void AddDataTableNotification(string dataTable)
-	//	{
-	//		var tableName = string.Format(dataTable, TradePairId);
-	//		if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
-	//			_dataTableNotifications.Add(new DataTableNotification(tableName));
-	//	}
-
-	//	internal void AddDataTableNotification(string dataTable, int tradPairId)
-	//	{
-	//		var tableName = string.Format(dataTable, tradPairId);
-	//		if (!_dataTableNotifications.Any(x => x.DataTableName == tableName))
-	//			_dataTableNotifications.Add(new DataTableNotification(tableName));
-	//	}
-
-	//	internal void AddUserDataTableNotification(string userId, string dataTable)
-	//	{
-	//		var tableName = string.Format(dataTable, TradePairId);
-	//		if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
-	//			_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
-	//	}
-
-	//	internal void AddUserDataTableNotification(string userId, string dataTable, int tradePairId)
-	//	{
-	//		var tableName = string.Format(dataTable, tradePairId);
-	//		if (!_userDataTableNotifications.Any(x => x.UserId == userId && x.DataTableName == tableName))
-	//			_userDataTableNotifications.Add(new UserDataTableNotification(userId, tableName));
-	//	}
-
-	//	internal void AddDataNotification(string element, string value)
-	//	{
-	//		_dataNotifications.Add(new DataNotification(element, value));
-	//	}
-
-	//	internal void AddUserDataNotification(string userId, string element, string value)
-	//	{
-	//		_userDataNotifications.Add(new UserDataNotification(userId, element, value));
-	//	}
-	//}
 }

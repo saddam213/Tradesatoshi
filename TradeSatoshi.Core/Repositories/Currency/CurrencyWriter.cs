@@ -15,11 +15,11 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var existing = await context.Currency.FirstOrDefaultAsync(c => c.Name == model.Name || c.Symbol == model.Symbol);
+				var existing = await context.Currency.FirstOrDefaultNoLockAsync(c => c.Name == model.Name || c.Symbol == model.Symbol);
 				if (existing != null)
 					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? $"Name '{model.Name}'" : $"Symbol '{model.Symbol}'");
 
-				existing = await context.Currency.FirstOrDefaultAsync(c => c.WalletPort == model.WalletPort && c.WalletHost == model.WalletHost);
+				existing = await context.Currency.FirstOrDefaultNoLockAsync(c => c.WalletPort == model.WalletPort && c.WalletHost == model.WalletHost);
 				if (existing != null)
 					return WriterResult<bool>.ErrorResult("Wallet with RPC settings {0}:{1} already exists.", model.WalletHost, model.WalletPort);
 
@@ -56,11 +56,11 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currency = await context.Currency.FindAsync(model.Id);
+				var currency = await context.Currency.FirstOrDefaultNoLockAsync(c => c.Id == model.Id);
 				if (currency == null)
 					return WriterResult<bool>.ErrorResult("Currency {0} not found.", model.Id);
 
-				var existing = await context.Currency.FirstOrDefaultAsync(c => c.Id != currency.Id && (c.Name == model.Name || c.Symbol == model.Symbol));
+				var existing = await context.Currency.FirstOrDefaultNoLockAsync(c => c.Id != currency.Id && (c.Name == model.Name || c.Symbol == model.Symbol));
 				if (existing != null)
 					return WriterResult<bool>.ErrorResult("Currency with {0} already exists.", existing.Name == model.Name ? $"Name '{model.Name}'" : $"Symbol '{model.Symbol}'");
 

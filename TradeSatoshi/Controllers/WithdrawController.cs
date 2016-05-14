@@ -118,7 +118,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		#region Helpers
 
-		private async Task<bool> SendConfirmationEmail(ApplicationUser user, string confirmToken, int withdrawId, CreateWithdrawModel model)
+		private async Task<bool> SendConfirmationEmail(User user, string confirmToken, int withdrawId, CreateWithdrawModel model)
 		{
 			var cancelWithdrawToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawCancel, user.Id);
 			var confirmlink = Url.Action("ConfirmWithdraw", "Withdraw", new { username = user.UserName, secureToken = confirmToken, withdrawid = withdrawId }, protocol: Request.Url.Scheme);

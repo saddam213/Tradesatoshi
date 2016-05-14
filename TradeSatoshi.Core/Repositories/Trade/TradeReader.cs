@@ -208,7 +208,7 @@ namespace TradeSatoshi.Core.Trade
 				var tradePair = await context.TradePair
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
-					.FirstOrDefaultAsync(x => x.Id == tradePairId);
+					.FirstOrDefaultNoLockAsync(x => x.Id == tradePairId);
 
 				var model = new TradePairInfoModel
 				{
@@ -221,7 +221,7 @@ namespace TradeSatoshi.Core.Trade
 
 				if (!string.IsNullOrEmpty(userId))
 				{
-					var balances = context.Balance.Where(x => x.UserId == userId && (x.CurrencyId == tradePair.CurrencyId1 || x.CurrencyId == tradePair.CurrencyId2)).ToList();
+					var balances = await context.Balance.Where(x => x.UserId == userId && (x.CurrencyId == tradePair.CurrencyId1 || x.CurrencyId == tradePair.CurrencyId2)).ToListNoLockAsync();
 					var balance1 = balances.FirstOrDefault(x => x.CurrencyId == tradePair.CurrencyId1);
 					var balance2 = balances.FirstOrDefault(x => x.CurrencyId == tradePair.CurrencyId2);
 					model.Balance = balance1?.Avaliable ?? 0m;

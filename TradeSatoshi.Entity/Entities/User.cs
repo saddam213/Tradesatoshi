@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace TradeSatoshi.Entity
 {
-	public class ApplicationUser : IdentityUser
+	public class User : IdentityUser
 	{
 		public bool IsEnabled { get; set; }
 		public bool IsTradeEnabled { get; set; }
@@ -26,6 +26,7 @@ namespace TradeSatoshi.Entity
 		[MaxLength(256)]
 		public string ApiSecret { get; set; }
 		public bool IsApiEnabled { get; set; }
+		public DateTime RegisterDate { get; set; }
 
 		public virtual UserSettings Settings { get; set; }
 		public virtual UserProfile Profile { get; set; }
@@ -39,7 +40,7 @@ namespace TradeSatoshi.Entity
 		public virtual ICollection<Trade> Trade { get; set; }
 		public virtual ICollection<SupportTicket> SupportTickets { get; set; }
 		
-		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
 		{
 			// Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
 			var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);

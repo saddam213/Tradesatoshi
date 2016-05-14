@@ -97,7 +97,7 @@ namespace TradeSatoshi.Web.Controllers
 			return new DataTablesResult(dataTablesResponse);
 		}
 
-		protected async Task<string> GetLockoutLink(ApplicationUser user)
+		protected async Task<string> GetLockoutLink(User user)
 		{
 			return Url.Action("LockAccount", "Account", new
 			{

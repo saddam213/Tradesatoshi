@@ -27,6 +27,7 @@ namespace TradeSatoshi.Entity
 		public string StatusMessage { get; set; }
 
 		[MaxLength(50)]
+		[Index("IX_Name")]
 		public string Name { get; set; }
 
 

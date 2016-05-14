@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -75,6 +76,19 @@ namespace TradeSatoshi.Common.Data
 			}
 		}
 
+		public static int CountNoLock<T>(this IQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				int toReturn = query.Count(selector);
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
 		public static async Task<int> CountNoLockAsync<T>(this IQueryable<T> query)
 		{
 			using (
@@ -83,6 +97,19 @@ namespace TradeSatoshi.Common.Data
 					TransactionScopeAsyncFlowOption.Enabled))
 			{
 				int toReturn = await query.CountAsync();
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
+		public static async Task<int> CountNoLockAsync<T>(this IQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				int toReturn = await query.CountAsync(selector);
 				scope.Complete();
 				return toReturn;
 			}
@@ -101,6 +128,19 @@ namespace TradeSatoshi.Common.Data
 			}
 		}
 
+		public static int CountNoLock<T>(this IOrderedQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				int toReturn = query.Count(selector);
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
 		public static async Task<int> CountNoLockAsync<T>(this IOrderedQueryable<T> query)
 		{
 			using (
@@ -109,6 +149,19 @@ namespace TradeSatoshi.Common.Data
 					TransactionScopeAsyncFlowOption.Enabled))
 			{
 				int toReturn = await query.CountAsync();
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
+		public static async Task<int> CountNoLockAsync<T>(this IOrderedQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				int toReturn = await query.CountAsync(selector);
 				scope.Complete();
 				return toReturn;
 			}
@@ -127,6 +180,19 @@ namespace TradeSatoshi.Common.Data
 			}
 		}
 
+		public static T FirstOrDefaultNoLock<T>(this IQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				var toReturn = query.FirstOrDefault(selector);
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
 		public static async Task<T> FirstOrDefaultNoLockAsync<T>(this IQueryable<T> query)
 		{
 			using (
@@ -135,6 +201,19 @@ namespace TradeSatoshi.Common.Data
 					TransactionScopeAsyncFlowOption.Enabled))
 			{
 				var toReturn = await query.FirstOrDefaultAsync();
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
+		public static async Task<T> FirstOrDefaultNoLockAsync<T>(this IQueryable<T> query, Expression<Func<T,bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				var toReturn = await query.FirstOrDefaultAsync(selector);
 				scope.Complete();
 				return toReturn;
 			}
@@ -153,6 +232,19 @@ namespace TradeSatoshi.Common.Data
 			}
 		}
 
+		public static T FirstOrDefaultNoLock<T>(this IOrderedQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				var toReturn = query.FirstOrDefault(selector);
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
 		public static async Task<T> FirstOrDefaultNoLockAsync<T>(this IOrderedQueryable<T> query)
 		{
 			using (
@@ -161,6 +253,19 @@ namespace TradeSatoshi.Common.Data
 					TransactionScopeAsyncFlowOption.Enabled))
 			{
 				var toReturn = await query.FirstOrDefaultAsync();
+				scope.Complete();
+				return toReturn;
+			}
+		}
+
+		public static async Task<T> FirstOrDefaultNoLockAsync<T>(this IOrderedQueryable<T> query, Expression<Func<T, bool>> selector)
+		{
+			using (
+				var scope = new TransactionScope(TransactionScopeOption.Required,
+					new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted },
+					TransactionScopeAsyncFlowOption.Enabled))
+			{
+				var toReturn = await query.FirstOrDefaultAsync(selector);
 				scope.Complete();
 				return toReturn;
 			}

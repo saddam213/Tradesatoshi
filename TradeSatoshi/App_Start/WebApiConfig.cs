@@ -30,7 +30,6 @@ namespace TradeSatoshi.Web
 
 			config.Routes.MapHttpRoute(name: "SubmitWithdraw", routeTemplate: "api/private/submitwithdraw", defaults: new { controller = "Private", action = "SubmitWithdraw" });
 			config.Routes.MapHttpRoute(name: "GenerateAddress", routeTemplate: "api/private/generateaddress", defaults: new { controller = "Private", action = "GenerateAddress" });
-			config.Routes.MapHttpRoute(name: "CancelOrders", routeTemplate: "api/private/cancelorders", defaults: new { controller = "Private", action = "CancelOrders" });
 			config.Routes.MapHttpRoute(name: "CancelOrder", routeTemplate: "api/private/cancelorder", defaults: new { controller = "Private", action = "CancelOrder" });
 			config.Routes.MapHttpRoute(name: "SubmitOrder", routeTemplate: "api/private/submitorder", defaults: new { controller = "Private", action = "SubmitOrder" });
 		}

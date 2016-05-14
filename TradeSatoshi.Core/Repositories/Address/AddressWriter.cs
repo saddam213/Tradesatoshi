@@ -19,7 +19,7 @@ namespace TradeSatoshi.Core.Address
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == currencyId && x.IsEnabled);
+				var currency = await context.Currency.FirstOrDefaultNoLockAsync(x => x.Id == currencyId && x.IsEnabled);
 				if (currency == null)
 					return WriterResult<string>.ErrorResult("Currency not found.");
 
@@ -27,7 +27,7 @@ namespace TradeSatoshi.Core.Address
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currency.Name);
 
-				var currentAddresses = await context.Address.Where(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive).ToListAsync();
+				var currentAddresses = await context.Address.Where(x => x.UserId == userId && x.CurrencyId == currencyId && x.IsActive).ToListNoLockAsync();
 				foreach (var currentAddress in currentAddresses)
 				{
 					currentAddress.IsActive = false;
@@ -52,7 +52,7 @@ namespace TradeSatoshi.Core.Address
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var currencyEntity = await context.Currency.FirstOrDefaultAsync(x => x.Symbol == currency && x.IsEnabled);
+				var currencyEntity = await context.Currency.FirstOrDefaultNoLockAsync(x => x.Symbol == currency && x.IsEnabled);
 				if (currencyEntity == null)
 					return WriterResult<string>.ErrorResult("Currency not found.");
 
@@ -60,7 +60,7 @@ namespace TradeSatoshi.Core.Address
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currencyEntity.Name);
 
-				var currentAddresses = await context.Address.Where(x => x.UserId == userId && x.CurrencyId == currencyEntity.Id && x.IsActive).ToListAsync();
+				var currentAddresses = await context.Address.Where(x => x.UserId == userId && x.CurrencyId == currencyEntity.Id && x.IsActive).ToListNoLockAsync();
 				foreach (var currentAddress in currentAddresses)
 				{
 					currentAddress.IsActive = false;

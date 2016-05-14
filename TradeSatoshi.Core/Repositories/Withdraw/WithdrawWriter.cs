@@ -19,14 +19,18 @@ namespace TradeSatoshi.Core.Withdraw
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
+				var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == model.CurrencyId);
+				if (currency == null || currency.IsEnabled || currency.Status != CurrencyStatus.OK)
+					return WriterResult<int>.ErrorResult("Currency not found or is currently disabled.");
+
+				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+				if (user == null || !user.IsWithdrawEnabled)
+					return WriterResult<int>.ErrorResult("Your withdrawals are currently disabled.");
+
 				var auditResult = await AuditService.AuditUserCurrency(context, userId, model.CurrencyId);
-				if (!auditResult.Success)
-					return WriterResult<int>.ErrorResult("Failed to audit balance.");
-
-				var balance = await context.Balance.Include(x => x.Currency).FirstOrDefaultAsync(x => x.UserId == userId && x.CurrencyId == model.CurrencyId);
-				if (balance == null || model.Amount > balance.Avaliable)
+				if (!auditResult.Success || model.Amount > auditResult.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
-
+		
 				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = false,
@@ -35,7 +39,7 @@ namespace TradeSatoshi.Core.Withdraw
 					Address = model.Address,
 					CurrencyId = model.CurrencyId,
 					Amount = model.Amount,
-					Fee = balance.Currency.WithdrawFee,
+					Fee = currency.WithdrawFee,
 					WithdrawType = WithdrawType.Normal,
 					WithdrawStatus = WithdrawStatus.Unconfirmed,
 					UserId = userId
@@ -56,14 +60,14 @@ namespace TradeSatoshi.Core.Withdraw
 				if(currencyEntity == null)
 					return WriterResult<int>.ErrorResult("Currency not found.");
 
+				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+				if (user == null || !user.IsWithdrawEnabled)
+					return WriterResult<int>.ErrorResult("Your withdrawals are currently disabled.");
+
 				var auditResult = await AuditService.AuditUserCurrency(context, userId, currencyEntity.Id);
-				if (!auditResult.Success)
+				if (!auditResult.Success || amount > auditResult.Avaliable)
 					return WriterResult<int>.ErrorResult("Failed to audit balance.");
-
-				var balance = await context.Balance.Where(x => x.UserId == userId && x.CurrencyId == currencyEntity.Id).FirstOrDefaultNoLockAsync();
-				if (balance == null || amount > balance.Avaliable)
-					return WriterResult<int>.ErrorResult("Insufficient funds.");
-
+			
 				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = true,
@@ -90,10 +94,13 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
+					.Include(x => x.User)
 					.Include(x => x.Currency)
 					.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
 				if (withdraw == null || withdraw.WithdrawStatus != WithdrawStatus.Unconfirmed)
 					return WriterResult<bool>.ErrorResult("Withdraw #{0} not found or is already confirmed.", withdrawId);
+				if (!withdraw.User.IsWithdrawEnabled)
+					return WriterResult<bool>.ErrorResult("Your withdrawals are currently disabled.");
 
 				withdraw.WithdrawStatus = WithdrawStatus.Pending;
 				await context.SaveChangesAsync();
@@ -108,10 +115,14 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var withdraw = await context.Withdraw
+					.Include(x => x.User)
 					.Include(x => x.Currency)
 					.FirstOrDefaultAsync(x => x.Id == withdrawId && x.UserId == userId && x.WithdrawStatus == WithdrawStatus.Unconfirmed);
 				if (withdraw == null || withdraw.WithdrawStatus != WithdrawStatus.Unconfirmed)
 					return WriterResult<bool>.ErrorResult("Withdraw #{0} not found or is already canceled.", withdrawId);
+				if (!withdraw.User.IsWithdrawEnabled)
+					return WriterResult<bool>.ErrorResult("Your withdrawals are currently disabled.");
+
 
 				withdraw.WithdrawStatus = WithdrawStatus.Canceled;
 				await context.SaveChangesAsync();

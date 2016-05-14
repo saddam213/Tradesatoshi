@@ -23,7 +23,7 @@ namespace TradeSatoshi.Core.Vote
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var voteItem = context.VoteItem.FirstOrDefault(x => x.Name == model.Name);
+				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Name == model.Name);
 				if (voteItem != null)
 					return WriterResult<bool>.ErrorResult("VoteItem {0} already exists.", model.Name);
 
@@ -52,7 +52,7 @@ namespace TradeSatoshi.Core.Vote
 			await VoteService.CheckVoteItems();
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var voteItem = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == model.VoteItemId);
+				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.VoteItemId);
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
 
@@ -82,7 +82,7 @@ namespace TradeSatoshi.Core.Vote
 			await VoteService.CheckVoteItems();
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var voteItem = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == model.VoteItemId);
+				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.VoteItemId);
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
 
@@ -119,7 +119,7 @@ namespace TradeSatoshi.Core.Vote
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var voteItem = context.VoteItem.FirstOrDefault(x => x.Id == model.Id);
+				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.Id);
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem {0} not found.", model.Id);
 
@@ -148,7 +148,7 @@ namespace TradeSatoshi.Core.Vote
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var votesettings = await context.VoteSetting.FirstOrDefaultAsync();
+				var votesettings = await context.VoteSetting.FirstOrDefaultNoLockAsync();
 				if (votesettings == null)
 				{
 					votesettings = new VoteSettings();

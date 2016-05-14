@@ -31,10 +31,10 @@ namespace TradeSatoshi.Entity
 		public DateTime Timestamp { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 
 		[ForeignKey("ToUserId")]
-		public virtual ApplicationUser ToUser { get; set; }
+		public virtual User ToUser { get; set; }
 
 		[ForeignKey("CurrencyId")]
 		public virtual Currency Currency { get; set; }

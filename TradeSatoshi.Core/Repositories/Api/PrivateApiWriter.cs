@@ -40,7 +40,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 
 				var response = new CancelOrderResponse
 				{
-					OrderId = result.CanceledOrders
+					CanceledOrders = result.CanceledOrders
 				};
 				return new ApiResult<CancelOrderResponse>(true, response);
 			}
@@ -71,15 +71,33 @@ namespace TradeSatoshi.Core.Repositories.Api
 			}
 		}
 
-		public async Task<ApiResult<ApiOrderResponse>> SubmitOrder(string userId, string market, string type, decimal amount, decimal price)
+		public async Task<ApiResult<ApiSubmitOrderResponse>> SubmitOrder(string userId, string market, TradeType type, decimal amount, decimal price)
 		{
 			try
 			{
-				return new ApiResult<ApiOrderResponse>(false, "Not Implemented");
+				var result = await TradeService.QueueTrade(new CreateTradeModel
+				{
+					UserId = userId,
+					Amount = amount,
+					TradeType = type,
+					Rate = price,
+					Market = market,
+					IsApi = true
+				});
+
+				if (result.HasError)
+					return new ApiResult<ApiSubmitOrderResponse>(false, result.Error);
+
+				var apiResult = new ApiSubmitOrderResponse
+				{
+					OrderId = result.TradeId,
+					Filled = result.FilledTrades
+				};
+				return new ApiResult<ApiSubmitOrderResponse>(true, apiResult);
 			}
 			catch (Exception ex)
 			{
-				return new ApiResult<ApiOrderResponse>(ex);
+				return new ApiResult<ApiSubmitOrderResponse>(ex);
 			}
 		}
 
@@ -93,7 +111,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 
 				var apiResult = new ApiSubmitWithdrawResponse
 				{
-					Id = result.Data
+					WithdrawalId = result.Data
 				};
 				return new ApiResult<ApiSubmitWithdrawResponse>(true, apiResult);
 			}

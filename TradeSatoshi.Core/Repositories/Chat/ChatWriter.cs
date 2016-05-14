@@ -31,7 +31,7 @@ namespace TradeSatoshi.Core.Repositories.Chat
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var chatEntity = await context.ChatMessage.FindAsync(model.Id);
+				var chatEntity = await context.ChatMessage.FirstOrDefaultNoLockAsync(x => x.Id == model.Id);
 				if (chatEntity == null)
 					return WriterResult<bool>.ErrorResult();
 

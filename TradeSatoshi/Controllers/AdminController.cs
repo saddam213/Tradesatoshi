@@ -6,6 +6,7 @@ using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Repositories.Admin;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Trade;
@@ -32,6 +33,7 @@ namespace TradeSatoshi.Web.Controllers
 		public IVoteReader VoteReader { get; set; }
 		public ICurrencyReader CurrencyReader { get; set; }
 		public ITradePairReader TradePairReader { get; set; }
+		public ISiteStatusReader SiteStatusReader { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -42,9 +44,9 @@ namespace TradeSatoshi.Web.Controllers
 		#region Status
 
 		[HttpGet]
-		public ActionResult Status()
+		public async Task<ActionResult> Status()
 		{
-			return PartialView("_StatusPartial");
+			return PartialView("_StatusPartial", await SiteStatusReader.GetSiteStatus());
 		}
 
 		#endregion
@@ -313,16 +315,6 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> GetSupportFaq(DataTablesModel param)
 		{
 			return DataTable(await SupportReader.AdminGetSupportFaqDataTable(param));
-		}
-
-		#endregion
-
-		#region Statistics
-
-		[HttpGet]
-		public ActionResult Statistics()
-		{
-			return PartialView("_StatisticsPartial");
 		}
 
 		#endregion

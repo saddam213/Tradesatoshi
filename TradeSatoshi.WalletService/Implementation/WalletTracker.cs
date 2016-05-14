@@ -17,6 +17,8 @@ using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Enums;
 using TradeSatoshi.Entity;
 using TradeSatoshi.Common.Services.NotificationService;
+using TradeSatoshi.Common.Logging;
+using TradeSatoshi.Core.Logger;
 
 namespace TradeSatoshi.WalletService.Implementation
 {
@@ -28,6 +30,7 @@ namespace TradeSatoshi.WalletService.Implementation
 		private bool _isEnabled = false;
 		private int _pollPeriod = 30;
 		public IAuditService AuditService { get; set; }
+		public ILogger Logger { get; set; }
 		//public INotificationService NotificationService { get; set; }
 		public INotificationService NotificationService { get; set; }
 
@@ -36,7 +39,8 @@ namespace TradeSatoshi.WalletService.Implementation
 			_isRunning = true;
 			_isEnabled = true;
 			_cancelToken = cancelToken;
-			AuditService = new AuditService();
+			Logger = new DatabaseLogger(new DataContextFactory());
+			AuditService = new AuditService(Logger);
 			NotificationService = new NotificationService();
 			Task.Factory.StartNew(async () => await Process(), _cancelToken, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
 		}
@@ -291,7 +295,7 @@ namespace TradeSatoshi.WalletService.Implementation
 					return; // currency is skipped
 
 				var connector = new WalletConnector(currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
-				var pendingWithdraws = await context.Withdraw.Where(x => x.CurrencyId == currency.Id && x.WithdrawStatus == WithdrawStatus.Pending).ToListAsync();
+				var pendingWithdraws = await context.Withdraw.Where(x => x.CurrencyId == currency.Id && x.WithdrawStatus == WithdrawStatus.Pending && x.User.IsWithdrawEnabled).ToListAsync();
 				foreach (var pendingWithdraw in pendingWithdraws)
 				{
 					pendingWithdraw.WithdrawStatus = WithdrawStatus.Processing;

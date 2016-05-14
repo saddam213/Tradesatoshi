@@ -20,14 +20,14 @@ namespace TradeSatoshi.Core.Admin
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var existinguser = await context.Users.FirstOrDefaultAsync(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
+				var existinguser = await context.Users.FirstOrDefaultNoLockAsync(x => (x.Email == model.Email && x.Id != model.UserId) || (x.UserName == model.UserName && x.Id != model.UserId));
 				if (existinguser != null)
 				{
 					return WriterResult<bool>.ErrorResult(model.UserName == existinguser.UserName ? "Username already in use." : "Email already in use.");
 				}
 				var user = await context.Users
 					.Include(x => x.Profile)
-					.FirstOrDefaultAsync(x => x.Id == model.UserId);
+					.FirstOrDefaultNoLockAsync(x => x.Id == model.UserId);
 				if (user == null)
 					return WriterResult<bool>.ErrorResult("User {0} not found.", model.UserName);
 
@@ -59,15 +59,15 @@ namespace TradeSatoshi.Core.Admin
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == model.UserName);
+				var user = await context.Users.FirstOrDefaultNoLockAsync(x => x.UserName == model.UserName);
 				if (user == null)
 					return WriterResult<bool>.ErrorResult("User {0} not found.", model.UserName);
 
-				var role = await context.Roles.FirstOrDefaultAsync(x => x.Name == model.SecurityRole.ToString());
+				var role = await context.Roles.FirstOrDefaultNoLockAsync(x => x.Name == model.SecurityRole.ToString());
 				if (role == null)
 					return WriterResult<bool>.ErrorResult("{0} role does not exist", model.SecurityRole);
 
-				var exists = context.UserRoles.FirstOrDefault(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
+				var exists = context.UserRoles.FirstOrDefaultNoLockAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
 				if (exists != null)
 					return WriterResult<bool>.ErrorResult("{0} is already assigned to {1} role.", model.UserName, model.SecurityRole);
 
@@ -86,7 +86,7 @@ namespace TradeSatoshi.Core.Admin
 
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var role = await context.UserRoles.FirstOrDefaultAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
+				var role = await context.UserRoles.FirstOrDefaultNoLockAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
 				if (role == null)
 					return WriterResult<bool>.ErrorResult("{0} in not assigned to {1} role.", model.UserName, model.SecurityRole);
 

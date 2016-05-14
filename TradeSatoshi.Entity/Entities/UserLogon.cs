@@ -30,6 +30,6 @@ namespace TradeSatoshi.Entity
 		public DateTime Timestamp { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

@@ -5,11 +5,20 @@ using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using System.Data.Entity;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Common.Logging;
 
 namespace TradeSatoshi.Core.Services
 {
 	public class AuditService : IAuditService
 	{
+		public AuditService() { }
+		public AuditService(ILogger logger)
+		{
+			Logger = logger;
+		}
+
+		public ILogger Logger { get; set; }
+
 		public async Task<AuditCurrencyResult> AuditUserCurrency(IDataContext context, string userId, int currencyId)
 		{
 			try
@@ -127,6 +136,7 @@ namespace TradeSatoshi.Core.Services
 			}
 			catch (Exception ex)
 			{
+				await Logger.Exception("AuditService", ex, $"Failed to audit user balance, User: {userId}, CurrencyId: {currencyId}");
 				return new AuditCurrencyResult(false);
 			}
 		}

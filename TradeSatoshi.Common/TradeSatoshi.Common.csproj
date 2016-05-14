@@ -171,11 +171,13 @@
     <Compile Include="Models\Vote\VoteItemModel.cs" />
     <Compile Include="Models\Withdraw\CreateWithdrawModel.cs" />
     <Compile Include="Models\Withdraw\WithdrawModel.cs" />
+    <Compile Include="Repositories\Admin\ISiteStatusReader.cs" />
     <Compile Include="Repositories\Admin\IUserWriter.cs" />
     <Compile Include="Repositories\Admin\IUserReader.cs" />
     <Compile Include="DataContext\IDataContext.cs" />
     <Compile Include="DataContext\IDataContextFactory.cs" />
     <Compile Include="Models\Chat\ChatMessageModel.cs" />
+    <Compile Include="Repositories\Admin\SiteStatusModel.cs" />
     <Compile Include="Repositories\Api\ApiAddressRequest.cs" />
     <Compile Include="Repositories\Api\ApiAddressResponse.cs" />
     <Compile Include="Repositories\Api\ApiBalanceRequest.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Repositories\Api\ApiOrderResponse.cs" />
     <Compile Include="Repositories\Api\ApiOrdersRequest.cs" />
     <Compile Include="Repositories\Api\ApiSubmitOrderRequest.cs" />
+    <Compile Include="Repositories\Api\ApiSubmitOrderResponse.cs" />
     <Compile Include="Repositories\Api\ApiSubmitWithdrawRequest.cs" />
     <Compile Include="Repositories\Api\ApiSubmitWithdrawResponse.cs" />
     <Compile Include="Repositories\Api\ApiTicker.cs" />
@@ -219,6 +222,7 @@
     <Compile Include="Models\TradePair\TradePairModel.cs" />
     <Compile Include="Models\TradePair\UpdateTradePairModel.cs" />
     <Compile Include="Repositories\Trade\TradeCacheKeys.cs" />
+    <Compile Include="Repositories\Transfer\ITransferWriter.cs" />
     <Compile Include="Repositories\Vote\IVoteWriter.cs" />
     <Compile Include="Repositories\Vote\IVoteReader.cs" />
     <Compile Include="Models\Vote\UpdateVoteItemModel.cs" />
@@ -257,7 +261,6 @@
     <Compile Include="Repositories\Trade\ITradeReader.cs" />
     <Compile Include="Repositories\Trade\ITradeWriter.cs" />
     <Compile Include="Repositories\Transfer\ITransferReader.cs" />
-    <Compile Include="Repositories\Transfer\ITransferWriter.cs" />
     <Compile Include="Validation\IApiResult.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
     <Compile Include="Validation\RequiredIfAttribute.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Logging;
 
@@ -17,37 +18,37 @@ namespace TradeSatoshi.Core.Logger
 			DataContextFactory = dataContextFactory;
 		}
 
-		public void Info(string component, string message, params object[] formatParams)
+		public async Task Info(string component, string message)
 		{
-			LogMessage("Info", component, string.Format(message, formatParams));
+			await LogMessage("Info", component, message);
 		}
 
-		public void Debug(string component, string message, params object[] formatParams)
+		public async Task Debug(string component, string message)
 		{
-			LogMessage("Debug", component, string.Format(message, formatParams));
+			await LogMessage("Debug", component, message);
 		}
 
-		public void Warn(string component, string message, params object[] formatParams)
+		public async Task Warn(string component, string message)
 		{
-			LogMessage("Warn", component, string.Format(message, formatParams));
+			await LogMessage("Warn", component, message );
 		}
 
-		public void Error(string component, string message, params object[] formatParams)
+		public async Task Error(string component, string message)
 		{
-			LogMessage("Error", component, string.Format(message, formatParams));
+			await LogMessage("Error", component, message);
 		}
 
-		public void Exception(string component, Exception ex)
+		public async Task Exception(string component, Exception ex)
 		{
-			LogMessage("Error", component, ex.ToString());
+			await LogMessage("Error", component, ex.ToString());
 		}
 
-		public void Exception(string component, Exception ex, string message, params object[] formatParams)
+		public async Task Exception(string component, Exception ex, string message)
 		{
-			LogMessage("Error", component, string.Concat(string.Format(message, formatParams), Environment.NewLine, ex.ToString()));
+			await LogMessage("Error", component, string.Concat(message, Environment.NewLine, ex.ToString()));
 		}
 
-		private void LogMessage(string type, string component, string message)
+		private async Task LogMessage(string type, string component, string message)
 		{
 			using (var dataContext = DataContextFactory.CreateContext())
 			{
@@ -58,7 +59,7 @@ namespace TradeSatoshi.Core.Logger
 					Type = type,
 					Timestamp = DateTime.UtcNow
 				});
-				dataContext.SaveChanges();
+				await dataContext.SaveChangesAsync();
 			}
 		}
 	}

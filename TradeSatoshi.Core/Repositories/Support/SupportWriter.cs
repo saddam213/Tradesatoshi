@@ -39,7 +39,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultAsync(x => x.Id == model.TicketId);
+				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultNoLockAsync(x => x.Id == model.TicketId);
 				if (ticket == null)
 					return WriterResult<int>.ErrorResult("Support ticket #{0} not found", model.TicketId);
 
@@ -66,7 +66,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultAsync(x => x.Id == model.TicketId);
+				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultNoLockAsync(x => x.Id == model.TicketId);
 				if (ticket == null)
 					return WriterResult<bool>.ErrorResult("Support ticket #{0} not found", model.TicketId);
 
@@ -101,7 +101,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultAsync(x => x.Id == model.TicketId);
+				var ticket = await context.SupportTicket.Include(x => x.Replies).FirstOrDefaultNoLockAsync(x => x.Id == model.TicketId);
 				if (ticket == null)
 					return WriterResult<int>.ErrorResult("Support ticket #{0} not found", model.TicketId);
 
@@ -127,7 +127,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var ticket = await context.SupportRequest.FirstOrDefaultAsync(x => x.Id == model.RequestId);
+				var ticket = await context.SupportRequest.FirstOrDefaultNoLockAsync(x => x.Id == model.RequestId);
 				if (ticket == null)
 					return WriterResult<bool>.ErrorResult("Support request #{0} not found", model.RequestId);
 
@@ -144,7 +144,7 @@ namespace TradeSatoshi.Core.Support
 			{
 				var reply = await context.SupportTicketReply
 					.Include(r => r.Ticket)
-					.FirstOrDefaultAsync(x => x.Id == model.ReplyId);
+					.FirstOrDefaultNoLockAsync(x => x.Id == model.ReplyId);
 				if (reply == null)
 					return WriterResult<bool>.ErrorResult("Support reply #{0} not found", model.ReplyId);
 
@@ -161,7 +161,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var category = await context.SupportCategory.FirstOrDefaultAsync(x => x.Name == model.Name);
+				var category = await context.SupportCategory.FirstOrDefaultNoLockAsync(x => x.Name == model.Name);
 				if (category != null)
 					return WriterResult<bool>.ErrorResult("Category with name '{0}' already exists.", model.Name);
 
@@ -180,7 +180,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var category = await context.SupportCategory.FirstOrDefaultAsync(x => x.Id == model.Id);
+				var category = await context.SupportCategory.FirstOrDefaultNoLockAsync(x => x.Id == model.Id);
 				if (category == null)
 					return WriterResult<bool>.ErrorResult("Category with id '{0}' not found.", model.Id);
 
@@ -196,7 +196,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var faq = await context.SupportFaq.FirstOrDefaultAsync(x => x.Question == model.Question);
+				var faq = await context.SupportFaq.FirstOrDefaultNoLockAsync(x => x.Question == model.Question);
 				if (faq != null)
 					return WriterResult<bool>.ErrorResult("FAQ with question '{0}' already exists.", model.Question);
 
@@ -219,7 +219,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var faq = await context.SupportFaq.FirstOrDefaultAsync(x => x.Id == model.Id);
+				var faq = await context.SupportFaq.FirstOrDefaultNoLockAsync(x => x.Id == model.Id);
 				if (faq == null)
 					return WriterResult<bool>.ErrorResult("FAQ with id '{0}' not found.", model.Id);
 

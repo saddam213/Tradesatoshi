@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Repositories\Address\AddressWriter.cs" />
+    <Compile Include="Repositories\Admin\SiteStatusReader.cs" />
     <Compile Include="Repositories\Admin\UserWriter.cs" />
     <Compile Include="Repositories\Admin\UserReader.cs" />
     <Compile Include="Repositories\Api\PrivateApiWriter.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Repositories\Logger\Logger.cs" />
     <Compile Include="Repositories\TradePair\TradePairReader.cs" />
     <Compile Include="Repositories\TradePair\TradePairWriter.cs" />
+    <Compile Include="Repositories\Transfer\TransferWriter.cs" />
     <Compile Include="Repositories\Vote\VoteReader.cs" />
     <Compile Include="Repositories\Vote\VoteWriter.cs" />
     <Compile Include="Services\AuditService.cs" />
@@ -106,7 +108,6 @@
     <Compile Include="Repositories\Support\SupportWriter.cs" />
     <Compile Include="Repositories\Trade\TradeReader.cs" />
     <Compile Include="Repositories\Trade\TradeWriter.cs" />
-    <Compile Include="Repositories\Transfer\TransferWriter.cs" />
     <Compile Include="Repositories\Transfer\TransferReader.cs" />
     <Compile Include="Repositories\Withdraw\WithdrawWriter.cs" />
     <Compile Include="Repositories\Withdraw\WithdrawReader.cs" />

@@ -28,7 +28,7 @@ namespace TradeSatoshi.Entity
 		public DateTime Created { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 
 		[ForeignKey("TicketId")]
 		public virtual SupportTicket Ticket { get; set; }

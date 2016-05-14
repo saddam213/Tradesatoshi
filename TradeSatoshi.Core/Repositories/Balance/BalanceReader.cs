@@ -30,7 +30,7 @@ namespace TradeSatoshi.Core.Balance
 						Total = (decimal?) balance.Total ?? 0m,
 						Unconfirmed = (decimal?) balance.Unconfirmed ?? 0m
 					};
-				return await query.FirstOrDefaultAsync();
+				return await query.FirstOrDefaultNoLockAsync();
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace TradeSatoshi.Core.Balance
 						Total = (decimal?) balance.Total ?? 0m,
 						Unconfirmed = (decimal?) balance.Unconfirmed ?? 0m
 					};
-				return await query.ToListAsync();
+				return await query.ToListNoLockAsync();
 			}
 		}
 	}

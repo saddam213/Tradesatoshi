@@ -153,6 +153,10 @@
     <Compile Include="Migrations\201604280920536_ApiKetSecret.Designer.cs">
       <DependentUpon>201604280920536_ApiKetSecret.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605141349237_IndexesRegisterDate.cs" />
+    <Compile Include="Migrations\201605141349237_IndexesRegisterDate.Designer.cs">
+      <DependentUpon>201605141349237_IndexesRegisterDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -243,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604280920536_ApiKetSecret.resx">
       <DependentUpon>201604280920536_ApiKetSecret.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605141349237_IndexesRegisterDate.resx">
+      <DependentUpon>201605141349237_IndexesRegisterDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

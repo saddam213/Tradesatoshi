@@ -36,6 +36,6 @@ namespace TradeSatoshi.Entity
 		public virtual Currency Currency { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

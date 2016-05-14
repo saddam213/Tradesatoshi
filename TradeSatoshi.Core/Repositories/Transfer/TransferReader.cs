@@ -64,9 +64,9 @@ namespace TradeSatoshi.Core.Transfer
 						CurrencyId = x.Id,
 						Fee = x.TransferFee,
 						Symbol = x.Symbol,
-					}).FirstOrDefaultAsync();
+					}).FirstOrDefaultNoLockAsync();
 
-				var balance = await context.Balance.FirstOrDefaultAsync(c => c.UserId == userId && c.CurrencyId == currencyId);
+				var balance = await context.Balance.FirstOrDefaultNoLockAsync(c => c.UserId == userId && c.CurrencyId == currencyId);
 				if (balance != null)
 				{
 					userInfo.Balance = balance.Avaliable;

@@ -19,10 +19,12 @@ namespace TradeSatoshi.Entity
 		[MaxLength(128)]
 		public string UserId { get; set; }
 
+		[Index("IX_Type")]
 		public VoteType Type { get; set; }
 
 		public int Count { get; set; }
 
+		[Index("IX_Status")]
 		public VoteStatus Status { get; set; }
 
 		public DateTime Created { get; set; }
@@ -31,6 +33,6 @@ namespace TradeSatoshi.Entity
 		public virtual VoteItem VoteItem { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

@@ -544,11 +544,22 @@ float:left;*/
 	height: 100%;
 	width: 100%;
 	margin-bottom: 0px;
+
 }
 
 .leftSidebar-body {
 	position: absolute;
-	top: 56px;
+	top: 64px;
+	bottom: 0px;
+	left: 0;
+	right: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.leftSidebar-body-market {
+	position: absolute;
+	top: 88px;
 	bottom: 0px;
 	left: 0;
 	right: 0;
@@ -624,7 +635,7 @@ float:left;*/
 
 
 .header-container {
-	padding-top: 10px;
+	margin-top: 0px;
 	font-size: 12px;
 }
 

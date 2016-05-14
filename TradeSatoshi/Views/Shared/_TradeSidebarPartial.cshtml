@@ -1,5 +1,8 @@
 ﻿@model TradeSatoshi.Common.ITradeSidebarModel
-
+@{ 
+	var basemarkets = Model.TradePairs.Where(x => x.Status != TradePairStatus.Closed).Select(x => x.BaseSymbol).Distinct();
+	var hasMultipleBasemarkets = basemarkets.Count() > 1;
+}
 <style>
 	#table-tradepair, #table-balancemenu {
 		cursor: pointer;
@@ -19,6 +22,11 @@
 		#table-balancemenu > .balance-row.active:hover {
 			background-color: #f5f5f5;
 		}
+
+		.basemarket-btn-selected{
+		background-color: rgb(230, 230, 230);
+		
+		}
 </style>
 
 <div class="leftSidebar-top-container">
@@ -27,29 +35,34 @@
 			<h3 class="panel-title">Balances</h3>
 		</div>
 		<div class="header-container">
+			<div style="padding:2px;padding-bottom:0">
+				<input id="balance-search" type="search" style="min-width:100%" placeholder="Search..." />
+			</div>
 			<div class="col-xs-12 col-sm-6 col-md-4 nopad col-lg-6">
 				<div class="text-xs-center text-sm-left">
-					<b style="margin-left: 5px">Currency</b>
+					<small><i style="margin-left: 5px">Currency</i></small>
 				</div>
 			</div>
-			<div class="col-xs-12 col-sm-6 col-md-8 nopad col-lg-6 hidden-xs"><b>Avaliable</b></div>
+			<div class="col-xs-12 col-sm-6 col-md-8 nopad col-lg-6 hidden-xs">
+				<small><i>Avaliable</i></small>
+			</div>
 		</div>
 		<div class="leftSidebar-body">
 			<div id="table-balancemenu" style="font-size: 12px">
 				@foreach (var balance in Model.Balances)
 				{
-					<div class="data-currency-@balance.CurrencyId col-xs-12 nopad balance-row" style="border-top: solid 1px #ddd; padding: 5px">
-						<div class="col-xs-12 col-sm-12 col-md-4 nopad col-lg-6 nopad">
-							<div class="text-xs-center text-sm-center text-md-left">
-								@Helpers.CoinLogoWithSymbol(balance.Symbol)
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-12 col-md-8 nopad col-lg-6 nopad">
-							<div class="text-xs-center text-sm-center text-md-left">
-								<span class="data-balance-@balance.Symbol">@balance.Avaliable.ToString("F8")</span>
-							</div>
+				<div class="data-currency-@balance.CurrencyId col-xs-12 nopad balance-row" data-search="@balance.Symbol" style="border-top: solid 1px #ddd; padding: 5px">
+					<div class="col-xs-12 col-sm-12 col-md-4 nopad col-lg-6 nopad">
+						<div class="text-xs-center text-sm-center text-md-left">
+							@Helpers.CoinLogoWithSymbol(balance.Symbol)
 						</div>
 					</div>
+					<div class="col-xs-12 col-sm-12 col-md-8 nopad col-lg-6 nopad">
+						<div class="text-xs-center text-sm-center text-md-left">
+							<span class="data-balance-@balance.Symbol">@balance.Avaliable.ToString("F8")</span>
+						</div>
+					</div>
+				</div>
 				}
 			</div>
 		</div>
@@ -61,39 +74,56 @@
 		<div class="panel-heading">
 			<h3 class="panel-title">Markets</h3>
 		</div>
+
 		<div class="header-container">
-			<div class="col-xs-12 col-sm-6 col-md-5 nopad col-lg-5">
-				<div class="text-xs-center text-sm-left">
-					<b style="margin-left: 5px">Market</b>
+			<div style="padding:2px;padding-bottom:0">
+				<input id="market-search" type="search" style="min-width:100%" placeholder="Search..." />
+			</div>
+			@if (hasMultipleBasemarkets)
+			{
+			<div style="padding:2px;padding-bottom:0">
+				<div class="btn-group btn-group-justified">
+					@foreach (var baseMarket in basemarkets)
+					{
+					<a class="btn btn-xs btn-default basemarket-btn basemarket-btn-@baseMarket" aria-selected="false" data-base="@baseMarket">@baseMarket</a>
+					}
 				</div>
 			</div>
-			<div class="col-xs-12 col-sm-6 col-md-6 nopad col-lg-5 hidden-xs"><b>Price</b></div>
+			}
+			<div class="col-xs-12 col-sm-6 col-md-5 nopad col-lg-5">
+				<div class="text-xs-center text-sm-left">
+					<small><i style="margin-left: 5px">Market</i></small>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-6 nopad col-lg-5 hidden-xs">
+				<small>	<i>Price</i></small>
+			</div>
 		</div>
-		<div class="leftSidebar-body">
-
-			<div id="table-tradepair" style="font-size: 12px">
-				@foreach (var tradePair in Model.TradePairs.Where(t => t.Status != TradePairStatus.Closed))
-				{
-				var textClass = (tradePair.Change > 0 ? "success" : tradePair.Change < 0 ? "danger" : "");
-					<div class="col-xs-12 nopad tradepair-row tradepair-row-@tradePair.Id" style="border-top: solid 1px #ddd; padding: 5px" data-tradepair="@tradePair.Id" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })">
-						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
-							<div class="text-xs-center text-md-left">
-								@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Name)
+		<div class="@(hasMultipleBasemarkets ? "leftSidebar-body-market" : "leftSidebar-body")">
+			<div id="table-tradepair" style="font-size: 12px" >
+					@foreach (var tradePair in Model.TradePairs.Where(t => t.Status != TradePairStatus.Closed).OrderBy(x => x.Symbol))
+					{
+						var textClass = (tradePair.Change > 0 ? "success" : tradePair.Change < 0 ? "danger" : "");
+						<div class="col-xs-12 nopad tradepair-row tradepair-row-@tradePair.Id tradepair-row-@tradePair.BaseSymbol" style="border-top: solid 1px #ddd; padding: 5px;display:@(tradePair.BaseSymbol == "BTC" ? "":"none")" data-tradepair="@tradePair.Id" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })" data-search="@tradePair.Symbol">
+							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
+								<div class="text-xs-center text-md-left">
+									@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Symbol)
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
+								<div class="text-xs-center text-md-left">
+									<span class="data-tradepair-val-@tradePair.Id data-tradepair-last-@tradePair.Id text-@textClass">@tradePair.LastTrade.ToString("F8")</span>
+								</div>
+							</div>
+							<div class="col-md-1 nopad col-lg-2 visible-lg">
+								<div>
+									<span class="data-tradepair-val-@tradePair.Id data-tradepair-change-@tradePair.Id text-@textClass">@tradePair.Change.ToString("F1")%</span>
+								</div>
 							</div>
 						</div>
-						<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
-							<div class="text-xs-center text-md-left">
-								<span class="data-tradepair-val-@tradePair.Id data-tradepair-last-@tradePair.Id text-@textClass">@tradePair.LastTrade.ToString("F8")</span>
-							</div>
-						</div>
-						<div class="col-md-1 nopad col-lg-2 visible-lg">
-							<div>
-								<span class="data-tradepair-val-@tradePair.Id data-tradepair-change-@tradePair.Id text-@textClass" >@tradePair.Change.ToString("F1")%</span>
-							</div>
-						</div>
-					</div>
-				}
+					}
 			</div>
 		</div>
 	</div>
 </div>
+

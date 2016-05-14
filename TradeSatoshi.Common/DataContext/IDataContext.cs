@@ -17,7 +17,7 @@ namespace TradeSatoshi.Common.Data
 		void LogError(string type, string message);
 		Task LogErrorAsync(string type, string message);
 
-		DbSet<Entity.ApplicationUser> Users { get; set; }
+		DbSet<Entity.User> Users { get; set; }
 		DbSet<IdentityRole> Roles { get; }
 		DbSet<Entity.UserLogon> UserLogons { get; set; }
 		DbSet<Entity.UserProfile> UserProfiles { get; set; }

@@ -24,6 +24,7 @@ namespace TradeSatoshi.Entity
 
 		public int CurrencyId { get; set; }
 
+		[Index("IX_Type")]
 		public TradeType TradeHistoryType { get; set; }
 
 		public decimal Amount { get; set; }
@@ -38,10 +39,10 @@ namespace TradeSatoshi.Entity
 
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 
 		[ForeignKey("ToUserId")]
-		public virtual ApplicationUser ToUser { get; set; }
+		public virtual User ToUser { get; set; }
 
 		[ForeignKey("TradePairId")]
 		public virtual TradePair TradePair { get; set; }

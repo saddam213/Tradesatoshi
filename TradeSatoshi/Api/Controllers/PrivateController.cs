@@ -18,7 +18,7 @@ namespace TradeSatoshi.Web.Api.Controllers
 		public IPrivateApiWriter PrivateApiWriter { get; set; }
 
 		[HttpPost]
-		public async Task<ApiResult<ApiOrderResponse>> SubmitOrder(ApiSubmitOrderRequest request)
+		public async Task<ApiResult<ApiSubmitOrderResponse>> SubmitOrder(ApiSubmitOrderRequest request)
 		{
 			return await PrivateApiWriter.SubmitOrder(User.Identity.Name, request.Market, request.Type, request.Amount, request.Price);
 		}

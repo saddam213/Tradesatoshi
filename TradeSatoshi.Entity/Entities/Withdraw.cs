@@ -36,6 +36,7 @@ namespace TradeSatoshi.Entity
 
 		public WithdrawType WithdrawType { get; set; }
 
+		[Index("IX_Status")]
 		public WithdrawStatus WithdrawStatus { get; set; }
 
 		[MaxLength(1024)]
@@ -49,6 +50,6 @@ namespace TradeSatoshi.Entity
 		public virtual Currency Currency { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

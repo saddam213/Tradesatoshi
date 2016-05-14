@@ -12,6 +12,7 @@ using System.Linq;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Repositories.Api;
 
 namespace TradeSatoshi.Web.Controllers
 {
@@ -19,6 +20,7 @@ namespace TradeSatoshi.Web.Controllers
 	{
 		public ITradeWriter TradeWriter { get; set; }
 		public ITradeReader TradeReader { get; set; }
+		public IPublicApiReader PublicApiReader { get; set; }
 		public IBalanceReader BalanceReader { get; set; }
 		public ITradePairReader TradePairReader { get; set; }
 
@@ -41,31 +43,32 @@ namespace TradeSatoshi.Web.Controllers
 			return PartialView("_TradePairPartial", await TradeReader.GetTradePairExchange(tradePairId, User.Id()));
 		}
 
-		[HttpPost]
-		[AuthorizeSecurityRole(SecurityRole.Standard)]
-		public async Task<ActionResult> CreateTrade(CreateTradeModel model)
+		[HttpGet]
+		public async Task<ActionResult> Summary()
 		{
-			if (!ModelState.IsValid)
-				return PartialView("_CreateTradePartial", model);
-
-			var result = await TradeWriter.CreateTrade(User.Id(), model);
-			if (!ModelState.IsWriterResultValid(result))
-				return PartialView("_CreateTradePartial", model);
-
-			return PartialView("_CreateTradePartial", model);
+			return PartialView("_SummaryPartial", await PublicApiReader.GetMarketSummaries());
 		}
 
 		[HttpPost]
 		[AuthorizeSecurityRole(SecurityRole.Standard)]
-		public async Task<ActionResult> CancelTrade(TradeCancelType cancelType, int? orderId, string market)
+		public async Task<ActionResult> CreateTrade(CreateTradeModel model)
 		{
-			var result = await TradeWriter.CancelTrade(User.Id(), new CancelTradeModel
-			{
-				OrderId = orderId,
-				Market = market,
-				CancelType = cancelType
-			});
-			return Json(result);
+			var result = await TradeWriter.CreateTrade(User.Id(), model);
+			if (!result.Data)
+				return JsonError();
+
+			return JsonSuccess();
+		}
+
+		[HttpPost]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
+		public async Task<ActionResult> CancelTrade(CancelTradeModel model)
+		{
+			var result = await TradeWriter.CancelTrade(User.Id(), model);
+			if (!result.Data)
+				return JsonError();
+
+			return JsonSuccess();
 		}
 
 		[HttpPost]

@@ -28,7 +28,7 @@ namespace TradeSatoshi.Core.Repositories.Chat
 						Message = x.Message,
 						RawTimestamp = x.Timestamp,
 						UserName = x.User.UserName
-					}).ToListAsync();
+					}).ToListNoLockAsync();
 
 				messages.ForEach(x => x.Timestamp = x.RawTimestamp.ToString("MM/dd/yyyy HH:mm:ss"));
 				return messages.OrderBy(x => x.Id).ToList();
@@ -39,7 +39,7 @@ namespace TradeSatoshi.Core.Repositories.Chat
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var user = await context.Users.FindAsync(userId);
+				var user = await context.Users.FirstOrDefaultNoLockAsync(u => u.Id == userId);
 				if (user == null)
 					return null;
 

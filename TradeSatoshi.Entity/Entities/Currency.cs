@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace TradeSatoshi.Entity
 		public string Name { get; set; }
 
 		[MaxLength(128)]
+		[Index("IX_Symbol")]
 		public string Symbol { get; set; }
 
 		public decimal Balance { get; set; }
@@ -50,6 +52,7 @@ namespace TradeSatoshi.Entity
 
 		public int MinConfirmations { get; set; }
 
+		[Index("IX_Status")]
 		public CurrencyStatus Status { get; set; }
 
 		[MaxLength(1024)]

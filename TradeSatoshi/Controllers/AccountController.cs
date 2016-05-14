@@ -140,7 +140,7 @@ namespace TradeSatoshi.Web.Controllers
 					return View(model);
 				}
 
-				var user = new ApplicationUser()
+				var user = new User()
 				{
 					UserName = model.UserName,
 					Email = model.EmailAddress,
@@ -407,7 +407,7 @@ namespace TradeSatoshi.Web.Controllers
 			}
 		}
 
-		private async Task SignInAsync(ApplicationUser user)
+		private async Task SignInAsync(User user)
 		{
 			AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
 			var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);

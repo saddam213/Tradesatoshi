@@ -32,7 +32,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Txid = withdraw.Txid,
 						WithdrawStatus = withdraw.WithdrawStatus
 					});
-				return await query.ToListAsync();
+				return await query.ToListNoLockAsync();
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Txid = withdraw.Txid,
 						WithdrawStatus = withdraw.WithdrawStatus
 					});
-				return await query.ToListAsync();
+				return await query.ToListNoLockAsync();
 			}
 		}
 
@@ -119,9 +119,9 @@ namespace TradeSatoshi.Core.Withdraw
 						MinWithdraw = x.MinWithdraw,
 						Symbol = x.Symbol,
 						WithdrawFeeType = x.WithdrawFeeType
-					}).FirstOrDefaultAsync();
+					}).FirstOrDefaultNoLockAsync();
 
-				var balance = await context.Balance.FirstOrDefaultAsync(c => c.UserId == userId && c.CurrencyId == currencyId);
+				var balance = await context.Balance.Where(c => c.UserId == userId && c.CurrencyId == currencyId).FirstOrDefaultNoLockAsync();
 				if (balance != null)
 				{
 					userInfo.Balance = balance.Avaliable;

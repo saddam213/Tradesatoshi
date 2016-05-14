@@ -7,14 +7,74 @@
 	var GetMarketSummary = Url.HttpRouteUrl("GetMarketSummary", new { market = "LTC_BTC" });
 	var GetMarketSummaries = Url.HttpRouteUrl("GetMarketSummaries", null);
 	var GetOrderBook = Url.HttpRouteUrl("GetOrderBook", new { market = "LTC_BTC", type = "both", depth = 20 });
+
+	var SubmitOrder = Url.HttpRouteUrl("SubmitOrder", null);
+	var CancelOrder = Url.HttpRouteUrl("CancelOrder", null);
+	var CancelOrders = Url.HttpRouteUrl("CancelOrders", null);
+	var GetOrder = Url.HttpRouteUrl("GetOrder", null);
+	var GetOrders = Url.HttpRouteUrl("GetOrders", null);
+	var GetTradeHistory = Url.HttpRouteUrl("GetTradeHistory", null);
+	var GetBalance = Url.HttpRouteUrl("GetBalance", null);
+	var GetBalances = Url.HttpRouteUrl("GetBalances", null);
+	var GetDeposits = Url.HttpRouteUrl("GetDeposits", null);
+	var GetWithdrawals = Url.HttpRouteUrl("GetWithdrawals", null);
+	var GenerateAddress = Url.HttpRouteUrl("GenerateAddress", null);
+	var SubmitWithdraw = Url.HttpRouteUrl("SubmitWithdraw", null);
 }
 
-<h2>Public Api</h2>
+<style>
+	small {
+		display: block;
+	}
 
-<div>
-	<h4>GetCurrencies</h4>
-	<a target="_blank" href="@GetCurrencies">@($"{Domain}{GetCurrencies}")</a>
-	<div>
+	h4 {
+		margin-bottom: 0px;
+	}
+
+	.api-method {
+		margin-top: 5px;
+		margin-bottom: 30px;
+	}
+
+	.api-param-header {
+		margin-top: 5px;
+	}
+
+	.api-method-header {
+		font-weight: 500;
+		font-size: 18px;
+	}
+
+	.api-sig-header {
+		font-weight: 500 !important;
+	}
+
+	.label-primary {
+		vertical-align: text-top;
+	}
+
+	.api-param-required {
+		font-size: 75%;
+	}
+</style>
+
+<div class="col-md-offset-2 col-md-8">
+	<h2>Public Api</h2>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetCurrencies</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetCurrencies">@($"{Domain}{GetCurrencies}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters: <i>None</i>
+		</small>
+		<div>
 <pre>
 {  
    "success":true,
@@ -37,14 +97,25 @@
     ]
 }
 </pre>
+		</div>
 	</div>
-</div>
 
-<div>
-	<h4>GetTicker</h4>
-	<a target="_blank" href="@GetTicker">@($"{Domain}{GetTicker}")</a>
-	<div>
-		<pre>
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetTicker</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetTicker">@($"{Domain}{GetTicker}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>market: </b>The market name e.g. 'LTC_BTC' <i>(required)</i></small>
+		<div>
+			<pre>
 {  
    "success":true,
    "message":null,
@@ -56,14 +127,26 @@
    }
 }
 </pre>
+		</div>
 	</div>
-</div>
 
-<div>
-	<h4>GetMarketHistory</h4>
-	<a target="_blank" href="@GetMarketHistory">@($"{Domain}{GetMarketHistory}")</a>
-	<div>
-		<pre>
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetMarketHistory</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetMarketHistory">@($"{Domain}{GetMarketHistory}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>market: </b>The market name e.g. 'LTC_BTC' <i>(required)</i></small>
+		<small><b>count: </b>The max amount of records to return <i>(optional, default: 20)</i></small>
+		<div>
+			<pre>
 {  
    "success":true,
    "message":null,
@@ -93,14 +176,25 @@
       }]
 }
 </pre>
+		</div>
 	</div>
-</div>
 
-<div>
-	<h4>GetMarketSummary</h4>
-	<a target="_blank" href="@GetMarketSummary">@($"{Domain}{GetMarketSummary}")</a>
-	<div>
-		<pre>
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetMarketSummary</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetMarketSummary">@($"{Domain}{GetMarketSummary}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>market: </b>The market name e.g. 'LTC_BTC' <i>(required)</i></small>
+		<div>
+			<pre>
 {  
    "success":true,
    "message":null,
@@ -119,14 +213,24 @@
 }
 </pre>
 
+		</div>
 	</div>
-</div>
 
-<div>
-	<h4>GetMarketSummaries</h4>
-	<a target="_blank" href="@GetMarketSummaries">@($"{Domain}{GetMarketSummaries}")</a>
-	<div>
-		<pre>
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetMarketSummaries</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetMarketSummaries">@($"{Domain}{GetMarketSummaries}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters: <i>None</i>
+		</small>
+		<div>
+			<pre>
 {  
    "success":true,
    "message":null,
@@ -157,14 +261,27 @@
       }]
 }
 </pre>
+		</div>
 	</div>
-</div>
 
-<div>
-	<h4>GetOrderBook</h4>
-	<a target="_blank" href="@GetOrderBook">@($"{Domain}{GetOrderBook}")</a>
-	<div>
-		<pre>
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">GET</span>
+			<span class="api-method-header">GetOrderBook</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetOrderBook">@($"{Domain}{GetOrderBook}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>market: </b>The market name e.g. 'LTC_BTC' <i>(required)</i></small>
+		<small><b>type: </b>The order book type 'buy', 'sell', 'both' <i>(optional, default: 'both')</i></small>
+		<small><b>depth: </b>Max of records to return <i>(optional, default: 20)</i></small>
+		<div>
+			<pre>
 {  
    "success":true,
    "message":null,
@@ -196,6 +313,473 @@
    }
 }
 </pre>
+		</div>
 	</div>
 </div>
 
+<div class="col-md-offset-2 col-md-8">
+	<hr />
+</div>
+
+<div class="col-md-offset-2 col-md-8">
+	<h2>Private API</h2>
+	<div class="well">
+		<h4>Authentication</h4>
+		<div>	Authenticated methods require the use of an api key and can only be accessed via the POST method.</div>
+		<h4>Authentication Header</h4>
+		<small>	Authorization is performed by sending the following variables into the request authentication header:</small>
+		<div>API_PUBLIC_KEY + ':' + SIGNATURE + ':' + NONCE</div>
+		<br />
+		<h4>Request Signature:</h4>
+		<table>
+			<tr>
+				<td>URI: </td>
+				<td><div style="padding-left:5px">The uri endpoint e.g. @($"{Domain}{GetBalance}")</div></td>
+			</tr>
+			<tr>
+				<td>API_PUBLIC_KEY: </td>
+				<td><div style="padding-left:5px">Your TradeSatoshi api key</div></td>
+			</tr>
+			<tr>
+				<td>POST_PARAMS: </td>
+				<td><div style="padding-left:5px">JSON post parameters (base64 encoded)</div></td>
+			</tr>
+			<tr>
+				<td>NONCE: </td>
+				<td><div style="padding-left:5px">Unique indicator for each request.</div></td>
+			</tr>
+			<tr>
+				<td>SIGNATURE: </td>
+				<td><div style="padding-left:5px">API_KEY + "POST" + URI + NONCE + POST_PARAMS (signed by secret key according to HMAC-SHA512 method.)</div></td>
+			</tr>
+		</table>
+
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetBalance</span>
+		</div>
+		<small>Return information for a specific balance</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetBalance">@($"{Domain}{GetBalance}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Currency: </b>The currency of the balance to return e.g. 'BTC' <i>(required)</i></small>
+
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": {  
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Avaliable": 49.00000000,
+         "Total": 53.00000000,
+         "HeldForTrades": 1.00000000,
+         "Unconfirmed": 1.00000000,
+         "PendingWithdraw": 1.00000000,
+         "Address": "1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v"
+      }
+}
+</pre>
+		</div>
+	</div>
+
+
+
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetBalances</span>
+		</div>
+		<small>Return information for a all balances</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetBalances">@($"{Domain}{GetBalances}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters: <i>None</i>
+		</small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":[{  
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Avaliable": 49.00000000,
+         "Total": 53.00000000,
+         "HeldForTrades": 1.00000000,
+         "Unconfirmed": 1.00000000,
+         "PendingWithdraw": 1.00000000,
+         "Address": "1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v"
+      },{  
+         "Currency": "LTC",
+         "CurrencyLong": "Litecoin",
+         "Avaliable": 49.00000000,
+         "Total": 53.00000000,
+         "HeldForTrades": 1.00000000,
+         "Unconfirmed": 1.00000000,
+         "PendingWithdraw": 1.00000000,
+         "Address": "3KBUuGko4H5ke7EVsq9B7PLK1c5Askdd7y"
+      }, ......
+   ]
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetOrder</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetOrder">@($"{Domain}{GetOrder}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>OrderId: </b>The order to return <i>(required)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":{  
+         "Id": "18253",
+         "Market": "LTC_BTC",
+         "Type": "Buy",
+         "Amount": 100.00000000,
+         "Rate": 0.01000000,
+         "Remaining": 0.50000000,
+         "Total": 1.00000000,
+         "Status": "Partial",
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi": true
+      }
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetOrders</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetOrders">@($"{Domain}{GetOrders}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Market: </b>The market name e.g. 'LTC_BTC' <i>(optional, default: 'all')</i></small>
+		<small><b>Count: </b>The maximum count of records to return <i>(optional, deefault: 20)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": [{  
+         "Id": "18253",
+         "Market": "LTC_BTC",
+         "Type": "Buy",
+         "Amount": 100.00000000,
+         "Rate": 0.01000000,
+         "Remaining": 0.50000000,
+         "Total": 1.00000000,
+         "Status": "Partial",
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi": true
+      },{  
+         "Id": "18253",
+         "Market": "LTC_BTC",
+         "Type": "Buy",
+         "Amount": 100.00000000,
+         "Rate": 0.01000000,
+         "Remaining": 0.50000000,
+         "Total": 1.00000000,
+         "Status": "Partial",
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi": true
+      }, ....
+   ]
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">SubmitOrder</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@SubmitOrder">@($"{Domain}{SubmitOrder}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Market: </b>The market name e.g. 'LTC_BTC' <i>(required)</i></small>
+		<small><b>Type: </b>The order type name e.g. 'Buy', 'Sell' <i>(required)</i></small>
+		<small><b>Amount: </b>The amount to buy/sell <i>(required)</i></small>
+		<small><b>Price: </b>The price to buy/sell for <i>(required)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result":{
+         "OrderId": 343526,
+         "Filled":[24124,41284,57548]
+    }
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">CancelOrder</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@CancelOrder">@($"{Domain}{CancelOrder}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Type: </b>The cancel type, options: 'Single','Market','MarketBuys','MarketSells','AllBuys','AllSells','All'<i>(required)</i></small>
+		<small><b>OrderId: </b>The order to cancel<i>(required if cancel type 'Single')</i></small>
+		<small><b>Market: </b>The order to cancel<i>(required if cancel type 'Market','MarketBuys','MarketSells')</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": {
+         "CanceledOrders": [233544, 233545, 233546]
+   }
+}
+</pre>
+		</div>
+	</div>
+
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetTradeHistory</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetTradeHistory">@($"{Domain}{GetTradeHistory}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Market: </b>The market name e.g. 'LTC_BTC' <i>(optional, default: 'all')</i></small>
+		<small><b>Count: </b>The maximum count of records to return <i>(optional, default: 20)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": [{  
+         "Id": "18253",
+         "Market": "LTC_BTC",
+         "Type": "Buy",
+         "Amount": 100.00000000,
+         "Rate": 0.01000000,
+         "Fee": 0.00020000,
+         "Total": 0.99980000,
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi": true
+      },{  
+         "Id": "18253",
+         "Market": "LTC_BTC",
+         "Type": "Buy",
+         "Amount": 100.00000000,
+         "Rate": 0.01000000,
+         "Fee": 0.00020000,
+         "Total": 0.99980000,
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi": true
+      }, ....
+   ]
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GenerateAddress</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GenerateAddress">@($"{Domain}{GenerateAddress}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Currency: </b>The currency to generate address for e.g. 'BTC' <i>(required)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": {  
+         "Currency": "LTC",
+         "Address": "3KBUuGko4H5ke7EVsq9B7PLK1c5Askdd7y"
+      }
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">SubmitWithdraw</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@SubmitWithdraw">@($"{Domain}{SubmitWithdraw}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Currency: </b>The currency name e.g. 'BTC' <i>(required)</i></small>
+		<small><b>Address: </b>The receiving address <i>(required)</i></small>
+		<small><b>Amount: </b>The amount to withdraw <i>(required)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": {
+         "WithdrawalId": 546474
+   }
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetDeposits</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetDeposits">@($"{Domain}{GetDeposits}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Currency: </b>The currency name e.g. 'BTC' <i>(optional, default: 'all')</i></small>
+		<small><b>Count: </b>The maximum count of records to return <i>(optional, default: 20)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": [{  
+         "Id": "436436",
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Amount": 100.00000000,
+         "Status": "Unconfirmed",
+         "Txid": "9281eacaad58335b884adc24be884c00200a4fc17b2e05c72e255976223de187",
+         "Confirmations": 0,
+         "Timestamp": "2015-12-07T20:04:05.3947572"
+      },{  
+         "Id": "436437",
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Amount": 100.00000000,
+         "Status": "Confirmed",
+         "Txid": "6ddbaca454c97ba4e8a87a1cb49fa5ceace80b89eaced84b46a8f52c2b8c8ca3",
+         "Confirmations": 12,
+         "Timestamp": "2015-12-07T20:04:05.3947572"
+      }, ....
+   ]
+}
+</pre>
+		</div>
+	</div>
+
+	<div class="api-method">
+		<div>
+			<span class="label label-primary">POST</span>
+			<span class="api-method-header">GetWithdrawals</span>
+		</div>
+		<small>Description</small>
+		<span>
+			<b>Uri: </b>
+			<a target="_blank" href="@GetWithdrawals">@($"{Domain}{GetWithdrawals}")</a>
+		</span>
+		<small class="api-param-header">
+			Parameters:
+		</small>
+		<small><b>Currency: </b>The currency name e.g. 'BTC' <i>(optional, default: 'all')</i></small>
+		<small><b>Count: </b>The maximum count of records to return <i>(optional, default: 20)</i></small>
+		<div>
+			<pre>
+{  
+   "success":true,
+   "message":null,
+   "result": [{  
+         "Id": "436436",
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Amount": 100.00000000,
+         "Fee": 0.00040000,
+         "Address": "3KBUuGko4H5ke7EVsq9B7PLK1c5Askdd7y"
+         "Status": "Unconfirmed",
+         "Txid": null,
+         "Confirmations": 0,
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi" : false
+      },{  
+         "Id": "436437",
+         "Currency": "BTC",
+         "CurrencyLong": "Bitcoin",
+         "Amount": 100.00000000,
+         "Fee": 0.00040000,
+         "Address": "3KBUuGko4H5ke7EVsq9B7PLK1c5Askdd7y",
+         "Status": "Complete",
+         "Txid": "9281eacaad58335b884adc24be884c00200a4fc17b2e05c72e255976223de187",
+         "Confirmations": 12,
+         "Timestamp": "2015-12-07T20:04:05.3947572",
+         "IsApi" : false
+      }, ....
+   ]
+}
+</pre>
+		</div>
+	</div>
+</div>

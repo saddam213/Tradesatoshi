@@ -24,7 +24,7 @@ namespace TradeSatoshi.Core.TradePair
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
-					.FirstOrDefaultAsync(t => t.Id == tradePairId);
+					.FirstOrDefaultNoLockAsync(t => t.Id == tradePairId);
 			}
 		}
 
@@ -36,14 +36,14 @@ namespace TradeSatoshi.Core.TradePair
 					.Where(t => t.Currency1.IsEnabled && t.Currency2.IsEnabled)
 					.Include(t => t.Currency1)
 					.Include(t => t.Currency2)
-					.FirstOrDefaultAsync(t => t.Id == tradePairId);
+					.FirstOrDefaultNoLockAsync(t => t.Id == tradePairId);
 				if (tradepair == null)
 					return null;
 
 				return new UpdateTradePairModel
 				{
 					Id = tradepair.Id,
-					Name = tradepair.Currency1.Symbol + "/" + tradepair.Currency2.Symbol,
+					Name = tradepair.Name,
 					Status = tradepair.Status,
 					StatusMessage = tradepair.StatusMessage
 				};
@@ -60,7 +60,7 @@ namespace TradeSatoshi.Core.TradePair
 					.Include(t => t.Currency2)
 					.Select(MapTradePair)
 					.OrderBy(t => t.Name)
-					.ToListAsync();
+					.ToListNoLockAsync();
 			}
 		}
 
@@ -86,10 +86,12 @@ namespace TradeSatoshi.Core.TradePair
 					Id = tradepair.Id,
 					Change = tradepair.Change,
 					LastTrade = tradepair.LastTrade,
-					Name = tradepair.Currency1.Symbol + "/" + tradepair.Currency2.Symbol,
+					Name = tradepair.Name,
 					CurrencyId = tradepair.CurrencyId1,
 					BaseCurrencyId = tradepair.CurrencyId2,
-					Status = tradepair.Status
+					Status = tradepair.Status,
+					BaseSymbol = tradepair.Currency2.Symbol,
+					Symbol = tradepair.Currency1.Symbol
 				};
 			}
 		}

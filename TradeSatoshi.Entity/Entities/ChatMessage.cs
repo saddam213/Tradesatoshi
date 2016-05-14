@@ -18,6 +18,6 @@ namespace TradeSatoshi.Entity
 		public bool IsEnabled { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

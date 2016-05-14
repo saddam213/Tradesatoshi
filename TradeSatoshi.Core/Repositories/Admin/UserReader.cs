@@ -84,7 +84,7 @@ namespace TradeSatoshi.Core.Admin
 						Country = x.Profile.Country,
 						PostCode = x.Profile.PostCode,
 						State = x.Profile.State
-					}).FirstOrDefaultAsync(x => x.UserId == userId);
+					}).FirstOrDefaultNoLockAsync(x => x.UserId == userId);
 
 				return query;
 			}

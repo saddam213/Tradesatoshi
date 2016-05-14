@@ -30,6 +30,7 @@ namespace TradeSatoshi.Entity
 
 		public DepositType DepositType { get; set; }
 
+		[Index("IX_Status")]
 		public DepositStatus DepositStatus { get; set; }
 		
 		public DateTime TimeStamp { get; set; }
@@ -38,6 +39,6 @@ namespace TradeSatoshi.Entity
 		public virtual Currency Currency { get; set; }
 
 		[ForeignKey("UserId")]
-		public virtual ApplicationUser User { get; set; }
+		public virtual User User { get; set; }
 	}
 }

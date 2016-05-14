@@ -321,7 +321,6 @@
     <Content Include="Views\Admin\_StatusPartial.cshtml" />
     <Content Include="Views\Admin\_DepositsPartial.cshtml" />
     <Content Include="Views\Admin\_WithdrawalsPartial.cshtml" />
-    <Content Include="Views\Admin\_StatisticsPartial.cshtml" />
     <Content Include="Views\Home\Api.cshtml" />
     <Content Include="Views\Admin\UpdateUserModal.cshtml" />
     <Content Include="Views\Admin\UpdateRoleModal.cshtml" />
@@ -343,6 +342,7 @@
     <Content Include="Views\History\_TransferPartial.cshtml" />
     <Content Include="Views\History\_WithdrawPartial.cshtml" />
     <Content Include="Views\Chat\Index.cshtml" />
+    <Content Include="Views\Exchange\_SummaryPartial.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

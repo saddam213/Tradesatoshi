@@ -21,7 +21,7 @@ namespace TradeSatoshi.Core.Support
 				.Include(s => s.Replies)
 				.Include(s => s.User)
 				.Include(s => s.Category)
-				.FirstOrDefaultAsync(x => x.Id == ticketId && (x.UserId == userId || isadmin));
+				.FirstOrDefaultNoLockAsync(x => x.Id == ticketId && (x.UserId == userId || isadmin));
 				if (ticket == null)
 					return null;
 
@@ -74,7 +74,7 @@ namespace TradeSatoshi.Core.Support
 							Message = reply.Message,
 							UserName = reply.User.UserName,
 						}).ToList()
-					}).ToListAsync();
+					}).ToListNoLockAsync();
 			}
 		}
 
@@ -89,7 +89,7 @@ namespace TradeSatoshi.Core.Support
 					{
 						Id = ticket.Id,
 						Name = ticket.Name
-					}).ToListAsync();
+					}).ToListNoLockAsync();
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace TradeSatoshi.Core.Support
 						Question = ticket.Question,
 						Answer = ticket.Answer,
 						Order = ticket.Order
-					}).ToListAsync();
+					}).ToListNoLockAsync();
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace TradeSatoshi.Core.Support
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var request = await context.SupportRequest.FirstOrDefaultAsync(x => x.Id == requestId);
+				var request = await context.SupportRequest.FirstOrDefaultNoLockAsync(x => x.Id == requestId);
 				if (request == null)
 					return null;
 
@@ -177,7 +177,7 @@ namespace TradeSatoshi.Core.Support
 						Id = ticket.Id,
 						Name = ticket.Name,
 						IsEnabled = ticket.IsEnabled
-					}).FirstOrDefaultAsync(c => c.Id == id);
+					}).FirstOrDefaultNoLockAsync(c => c.Id == id);
 			}
 		}
 
@@ -193,7 +193,7 @@ namespace TradeSatoshi.Core.Support
 						Question = ticket.Question,
 						Order = ticket.Order,
 						IsEnabled = ticket.IsEnabled
-					}).FirstOrDefaultAsync(c => c.Id == id);
+					}).FirstOrDefaultNoLockAsync(c => c.Id == id);
 			}
 		}
 

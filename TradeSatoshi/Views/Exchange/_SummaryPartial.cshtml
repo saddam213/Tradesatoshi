@@ -1,0 +1,89 @@
+﻿@model TradeSatoshi.Common.Validation.IApiResult<List<TradeSatoshi.Common.Repositories.Api.ApiMarketSummary>>
+@{
+	var baseMarkets = Model.Result.Select(x => x.Market.Split('_')[1]).Distinct();
+	var hasMultipleBaseMarkets = baseMarkets.Count() > 1;
+}
+
+<style>
+	.summary-btn-selected {
+		background-color: rgb(230, 230, 230);
+	}
+</style>
+
+<div style="padding: 2px; padding-top: 5px;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Market Summary (24hr)</h3>
+		</div>
+		<div class="panel-body">
+			@if (hasMultipleBaseMarkets)
+			{
+			<div style="padding:2px;padding-bottom:0;max-width:@(80 * baseMarkets.Count())px">
+				<div class="btn-group btn-group-justified">
+					@foreach (var baseMarket in baseMarkets)
+					{
+					<a class="btn btn-xs btn-default summary-btn summary-btn-@baseMarket" aria-selected="false" data-base="@baseMarket">@baseMarket</a>
+					}
+				</div>
+			</div>
+			}
+			<table id="table-summary" class="table">
+				<thead>
+					<tr>
+						<th>Currency</th>
+						<th>Market</th>
+						<th>BTC Volume</th>
+						<th>Volume</th>
+						<th>High</th>
+						<th>Low</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var market in Model.Result)
+					{
+						var marketSymbol = market.Market.Split('_')[0];
+						var baseMarketSymbol = market.Market.Split('_')[1];
+						<tr class="summary-row summary-row-@baseMarketSymbol" style="display:@(hasMultipleBaseMarkets ? "none" : "")">
+							<td>@Helpers.CoinLogoWithSymbol(marketSymbol)</td>
+							<td><a href="@Url.Action("Index", new { market = market.Market})">@market.Market.Replace("_", "/")</a></td>
+							<td>@market.BaseVolume</td>
+							<td>@market.Volume</td>
+							<td>@market.High</td>
+							<td>@market.Low</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div id="main-footer" class="main-footer">
+	<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+</div>
+
+<script>
+	$('#table-summary').dataTable({
+		"order": [[2, "desc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": false,
+		"searching": false,
+		"scrollCollapse": false,
+		"sort": true,
+		"paging": false,
+		"info": false,
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search markets" },
+	});
+
+
+	$(".summary-btn").on("click", function () {
+		var selectedBaseMarket = $(this)
+		$(".summary-btn-selected").removeClass("summary-btn-selected");
+		selectedBaseMarket.addClass("summary-btn-selected");
+		$("#table-summary >  tbody > .summary-row").hide();
+		$("#table-summary >  tbody > .summary-row-" + selectedBaseMarket.data("base")).show();
+	});
+	$(".summary-btn-BTC").trigger("click");
+</script>

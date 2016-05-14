@@ -88,7 +88,6 @@ namespace TradeSatoshi.Core.Repositories.Api
 						.Select(x => new ApiOrderResponse
 						{
 							Amount = x.Amount,
-							Fee = x.Fee,
 							Id = x.Id,
 							IsApi = x.IsApi,
 							Rate = x.Rate,
@@ -120,7 +119,6 @@ namespace TradeSatoshi.Core.Repositories.Api
 						.Select(x => new ApiOrderResponse
 						{
 							Amount = x.Amount,
-							Fee = x.Fee,
 							Id = x.Id,
 							IsApi = x.IsApi,
 							Rate = x.Rate,
@@ -223,7 +221,8 @@ namespace TradeSatoshi.Core.Repositories.Api
 							Id = withdraw.Id,
 							TimeStamp = withdraw.TimeStamp,
 							Txid = withdraw.Txid,
-							Status = withdraw.WithdrawStatus.ToString()
+							Status = withdraw.WithdrawStatus.ToString(),
+							IsApi = withdraw.IsApi
 						}).ToListNoLockAsync();
 					return new ApiResult<List<ApiWithdrawResponse>>(false, results);
 				}

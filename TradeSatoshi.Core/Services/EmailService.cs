@@ -26,7 +26,7 @@ namespace TradeSatoshi.Core.Services
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var emailTemplate = await context.EmailTemplates.FirstOrDefaultAsync(x => x.Type == template && x.IsEnabled);
+				var emailTemplate = await context.EmailTemplates.FirstOrDefaultNoLockAsync(x => x.Type == template && x.IsEnabled);
 				if (emailTemplate == null)
 					return false;
 

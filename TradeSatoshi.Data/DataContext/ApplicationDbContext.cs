@@ -13,7 +13,7 @@ using TradeSatoshi.Entity;
 
 namespace TradeSatoshi.Data.DataContext
 {
-	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+	public class ApplicationDbContext : IdentityDbContext<User>
 
 	{
 		public ApplicationDbContext()
@@ -59,8 +59,8 @@ namespace TradeSatoshi.Data.DataContext
 
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 			modelBuilder.Entity<UserLogon>().HasRequired(p => p.User).WithMany(b => b.Logons).HasForeignKey(p => p.UserId);
-			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Settings).WithRequiredDependent();
-			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Profile).WithRequiredDependent();
+			modelBuilder.Entity<User>().HasRequired(p => p.Settings).WithRequiredDependent();
+			modelBuilder.Entity<User>().HasRequired(p => p.Profile).WithRequiredDependent();
 			modelBuilder.Entity<UserTwoFactor>().HasRequired(p => p.User).WithMany(b => b.TwoFactor).HasForeignKey(p => p.UserId);
 
 			modelBuilder.Entity<Deposit>().HasRequired(p => p.User).WithMany(b => b.Deposit).HasForeignKey(p => p.UserId);

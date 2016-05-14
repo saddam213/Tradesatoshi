@@ -30,7 +30,7 @@ namespace TradeSatoshi.Core.Balance
 						Txid = deposit.Txid,
 						DepositStatus = deposit.DepositStatus
 					});
-				return await query.ToListAsync();
+				return await query.ToListNoLockAsync();
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace TradeSatoshi.Core.Balance
 						Txid = deposit.Txid,
 						DepositStatus = deposit.DepositStatus
 					});
-				return await query.ToListAsync();
+				return await query.ToListNoLockAsync();
 			}
 		}
 

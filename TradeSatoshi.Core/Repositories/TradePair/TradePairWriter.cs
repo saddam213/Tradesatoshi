@@ -15,7 +15,7 @@ namespace TradeSatoshi.Core.TradePair
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var existing = await context.TradePair.Where(t => (t.CurrencyId1 == model.CurrencyId1 && t.CurrencyId2 == model.CurrencyId2) || (t.CurrencyId1 == model.CurrencyId2 && t.CurrencyId2 == model.CurrencyId1)).ToListAsync();
+				var existing = await context.TradePair.Where(t => (t.CurrencyId1 == model.CurrencyId1 && t.CurrencyId2 == model.CurrencyId2) || (t.CurrencyId1 == model.CurrencyId2 && t.CurrencyId2 == model.CurrencyId1)).ToListNoLockAsync();
 				if (existing.Any())
 					return WriterResult<bool>.ErrorResult("{0} already exists", existing.Any(x => x.CurrencyId1 == model.CurrencyId1) ? "TradePair" : "Inverse TradePair");
 
@@ -45,7 +45,7 @@ namespace TradeSatoshi.Core.TradePair
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				var tradePair = await context.TradePair.FirstOrDefaultAsync(x => x.Id == model.Id);
+				var tradePair = await context.TradePair.FirstOrDefaultNoLockAsync(x => x.Id == model.Id);
 				if (tradePair == null)
 					return WriterResult<bool>.ErrorResult("TradePair '{0}' not found");
 

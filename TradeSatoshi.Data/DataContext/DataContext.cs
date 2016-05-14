@@ -24,7 +24,7 @@ namespace TradeSatoshi.Data.DataContext
 			Database.Log = (e) => Debug.WriteLine(e);
 		}
 
-		public DbSet<ApplicationUser> Users { get; set; }
+		public DbSet<User> Users { get; set; }
 		public DbSet<IdentityRole> Roles { get; set; }
 		public DbSet<UserLogon> UserLogons { get; set; }
 		public DbSet<UserProfile> UserProfiles { get; set; }
@@ -64,7 +64,7 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 			modelBuilder.Conventions.Add(new DecimalPropertyConvention(38, 8));
 
-			modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers");
+			modelBuilder.Entity<User>().ToTable("AspNetUsers");
 			modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles");
 			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasKey(r => new { r.RoleId, r.UserId }).HasRequired(p => p.User);
 			modelBuilder.Entity<UserRole>().ToTable("AspNetUserRoles").HasRequired(p => p.Role);
@@ -74,8 +74,8 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId });
 			modelBuilder.Entity<UserLogon>().HasRequired(p => p.User).WithMany(b => b.Logons).HasForeignKey(p => p.UserId);
 
-			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Settings).WithRequiredDependent();
-			modelBuilder.Entity<ApplicationUser>().HasRequired(p => p.Profile).WithRequiredDependent();
+			modelBuilder.Entity<User>().HasRequired(p => p.Settings).WithRequiredDependent();
+			modelBuilder.Entity<User>().HasRequired(p => p.Profile).WithRequiredDependent();
 			modelBuilder.Entity<UserTwoFactor>().HasRequired(p => p.User).WithMany(b => b.TwoFactor).HasForeignKey(p => p.UserId);
 
 			modelBuilder.Entity<Deposit>().HasRequired(p => p.User).WithMany(b => b.Deposit).HasForeignKey(p => p.UserId);

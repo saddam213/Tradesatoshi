@@ -1,11 +1,58 @@
-﻿<div class="row">
+﻿@model TradeSatoshi.Common.Admin.SiteStatusModel
+<div class="row">
 	<div class="col-md-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Site Status</h3>
 			</div>
 			<div class="panel-body">
-				Panel content
+				
+				<div class="col-md-4">
+					<table class="table table-condensed table-bordered">
+						<thead>
+							<tr>
+								<th></th>
+								<th>24 hour</th>
+								<th>AllTime</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Logins</td>
+								<td>@Model.Logons24</td>
+								<td>@Model.Logons</td>
+						</tr>
+						<tr>
+							<td>Deposits</td>
+							<td>@Model.Deposits24</td>
+							<td>@Model.Deposits</td>
+						</tr>
+						<tr>
+							<td>Open Orders</td>
+							<td>@Model.Orders24</td>
+							<td>@Model.Orders</td>
+						</tr>
+						<tr>
+							<td>Completed Trades</td>
+							<td>@Model.Trades24</td>
+							<td>@Model.Trades</td>
+						</tr>
+						<tr>
+							<td>Transfers</td>
+							<td>@Model.Transfers24</td>
+							<td>@Model.Transfers</td>
+						</tr>
+						<tr>
+							<td>Withdrawals</td>
+							<td>@Model.Withdrawals24</td>
+							<td>@Model.Withdrawals</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+
+			
 			</div>
 		</div>
 	</div>

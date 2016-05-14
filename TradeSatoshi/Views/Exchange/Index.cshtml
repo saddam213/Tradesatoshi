@@ -13,7 +13,7 @@
 	@* Main Content*@
 	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
 		<div id="main">
-			<div id="tradepairTarget" data-default="@Model.TradePair">
+			<div id="tradepairTarget" data-default="@Model.TradePair" data-summary="@Url.Action("Summary")">
 			</div>
 			<div id="main-footer" class="main-footer">
 				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>

@@ -14,18 +14,18 @@ using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.App_Start
 {
-	public class ApplicationUserManager : UserManager<ApplicationUser>
+	public class ApplicationUserManager : UserManager<User>
 	{
-		public ApplicationUserManager(IUserStore<ApplicationUser> store)
+		public ApplicationUserManager(IUserStore<User> store)
 			: base(store)
 		{
-			this.UserValidator = new UserValidator<ApplicationUser>(this) { AllowOnlyAlphanumericUserNames = false, RequireUniqueEmail = true };
+			this.UserValidator = new UserValidator<User>(this) { AllowOnlyAlphanumericUserNames = false, RequireUniqueEmail = true };
 		}
 
 		public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
 		{
-			var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
-			manager.UserValidator = new UserValidator<ApplicationUser>(manager)
+			var manager = new ApplicationUserManager(new UserStore<User>(context.Get<ApplicationDbContext>()));
+			manager.UserValidator = new UserValidator<User>(manager)
 			{
 				AllowOnlyAlphanumericUserNames = false,
 				RequireUniqueEmail = true,
@@ -45,13 +45,13 @@ namespace TradeSatoshi.Web.App_Start
 			manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromHours(24);
 			manager.MaxFailedAccessAttemptsBeforeLockout = 3;
 
-			manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<ApplicationUser>());
+			manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<User>());
 
 
 			var dataProtectionProvider = options.DataProtectionProvider;
 			if (dataProtectionProvider != null)
 			{
-				manager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ConfirmUser"));
+				manager.UserTokenProvider = new DataProtectorTokenProvider<User>(dataProtectionProvider.Create("ConfirmUser"));
 			}
 			return manager;
 		}
@@ -160,7 +160,7 @@ namespace TradeSatoshi.Web.App_Start
 			return user.TwoFactor.FirstOrDefault(x => x.Component == component);
 		}
 
-		public async Task<bool> AddUserLogon(ApplicationUser user, string ipaddress, bool isvalid)
+		public async Task<bool> AddUserLogon(User user, string ipaddress, bool isvalid)
 		{
 			if (user == null)
 				throw new UnauthorizedAccessException();
