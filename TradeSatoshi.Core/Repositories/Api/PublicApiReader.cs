@@ -25,16 +25,16 @@ namespace TradeSatoshi.Core.Repositories.Api
 					using (var context = DataContextFactory.CreateContext())
 					{
 						var currencies = await context.Currency
-							.Where(x => x.IsEnabled)
-							.OrderBy(x => x.Symbol)
-							.Select(c => new ApiCurrency
-							{
-								Currency = c.Symbol,
-								CurrencyLong = c.Name,
-								Status = c.Status.ToString(),
-								MinConfirmation = c.MinConfirmations,
-								TxFee = c.WithdrawFee
-							}).ToListNoLockAsync();
+												.Where(x => x.IsEnabled)
+												.OrderBy(x => x.Symbol)
+												.Select(c => new ApiCurrency
+												{
+													Currency = c.Symbol,
+													CurrencyLong = c.Name,
+													Status = c.Status.ToString(),
+													MinConfirmation = c.MinConfirmations,
+													TxFee = c.WithdrawFee
+												}).ToListNoLockAsync();
 
 						return currencies;
 					}
@@ -57,18 +57,18 @@ namespace TradeSatoshi.Core.Repositories.Api
 					using (var context = DataContextFactory.CreateContext())
 					{
 						var history = await context.TradeHistory
-							.Where(t => t.TradePair.Name == market)
-							.OrderByDescending(x => x.Id)
-							.Select(c => new ApiMarketHistory
-							{
-								Id = c.Id,
-								OrderType = c.TradeHistoryType.ToString(),
-								Price = c.Rate,
-								Quantity = c.Amount,
-								TimeStamp = c.Timestamp
-							})
-							.Take(count)
-							.ToListNoLockAsync();
+												.Where(t => t.TradePair.Name == market)
+												.OrderByDescending(x => x.Id)
+												.Select(c => new ApiMarketHistory
+												{
+													Id = c.Id,
+													OrderType = c.TradeHistoryType.ToString(),
+													Price = c.Rate,
+													Quantity = c.Amount,
+													TimeStamp = c.Timestamp
+												})
+												.Take(count)
+												.ToListNoLockAsync();
 
 						return history;
 					}
@@ -93,39 +93,39 @@ namespace TradeSatoshi.Core.Repositories.Api
 						// TODO: Cache data
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query =
-							from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
-							from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
-								.GroupBy(x => x.TradePairId)
-								.Select(c => new
-								{
-									Ask = c.Where(x => x.TradeType == TradeType.Sell).Max(x => x.Rate),
-									Bid = c.Where(x => x.TradeType == TradeType.Buy).Max(x => x.Rate),
-									OpenBuyOrders = c.Count(x => x.TradeType == TradeType.Buy),
-									OpenSellOrders = c.Count(x => x.TradeType == TradeType.Sell)
-								}).DefaultIfEmpty()
-							from history in context.TradeHistory
-								.Where(x => x.Timestamp > timeLast && x.TradePairId == tradePair.Id)
-								.GroupBy(x => x.TradePairId)
-								.Select(c => new
-								{
-									High = c.Max(x => x.Rate),
-									Low = c.Min(x => x.Rate),
-									Volume = c.Sum(x => x.Amount),
-									BaseVolume = c.Select(x => new ApiVolume { Rate = x.Rate, Amount = x.Amount }).ToList()
-								}).DefaultIfEmpty()
-							select new ApiMarketSummary
-							{
-								Market = tradePair.Name,
-								High = (decimal?)history.High ?? 0,
-								Low = (decimal?)history.Low ?? 0,
-								Volume = (decimal?)history.Volume ?? 0,
-								BaseVolumeList = history.BaseVolume,
-								Ask = (decimal?)ticker.Ask ?? 0,
-								Bid = (decimal?)ticker.Bid ?? 0,
-								Last = (decimal?)tradePair.LastTrade ?? 0,
-								OpenBuyOrders = (int?)ticker.OpenBuyOrders ?? 0,
-								OpenSellOrders = (int?)ticker.OpenSellOrders ?? 0
-							};
+												from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
+												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
+														.GroupBy(x => x.TradePairId)
+														.Select(c => new
+														{
+															Ask = c.Where(x => x.TradeType == TradeType.Sell).Max(x => x.Rate),
+															Bid = c.Where(x => x.TradeType == TradeType.Buy).Max(x => x.Rate),
+															OpenBuyOrders = c.Count(x => x.TradeType == TradeType.Buy),
+															OpenSellOrders = c.Count(x => x.TradeType == TradeType.Sell)
+														}).DefaultIfEmpty()
+												from history in context.TradeHistory
+														.Where(x => x.Timestamp > timeLast && x.TradePairId == tradePair.Id)
+														.GroupBy(x => x.TradePairId)
+														.Select(c => new
+														{
+															High = c.Max(x => x.Rate),
+															Low = c.Min(x => x.Rate),
+															Volume = c.Sum(x => x.Amount),
+															BaseVolume = c.Select(x => new ApiVolume { Rate = x.Rate, Amount = x.Amount }).ToList()
+														}).DefaultIfEmpty()
+												select new ApiMarketSummary
+												{
+													Market = tradePair.Name,
+													High = (decimal?)history.High ?? 0,
+													Low = (decimal?)history.Low ?? 0,
+													Volume = (decimal?)history.Volume ?? 0,
+													BaseVolumeList = history.BaseVolume,
+													Ask = (decimal?)ticker.Ask ?? 0,
+													Bid = (decimal?)ticker.Bid ?? 0,
+													Last = (decimal?)tradePair.LastTrade ?? 0,
+													OpenBuyOrders = (int?)ticker.OpenBuyOrders ?? 0,
+													OpenSellOrders = (int?)ticker.OpenSellOrders ?? 0
+												};
 
 						return await query.ToListNoLockAsync();
 					}
@@ -150,40 +150,40 @@ namespace TradeSatoshi.Core.Repositories.Api
 						// TODO: Cache data
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query =
-							from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
-							from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
-								.GroupBy(x => x.TradePairId)
-								.Select(c => new
-								{
-									Ask = c.Where(x => x.TradeType == TradeType.Sell).Max(x => x.Rate),
-									Bid = c.Where(x => x.TradeType == TradeType.Buy).Max(x => x.Rate),
-									OpenBuyOrders = c.Count(x => x.TradeType == TradeType.Buy),
-									OpenSellOrders = c.Count(x => x.TradeType == TradeType.Sell)
-								}).DefaultIfEmpty()
-							from history in context.TradeHistory
-								.Where(x => x.Timestamp > timeLast && x.TradePairId == tradePair.Id)
-								.GroupBy(x => x.TradePairId)
-								.Select(c => new
-								{
-									High = c.Max(x => x.Rate),
-									Low = c.Min(x => x.Rate),
-									Volume = c.Sum(x => x.Amount),
-									BaseVolume = c.Select(x => new ApiVolume { Rate = x.Rate, Amount = x.Amount }).ToList()
-								}).DefaultIfEmpty()
-							where tradePair.Name == market
-							select new ApiMarketSummary
-							{
-								Market = tradePair.Name,
-								High = (decimal?)history.High ?? 0,
-								Low = (decimal?)history.Low ?? 0,
-								Volume = (decimal?)history.Volume ?? 0,
-								BaseVolumeList = history.BaseVolume,
-								Ask = (decimal?)ticker.Ask ?? 0,
-								Bid = (decimal?)ticker.Bid ?? 0,
-								Last = (decimal?)tradePair.LastTrade ?? 0,
-								OpenBuyOrders = ticker.OpenBuyOrders,
-								OpenSellOrders = ticker.OpenSellOrders
-							};
+												from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
+												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
+														.GroupBy(x => x.TradePairId)
+														.Select(c => new
+														{
+															Ask = c.Where(x => x.TradeType == TradeType.Sell).Max(x => x.Rate),
+															Bid = c.Where(x => x.TradeType == TradeType.Buy).Max(x => x.Rate),
+															OpenBuyOrders = c.Count(x => x.TradeType == TradeType.Buy),
+															OpenSellOrders = c.Count(x => x.TradeType == TradeType.Sell)
+														}).DefaultIfEmpty()
+												from history in context.TradeHistory
+														.Where(x => x.Timestamp > timeLast && x.TradePairId == tradePair.Id)
+														.GroupBy(x => x.TradePairId)
+														.Select(c => new
+														{
+															High = c.Max(x => x.Rate),
+															Low = c.Min(x => x.Rate),
+															Volume = c.Sum(x => x.Amount),
+															BaseVolume = c.Select(x => new ApiVolume { Rate = x.Rate, Amount = x.Amount }).ToList()
+														}).DefaultIfEmpty()
+												where tradePair.Name == market
+												select new ApiMarketSummary
+												{
+													Market = tradePair.Name,
+													High = (decimal?)history.High ?? 0,
+													Low = (decimal?)history.Low ?? 0,
+													Volume = (decimal?)history.Volume ?? 0,
+													BaseVolumeList = history.BaseVolume,
+													Ask = (decimal?)ticker.Ask ?? 0,
+													Bid = (decimal?)ticker.Bid ?? 0,
+													Last = (decimal?)tradePair.LastTrade ?? 0,
+													OpenBuyOrders = ticker.OpenBuyOrders,
+													OpenSellOrders = ticker.OpenSellOrders
+												};
 
 						return await query.FirstOrDefaultNoLockAsync();
 					}
@@ -206,36 +206,36 @@ namespace TradeSatoshi.Core.Repositories.Api
 					using (var context = DataContextFactory.CreateContext())
 					{
 						var orderBookData = await context.Trade
-							.Where(x => x.TradePair.Name == market)
-							.GroupBy(x => new { x.TradeType, x.Rate })
-							.Select(c => new
-							{
-								Type = c.Key.TradeType,
-								Order = new ApiOrderBookItem
-								{
-									Rate = c.Key.Rate,
-									Quantity = c.Sum(x => x.Remaining)
-								}
-							}).ToListNoLockAsync();
+												.Where(x => x.TradePair.Name == market)
+												.GroupBy(x => new { x.TradeType, x.Rate })
+												.Select(c => new
+												{
+													Type = c.Key.TradeType,
+													Order = new ApiOrderBookItem
+													{
+														Rate = c.Key.Rate,
+														Quantity = c.Sum(x => x.Remaining)
+													}
+												}).ToListNoLockAsync();
 
 						var buys = new List<ApiOrderBookItem>();
 						var sells = new List<ApiOrderBookItem>();
 						if (type.Equals("both", StringComparison.OrdinalIgnoreCase) || type.Equals("buy", StringComparison.OrdinalIgnoreCase))
 						{
 							buys = orderBookData.Where(x => x.Type == TradeType.Buy)
-								.Select(x => x.Order)
-								.OrderByDescending(x => x.Rate)
-								.Take(depth)
-								.ToList();
+													.Select(x => x.Order)
+													.OrderByDescending(x => x.Rate)
+													.Take(depth)
+													.ToList();
 						}
 
 						if (type.Equals("both", StringComparison.OrdinalIgnoreCase) || type.Equals("sell", StringComparison.OrdinalIgnoreCase))
 						{
 							sells = orderBookData.Where(x => x.Type == TradeType.Sell)
-								.Select(x => x.Order)
-								.OrderBy(x => x.Rate)
-								.Take(depth)
-								.ToList();
+													.Select(x => x.Order)
+													.OrderBy(x => x.Rate)
+													.Take(depth)
+													.ToList();
 						}
 
 						var orderBook = new ApiOrderBookResponse
@@ -268,12 +268,12 @@ namespace TradeSatoshi.Core.Repositories.Api
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query = from tradepair in context.TradePair.Where(t => t.Name == market)
 												from trade in context.Trade.Where(t => t.TradePairId == tradepair.Id)
-												.GroupBy(g => g.TradePairId)
-												.Select(x => new
-												{
-													Ask = x.Where(j => j.TradeType == TradeType.Sell).Max(j => j.Rate),
-													Bid = x.Where(j => j.TradeType == TradeType.Buy).Max(j => j.Rate),
-												})
+																.GroupBy(g => g.TradePairId)
+																.Select(x => new
+																{
+																	Ask = x.Where(j => j.TradeType == TradeType.Sell).Max(j => j.Rate),
+																	Bid = x.Where(j => j.TradeType == TradeType.Buy).Max(j => j.Rate),
+																})
 												select new ApiTicker
 												{
 													Market = tradepair.Name,

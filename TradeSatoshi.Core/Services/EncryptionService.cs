@@ -57,8 +57,7 @@ namespace TradeSatoshi.Core.Services
 					symmetricKey.Mode = CipherMode.CBC;
 					using (var decryptor = symmetricKey.CreateDecryptor(keyBytes, InitVectorBytes))
 					{
-						using (var memoryStream = new MemoryStream(cipherTextBytes))
-						using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+						using (var cryptoStream = new CryptoStream(new MemoryStream(cipherTextBytes), decryptor, CryptoStreamMode.Read))
 						{
 							var plainTextBytes = new byte[cipherTextBytes.Length];
 							var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);

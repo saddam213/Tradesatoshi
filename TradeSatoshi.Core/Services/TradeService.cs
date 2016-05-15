@@ -853,6 +853,7 @@ namespace TradeSatoshi.Core.Services
 		#endregion
 	}
 
+	[Serializable]
 	public class TradeException : Exception
 	{
 		public TradeException(string message) : base(message)
