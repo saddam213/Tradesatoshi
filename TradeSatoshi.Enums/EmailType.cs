@@ -15,9 +15,9 @@ namespace TradeSatoshi.Enums
 		Registration = 4,
 		TwoFactorLogin = 5,
 		TwoFactorUnlockCode = 6,
-		PasswordReset,
-		TwoFactorWithdraw,
-		WithdrawConfirmation,
+		PasswordReset = 7,
+		TwoFactorWithdraw = 8,
+		WithdrawConfirmation = 9,
 	}
 
 }

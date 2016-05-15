@@ -6,7 +6,7 @@
 			</div>
 			<div class="panel-body">
 				<button class="btn btn-primary" onclick="createTradePair();">Create TradePair</button>
-				<table id="table-tradepair" class="table table-condensed">
+				<table id="table-tradepair" class="table table-condensed table-bordered">
 					<thead>
 						<tr>
 							<th>Id</th>
@@ -48,7 +48,7 @@
 			"searchable": false,
 			"orderable": false,
 			"render": function (data, type, full, meta) {
-				return "<button class='btn btn-info btn-xs' onclick='updateTradePair(\"" + full[0] + "\");'>Edit</button>";
+				return "<button class='btn btn-info btn-xs' style='width:100%' onclick='updateTradePair(\"" + full[0] + "\");'>Edit</button>";
 			}
 		}]
 	});

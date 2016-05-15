@@ -6,26 +6,26 @@
 				<span>Users Online: </span>
 				<span id="chat-count">0</span>
 			</small>
+			<i class="fa fa-tablet pull-right" aria-hidden="true" style="cursor:pointer; font-size:120%;margin-right:5px" title="popout chat window" onclick="openChat('@Url.RouteUrl("ChatWindow")')"></i>
 		</div>
 		<div class="rightSidebar-top-body" id="chat-table-container">
 			<table id="chat-table" class="table table-striped" data-user="@User.Identity.Name">
-				<tbody>
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 		<div class="rightSidebar-top-footer panel-footer nopad">
 			@if (User.Identity.IsAuthenticated)
 			{
-				<div id="chat-table-footer">
-					<textarea id="chat-input" rows="3"></textarea>
-					<button id="chat-submit" class="btn btn-info">Send</button>
-				</div>
+			<div id="chat-table-footer">
+				<textarea id="chat-input" rows="3"></textarea>
+				<button id="chat-submit" class="btn btn-info">Send</button>
+			</div>
 			}
 			else
 			{
-				<div id="chat-table-footer-offline" class="text-center">
-					<i>Please @Html.ActionLink("login", "Login", "Account", new { ReturnUrl = Request.Path }, null) to chat.</i>
-				</div>
+			<div id="chat-table-footer-offline" class="text-center">
+				<i>Please @Html.ActionLink("login", "Login", "Account", new { ReturnUrl = Request.Path }, null) to chat.</i>
+			</div>
 			}
 		</div>
 	</div>
@@ -54,7 +54,7 @@
 				<small class="time" data-val="{{time}}">{{since}}</small>
 				@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator))
 				{
-					<i class="fa fa-times text-danger clickable" onclick="removeMessage({{id}});"></i>
+				<i class="fa fa-times text-danger clickable" onclick="removeMessage({{id}});"></i>
 				}
 			</span>
 			<p class="paragraph">{{message}}</p>

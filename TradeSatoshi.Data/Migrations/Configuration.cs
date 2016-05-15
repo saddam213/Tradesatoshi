@@ -33,18 +33,21 @@ namespace TradeSatoshi.Data.Migrations
 			//}
 			//context.SaveChanges();
 
-			//// Add or update the roles
-			//foreach (EmailType template in Enum.GetValues(typeof(EmailType)))
-			//{
-			//	context.EmailTemplates.AddOrUpdate(e => e.Type, new EmailTemplate
-			//	{
-			//		IsEnabled = true,
-			//		IsHtml = true,
-			//		Subject = template.ToString(),
-			//		Template = "User: {0}, IpAddress: {1}",
-			//		Type = template
-			//	});
-			//}
+			// Add or update the roles
+			foreach (EmailType template in Enum.GetValues(typeof(EmailType)))
+			{
+				context.EmailTemplates.AddOrUpdate(e => e.Type, new EmailTemplate
+				{
+					IsEnabled = true,
+					IsHtml = true,
+					Subject = template.ToString(),
+					Template = "User: [USERNAME], IpAddress: [IPADDRESS]",
+					Description = template.ToString(),
+					From = "system@cryptopia.co.nz",
+					Parameters = "[USERNAME] = The current user name || [IPADDRESS] = The current ipaddress of the user",
+					Type = template
+				});
+			}
 
 			//var adminUser = new ApplicationUser
 			//{

@@ -1,0 +1,77 @@
+﻿@model TradeSatoshi.Common.Repositories.Email.EmailTemplateModel
+@{
+
+}
+<style>
+	.form-control {
+		min-width: 100%;
+	}
+</style>
+
+
+@using (Ajax.BeginForm("UpdateEmailTemplate", "Admin", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "emailTemplateTarget", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Type)
+	@Html.HiddenFor(m => m.Parameters)
+	@Html.HiddenFor(m => m.Description)
+	@Html.ValidationSummary(true)
+	@Helpers.AlertResultSection()
+	<h2 style="margin:0px">@Model.Type Email</h2>
+	<small>@Model.Description</small>
+	<hr style="margin-top:4px" />
+
+	<div class="row">
+
+		<div class="col-md-4">
+			@Html.ResourceLabelFor(model => model.From, new { @class = "control-label" })
+			@Html.TextBoxFor(model => model.From, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.From)
+		</div>
+		<div class="col-md-8">
+			@Html.ResourceLabelFor(model => model.Subject, new { @class = "control-label" })
+			@Html.TextBoxFor(model => model.Subject, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.Subject)
+		</div>
+
+		<div class="col-md-12">
+			<div class="checkbox" style="display: inline-block; padding-right: 10px">
+				<label>
+					@Html.CheckBoxFor(model => model.IsHtml)
+					@Html.Resource("Is Html Format")
+				</label>
+			</div>
+
+			<div class="checkbox" style="display: inline-block; padding-right: 10px">
+				<label>
+					@Html.CheckBoxFor(model => model.IsEnabled)
+					@Html.Resource("Enabled")
+				</label>
+			</div>
+		</div>
+		<div class="col-md-12">
+			@Html.ResourceLabelFor(model => model.Template, new { @class = "control-label" })
+			@Html.TextAreaFor(model => model.Template, new { @class = "form-control", rows = 20 })
+			@Html.ValidationMessageFor(model => model.Template)
+		</div>
+		<div class="col-md-12">
+			@Html.ResourceLabelFor(model => model.Parameters, new { @class = "control-label" })
+			@foreach (var parameter in Model.Parameters.Split(new[] { " || " }, StringSplitOptions.RemoveEmptyEntries))
+			{
+			<div>@parameter</div>
+			}
+		</div>
+
+	</div>
+
+	<div style="margin:20px 0px">
+		<button type="submit" class="btn btn-primary">Save Changes</button>
+	</div>
+}
+
+@if (ViewBag.Success != null)
+{
+<script>
+	showAlertResult({ AlertType: "success", Title: "Success", Message: '@ViewBag.Success' });
+</script>
+}

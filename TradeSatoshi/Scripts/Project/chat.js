@@ -116,3 +116,10 @@ function removeMessage(id) {
 		chatHub.server.removeMessage(id);
 	});
 }
+
+var chatWindow = null;
+function openChat(url) {
+	settings = "width=480, height=640, scrollbars=no, location=no, directories=no, status=no, menubar=no, toolbar=no, resizable=yes, dependent=no";
+	chatWindow = window.open(url, 'Chatbox', settings);
+	chatWindow.focus();
+}

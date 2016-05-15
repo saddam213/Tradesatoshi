@@ -52,7 +52,7 @@ namespace TradeSatoshi.Web.Controllers
 			if (twofactor.Type == TwoFactorType.EmailCode)
 			{
 				var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, user.Id);
-				if (!await EmailService.Send(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), twofactorCode, componentType))
+				if (!await EmailService.Send(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), new EmailParam("[TFACODE]", twofactorCode), new EmailParam("[TFATYPE]", componentType)))
 				{
 					return ViewMessage(new ViewMessageModel(ViewMessageType.Warning, "Email Send Failed!", "An error occured sending twofactor code email, If problems persists please contact <a href='/Support'>Support</a>"));
 				}
@@ -172,7 +172,7 @@ namespace TradeSatoshi.Web.Controllers
 				return JsonError(string.Format("'{0} is an invalid email address.'"));
 
 			var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, User.Id());
-			if (await EmailService.Send(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), twofactorCode))
+			if (await EmailService.Send(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), new EmailParam("[TFACODE]", twofactorCode), new EmailParam("[TFATYPE]", componentType)))
 			{
 				return JsonSuccess();
 			}
@@ -217,13 +217,13 @@ namespace TradeSatoshi.Web.Controllers
 			switch (componentType)
 			{
 				case TwoFactorComponentType.Login:
-					if (await EmailService.Send(EmailType.TwoFactorLogin, twoFactor.User, Request.GetIPAddress(), twofactorCode))
+					if (await EmailService.Send(EmailType.TwoFactorLogin, twoFactor.User, Request.GetIPAddress(), new EmailParam("[TFACODE]", twofactorCode)))
 					{
 						return JsonSuccess();
 					}
 					break;
 				case TwoFactorComponentType.Withdraw:
-					if (await EmailService.Send(EmailType.TwoFactorWithdraw, twoFactor.User, Request.GetIPAddress(), twofactorCode))
+					if (await EmailService.Send(EmailType.TwoFactorWithdraw, twoFactor.User, Request.GetIPAddress(), new EmailParam("[TFACODE]", twofactorCode)))
 					{
 						return JsonSuccess();
 					}

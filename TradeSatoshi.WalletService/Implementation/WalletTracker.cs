@@ -22,7 +22,7 @@ using TradeSatoshi.Core.Logger;
 
 namespace TradeSatoshi.WalletService.Implementation
 {
-	public class WalletTracker
+	public class WalletTracker : IWalletTracker
 	{
 		private readonly TradeSatoshi.Base.Logging.Log Log = LoggingManager.GetLog(typeof(WalletTracker));
 		private CancellationToken _cancelToken;
@@ -31,18 +31,19 @@ namespace TradeSatoshi.WalletService.Implementation
 		private int _pollPeriod = 30;
 		public IAuditService AuditService { get; set; }
 		public ILogger Logger { get; set; }
-		//public INotificationService NotificationService { get; set; }
 		public INotificationService NotificationService { get; set; }
-
-		public WalletTracker(CancellationToken cancelToken)
+		
+		public void Start(CancellationToken token)
 		{
 			_isRunning = true;
 			_isEnabled = true;
-			_cancelToken = cancelToken;
-			Logger = new DatabaseLogger(new DataContextFactory());
-			AuditService = new AuditService(Logger);
-			NotificationService = new NotificationService();
+			_cancelToken = token;
 			Task.Factory.StartNew(async () => await Process(), _cancelToken, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+		}
+
+		public void Stop()
+		{
+			_isEnabled = false;
 		}
 
 		public bool Running
@@ -70,12 +71,7 @@ namespace TradeSatoshi.WalletService.Implementation
 			}
 			_isRunning = false;
 		}
-
-		public void Stop()
-		{
-			_isEnabled = false;
-		}
-
+		
 		private async Task ProcessInfo()
 		{
 			try
@@ -101,7 +97,7 @@ namespace TradeSatoshi.WalletService.Implementation
 								Log.Message(LogLevel.Info, "No response from {0} wallet.", currency.Symbol);
 								continue;
 							}
-
+						
 							currency.Balance = currencyInfo.Balance;
 							currency.Block = currencyInfo.Blocks;
 							currency.Connections = currencyInfo.Connections;
@@ -447,7 +443,10 @@ namespace TradeSatoshi.WalletService.Implementation
 			try
 			{
 				var connector = new WalletConnector(currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass, timeout);
-				return connector.GetInfo();
+				var info = connector.GetInfo();
+				var balance = connector.GetBalance();
+				info.Balance = balance;
+				return info;
 			}
 			catch (Exception ex)
 			{
@@ -469,5 +468,7 @@ namespace TradeSatoshi.WalletService.Implementation
 			}
 			return -1m;
 		}
+
+
 	}
 }

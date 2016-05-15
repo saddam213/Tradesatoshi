@@ -213,6 +213,9 @@
     <Compile Include="Models\Currency\CreateCurrencyModel.cs" />
     <Compile Include="Repositories\Currency\ICurrencyWriter.cs" />
     <Compile Include="Models\Currency\UpdateCurrencyModel.cs" />
+    <Compile Include="Repositories\Email\EmailTemplateModel.cs" />
+    <Compile Include="Repositories\Email\IEmailTemplateWriter.cs" />
+    <Compile Include="Repositories\Email\IEmailTemplateReader.cs" />
     <Compile Include="Repositories\Logging\ILogger.cs" />
     <Compile Include="Models\Vote\CreateVoteItemModel.cs" />
     <Compile Include="Models\Vote\CreatePaidVoteModel.cs" />
@@ -239,6 +242,7 @@
     <Compile Include="Security\SecurityRoles.cs" />
     <Compile Include="Repositories\Address\IAddressWriter.cs" />
     <Compile Include="Repositories\Api\ApiCacheKeys.cs" />
+    <Compile Include="Services\EmailService\EmailParam.cs" />
     <Compile Include="Services\EmailService\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EncryptionService\EncryptionKeyPair.cs" />

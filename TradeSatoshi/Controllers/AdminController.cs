@@ -7,6 +7,7 @@ using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Deposit;
 using TradeSatoshi.Common.Modal;
 using TradeSatoshi.Common.Repositories.Admin;
+using TradeSatoshi.Common.Repositories.Email;
 using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Trade;
@@ -15,6 +16,7 @@ using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Core.Admin;
+using TradeSatoshi.Enums;
 using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
@@ -34,6 +36,8 @@ namespace TradeSatoshi.Web.Controllers
 		public ICurrencyReader CurrencyReader { get; set; }
 		public ITradePairReader TradePairReader { get; set; }
 		public ISiteStatusReader SiteStatusReader { get; set; }
+		public IEmailTemplateReader EmailTemplateReader { get; set; }
+		public IEmailTemplateWriter EmailTemplateWriter { get; set; }
 
 		[HttpGet]
 		public ActionResult Index()
@@ -331,6 +335,39 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> GetVoteItems(DataTablesModel param)
 		{
 			return DataTable(await VoteReader.AdminGetVoteDataTable(param));
+		}
+
+		#endregion
+
+		#region EmailTemplate
+
+		[HttpGet]
+		public async Task<ActionResult> EmailTemplate()
+		{
+			var model = await EmailTemplateReader.GetEmailTemplates();
+			return PartialView("_EmailTemplatePartial", model);
+		}
+
+		[HttpGet]
+		public async Task<ActionResult> GetEmailTemplate(EmailType emailType)
+		{
+			var model = await EmailTemplateReader.GetEmailTemplate(emailType);
+			return PartialView("_EmailTemplateUpdatePartial", model);
+		}
+
+
+		[HttpPost]
+		public async Task<ActionResult> UpdateEmailTemplate(EmailTemplateModel model)
+		{
+			if (!ModelState.IsValid)
+				return PartialView("_EmailTemplateUpdatePartial", model);
+
+			var result = await EmailTemplateWriter.UpdateEmailTemplate(model);
+			if(!ModelState.IsWriterResultValid(result)) 
+					return PartialView("_EmailTemplateUpdatePartial", model);
+
+			ViewBag.Success = result.Message;
+			return PartialView("_EmailTemplateUpdatePartial", model);
 		}
 
 		#endregion

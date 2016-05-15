@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Chat;
 using TradeSatoshi.Common.Security;
+using TradeSatoshi.Common.Services.NotificationService;
 using TradeSatoshi.Web.Attributes;
 
 namespace TradeSatoshi.Web.Hubs
@@ -18,8 +19,10 @@ namespace TradeSatoshi.Web.Hubs
 		private static ConcurrentQueue<ChatMessageModel> _messageCache = new ConcurrentQueue<ChatMessageModel>();
 		private static ConcurrentDictionary<string, ChatUserModel> _userCache = new ConcurrentDictionary<string, ChatUserModel>();
 
+
 		public IChatReader ChatReader { get; set; }
 		public IChatWriter ChatWriter { get; set; }
+		public INotificationService NotificationService { get; set; }
 
 		public async Task GetOnlineCount()
 		{
@@ -52,6 +55,9 @@ namespace TradeSatoshi.Web.Hubs
 					return;
 				}
 
+				if (await IsSpam(user))
+					return;
+
 				var chatMessage = new ChatMessageModel
 				{
 					Message = message,
@@ -63,6 +69,26 @@ namespace TradeSatoshi.Web.Hubs
 				await SaveMessage(chatMessage);
 				await Clients.All.NewMessage(chatMessage, GetTime());
 			}
+		}
+
+		private async Task<bool> IsSpam(ChatUserModel user)
+		{
+			var messages = _messageCache
+				.Where(x => x.IsEnabled)
+				.OrderByDescending(x => x.Id)
+				.Take(3);
+			if (messages.Count() == 3 && messages.All(x => x.UserName == user.UserName))
+			{
+				await NotificationService.SendNotification(new NotifyUser
+				{
+					Title = "Spam Filter",
+					Message = "Blocked 3rd consecutive message.",
+					Type = Enums.NotificationType.Error,
+					UserId = CurrentUserId()
+				});
+				return true;
+			}
+			return false;
 		}
 
 		public override async Task OnConnected()

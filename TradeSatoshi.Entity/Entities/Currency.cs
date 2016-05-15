@@ -23,6 +23,8 @@ namespace TradeSatoshi.Entity
 
 		public decimal Balance { get; set; }
 
+		public decimal ColdBalance { get; set; }
+
 		[MaxLength(128)]
 		public string WalletUser { get; set; }
 

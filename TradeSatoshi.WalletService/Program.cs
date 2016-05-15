@@ -16,12 +16,13 @@ namespace TradeSatoshi.WalletService
 		/// </summary>
 		static void Main()
 		{
-			var level = LoggingManager.LogLevelFromString(ConfigurationManager.AppSettings["LogLevel"]);
+			DependencyRegistrar.Register();
+				var level = LoggingManager.LogLevelFromString(ConfigurationManager.AppSettings["LogLevel"]);
 			var location = ConfigurationManager.AppSettings["LogLocation"];
 
 #if DEBUG
 			LoggingManager.AddLog(new ConsoleLogger(level));
-			using (var processor = new WalletService())
+			using (var processor = DependencyRegistrar.Resolve<WalletService>())
 			{
 				processor.StartService();
 				Console.ReadLine();
@@ -32,10 +33,11 @@ namespace TradeSatoshi.WalletService
 				ServiceBase[] ServicesToRun;
 				ServicesToRun = new ServiceBase[] 
 				{ 
-					new WalletService() 
+					DependencyRegistrar.Resolve<WalletService>()
 				};
 				ServiceBase.Run(ServicesToRun);
 #endif
+			DependencyRegistrar.Deregister();
 		}
 	}
 }

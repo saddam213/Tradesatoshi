@@ -8,52 +8,91 @@
 			<div class="panel-body">
 				
 				<div class="col-md-4">
-					<table class="table table-condensed table-bordered">
+					<table id="table-summary" class="table table-condensed table-bordered">
 						<thead>
 							<tr>
-								<th></th>
-								<th>24 hour</th>
-								<th>AllTime</th>
+								<th>Stats</th>
+								<th>Today</th>
+								<th>Month</th>
+								<th>Year</th>
+								<th>All Time</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>Logins</td>
-								<td>@Model.Logons24</td>
-								<td>@Model.Logons</td>
-						</tr>
+						@foreach (var statistic in Model.Statistic)
+						{
 						<tr>
-							<td>Deposits</td>
-							<td>@Model.Deposits24</td>
-							<td>@Model.Deposits</td>
+							<td>@statistic.Name</td>
+							<td>@statistic.Today</td>
+							<td>@statistic.Month</td>
+							<td>@statistic.Year</td>
+							<td>@statistic.AllTime</td>
 						</tr>
-						<tr>
-							<td>Open Orders</td>
-							<td>@Model.Orders24</td>
-							<td>@Model.Orders</td>
-						</tr>
-						<tr>
-							<td>Completed Trades</td>
-							<td>@Model.Trades24</td>
-							<td>@Model.Trades</td>
-						</tr>
-						<tr>
-							<td>Transfers</td>
-							<td>@Model.Transfers24</td>
-							<td>@Model.Transfers</td>
-						</tr>
-						<tr>
-							<td>Withdrawals</td>
-							<td>@Model.Withdrawals24</td>
-							<td>@Model.Withdrawals</td>
-						</tr>
+						}
 					</tbody>
 				</table>
 			</div>
 
 
-			
+				<div class="col-md-8">
+					<table id="table-profit" class="table table-condensed table-bordered">
+						<thead>
+							<tr>
+								<th>Currency</th>
+								<th>Balance</th>
+								<th>Cold Storage</th>
+								<th>Total Deposit</th>
+								<th>Total Withdraw</th>
+								<th>User Balance</th>
+								<th>Liquid</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var statistic in Model.Profit)
+							{
+							<tr>
+								<td>@statistic.Name</td>
+								<td>@statistic.Balance</td>
+								<td>@statistic.ColdBalance</td>
+								<td>@statistic.TotalDeposit</td>
+								<td>@statistic.TotalWithdraw</td>
+								<td>@statistic.UserBalance</td>
+								<td class="@(@statistic.Liquid >= 0 ? "text-success" : "text-danger")" >@statistic.Liquid</td>
+							</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+
 			</div>
 		</div>
 	</div>
 </div>
+
+
+<script>
+	$('#table-summary').dataTable({
+		"order": [[0, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": false,
+		"searching": true,
+		"scrollCollapse": false,
+		"sort": false,
+		"paging": false,
+		"info": false,
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search" }
+	});
+	$('#table-profit').dataTable({
+		"order": [[0, "asc"]],
+		"lengthChange": false,
+		"processing": true,
+		"bServerSide": false,
+		"searching": true,
+		"scrollCollapse": false,
+		"sort": true,
+		"paging": false,
+		"info": false,
+		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search" }
+	});
+</script>

@@ -48,7 +48,8 @@ namespace TradeSatoshi.Core.Currency
 					TradeFee = currency.TradeFee,
 					TransferFee = currency.TransferFee,
 					WithdrawFee = currency.WithdrawFee,
-					WithdrawFeeType = currency.WithdrawFeeType
+					WithdrawFeeType = currency.WithdrawFeeType,
+					ColdBalance = currency.ColdBalance
 				};
 			}
 		}

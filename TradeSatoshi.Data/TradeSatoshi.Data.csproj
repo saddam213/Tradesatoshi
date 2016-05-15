@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="StaticData.sql" />
     <Compile Include="Data.cs" />
     <Compile Include="DataContext\DataContextFactory.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
@@ -157,6 +158,14 @@
     <Compile Include="Migrations\201605141349237_IndexesRegisterDate.Designer.cs">
       <DependentUpon>201605141349237_IndexesRegisterDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605150221538_ColdBalance.cs" />
+    <Compile Include="Migrations\201605150221538_ColdBalance.Designer.cs">
+      <DependentUpon>201605150221538_ColdBalance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605150919036_EmailParameters.cs" />
+    <Compile Include="Migrations\201605150919036_EmailParameters.Designer.cs">
+      <DependentUpon>201605150919036_EmailParameters.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -250,6 +259,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605141349237_IndexesRegisterDate.resx">
       <DependentUpon>201605141349237_IndexesRegisterDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605150221538_ColdBalance.resx">
+      <DependentUpon>201605150221538_ColdBalance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605150919036_EmailParameters.resx">
+      <DependentUpon>201605150919036_EmailParameters.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

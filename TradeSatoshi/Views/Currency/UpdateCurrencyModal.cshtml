@@ -118,6 +118,13 @@
 							</div>
 						</div>
 
+						<div class="form-group">
+							<div class="col-md-3">
+								@Html.LabelFor(m => m.ColdBalance, new { @class = "control-label" })
+								@Html.TextBoxFor(m => m.ColdBalance, new { @class = " form-control" })
+								@Html.ValidationMessageFor(m => m.ColdBalance)
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

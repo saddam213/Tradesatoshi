@@ -1,18 +1,34 @@
-﻿namespace TradeSatoshi.Common.Admin
+﻿using System.Collections.Generic;
+
+namespace TradeSatoshi.Common.Admin
 {
 	public class SiteStatusModel
 	{
-		public int Deposits { get; set; }
-		public int Deposits24 { get; set; }
-		public int Logons { get; set; }
-		public int Logons24 { get; set; }
-		public int Orders { get; set; }
-		public int Orders24 { get; set; }
-		public int Trades { get; set; }
-		public int Trades24 { get; set; }
-		public int Transfers { get; set; }
-		public int Transfers24 { get; set; }
-		public int Withdrawals { get; set; }
-		public int Withdrawals24 { get; set; }
+		public List<SiteProfitModel> Profit { get; set; }
+		public List<SiteStatisticModel> Statistic { get; set; }
+	}
+
+	public class SiteStatisticModel
+	{
+		public int AllTime { get; set; }
+		public int Today { get; set; }
+		public int Month { get; set; }
+		public int Year { get; set; }
+		public string Name { get; set; }
+	}
+
+	public class SiteProfitModel
+	{
+		public string Name { get; set; }
+		public decimal UserBalance { get; set; }
+		public decimal Balance { get; set; }
+		public decimal ColdBalance { get; set; }
+		public decimal Liquid
+		{
+			get { return (Balance + ColdBalance) - UserBalance; }
+		}
+
+		public decimal TotalDeposit { get; set; }
+		public decimal TotalWithdraw { get; set; }
 	}
 }

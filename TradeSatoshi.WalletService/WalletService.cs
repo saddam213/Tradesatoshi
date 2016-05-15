@@ -15,13 +15,14 @@ namespace TradeSatoshi.WalletService
 {
 	public partial class WalletService : ServiceBase
 	{
-		private WalletTracker _walletTracker;
+		private IWalletTracker _walletTracker;
 		private CancellationTokenSource _cancellationTokenSource;
 		private readonly Log Log = LoggingManager.GetLog(typeof(WalletService));
-
-		public WalletService()
+		
+		public WalletService(IWalletTracker walletTracker)
 		{
 			InitializeComponent();
+			_walletTracker = walletTracker;
 		}
 
 		protected override void OnStart(string[] args)
@@ -31,7 +32,7 @@ namespace TradeSatoshi.WalletService
 				Log.Message(LogLevel.Info, "WalletService starting...");
 				_cancellationTokenSource = new CancellationTokenSource();
 				var cancelToken = _cancellationTokenSource.Token;
-				_walletTracker = new WalletTracker(cancelToken);
+				_walletTracker.Start(_cancellationTokenSource.Token);
 				Log.Message(LogLevel.Info, "WalletService started.");
 			}
 			catch (Exception ex)
@@ -44,6 +45,7 @@ namespace TradeSatoshi.WalletService
 		protected override void OnStop()
 		{
 			Log.Message(LogLevel.Info, "WalletService stopping...");
+			_walletTracker.Stop();
 			_cancellationTokenSource.Cancel();
 			while (_walletTracker.Running)
 			{

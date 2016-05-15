@@ -16,10 +16,19 @@ namespace TradeSatoshi.Entity
 		public EmailType Type { get; set; }
 
 		[MaxLength(256)]
+		public string From { get; set; }
+
+		[MaxLength(256)]
 		public string Subject { get; set; }
 
 		[MaxLength(4000)]
 		public string Template { get; set; }
+
+		[MaxLength(1000)]
+		public string Description { get; set; }
+
+		[MaxLength(1000)]
+		public string Parameters { get; set; }
 
 		public bool IsHtml { get; set; }
 

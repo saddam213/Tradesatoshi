@@ -44,6 +44,7 @@ namespace TradeSatoshi.Core.Currency
 					WalletPass = model.WalletPass,
 					WalletPort = model.WalletPort,
 					WalletUser = model.WalletUser,
+					ColdBalance = 0m
 				};
 
 				context.Currency.Add(entity);
@@ -78,6 +79,7 @@ namespace TradeSatoshi.Core.Currency
 				currency.TransferFee = model.TransferFee;
 				currency.WithdrawFee = model.WithdrawFee;
 				currency.WithdrawFeeType = model.WithdrawFeeType;
+				currency.ColdBalance = model.ColdBalance;
 
 				// Id the symbol has changed update the tradepair names
 				if (currency.Symbol != model.Symbol)

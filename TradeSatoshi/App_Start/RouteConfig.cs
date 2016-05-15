@@ -8,6 +8,11 @@ namespace TradeSatoshi.Web
 		public static void RegisterRoutes(RouteCollection routes)
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+			routes.MapRoute(
+				name: "ChatWindow",
+				url: "Chat/Chat",
+				defaults: new { controller = "Chat", action = "Chat" }
+			);
 
 			routes.MapRoute(
 				name: "Default",
