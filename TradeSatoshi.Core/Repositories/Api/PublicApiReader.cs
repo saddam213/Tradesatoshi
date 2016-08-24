@@ -94,7 +94,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query =
 												from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
-												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
+												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 														.GroupBy(x => x.TradePairId)
 														.Select(c => new
 														{
@@ -151,7 +151,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query =
 												from tradePair in context.TradePair.Where(t => t.Status != TradePairStatus.Closed)
-												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id)
+												from ticker in context.Trade.Where(x => x.TradePairId == tradePair.Id && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 														.GroupBy(x => x.TradePairId)
 														.Select(c => new
 														{
@@ -206,7 +206,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 					using (var context = DataContextFactory.CreateContext())
 					{
 						var orderBookData = await context.Trade
-												.Where(x => x.TradePair.Name == market)
+												.Where(x => x.TradePair.Name == market && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending))
 												.GroupBy(x => new { x.TradeType, x.Rate })
 												.Select(c => new
 												{
@@ -267,7 +267,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 						// TODO: Cache data
 						var timeLast = DateTime.UtcNow.AddHours(-24);
 						var query = from tradepair in context.TradePair.Where(t => t.Name == market)
-												from trade in context.Trade.Where(t => t.TradePairId == tradepair.Id)
+												from trade in context.Trade.Where(t => t.TradePairId == tradepair.Id && (t.Status == TradeStatus.Partial || t.Status == TradeStatus.Pending))
 																.GroupBy(g => g.TradePairId)
 																.Select(x => new
 																{

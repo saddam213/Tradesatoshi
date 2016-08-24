@@ -3,6 +3,9 @@
 	ViewBag.Title = Html.Resource("Exchange");
 }
 
+
+
+
 <div id="wrapper">
 
 	@* LeftSidebar Content*@
@@ -16,7 +19,7 @@
 			<div id="tradepairTarget" data-default="@Model.TradePair" data-summary="@Url.Action("Summary")">
 			</div>
 			<div id="main-footer" class="main-footer">
-				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
 			</div>
 		</div>
 	</div>
@@ -30,6 +33,7 @@
 
 
 @section Scripts {
+	@{Html.RenderPartial("_TradeTemplates");}
 	@Scripts.Render("~/Scripts/Project/chat.js")
 	@Scripts.Render("~/Scripts/Project/highstock.js")
 	@Scripts.Render("~/Scripts/Project/Exchange/exchange.js")

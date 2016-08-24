@@ -31,7 +31,7 @@
 					</div>
 					<div class="col-md-6">
 						@Html.LabelFor(m => m.AlgoType, new { @class = "control-label" })
-						@Html.EnumDropDownListFor(m => m.AlgoType, new { @class = "form-control" })
+						@Html.TextBoxFor(m => m.AlgoType, new { @class = "form-control" })
 						@Html.ValidationMessageFor(m => m.AlgoType)
 					</div>
 					<div class="col-md-12">

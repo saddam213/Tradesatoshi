@@ -9,7 +9,7 @@ namespace TradeSatoshi.Common.Vote
 		public string Name { get; set; }
 
 		[Display(Name = "Algorithm:")]
-		public AlgoType AlgoType { get; set; }
+		public string AlgoType { get; set; }
 
 		[Display(Name = "Github:")]
 		public string Source { get; set; }

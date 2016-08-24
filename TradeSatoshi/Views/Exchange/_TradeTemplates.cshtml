@@ -1,0 +1,37 @@
+﻿<script id="tradeHistoryTemplate" type="text/html">
+	<tr class="odd {{type}} {{highlight}}" role="row">
+		<td>{{time}}</td>
+		<td>{{typeText}}</td>
+		<td>{{price}}</td>
+		<td>{{amount}}</td>
+	</tr>
+</script>
+
+<script id="orderTemplate" type="text/html">
+	<tr class="odd {{highlight}}" role="row">
+		<td>{{price}}</td>
+		<td>{{amount}}</td>
+		<td>{{total}}</td>
+	</tr>
+</script>
+
+
+<script id="openOrderTemplate" type="text/html">
+	<tr class="odd" role="row">
+		<td>{{id}}</td>
+		<td>{{time}}</td>
+		<td>{{type}}</td>
+		<td>{{price}}</td>
+		<td>{{amount}}</td>
+		<td>{{remaining}}</td>
+		<td>{{status}}</td>
+		<td>
+			<button class="btn btn-xs btn-danger pull-right" style="width:80px;margin-right:15px" onclick="cancelOrder({{id}});">Cancel</button>
+		</td>
+	</tr>
+</script>
+<script>
+		var orderTemplate = $('#orderTemplate').html();
+		var openOrderTemplate = $('#openOrderTemplate').html();
+		var historyTemplate = $('#tradeHistoryTemplate').html();
+</script>

@@ -67,7 +67,7 @@ namespace TradeSatoshi.Core.Admin
 				if (role == null)
 					return WriterResult<bool>.ErrorResult("{0} role does not exist", model.SecurityRole);
 
-				var exists = context.UserRoles.FirstOrDefaultNoLockAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
+				var exists = await context.UserRoles.FirstOrDefaultNoLockAsync(x => x.User.UserName == model.UserName && x.Role.Name == model.SecurityRole.ToString());
 				if (exists != null)
 					return WriterResult<bool>.ErrorResult("{0} is already assigned to {1} role.", model.UserName, model.SecurityRole);
 

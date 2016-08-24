@@ -10,9 +10,12 @@
 					<h3 class="home-title"><span>TradeSatoshi</span> Your CryptoCurrency Exchange</h3>
 					<h3 class="home-title">Coming Soon</h3>
 					<p class="home-description">Buy! Sell! Trade! Bitcoin and Altcoins</p>
+					@if (!User.Identity.IsAuthenticated)
+					{
 					<a href="@Url.Action("Login", "Account")" class="btn btn-info">
 						<strong>Login </strong>
 					</a>
+					}
 				</div>
 			</div>
 		</div>
@@ -109,12 +112,7 @@
 					</div>
 
 					<div class="col-md-3 col-sm-6">
-						<h3 class="menu_head">Partners</h3>
-						<div class="footer_menu">
-							<ul>
-								<li><a href="https://www.cryptopia.co.nz" target="_blank">Cryptopia</a></li>
-							</ul>
-						</div>
+					
 					</div>
 				</div>
 

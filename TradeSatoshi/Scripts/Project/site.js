@@ -25,10 +25,10 @@ notificationHub.client.OnTradeHistoryUpdate = function (notification) {
 	$(document).trigger("OnTradeHistoryUpdate", notification);
 	$(document).trigger("OnTradeHistoryUpdateGlobal", notification);
 };
-//notificationHub.client.OnOpenOrderUserUpdate = function (notification) {
-//	console.log("OnOpenOrderUserUpdate")
-//	$(document).trigger("OnOpenOrderUserUpdate", notification);
-//};
+notificationHub.client.OnOpenOrderUserUpdate = function (notification) {
+	console.log("OnOpenOrderUserUpdate")
+	$(document).trigger("OnOpenOrderUserUpdate", notification);
+};
 //notificationHub.client.OnTradeUserHistoryUpdate = function (notification) {
 //	console.log("OnTradeUserHistoryUpdate")
 //	$(document).trigger("OnTradeUserHistoryUpdate", notification);

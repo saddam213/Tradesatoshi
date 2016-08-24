@@ -36,8 +36,8 @@ namespace TradeSatoshi.DependencyInjection
 
 		public static void Register()
 		{
-			var cryptopiaDependencyResolver = new MVCDependencyResolver(_container.Kernel);
-			DependencyResolver.SetResolver(cryptopiaDependencyResolver);
+			var tardesatosiDependencyResolver = new MVCDependencyResolver(_container.Kernel);
+			DependencyResolver.SetResolver(tardesatosiDependencyResolver);
 			GlobalHost.DependencyResolver = new SignalrDependencyResolver(_container.Kernel);
 			GlobalConfiguration.Configuration.Services.Replace(typeof (IHttpControllerActivator), new WindsorCompositionRoot(_container));
 		}

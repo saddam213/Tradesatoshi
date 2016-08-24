@@ -7,13 +7,16 @@ using System.Web.Mvc;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Orders;
+using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
 {
+	[AuthorizeSecurityRole(SecurityRole.Standard)]
 	public class OrdersController : BaseController
 	{
 		public IBalanceReader BalanceReader { get; set; }

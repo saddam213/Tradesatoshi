@@ -91,7 +91,8 @@ namespace TradeSatoshi.Core.TradePair
 					BaseCurrencyId = tradepair.CurrencyId2,
 					Status = tradepair.Status,
 					BaseSymbol = tradepair.Currency2.Symbol,
-					Symbol = tradepair.Currency1.Symbol
+					Symbol = tradepair.Currency1.Symbol,
+					MarketSortOrder = tradepair.Currency2.MarketSortOrder
 				};
 			}
 		}

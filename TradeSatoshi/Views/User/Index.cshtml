@@ -19,12 +19,17 @@
 			<div style="padding: 2px; padding-top: 5px;">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">Logons</h3>
+						<h3 class="panel-title">Account Settings</h3>
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							<div id="changePasswordTarget" class="col-md-6 col-lg-4">
-								@Html.Partial("_PasswordPartial", Model.SecurityModel)
+							<div class="col-md-6 col-lg-4">
+								<div id="changePasswordTarget" >
+									@Html.Partial("_PasswordPartial", Model.SecurityModel)
+								</div>
+								<div id="apiSettingsTarget">
+									@{Html.RenderAction("GetUserApiSettings");}
+								</div>
 							</div>
 
 							<div class="col-md-6 col-lg-4">
@@ -43,9 +48,7 @@
 								@{Html.RenderPartial("_ProfilePartial", Model.UserProfile);}
 							</div>
 
-							<div id="apiSettingsTarget">
-								@{Html.RenderAction("GetUserApiSettings");}
-							</div>
+						
 
 						</div>
 					</div>
@@ -55,7 +58,7 @@
 
 
 			<div id="main-footer" class="main-footer">
-				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
 			</div>
 		</div>
 	</div>

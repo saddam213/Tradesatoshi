@@ -1,6 +1,10 @@
 ﻿@model TradeSatoshi.Common.ITradeSidebarModel
 @{ 
-	var basemarkets = Model.TradePairs.Where(x => x.Status != TradePairStatus.Closed).Select(x => x.BaseSymbol).Distinct();
+	var basemarkets = Model.TradePairs
+		.Where(x => x.Status != TradePairStatus.Closed)
+		.OrderBy(x => x.MarketSortOrder)
+		.Select(x => x.BaseSymbol)
+		.Distinct();
 	var hasMultipleBasemarkets = basemarkets.Count() > 1;
 }
 <style>
@@ -35,11 +39,11 @@
 			<h3 class="panel-title">Balances</h3>
 		</div>
 		<div class="header-container">
-			<div style="padding:2px;padding-bottom:0">
-				<input id="balance-search" type="search" style="min-width:100%" placeholder="Search..." />
+			<div style="padding:2px;padding-bottom:0;">
+				<input id="balance-search" type="search" placeholder="Search..." style="width:100% !important;min-width:100% !important" />
 			</div>
 			<div class="col-xs-12 col-sm-6 col-md-4 nopad col-lg-6">
-				<div class="text-xs-center text-sm-left">
+				<div class="">
 					<small><i style="margin-left: 5px">Currency</i></small>
 				</div>
 			</div>
@@ -52,13 +56,13 @@
 				@foreach (var balance in Model.Balances)
 				{
 				<div class="data-currency-@balance.CurrencyId col-xs-12 nopad balance-row" data-search="@balance.Symbol" style="border-top: solid 1px #ddd; padding: 5px">
-					<div class="col-xs-12 col-sm-12 col-md-4 nopad col-lg-6 nopad">
-						<div class="text-xs-center text-sm-center text-md-left">
+					<div class="col-xs-12 col-sm-12 col-md-5 nopad col-lg-6 nopad">
+						<div class="">
 							@Helpers.CoinLogoWithSymbol(balance.Symbol)
 						</div>
 					</div>
-					<div class="col-xs-12 col-sm-12 col-md-8 nopad col-lg-6 nopad">
-						<div class="text-xs-center text-sm-center text-md-left">
+					<div class="col-xs-12 col-sm-12 col-md-7 nopad col-lg-6 nopad">
+						<div class="">
 							<span class="data-balance-@balance.Symbol">@balance.Avaliable.ToString("F8")</span>
 						</div>
 					</div>
@@ -77,7 +81,7 @@
 
 		<div class="header-container">
 			<div style="padding:2px;padding-bottom:0">
-				<input id="market-search" type="search" style="min-width:100%" placeholder="Search..." />
+				<input id="market-search" type="search" style="width:100% !important;min-width:100% !important" placeholder="Search..." />
 			</div>
 			@if (hasMultipleBasemarkets)
 			{
@@ -91,7 +95,7 @@
 			</div>
 			}
 			<div class="col-xs-12 col-sm-6 col-md-5 nopad col-lg-5">
-				<div class="text-xs-center text-sm-left">
+				<div class="">
 					<small><i style="margin-left: 5px">Market</i></small>
 				</div>
 			</div>
@@ -106,12 +110,12 @@
 						var textClass = (tradePair.Change > 0 ? "success" : tradePair.Change < 0 ? "danger" : "");
 						<div class="col-xs-12 nopad tradepair-row tradepair-row-@tradePair.Id tradepair-row-@tradePair.BaseSymbol" style="border-top: solid 1px #ddd; padding: 5px;display:@(tradePair.BaseSymbol == "BTC" ? "":"none")" data-tradepair="@tradePair.Id" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })" data-search="@tradePair.Symbol">
 							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
-								<div class="text-xs-center text-md-left">
+								<div class="">
 									@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Symbol)
 								</div>
 							</div>
 							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
-								<div class="text-xs-center text-md-left">
+								<div class="">
 									<span class="data-tradepair-val-@tradePair.Id data-tradepair-last-@tradePair.Id text-@textClass">@tradePair.LastTrade.ToString("F8")</span>
 								</div>
 							</div>

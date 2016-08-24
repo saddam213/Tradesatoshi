@@ -234,6 +234,7 @@
     <Content Include="Content\notification.css" />
     <Content Include="Content\Site-theme.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="Content\whhg.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -252,6 +253,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\Images\Sorting icons.psd" />
+    <None Include="Properties\PublishProfiles\Tradesatoshi Public.pubxml" />
     <None Include="Properties\PublishProfiles\TradeSatoshi.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -261,6 +263,7 @@
     <Content Include="Scripts\dataTables.bootstrap4.min.js" />
     <Content Include="Scripts\history.js" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
+    <Content Include="Scripts\jquery.datetimepicker.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
     <Content Include="Scripts\jquery-2.2.3.min.js" />
     <Content Include="Scripts\jquery.dataTables.js" />
@@ -290,7 +293,6 @@
     <Content Include="Scripts\Project\Balance\balance.js" />
     <Content Include="Scripts\Project\tradeSidebar.js" />
     <Content Include="Scripts\Project\chat.js" />
-    <Content Include="Scripts\Project\Exchange\tradepairCharts.js" />
     <Content Include="Scripts\Project\exporting.js" />
     <Content Include="Scripts\Project\highstock.js" />
     <Content Include="Scripts\Project\History\history.js" />
@@ -344,6 +346,7 @@
     <Content Include="Views\Chat\Chat.cshtml" />
     <Content Include="Views\Admin\_EmailTemplatePartial.cshtml" />
     <Content Include="Views\Admin\_EmailTemplateUpdatePartial.cshtml" />
+    <Content Include="Views\Exchange\_TradeTemplates.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

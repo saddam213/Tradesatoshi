@@ -13,5 +13,6 @@
 		var left = $(target).offset().left;
 		$(target).css({ left: left }).animate({ "left": "0px" }, "10", "swing", function () { $(div + '-spin').hide(); });
 	});
-	$('#tabcontrol-main a[href="#tabcontrol-main-tab1"]').tab('show');
+	var defaultTab = $("#admin-container").data("defaulttab");
+	$('#tabcontrol-main a[href="'+defaultTab+'"]').tab('show');
 }());

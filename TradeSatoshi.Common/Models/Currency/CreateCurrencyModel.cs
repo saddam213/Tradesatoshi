@@ -33,5 +33,9 @@ namespace TradeSatoshi.Common.Currency
 		public string WalletPass { get; set; }
 		public int WalletPort { get; set; }
 		public string WalletUser { get; set; }
+		public int MarketSortOrder { get; set; }
+		public string Algo { get; set; }
+		public CurrencyInterfaceType InterfaceType { get; set; }
+		public CurrencyType Type { get; set; }
 	}
 }

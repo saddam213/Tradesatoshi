@@ -32,7 +32,7 @@ $(".basemarket-btn").on("click", function () {
 	$(".basemarket-btn-selected").removeClass("basemarket-btn-selected");
 	selectedBaseMarket.addClass("basemarket-btn-selected");
 	$("#table-tradepair .tradepair-row").hide();
-	$("#table-tradepair .tradepair-row-" + selectedBaseMarket.data("base")).show();
+	$("#table-tradepair .tradepair-row-" + selectedBaseMarket.data("base").replace("$", "\\$")).show();
 
 	$("#market-search").trigger("change");
 });
@@ -56,7 +56,7 @@ $("#market-search").on("keyup change paste", function () {
 	var searchText = $(this).val();
 	var baseMarket = $(".basemarket-btn-selected").data("base") || "BTC";
 	if (searchText) {
-		$.each($("#table-tradepair").find(".tradepair-row-" + baseMarket), function () {
+		$.each($("#table-tradepair").find(".tradepair-row-" + baseMarket.replace("$", "\\$")), function () {
 			if ($(this).data('search').toLowerCase().indexOf(searchText.toLowerCase()) == -1)
 				$(this).hide();
 			else
@@ -64,7 +64,7 @@ $("#market-search").on("keyup change paste", function () {
 		});
 	}
 	else {
-		$("#table-tradepair .tradepair-row-" + baseMarket).show();
+		$("#table-tradepair .tradepair-row-" + baseMarket.replace("$", "\\$")).show();
 	}
 });
 

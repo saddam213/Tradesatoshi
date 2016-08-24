@@ -95,7 +95,7 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
-						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.ToUser);
+						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.UserId);
 						if (user == null || !user.IsTransferEnabled)
 							throw new TradeException("Your transfers are currently disabled.");
 
@@ -103,7 +103,7 @@ namespace TradeSatoshi.Core.Services
 						if (toUser == null || !toUser.IsTransferEnabled)
 							throw new TradeException("Receiver does not have transfers enabled.");
 
-						var auditResult = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
+						var auditResult = await AuditService.AuditUserCurrency(context, user.Id, tradeItem.CurrencyId);
 						if (!auditResult.Success)
 							throw new Exception($"Failed to audit user balance, Currency: {tradeItem.Symbol}");
 
@@ -118,7 +118,7 @@ namespace TradeSatoshi.Core.Services
 							Timestamp = DateTime.UtcNow,
 							ToUserId = toUser.Id,
 							TransferType = TransferType.User,
-							UserId = tradeItem.UserId,
+							UserId = user.Id,
 						};
 
 						context.TransferHistory.Add(transfer);
@@ -127,7 +127,7 @@ namespace TradeSatoshi.Core.Services
 
 						var userNotifications = new List<NotifyUser>();
 						var balanceNotifications = new List<NotifyBalanceUpdate>();
-						var senderAudit = await AuditService.AuditUserCurrency(context, tradeItem.UserId, tradeItem.CurrencyId);
+						var senderAudit = await AuditService.AuditUserCurrency(context, user.Id, tradeItem.CurrencyId);
 						if (!senderAudit.Success)
 							throw new Exception($"Failed to audit User balance, Currency: {tradeItem.Symbol}");
 						balanceNotifications.Add(new NotifyBalanceUpdate
@@ -143,7 +143,7 @@ namespace TradeSatoshi.Core.Services
 						});
 						userNotifications.Add(new NotifyUser
 						{
-							UserId = tradeItem.UserId,
+							UserId = user.Id,
 							Type = NotificationType.Info,
 							Title = "New Transfer",
 							Message = $"Sent {transfer.Amount} {tradeItem.Symbol} to {toUser.UserName}"
@@ -204,6 +204,7 @@ namespace TradeSatoshi.Core.Services
 				{
 					try
 					{
+						var response = new CancelTradeResponse();
 						var audits = new HashSet<int>();
 						var notifications = new List<INotify>();
 						var user = await context.Users.FirstOrDefaultAsync(x => x.Id == tradeItem.UserId);
@@ -260,6 +261,7 @@ namespace TradeSatoshi.Core.Services
 							audits.Add(order.TradePair.CurrencyId1);
 							audits.Add(order.TradePair.CurrencyId2);
 							order.Status = TradeStatus.Canceled;
+							response.AddCanceledOrder(order.Id);
 
 							// Notify orderbook of open order cancel
 							notifications.Add(new NotifyOrderBookUpdate
@@ -302,7 +304,7 @@ namespace TradeSatoshi.Core.Services
 								Total = auditResult.Total,
 								Unconfirmed = auditResult.Unconfirmed,
 								UserId = auditResult.UserId,
-								Avaliable = auditResult.Avaliable
+								Avaliable = auditResult.Avaliable,
 							});
 						}
 
@@ -318,6 +320,8 @@ namespace TradeSatoshi.Core.Services
 						{
 							CacheService.Invalidate(TradeCacheKeys.GetOpenSellOrdersKey(tradePairId));
 						}
+
+						return response;
 					}
 					catch (Exception ex)
 					{
@@ -327,7 +331,7 @@ namespace TradeSatoshi.Core.Services
 					}
 				}
 			}
-			return new CancelTradeResponse();
+			return new CancelTradeResponse("Failed to cancel order.");
 		}
 
 
@@ -389,22 +393,22 @@ namespace TradeSatoshi.Core.Services
 							throw new TradeException("Insufficient funds for trade.");
 
 						// Get existing trades that can be filled
-						IQueryable<Tables.Trade> trades;
+						List<Tables.Trade> trades;
 						if (tradeType == TradeType.Buy)
 						{
 							// Fetch any trades that can be filled for this request
-							trades = context.Trade
+							trades = await context.Trade
 								.Where(o => o.TradePairId == tradeRequest.TradePairId && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Sell && o.Rate <= tradeRate)
 								.OrderBy(o => o.Rate)
-								.ThenBy(o => o.Timestamp);
+								.ThenBy(o => o.Timestamp).ToListAsync();
 						}
 						else
 						{
 							// Fetch any trades that can be filled for this request
-							trades = context.Trade
+							trades = await context.Trade
 								.Where(o => o.TradePairId == tradeRequest.TradePairId && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Buy && o.Rate >= tradeRate)
 								.OrderByDescending(o => o.Rate)
-								.ThenBy(o => o.Timestamp);
+								.ThenBy(o => o.Timestamp).ToListAsync();
 						}
 
 						if (trades.IsNullOrEmpty())
@@ -585,8 +589,6 @@ namespace TradeSatoshi.Core.Services
 									});
 								}
 
-								// Update tradepair stats
-								tradePair.Change = GetChangePercent(tradePair.LastTrade, trade.Rate);
 								tradePair.LastTrade = trade.Rate;
 
 								// Add to Audit list
@@ -613,7 +615,15 @@ namespace TradeSatoshi.Core.Services
 								// Update trade limiter
 								tradesLimit--;
 							}
-
+							
+							// Update tradepair stats
+							var hours = DateTime.UtcNow.AddHours(-24);
+							var lastTrade = await context.TradeHistory
+								.Where(x => x.TradePairId == tradeRequest.TradePairId && x.Timestamp >= hours)
+								.OrderBy(x => x.Id)
+								.FirstOrDefaultAsync();
+							tradePair.Change = GetChangePercent(lastTrade?.Rate ?? 0, tradePair.LastTrade);
+						
 							// If the remaining is not 0 create an trade for the rest
 							if (Math.Round(tradeRemaining, 8) > 0 && tradesLimit > 0)
 							{

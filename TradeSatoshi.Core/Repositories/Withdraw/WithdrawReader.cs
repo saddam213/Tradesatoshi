@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Address = withdraw.Address,
 						Amount = withdraw.Amount,
 						Confirmations = withdraw.Confirmations,
-						Currency = withdraw.Currency.Name,
+						UserName = withdraw.User.UserName,
 						Fee = withdraw.Fee,
 						Id = withdraw.Id,
 						Symbol = withdraw.Currency.Symbol,
@@ -47,7 +48,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Address = withdraw.Address,
 						Amount = withdraw.Amount,
 						Confirmations = withdraw.Confirmations,
-						Currency = withdraw.Currency.Name,
+						UserName = withdraw.User.UserName,
 						Fee = withdraw.Fee,
 						Id = withdraw.Id,
 						Symbol = withdraw.Currency.Symbol,
@@ -70,7 +71,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Address = withdraw.Address,
 						Amount = withdraw.Amount,
 						Confirmations = withdraw.Confirmations,
-						Currency = withdraw.Currency.Name,
+						UserName = withdraw.User.UserName,
 						Fee = withdraw.Fee,
 						Id = withdraw.Id,
 						Symbol = withdraw.Currency.Symbol,
@@ -93,7 +94,7 @@ namespace TradeSatoshi.Core.Withdraw
 						Address = withdraw.Address,
 						Amount = withdraw.Amount,
 						Confirmations = withdraw.Confirmations,
-						Currency = withdraw.Currency.Name,
+						UserName = withdraw.User.UserName,
 						Fee = withdraw.Fee,
 						Id = withdraw.Id,
 						Symbol = withdraw.Currency.Symbol,
@@ -128,6 +129,17 @@ namespace TradeSatoshi.Core.Withdraw
 				}
 
 				return userInfo;
+			}
+		}
+
+		public async Task<string> GetWithdrawalToken(string userId, int withdrawId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				return await context.Withdraw
+					.Where(x => x.Id == withdrawId && x.UserId == userId)
+					.Select(withdraw => withdraw.TwoFactorToken)
+					.FirstOrDefaultNoLockAsync();
 			}
 		}
 	}

@@ -49,7 +49,9 @@ namespace TradeSatoshi.Core.Vote
 
 		public async Task<IWriterResult<bool>> CreateFreeVote(string userId, CreateFreeVoteModel model)
 		{
-			await VoteService.CheckVoteItems();
+			if (!await VoteService.CheckVoteItems())
+				return WriterResult<bool>.ErrorResult("The current vote round has ended.");
+
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.VoteItemId);
@@ -79,9 +81,15 @@ namespace TradeSatoshi.Core.Vote
 
 		public async Task<IWriterResult<bool>> CreatePaidVote(string userId, CreatePaidVoteModel model)
 		{
-			await VoteService.CheckVoteItems();
+			if(!await VoteService.CheckVoteItems())
+				return WriterResult<bool>.ErrorResult("The current vote round has ended.");
+
 			using (var context = DataContextFactory.CreateContext())
 			{
+				var settings = await context.VoteSetting.FirstOrDefaultNoLockAsync();
+				if (settings == null)
+					return WriterResult<bool>.ErrorResult("VoteItem not found.");
+
 				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.VoteItemId);
 				if (voteItem == null)
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
@@ -90,8 +98,8 @@ namespace TradeSatoshi.Core.Vote
 				{
 					UserId = userId,
 					ToUser = Constants.SystemVoteUserId,
-					CurrencyId = Constants.SystemCurrencyId,
-					Amount = model.VoteCount,
+					CurrencyId = settings.CurrencyId,
+					Amount = model.VoteCount * settings.Price,
 					TransferType = TransferType.Vote
 				});
 
@@ -157,7 +165,9 @@ namespace TradeSatoshi.Core.Vote
 				}
 
 				votesettings.Next = model.Next;
-				votesettings.Period = model.Period;
+				votesettings.IsPaidEnabled = model.IsPaidEnabled;
+				votesettings.IsFreeEnabled = model.IsFreeEnabled;
+				votesettings.CurrencyId = model.CurrencyId;
 
 				var contextResults = await context.SaveChangesWithLoggingAsync();
 				return WriterResult<bool>.ContextResult(contextResults);

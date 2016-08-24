@@ -6,7 +6,7 @@ namespace TradeSatoshi.Common.Withdraw
 	public class WithdrawModel
 	{
 		public int Id { get; set; }
-		public string Currency { get; set; }
+		public string UserName { get; set; }
 		public string Symbol { get; set; }
 		public decimal Amount { get; set; }
 		public decimal Fee { get; set; }

@@ -7,7 +7,7 @@
 			<thead>
 				<tr>
 					<th>Id</th>
-					<th>Currency</th>
+					<th>User</th>
 					<th>Symbol</th>
 					<th>Amount</th>
 					<th>Fee</th>
@@ -25,8 +25,16 @@
 	</div>
 </div>
 
+<script id="menuTemplate" type="text/html">
+	<span>
+		<a onclick="cancelWithdraw({{id}});" title="Cancel Withdrawal">Cancel...</a>
+		<a onclick="resendEmail({{id}});" title="Resend withdrawal confirmation email" style="margin-left:10px">Resend Email...</a>
+	</span>
+</script>
+
 <script>
-	$('#table-withdraw').dataTable({
+	var menuTemplate = $('#menuTemplate').html();
+	var table = $('#table-withdraw').dataTable({
 		"order": [[0, "desc"]],
 		"lengthChange": false,
 		"processing": true,
@@ -42,6 +50,34 @@
 		"info": true,
 		"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search withdrawals" },
 		"sAjaxSource": '@Url.Action("GetWithdraws")',
-		"sServerMethod": "POST"
+		"sServerMethod": "POST",
+		"columnDefs": [{ "targets": 1, "visible":false },
+		{
+			"targets": 8,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				if (full[6] === 'Unconfirmed') {
+					return Mustache.render(menuTemplate, { id: full[0] });
+				}
+				return data;
+			}
+		}]
 	});
+
+	function cancelWithdraw(id) {
+		postJson('@Url.Action("CancelWithdraw")', { withdrawId: id }, function (data) {
+			showAlertResult(data);
+			table.fnDraw();
+		});
+	}
+
+	function resendEmail(id) {
+		postJson('@Url.Action("ResendConfirmationEmail")', { withdrawId: id }, function (data) {
+			showAlertResult(data);
+			table.fnDraw();
+		});
+	}
 </script>
+
+

@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TradeSatoshi.Common.Balance;
+using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.DataTables;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Common.Vote;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
@@ -19,6 +22,7 @@ namespace TradeSatoshi.Web.Controllers
 		public IVoteReader VoteReader { get; set; }
 		public IVoteWriter VoteWriter { get; set; }
 		public IBalanceReader BalanceReader { get; set; }
+		public ICurrencyReader CurrencyReader { get; set; }
 		public ITradePairReader TradePairReader { get; set; }
 
 		public async Task<ActionResult> Index()
@@ -57,13 +61,18 @@ namespace TradeSatoshi.Web.Controllers
 
 
 		[HttpGet]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CreatePaidVote(int voteItemId, string voteItem)
 		{
 			var user = await UserManager.FindByIdAsync(User.Id());
 			if (user == null)
 				return UnauthorizedModal();
 
-			var balance = await BalanceReader.GetBalance(User.Id(), Constants.SystemCurrencyId);
+			var voteSettings = await VoteReader.GetVoteSettings();
+			if (voteSettings == null)
+				return ViewMessageModal(ViewMessageModel.Error("Invalid Request", "An unknown error occured."));
+
+			var balance = await BalanceReader.GetBalance(User.Id(), voteSettings.CurrencyId);
 			if (balance == null)
 				return ViewMessageModal(ViewMessageModel.Error("Invalid Request", "An unknown error occured."));
 
@@ -71,6 +80,7 @@ namespace TradeSatoshi.Web.Controllers
 			{
 				VoteItemId = voteItemId,
 				VoteItem = voteItem,
+				Price = voteSettings.Price,
 				Balance = balance.Avaliable,
 				Symbol = balance.Symbol,
 				TwoFactorComponentType = TwoFactorComponentType.Transfer,
@@ -82,6 +92,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CreatePaidVote(CreatePaidVoteModel model)
 		{
 			if (model.TwoFactorType == TwoFactorType.None)
@@ -110,6 +121,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CreateFreeVote(CreateFreeVoteModel model)
 		{
 			if (!ModelState.IsValid)
@@ -123,6 +135,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public ActionResult CreateVoteItem()
 		{
 			return View("CreateVoteItemModal", new CreateVoteItemModel());
@@ -130,6 +143,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> CreateVoteItem(CreateVoteItemModel model)
 		{
 			if (!ModelState.IsValid)
@@ -144,6 +158,7 @@ namespace TradeSatoshi.Web.Controllers
 
 
 		[HttpGet]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1)]
 		public async Task<ActionResult> AdminUpdateVoteItem(int voteItemId)
 		{
 			var model = await VoteReader.AdminGetVoteItem(voteItemId);
@@ -155,6 +170,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1)]
 		public async Task<ActionResult> AdminUpdateVoteItem(UpdateVoteItemModel model)
 		{
 			if (!ModelState.IsValid)
@@ -168,6 +184,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
+
 		public async Task<ActionResult> ViewVoteItem(int voteItemId)
 		{
 			var model = await VoteReader.GetVoteItem(voteItemId);
@@ -179,6 +196,7 @@ namespace TradeSatoshi.Web.Controllers
 
 
 		[HttpGet]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1)]
 		public async Task<ActionResult> AdminUpdateVoteSettings()
 		{
 			var model = await VoteReader.GetVoteSettings();
@@ -188,20 +206,31 @@ namespace TradeSatoshi.Web.Controllers
 			return View("AdminUpdateVoteSettingsModal", new UpdateVoteSettingsModel
 			{
 				Next = model.NextVote,
-				Period = model.VotePeriod
+				Price = model.Price,
+				IsFreeEnabled = model.IsFreeEnabled,
+				IsPaidEnabled = model.IsPaidEnabled,
+				CurrencyId = model.CurrencyId,
+				Currencies = await CurrencyReader.GetCurrencies()
 			});
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1)]
 		public async Task<ActionResult> AdminUpdateVoteSettings(UpdateVoteSettingsModel model)
 		{
 			if (!ModelState.IsValid)
+			{
+				model.Currencies = await CurrencyReader.GetCurrencies();
 				return View("AdminUpdateVoteSettingsModal", model);
+			}
 
 			var result = await VoteWriter.AdminUpdateVoteSettings(User.Id(), model);
 			if (!ModelState.IsWriterResultValid(result))
+			{
+				model.Currencies = await CurrencyReader.GetCurrencies();
 				return View("AdminUpdateVoteSettingsModal", model);
+			}
 
 			return CloseModal();
 		}

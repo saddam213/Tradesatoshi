@@ -140,6 +140,7 @@
     <Compile Include="Models\Trade\ChartDataModel.cs" />
     <Compile Include="Models\Trade\ChartDepthDataViewModel.cs" />
     <Compile Include="Models\Trade\ChartDataViewModel.cs" />
+    <Compile Include="Models\Trade\ExchangeSummaryModel.cs" />
     <Compile Include="Models\Trade\ExchangeModel.cs" />
     <Compile Include="Models\Trade\CreateTradeModel.cs" />
     <Compile Include="Models\Trade\CreateTradeResponse.cs" />

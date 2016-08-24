@@ -35,7 +35,8 @@ namespace TradeSatoshi.Entity
 		[MaxLength(500)]
 		public string Description { get; set; }
 
-		public AlgoType AlgoType { get; set; }
+		[MaxLength(128)]
+		public string AlgoType { get; set; }
 
 		public VoteItemStatus Status { get; set; }
 

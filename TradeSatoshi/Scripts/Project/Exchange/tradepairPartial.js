@@ -1,9 +1,12 @@
-﻿var sum_buyOrders = 0;
-var sum_sellOrders = 0;
+﻿setVisibleChart()
 var tradefee = $('#chart-container').data('tradefee')
 var tradePairId = $('#chart-container').data('tradepairid')
+var chartAction = $('#chart-container').data('action-chart');
+var charttitle = $('#chart-container').data('title')
+var chartbaseSymbol = $('#chart-container').data('basesymbol');
 
-$('[id^="table-buyOrders-"]').dataTable({
+
+$('#table-buyOrders-' + tradePairId).dataTable({
 	"order": [[0, "desc"]],
 	"lengthChange": false,
 	"processing": true,
@@ -19,42 +22,30 @@ $('[id^="table-buyOrders-"]').dataTable({
 	"language": { "emptyTable": "No data avaliable." },
 	"sAjaxSource": $('#buyOrders-host').data('action'),
 	"sServerMethod": "POST",
-	"fnServerParams": function(aoData) {
+	"fnServerParams": function (aoData) {
 		aoData.push({ "name": "tradePairId", "value": $('#buyOrders-host').data('tradepair') });
 		aoData.push({ "name": "tradeType", "value": $('#buyOrders-host').data('tradetype') });
 	},
-	"columnDefs": [
-		{
+	"columnDefs": [{
 			"targets": 2,
-			"render": function(data, type, full, meta) {
-				var total = (full[0] * full[1]);
-				sum_buyOrders += total;
-				return total.toFixed(8);
-			}
-		},
-		{
-			"targets": 3,
-			"visible": false,
-			"render": function(data, type, full, meta) {
-				return sum_buyOrders.toFixed(8);
+			"render": function (data, type, full, meta) {
+				return (full[0] * full[1]).toFixed(8);
 			}
 		}
 	],
-	"footerCallback": function(row, data, start, end, display) {
-		sum_buyOrders = 0;
+	"footerCallback": function (row, data, start, end, display) {
 	},
-	"rowCallback": function(row, data, index) {
-		$(row).on('click', function() {
-			$('#amount-Sell, #amount-Buy').val(data[1]);
-			$('#rate-Sell, #rate-Buy').val(data[0]).trigger('change');
+	"rowCallback": function (row, data, index) {
+		$(row).on('click', function () {
+			calculateOrder(data[1], data[0], true);
 		});
 	},
-	"fnDrawCallback": function(oSettings) {
-
+	"fnDrawCallback": function (oSettings) {
+		updateDepthChart();
 	}
 });
 
-$('[id^="table-sellOrders-"]').dataTable({
+$('#table-sellOrders-' + tradePairId).dataTable({
 	"order": [[0, "desc"]],
 	"lengthChange": false,
 	"processing": true,
@@ -70,44 +61,29 @@ $('[id^="table-sellOrders-"]').dataTable({
 	"language": { "emptyTable": "No data avaliable." },
 	"sAjaxSource": $('#sellOrders-host').data('action'),
 	"sServerMethod": "POST",
-	"fnServerParams": function(aoData) {
+	"fnServerParams": function (aoData) {
 		aoData.push({ "name": "tradePairId", "value": $('#sellOrders-host').data('tradepair') });
 		aoData.push({ "name": "tradeType", "value": $('#sellOrders-host').data('tradetype') });
 	},
-	"columnDefs": [
-		{
-			"targets": 2,
-			"render": function(data, type, full, meta) {
-				var total = (full[0] * full[1]);
-				sum_sellOrders += total;
-				return total.toFixed(8);
-			}
-		},
-		{
-			"targets": 3,
-			"visible": false,
-			"render": function(data, type, full, meta) {
-				return sum_sellOrders.toFixed(8);
-			}
+	"columnDefs": [{
+		"targets": 2,
+		"render": function (data, type, full, meta) {
+			return (full[0] * full[1]).toFixed(8);
 		}
-	],
-	"footerCallback": function(row, data, start, end, display) {
-		sum_sellOrders = 0;
+	}],
+	"footerCallback": function (row, data, start, end, display) {
 	},
-	"rowCallback": function(row, data, index) {
-		$(row).on('click', function() {
-			$('#amount-Sell, #amount-Buy').val(data[1]);
-			$('#rate-Sell, #rate-Buy').val(data[0]).trigger('change');
+	"rowCallback": function (row, data, index) {
+		$(row).on('click', function () {
+			calculateOrder(data[1], data[0], false);
 		});
 	},
-	"fnDrawCallback": function(oSettings) {
-
+	"fnDrawCallback": function (oSettings) {
+		updateDepthChart();
 	}
-
 });
 
-
-$('[id^="table-tradehistory-"]').dataTable({
+$('#table-tradehistory-'+ tradePairId).dataTable({
 	"order": [[0, "desc"]],
 	"lengthChange": false,
 	"processing": false,
@@ -121,48 +97,128 @@ $('[id^="table-tradehistory-"]').dataTable({
 	"language": { "emptyTable": "No data avaliable." },
 	"sAjaxSource": $('#tradehistory-host').data('action'),
 	"sServerMethod": "POST",
-	"fnServerParams": function(aoData) {
+	"fnServerParams": function (aoData) {
 		aoData.push({ "name": "tradePairId", "value": $('#tradehistory-host').data('tradepair') });
 	},
 	"columnDefs": [
 		{
 			"targets": 0,
-			"render": function(data, type, full, meta) {
-				return moment(new Date(data)).format('h:mm:ss a');
+			"render": function (data, type, full, meta) {
+				return moment.utc(data).local().format('DD/MM HH:mm:ss');
 			}
 		}
 	],
-	"rowCallback": function(row, data, index) {
+	"rowCallback": function (row, data, index) {
 		var textClass = data[1] === 'Buy' ? 'text-success' : 'text-danger';
 		$(row).addClass(textClass);
 	}
 });
+$('.exchange-historyPanel').height($('.exchange-panel-sell').height() - 2)
 
-$('#table-canceltradepair').on('click', function() {
+$('#table-openorders-' + tradePairId).dataTable({
+	"order": [[0, "desc"]],
+	"lengthChange": false,
+	"processing": false,
+	"bServerSide": true,
+	"searching": false,
+	"scrollCollapse": true,
+	"scrollY": "340px",
+	"sort": true,
+	"paging": false,
+	"info": false,
+	"language": { "emptyTable": "No data avaliable." },
+	"sAjaxSource": $('#openorders-host').data('action'),
+	"sServerMethod": "POST",
+	"fnServerParams": function (aoData) {
+		aoData.push({ "name": "tradePairId", "value": $('#openorders-host').data('tradepair') });
+	},
+	"columnDefs": [
+		{
+			"targets": 1,
+			"render": function (data, type, full, meta) {
+				return moment.utc(data).local().format('DD/MM HH:mm:ss');
+			}
+		},
+		{
+			"targets": 7,
+			"sortable": false,
+			"render": function (data, type, full, meta) {
+				return '<button class="btn btn-xs btn-danger pull-right" style="width:80px;margin-right:15px" onclick="cancelOrder(' + full[0] + ');">Cancel</button>';
+			}
+		}
+	],
+	"rowCallback": function (row, data, index) {
+	}
+});
+
+$('#table-canceltradepair').on('click', function () {
 	var action = $(this).data('action');
 	var tradepair = $(this).data('tradepair');
 	cancelTradePairOrders(tradepair, action);
 });
 
-
-function cancelOrder(tradeId, action) {
-	confirmModal("Cancel Order", "Are you sure you want to cancel order #" + tradeId + "?", function() {
-		postJson(action, { id: tradeId, cancelType: 'Trade' });
+var cancelAction = $('#openorders-host').data('cancel')
+function cancelOrder(orderId) {
+	confirmModal("Cancel Order", "Are you sure you want to cancel order #" + orderId + "?", function () {
+		postJson(cancelAction, { orderId: orderId, cancelType: 'Single' }, function (data) {
+			if (data.Success) {
+				var table = "#table-openorders-" + tradePairId;
+				var existingRow = $(table + " > tbody tr > td:nth-child(1)").filter(function () {
+					return $(this).text() == orderId;
+				}).closest("tr")
+				existingRow.remove();
+			}
+		});
 	});
 }
 
-function cancelTradePairOrders(tradePair, action) {
-	var count = $('[id^="table-useropenorders-"] > tbody > tr > td').length;
+function cancelTradePairOrders(market) {
+	var count = $('#table-openorders-' + tradePairId + ' > tbody > tr > td').length;
 	if (count > 1) {
-		confirmModal("Cancel Orders", "Are you sure you want to cancel ALL orders for this market?", function() {
-			postJson(action, { id: tradePair, cancelType: 'TradePair' });
+		confirmModal("Cancel Orders", "Are you sure you want to cancel ALL orders for this market?", function () {
+			postJson(cancelAction, { market: market, cancelType: 'Market' }, function (data) {
+				if (data.Success) {
+					$("#table-openorders-" + tradePairId + " > tbody").empty();
+				}
+			});
 		});
 	}
 }
 
+$(document).off("OnOpenOrderUserUpdate").on("OnOpenOrderUserUpdate", function (event, notification) {
+	if (tradePairId !== notification.TradePairId)
+		return;
 
-var orderTemplate = $('#orderTemplate').html();
-var historyTemplate = $('#tradeHistoryTemplate').html();
+	var type = notification.Action;
+	var table = '#table-openorders-' + tradePairId;
+	if (type === 'New') {
+		$(table + ' > tbody').prepend(Mustache.render(openOrderTemplate, {
+			id: notification.OrderId,
+			time: moment.utc(notification.Timestamp).local().format('DD/MM HH:mm:ss'),
+			type: notification.Type,
+			price: notification.Price.toFixed(8),
+			amount: notification.Amount.toFixed(8),
+			remaining: notification.Remaining.toFixed(8),
+			status: "Pending"
+		}));
+	}
+
+	if (type === 'Fill') {
+		var existingRow = $(table + " > tbody tr > td:nth-child(1)").filter(function () {
+			return $(this).text() == notification.OrderId;
+		}).closest("tr")
+		existingRow.remove();
+	}
+
+	if (type === 'Partial') {
+		var row = $(table + " > tbody tr > td:nth-child(1)").filter(function () {
+			return $(this).text() == notification.OrderId;
+		}).closest("tr");
+		row.find("td:nth-child(7)").text(type);
+		row.find("td:nth-child(6)").text(notification.Remaining.toFixed(8));
+	}
+
+});
 
 $(document).off("OnTradeHistoryUpdate").on("OnTradeHistoryUpdate", function (event, notification) {
 	if (tradePairId !== notification.TradePairId)
@@ -170,14 +226,31 @@ $(document).off("OnTradeHistoryUpdate").on("OnTradeHistoryUpdate", function (eve
 
 	var table = '#table-tradehistory-' + tradePairId;
 	prependTradeHistory(table, notification);
+	updateLastPrice(notification.Price);
 });
+
+function updateLastPrice(price) {
+	var high = $(".chart-high");
+	var low = $(".chart-low");
+	var last = $(".chart-last");
+	var lowPrice = +low.html();
+	var highPrice = +high.html();
+	if (price < lowPrice || lowPrice == 0) {
+		low.html(price.toFixed(8))
+	}
+	if (price > highPrice) {
+		high.html(price.toFixed(8))
+	}
+	last.html(price.toFixed(8))
+}
 
 $(document).off("OnOrderBookUpdate").on("OnOrderBookUpdate", function (event, notification) {
 	if (tradePairId !== notification.TradePairId)
 		return;
 
 	var type = notification.Type;
-	var table = type === "Buy"
+	var isBuyOrder = type === "Buy";
+	var table = isBuyOrder
 		? "#table-buyOrders-" + tradePairId
 		: "#table-sellOrders-" + tradePairId;
 
@@ -197,27 +270,35 @@ $(document).off("OnOrderBookUpdate").on("OnOrderBookUpdate", function (event, no
 			appendOrder(table, notification);
 			return;
 		}
-		
+
+		var newPoint = false;
 		var lastPrice = $(table + " > tbody tr:last > td:nth-child(1)").text()
 		var existingRowPrice = existingRow.find("td:nth-child(1)").text()
 		if (existingRow && existingRowPrice == notification.Price) {
 			// update existing
 			mergeOrder(existingRow, notification);
 		}
-		else if ((notification.Type === "Sell" && firstPrice > notification.Price) || (notification.Type === "Buy" && notification.Price > firstPrice)) {
+		else if ((!isBuyOrder && firstPrice > notification.Price) || (isBuyOrder && notification.Price > firstPrice)) {
 			// less than first
 			prependOrder(table, notification);
 		}
-		else if ((notification.Type === "Sell" && notification.Price > +lastPrice) || (notification.Type === "Buy" && notification.Price < +lastPrice)) {
+		else if ((!isBuyOrder && notification.Price > +lastPrice) || (isBuyOrder && notification.Price < +lastPrice)) {
 			// more than last
 			appendOrder(table, notification);
+
 		}
 		else {
 			// somewhere in middle
 			insertOrder(table, notification)
 		}
 	}
+
+	updateDepthChart();
 });
+
+
+
+
 
 function appendOrder(table, notification) {
 	$(table + ' > tbody').append(Mustache.render(orderTemplate, {
@@ -227,7 +308,7 @@ function appendOrder(table, notification) {
 		total: (notification.Amount * notification.Price).toFixed(8)
 	}));
 	$(table + " > tbody tr:last").on('click', function () {
-		calculateOrder(notification.Amount, notification.Price)
+		calculateOrder(notification.Amount, notification.Price, notification.Type === "Buy")
 	});
 }
 
@@ -239,7 +320,7 @@ function prependOrder(table, notification) {
 		total: (notification.Amount * notification.Price).toFixed(8)
 	}));
 	$(table + " > tbody tr:first").on('click', function () {
-		calculateOrder(notification.Amount, notification.Price)
+		calculateOrder(notification.Amount, notification.Price, notification.Type === "Buy")
 	});
 }
 
@@ -258,7 +339,7 @@ function insertOrder(table, notification) {
 	});
 	row.before(html);
 	$(row.prev()).on('click', function () {
-		calculateOrder(notification.Amount, notification.Price)
+		calculateOrder(notification.Amount, notification.Price, notification.Type === "Buy")
 	});
 }
 
@@ -272,7 +353,7 @@ function mergeOrder(existingRow, notification) {
 		: (existingAmount + notification.Amount).toFixed(8);
 
 	var newTotal = (newAmount * notification.Price).toFixed(8)
-	if (newAmount <= 0) {
+	if (isNaN(newAmount) || isNaN(newTotal) || newAmount <= 0 || newTotal <= 0) {
 		existingRow.remove();
 	}
 	else {
@@ -287,14 +368,44 @@ function mergeOrder(existingRow, notification) {
 		}
 
 		$(existingRow).off().on('click', function () {
-			calculateOrder(newAmount, notification.Price)
+			calculateOrder(newAmount, notification.Price, notification.Type === "Buy")
 		});
 	}
 }
 
+function calculateOrder(amount, price, isBuy) {
+	var volume = 0;
+	var selectedPrice = +price;
+	if (isBuy) {
+		$("#table-buyOrders-" + tradePairId + "> tbody  > tr").each(function () {
+			var row = $(this);
+			var rowprice = +row.find("td:nth-child(1)").text();
+			if (rowprice >= selectedPrice) {
+				volume += +row.find("td:nth-child(2)").text();
+			}
+		});
+	}
+	else {
+		$("#table-sellOrders-" + tradePairId + "> tbody  > tr").each(function () {
+			var row = $(this);
+			var rowprice = +row.find("td:nth-child(1)").text();
+			if (rowprice <= selectedPrice) {
+				volume += +row.find("td:nth-child(2)").text();
+			}
+		});
+	}
+	$('#amount-Sell, #amount-Buy').val((+volume).toFixed(8));
+	$('#rate-Sell, #rate-Buy').val((+price).toFixed(8)).trigger('change');
+}
+
+function calculateOrderSimple(amount, price) {
+	$('#amount-Sell, #amount-Buy').val((+amount).toFixed(8));
+	$('#rate-Sell, #rate-Buy').val((+price).toFixed(8)).trigger('change');
+}
+
 function prependTradeHistory(table, notification) {
 	$(table + ' > tbody').prepend(Mustache.render(historyTemplate, {
-		time: moment(new Date(notification.Timestamp)).format('h:mm:ss a'),
+		time: moment.utc(notification.Timestamp).local().format('DD/MM HH:mm:ss'),
 		type: notification.Type === 'Buy' ? 'text-success' : 'text-danger',
 		highlight: notification.Type === 'Buy' ? 'buyhighlight' : 'sellhighlight',
 		typeText: notification.Type,
@@ -303,16 +414,12 @@ function prependTradeHistory(table, notification) {
 	}));
 }
 
-function calculateOrder(amount, price) {
-	$('#amount-Sell, #amount-Buy').val((+amount).toFixed(8));
-	$('#rate-Sell, #rate-Buy').val((+price).toFixed(8)).trigger('change');
-}
 
 $(".data-balance-sell").on("click", function () {
 	var rate = $('#rate-Sell').val();
 	var balance = $(this).html();
 	if (balance && rate) {
-		calculateOrder(balance, rate)
+		calculateOrderSimple(balance, rate)
 	}
 });
 
@@ -326,7 +433,327 @@ $(".data-balance-buy").on("click", function () {
 		if ((amount * rateWithFee) > balance) {
 			amount = amount - 0.00000001;
 		}
-		calculateOrder(truncateDecimal(amount), rate)
+		calculateOrderSimple(truncateDecimal(amount), rate)
 	}
 });
 
+
+function updateDepthChart() {
+	var newBuyData = [];
+	var newSellData = [];
+	var buysum = 0;
+	var sellsum = 0;
+	var sellVolume = 0;
+
+	$("#table-buyOrders-" + tradePairId + "> tbody  > tr").each(function () {
+		var row = $(this);
+		var price = +row.find("td:first").text();
+		var amount = +row.find("td:nth-child(2)").text();
+		buysum += price * amount;
+		if (price && buysum)
+			newBuyData.push([price, buysum])
+	});
+
+	$("#table-sellOrders-" + tradePairId + "> tbody  > tr").each(function () {
+		var row = $(this);
+		var price = +row.find("td:first").text();
+		var amount = +row.find("td:nth-child(2)").text();
+		sellVolume += amount;
+		sellsum += price * amount;
+		if (price && sellsum)
+			newSellData.push([price, sellsum]);
+	});
+
+	$(".sum-buyorders").html((+buysum || 0).toFixed(8));
+	$(".sum-sellorders").html((+sellVolume || 0).toFixed(8));
+
+	if (isDepthChartSelected) {
+		var depth = $('#depthdata').highcharts();
+		if (depth) {
+			depth.showLoading();
+			depth.series[0].setData(newBuyData, true, true, true);
+			depth.series[1].setData(newSellData, true, true, true);
+			depth.reflow();
+			depth.hideLoading();
+		}
+	}
+}
+
+
+
+
+
+$('.chart-option').on('click', function () {
+	$('.chart-option').removeClass('active');
+	$(this).addClass('active');
+	var selectedChart = $(this).data('type');
+	if (selectedChart === 'chart') {
+		isDepthChartSelected = false;
+		$('#depthdata').hide();
+		$('#chartdata').show();
+		getChartData();
+	}
+	else if (selectedChart === 'depth') {
+		isDepthChartSelected = true;
+		$('#chartdata').hide();
+		$('#depthdata').show();
+		updateDepthChart();
+	}
+});
+
+
+function setVisibleChart() {
+	if (isDepthChartSelected) {
+		$('.chart-option').removeClass('active');
+		$('.chart-option-depth').addClass('active');
+		$('#depthdata').addClass('active').show();
+		$('#chartdata').removeClass('active').hide();
+	}
+}
+
+
+function updateChart(chartData) {
+	setVisibleChart();
+	var cdata = chartData ? chartData.Candle : [[0, 0, 0, 0, 0, 0]];
+	var vdata = chartData ? chartData.Volume : [[0, 0]];
+	var chart = $('#chartdata').highcharts();
+	if (chart) {
+		chart.showLoading();
+		chart.series[0].setData(cdata)
+		chart.series[1].setData(cdata)
+		chart.series[2].setData(vdata)
+		chart.xAxis[0].setExtremes();
+		chart.rangeSelector.buttons[0].setState(2);
+		chart.rangeSelector.clickButton(0, 1, true);
+		chart.reflow();
+		chart.hideLoading();
+	}
+}
+
+function getChartData() {
+	getJson(chartAction, {}, function (data) {
+		updateChart(data);
+	});
+}
+
+if (!isDepthChartSelected) {
+	getChartData();
+}
+
+$('#chartdata').highcharts('StockChart', {
+	chart: {
+		height: 274,
+		zoomType: 'x',
+		backgroundColor: 'transparent',
+		events: {
+			load: function () {
+				setInterval(function () {
+					getChartData()
+				}, 60000);
+			}
+		}
+	},
+
+	credits: { enabled: false },
+	scrollbar: { enabled: true, liveRedraw: false },
+	rangeSelector: { selected: 0 },
+	navigator: { enabled: false },
+	xAxis: { tickPosition: 'inside' },
+	yAxis: [{
+		labels: {
+			format: '{value:.8f}',
+			align: 'right',
+			x: -3
+		},
+		title: {
+			text: 'OHLC'
+		},
+		height: '70%',
+		offset: 0,
+		lineWidth: 2,
+		tickPosition: 'inside'
+	},
+	{
+		labels: {
+			format: '{value:.8f}',
+			align: 'right',
+			x: -3
+		},
+		title: {
+			text: 'Volume'
+		},
+		top: '72%',
+		height: '28%',
+		offset: 0,
+		lineWidth: 2,
+		tickPosition: 'inside'
+	}],
+
+	candlestick: { pointWidth: '2px' },
+
+	series: [{
+		type: 'candlestick',
+		name: charttitle,
+		color: '#ee5f5b',
+		upColor: '#5cb85c',
+	},
+	{
+		name: 'Mean',
+		data: [[0, 0, 0, 0, 0, 0]],
+		type: 'spline',
+		color: 'rgba(0, 0, 0, 0.2)',
+		tooltip: {
+			valueDecimals: 8
+		}
+	},
+	{
+		type: 'column',
+		color: '#666666',
+		name: 'Volume',
+		data: [[0, 0]],
+		yAxis: 1,
+	}],
+
+	tooltip:
+	{
+		changeDecimals: 8,
+		valueDecimals: 8,
+		followPointer: false
+	},
+
+	rangeSelector: {
+		inputEnabled: false,
+		allButtonsEnabled: true,
+		buttons: [{
+			type: 'day',
+			count: 1,
+			text: 'Day',
+			dataGrouping: {
+				forced: true,
+				units: [['minute', [30]]]
+			}
+		},
+		{
+			type: 'week',
+			count: 1,
+			text: 'Week',
+			dataGrouping: {
+				forced: true,
+				units: [['hour', [4]]]
+			}
+		},
+		{
+			type: 'week',
+			text: 'Month',
+			count: 4,
+			dataGrouping: {
+				forced: true,
+				units: [['hour', [12]]]
+			}
+		},
+		{
+			type: 'week',
+			text: '3 Month',
+			count: 12,
+			dataGrouping: {
+				forced: true,
+				units: [['day', [1]]]
+			}
+		},
+		{
+			type: 'all',
+			text: 'All',
+			dataGrouping: {
+				forced: true,
+				units: [['day', [1]]]
+			}
+		}],
+
+		buttonTheme: { width: 60 },
+		selected: 0
+	},
+});
+
+$('#depthdata').highcharts({
+	chart: {
+		type: 'area',
+		zoomType: 'xy',
+		height: 260,
+		backgroundColor: 'transparent'
+	},
+	title: {
+		text: ''
+	},
+	legend: {
+		enabled: false
+	},
+	xAxis: {
+		type: "logarithmic",
+		name: "Price",
+		labels: {
+			format: '{value:.8f}',
+			align: 'right',
+			x: -3
+		},
+		tickPosition: 'inside',
+		tickInterval: 0.4,
+		showFirstLabel: false,
+		showLastLabel: false
+	},
+	yAxis: {
+		type: "logarithmic",
+		labels: {
+			format: '{value:.8f}',
+			align: 'right',
+			x: -3,
+			y: 0
+		},
+		title: {
+			text: 'Volume ' + chartbaseSymbol
+		},
+		offset: 0,
+		lineWidth: 2,
+		tickPosition: 'inside',
+		opposite: true,
+		showFirstLabel: false,
+		showLastLabel: false
+	},
+	credits: {
+		enabled: false
+	},
+	tooltip:
+		{
+			changeDecimals: 8,
+			valueDecimals: 8,
+			followPointer: false,
+			headerFormat: '<b style="font-size:14px">{series.name} Depth</b><br/><span>Price: <b>{point.key:.8f}</b> ' + chartbaseSymbol + '</span><br/>',
+			pointFormat: '<span>Volume: <b>{point.y:.8f}</b> ' + chartbaseSymbol + '</span><br/>'
+		},
+	series: [{
+
+		name: 'Buy',
+		data: [],
+		color: "#5cb85c",
+		fillOpacity: 0.5,
+		lineWidth: 1,
+		marker: {
+			enabled: true,
+			radius: 2,
+			symbol: 'circle'
+		},
+		yAxis: 0
+	},
+	{
+		name: 'Sell',
+		color: "#d9534f",
+		fillOpacity: 0.5,
+		data: [],
+		lineWidth: 1,
+		marker: {
+			enabled: true,
+			radius: 2,
+			symbol: 'circle'
+		},
+		yAxis: 0
+	}]
+});

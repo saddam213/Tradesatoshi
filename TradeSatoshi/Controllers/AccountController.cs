@@ -102,7 +102,7 @@ namespace TradeSatoshi.Web.Controllers
 				}
 				ModelState.AddModelError("", string.Format("Email or password was invalid.", UserManager.MaxFailedAccessAttemptsBeforeLockout - user.AccessFailedCount));
 				await UserManager.AddUserLogon(user, Request.GetIPAddress(), false);
-				await EmailService.Send(EmailType.FailedLogon, user, Request.GetIPAddress(), new EmailParam("[LOCKOUTLINK]",GetLockoutLink(user)));
+				await EmailService.Send(EmailType.FailedLogon, user, Request.GetIPAddress(), new EmailParam("[LOCKOUTLINK]", await GetLockoutLink(user)));
 				return View(model);
 			}
 		}
@@ -146,7 +146,9 @@ namespace TradeSatoshi.Web.Controllers
 					Email = model.EmailAddress,
 					IsEnabled = true,
 					IsTradeEnabled = true,
-					IsWithdrawEnabled = true
+					IsWithdrawEnabled = true,
+					IsTransferEnabled = true,
+					RegisterDate = DateTime.UtcNow
 				};
 				user.Profile = new UserProfile { Id = user.Id };
 				user.Settings = new UserSettings { Id = user.Id };
@@ -157,7 +159,7 @@ namespace TradeSatoshi.Web.Controllers
 					await UserManager.AddToRoleAsync(user.Id, SecurityRoles.Standard);
 					string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
-					if (await EmailService.Send(EmailType.Registration, user, Request.GetIPAddress(), new EmailParam("[CONFIRMLINK]",callbackUrl)))
+					if (await EmailService.Send(EmailType.Registration, user, Request.GetIPAddress(), new EmailParam("[CONFIRMLINK]", callbackUrl)))
 					{
 						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
 					}
@@ -258,7 +260,7 @@ namespace TradeSatoshi.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 				return View(model);
-			
+
 			var user = await UserManager.FindByEmailAsync(model.Email);
 			if (user == null)
 			{
@@ -414,7 +416,7 @@ namespace TradeSatoshi.Web.Controllers
 			AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true, }, identity);
 
 			await UserManager.AddUserLogon(user, Request.GetIPAddress(), true);
-			await EmailService.Send(EmailType.Logon, user, Request.GetIPAddress(), new EmailParam("[LOCKOUTLINK]", GetLockoutLink(user)));
+			await EmailService.Send(EmailType.Logon, user, Request.GetIPAddress(), new EmailParam("[LOCKOUTLINK]", await GetLockoutLink(user)));
 		}
 
 

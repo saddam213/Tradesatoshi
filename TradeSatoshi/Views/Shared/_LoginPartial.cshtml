@@ -8,7 +8,7 @@
 		<li>
 			@Html.ResourceActionLink("Account", "Index", "User")
 		</li>
-		@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator))
+		@if (User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator, TradeSatoshi.Common.Security.SecurityRole.Moderator1, TradeSatoshi.Common.Security.SecurityRole.Moderator2))
 		{
 			<li>@Html.ResourceActionLink("Admin", "Index", "Admin")</li>
 		}

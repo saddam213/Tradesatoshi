@@ -166,6 +166,18 @@
     <Compile Include="Migrations\201605150919036_EmailParameters.Designer.cs">
       <DependentUpon>201605150919036_EmailParameters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607010935165_CurrencyChanges.cs" />
+    <Compile Include="Migrations\201607010935165_CurrencyChanges.Designer.cs">
+      <DependentUpon>201607010935165_CurrencyChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607010950576_MarketSortOrder.cs" />
+    <Compile Include="Migrations\201607010950576_MarketSortOrder.Designer.cs">
+      <DependentUpon>201607010950576_MarketSortOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201607020911075_VoteSettings1.cs" />
+    <Compile Include="Migrations\201607020911075_VoteSettings1.Designer.cs">
+      <DependentUpon>201607020911075_VoteSettings1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -265,6 +277,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605150919036_EmailParameters.resx">
       <DependentUpon>201605150919036_EmailParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010935165_CurrencyChanges.resx">
+      <DependentUpon>201607010935165_CurrencyChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607010950576_MarketSortOrder.resx">
+      <DependentUpon>201607010950576_MarketSortOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607020911075_VoteSettings1.resx">
+      <DependentUpon>201607020911075_VoteSettings1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

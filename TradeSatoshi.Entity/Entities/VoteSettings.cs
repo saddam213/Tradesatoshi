@@ -13,11 +13,17 @@ namespace TradeSatoshi.Entity
 		[Key]
 		public int Id { get; set; }
 
+		public int CurrencyId { get; set; }
+		public decimal Price { get; set; }
 		public int Period { get; set; }
 		public DateTime Next { get; set; }
-
+		public bool IsFreeEnabled { get; set; }
+		public bool IsPaidEnabled { get; set; }
 		public int? LastFreeId { get; set; }
 		public int? LastPaidId { get; set; }
+
+		[ForeignKey("CurrencyId")]
+		public virtual Currency Currency { get; set; }
 
 		[ForeignKey("LastFreeId")]
 		public virtual VoteItem LastFree { get; set; }

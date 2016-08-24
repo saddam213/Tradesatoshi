@@ -1,6 +1,6 @@
 ﻿@model TradeSatoshi.Common.Exchange.TradePairExchangeModel
 @{
-
+	var market = $"{Model.Symbol}_{Model.BaseSymbol}";
 }
 <style>
 	.buysell-balance {
@@ -9,8 +9,6 @@
 		font-size: 12px;
 		cursor: pointer;
 	}
-
-
 </style>
 
 @*Chart*@
@@ -21,6 +19,12 @@
 		<div class="chart-option-group btn-group btn-group-xs pull-right">
 			<button class="btn btn-default chart-option chart-option-chart active" data-type="chart">Chart</button>
 			<button class="btn btn-default chart-option chart-option-depth" data-type="depth">Depth</button>
+		</div>
+
+		<div class="pull-right" style="padding-top:5px">
+			<span style="margin-right:10px">Last: <span class="chart-last">0.00000000</span></span>
+			<span style="margin-right:10px">High: <span class="chart-high">0.00000000</span></span>
+			<span style="margin-right:10px">Low: <span class="chart-low">0.00000000</span></span>
 		</div>
 
 		<div id="chartdata" class="chat-data">
@@ -50,7 +54,12 @@
 	</div>
 	<div class="panel panel-default exchange-orderPanel">
 		<div class="panel-heading">
-			<h3 class="panel-title">Sell Orders</h3>
+			<span>Sell Orders</span>
+			<span class="buysell-balance">
+				<small>Total: </small>
+				<span class="sum-sellorders">0.00000000</span>
+				<span>@Model.Symbol</span>
+			</span>
 		</div>
 		<div id="sellOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Sell">
 			<table id="table-sellOrders-@Model.TradePairId" class="table table-condensed table-hover">
@@ -69,7 +78,7 @@
 </div>
 
 @*Sell*@
-<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel">
+<div class="col-xs-12 col-sm-6 col-lg-4 exchange-panel exchange-panel-sell">
 	<div class="panel panel-default nopad">
 		<div class="panel-heading">
 			<h3 class="panel-title">
@@ -86,7 +95,12 @@
 	</div>
 	<div class="panel panel-default exchange-orderPanel">
 		<div class="panel-heading">
-			<h3 class="panel-title">Buy Orders</h3>
+			<span>Buy Orders</span>
+			<span class="buysell-balance">
+				<small>Total: </small>
+				<span class="sum-buyorders">0.00000000</span>
+				<span>@Model.BaseSymbol</span>
+			</span>
 		</div>
 		<div id="buyOrders-host" data-action="@Url.Action("GetOrderBook")" data-tradepair="@Model.TradePairId" data-tradetype="@TradeSatoshi.Enums.TradeType.Buy">
 			<table id="table-buyOrders-@Model.TradePairId" class="table table-condensed table-hover">
@@ -110,12 +124,12 @@
 			<h3 class="panel-title">Market History</h3>
 		</div>
 		<div id="tradehistory-host" data-action="@Url.Action("GetMarketHistory")" data-tradepair="@Model.TradePairId">
-			<table id="table-tradehistory-@Model.TradePairId" class="table table-condensed table-hover">
+			<table id="table-tradehistory-@Model.TradePairId" class="table table-condensed table-hover" style="font-size:12px">
 				<thead>
 					<tr>
 						<th>Time</th>
 						<th></th>
-						<th>Rate</th>
+						<th>Price</th>
 						<th>Amount</th>
 					</tr>
 				</thead>
@@ -125,22 +139,39 @@
 	</div>
 </div>
 
-@Scripts.Render("~/Scripts/Project/Exchange/tradepairCharts.js")
+@*OpenOrders*@
+@if (User.Identity.IsAuthenticated)
+{
+<div class="row" style="padding:2px">
+	<div class="col-xs-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Open Orders</h3>
+			</div>
+			<div id="openorders-host" data-action="@Url.Action("GetOpenOrders")" data-tradepair="@Model.TradePairId" data-cancel="@Url.Action("CancelTrade")">
+				<table id="table-openorders-@Model.TradePairId" class="table table-condensed table-hover">
+					<thead>
+						<tr>
+							<th>OrderId</th>
+							<th>Time</th>
+							<th>Type</th>
+							<th>Price</th>
+							<th>Amount</th>
+							<th>Remaining</th>
+							<th>Status</th>
+							<th>
+								<button class="btn btn-xs btn-danger pull-right" style="width:80px" onclick="cancelTradePairOrders('@market');">Cancel All</button>
+							</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+}
+
+
 @Scripts.Render("~/Scripts/Project/Exchange/tradepairPartial.js")
 
-<script id="tradeHistoryTemplate" type="text/html">
-	<tr class="odd {{type}} {{highlight}}" role="row" >
-		<td>{{time}}</td>
-		<td>{{typeText}}</td>
-		<td>{{price}}</td>
-		<td>{{amount}}</td>
-	</tr>
-</script>
-
-<script id="orderTemplate" type="text/html">
-	<tr class="odd {{highlight}}" role="row">
-		<td>{{price}}</td>
-		<td>{{amount}}</td>
-		<td>{{total}}</td>
-	</tr>
-</script>

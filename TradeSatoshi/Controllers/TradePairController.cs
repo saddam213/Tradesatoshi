@@ -5,6 +5,7 @@ using TradeSatoshi.Common;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.Currency;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.Trade;
 using TradeSatoshi.Common.TradePair;
@@ -12,10 +13,12 @@ using TradeSatoshi.Common.Transfer;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Data;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
 {
+	[AuthorizeSecurityRole(SecurityRole.Administrator)]
 	public class TradePairController : BaseController
 	{
 		#region Properties

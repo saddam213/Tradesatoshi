@@ -27,7 +27,7 @@ namespace TradeSatoshi.Core.Vote
 						Id = voteItem.Id,
 						Name = voteItem.Name,
 						VoteType = type,
-						VoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == type).Sum(x => x.Count) ?? 0
+						VoteCount = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == type).Sum(x => x.Count) ?? 0
 					});
 				return await query.GetDataTableResultNoLockAsync(model);
 			}
@@ -119,8 +119,8 @@ namespace TradeSatoshi.Core.Vote
 						Status = voteItem.Status,
 						CreatedBy = voteItem.User.UserName,
 						Created = voteItem.Created,
-						VoteCountFree = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
-						VoteCountPaid = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
+						VoteCountFree = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
+						VoteCountPaid = (int?)voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
 					});
 				return await query.GetDataTableResultNoLockAsync(model);
 			}
@@ -129,7 +129,6 @@ namespace TradeSatoshi.Core.Vote
 		public async Task<VoteModel> GetVoteSettings()
 		{
 			await VoteService.CheckVoteItems();
-
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var settings = await context.VoteSetting
@@ -147,7 +146,11 @@ namespace TradeSatoshi.Core.Vote
 						: string.Empty,
 					LastPaid = settings.LastPaid != null
 						? $"{settings.LastPaid.Name}({settings.LastPaid.Symbol})"
-						: string.Empty
+						: string.Empty,
+					CurrencyId = settings.CurrencyId,
+					IsFreeEnabled = settings.IsFreeEnabled,
+					IsPaidEnabled = settings.IsPaidEnabled,
+					Price = settings.Price
 				};
 			}
 		}

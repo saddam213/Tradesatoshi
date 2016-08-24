@@ -20,6 +20,7 @@ namespace TradeSatoshi.Common.Vote
 
 		public TwoFactorType TwoFactorType { get; set; }
 		public TwoFactorComponentType TwoFactorComponentType { get; set; }
+		public decimal Price { get; set; }
 
 		#endregion
 	}

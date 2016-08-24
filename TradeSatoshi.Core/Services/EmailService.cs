@@ -23,13 +23,20 @@ namespace TradeSatoshi.Core.Services
 
 		public async Task<bool> Send(EmailType template, IdentityUser user, string ipaddress, params EmailParam[] formatParameters)
 		{
-			using (var context = DataContextFactory.CreateContext())
+			try
 			{
-				var emailTemplate = await context.EmailTemplates.FirstOrDefaultNoLockAsync(x => x.Type == template && x.IsEnabled);
-				if (emailTemplate == null)
-					return false;
+				using (var context = DataContextFactory.CreateContext())
+				{
+					var emailTemplate = await context.EmailTemplates.FirstOrDefaultNoLockAsync(x => x.Type == template && x.IsEnabled);
+					if (emailTemplate == null)
+						return false;
 
-				return await SendAsync(emailTemplate, user, ipaddress, formatParameters);
+					return await SendAsync(emailTemplate, user, ipaddress, formatParameters);
+				}
+			}
+			catch (System.Exception)
+			{
+				return false;
 			}
 		}
 

@@ -10,15 +10,18 @@
 	<hr />
 	@Html.ValidationSummary(true)
 
-	<div class="col-md-10">
-		@Html.CheckBoxFor(model => model.IsEnabled)
-		@Html.LabelFor(model => model.IsEnabled)
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-md-10">
+			@Html.CheckBoxFor(model => model.IsEnabled)
+			@Html.LabelFor(model => model.IsEnabled)
+			<button id="newApiKey" class="btn btn-default btn-xs pull-right" style="margin-right:25px" type="button" data-action="@Url.Action("GetNewApiKey")">New Api Key</button>
+		</div>
 	</div>
-	<button id="newApiKey" class="btn btn-default btn-sm" type="button" data-action="@Url.Action("GetNewApiKey")">New Api Key</button>
+
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Key, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Key, new { @class = "form-control" })
+			@Html.TextBoxFor(model => model.Key, new { @class = "form-control", @readonly = "readonly", disabled = "disabled" })
 			@Html.ValidationMessageFor(model => model.Key)
 		</div>
 	</div>
@@ -26,14 +29,14 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Secret, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Secret, new { @class = "form-control" })
+			@Html.TextBoxFor(model => model.Secret, new { @class = "form-control", @readonly = "readonly", disabled = "disabled" })
 			@Html.ValidationMessageFor(model => model.Secret)
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-md-offset-2 col-md-10">
-			<input type="submit" value="@Html.Resource("Update Api")" cla class="btn btn-default" />
+			<input type="submit" value="@Html.Resource("Update Api Settings")" cla class="btn btn-default" />
 		</div>
 	</div>
 

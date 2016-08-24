@@ -18,8 +18,11 @@ namespace TradeSatoshi.Entity
 		public string Name { get; set; }
 
 		[MaxLength(128)]
-		[Index("IX_Symbol")]
+		[Index("IX_Symbol", IsUnique = true)]
 		public string Symbol { get; set; }
+
+		[MaxLength(128)]
+		public string Algo { get; set; }
 
 		public decimal Balance { get; set; }
 
@@ -79,6 +82,12 @@ namespace TradeSatoshi.Entity
 		public bool IsEnabled { get; set; }
 
 		public decimal TransferFee { get; set; }
+
+		public CurrencyType Type { get; set; }
+
+		public CurrencyInterfaceType InterfaceType { get; set; }
+
+		public int MarketSortOrder { get; set; }
 	}
 
 }

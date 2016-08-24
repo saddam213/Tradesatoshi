@@ -8,7 +8,7 @@
 @using (Ajax.BeginForm("UserProfile", "User", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "changeProfileTarget" }, new { @class = "form-horizontal", role = "form" }))
 {
 	@Html.AntiForgeryToken()
-	<h4>@Html.Resource("Change Password Form")</h4>
+	<h4>@Html.Resource("Account Profile")</h4>
 	<hr />
 	@Html.HiddenFor(m => m.CanUpdate)
 	@Html.ValidationSummary(true)

@@ -1,80 +1,94 @@
 ﻿@{
 	ViewBag.Title = "Admin";
+	var isAdmin = User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator);
+	var isModerator1 = User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator, TradeSatoshi.Common.Security.SecurityRole.Moderator1);
+	var isModerator2 = User.IsInRole(TradeSatoshi.Common.Security.SecurityRole.Administrator, TradeSatoshi.Common.Security.SecurityRole.Moderator1, TradeSatoshi.Common.Security.SecurityRole.Moderator2);
 }
 
-<div class="row row-top">
+<div id="admin-container" class="row row-top" data-defaulttab="@(isModerator1 ? "#tabcontrol-main-tab1" : "#tabcontrol-main-tab19")">
 	<div class="col-md-2">
 		<ul class="nav nav-pills nav-pills-primary nav-stacked" id="tabcontrol-main" style="padding-top: 1px">
-			<li>
+			<li style="display:@(isModerator1 ? "": "none")">
 				<a href="#tabcontrol-main-tab1" data-toggle="tab" data-div="#sitestatusTarget" data-action="@Url.Action("Status")">Status
 					<i id="sitestatusTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab2" data-toggle="tab" data-div="#accountTarget" data-action="@Url.Action("Accounts")">Accounts
+			<li style="display:@(isModerator1 ? "": "none")">
+				<a href="#tabcontrol-main-tab2" data-toggle="tab" data-div="#accountTarget" data-action="@Url.Action("Accounts")">
+					Accounts
 					<i id="accountTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab3" data-toggle="tab" data-div="#securityTarget" data-action="@Url.Action("Security")">Security 
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab3" data-toggle="tab" data-div="#securityTarget" data-action="@Url.Action("Security")">
+					Security
 					<i id="securityTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
+			<li style="display:@(isAdmin ? "": "none")">
 				<hr />
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab5" data-toggle="tab" data-div="#currencyTarget" data-action="@Url.Action("Currency")">Currency 
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab5" data-toggle="tab" data-div="#currencyTarget" data-action="@Url.Action("Currency")">
+					Currency
 					<i id="currencyTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-				<li>
-				<a href="#tabcontrol-main-tab6" data-toggle="tab" data-div="#tradepairTarget" data-action="@Url.Action("TradePair")">TradePair 
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab6" data-toggle="tab" data-div="#tradepairTarget" data-action="@Url.Action("TradePair")">
+					TradePair
 					<i id="tradepairTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
+			<li style="display:@(isAdmin ? "": "none")">
 				<hr />
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab10" data-toggle="tab" data-div="#depositTarget" data-action="@Url.Action("Deposits")">Deposits
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab10" data-toggle="tab" data-div="#depositTarget" data-action="@Url.Action("Deposits")">
+					Deposits
 					<i id="depositTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab11" data-toggle="tab" data-div="#withdrawTarget" data-action="@Url.Action("Withdrawals")">Withdrawals
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab11" data-toggle="tab" data-div="#withdrawTarget" data-action="@Url.Action("Withdrawals")">
+					Withdrawals
 					<i id="withdrawTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab12" data-toggle="tab" data-div="#tradeTarget" data-action="@Url.Action("Trades")">Trades
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab12" data-toggle="tab" data-div="#tradeTarget" data-action="@Url.Action("Trades")">
+					Trades
 					<i id="tradeTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab13" data-toggle="tab" data-div="#tradeHistoryTarget" data-action="@Url.Action("TradeHistory")">Trade History
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab13" data-toggle="tab" data-div="#tradeHistoryTarget" data-action="@Url.Action("TradeHistory")">
+					Trade History
 					<i id="tradeHistoryTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab14" data-toggle="tab" data-div="#transferTarget" data-action="@Url.Action("Transfers")">Transfer History
+			<li style="display:@(isAdmin ? "": "none")">
+				<a href="#tabcontrol-main-tab14" data-toggle="tab" data-div="#transferTarget" data-action="@Url.Action("Transfers")">
+					Transfer History
 					<i id="transferTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
+			<li style="display:@(isAdmin ? "": "none")">
 				<hr />
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab19" data-toggle="tab" data-div="#supportTarget" data-action="@Url.Action("Support")">Support
+			<li style="display:@(isModerator2 ? "": "none")">
+				<a href="#tabcontrol-main-tab19" data-toggle="tab" data-div="#supportTarget" data-action="@Url.Action("Support")">
+					Support
 					<i id="supportTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
-				<a href="#tabcontrol-main-tab21" data-toggle="tab" data-div="#votingTarget" data-action="@Url.Action("Voting")">Voting
+			<li style="display:@(isModerator1 ? "": "none")">
+				<a href="#tabcontrol-main-tab21" data-toggle="tab" data-div="#votingTarget" data-action="@Url.Action("Voting")">
+					Voting
 					<i id="votingTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
 				</a>
 			</li>
-			<li>
+			<li style="display:@(isAdmin ? "": "none")">
 				<a href="#tabcontrol-main-tab22" data-toggle="tab" data-div="#emailTarget" data-action="@Url.Action("EmailTemplate")">
 					Email
 					<i id="emailTarget-spin" class="fa fa-spinner fa-spin fa-spin-tab pull-right"></i>
@@ -154,5 +168,6 @@
 </div>
 
 @section Scripts {
+	@Scripts.Render("~/Scripts/jquery.datetimepicker.js")
 	@Scripts.Render("~/Scripts/Project/Admin/admin.js")
 }

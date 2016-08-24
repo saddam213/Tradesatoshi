@@ -46,7 +46,13 @@ namespace TradeSatoshi.Web.Controllers
 		[HttpGet]
 		public async Task<ActionResult> Summary()
 		{
-			return PartialView("_SummaryPartial", await PublicApiReader.GetMarketSummaries());
+			var data = await PublicApiReader.GetMarketSummaries();
+			var tradePairs = await TradePairReader.GetTradePairs();
+			return PartialView("_SummaryPartial", new ExchangeSummaryModel
+			{
+				TradePairs = tradePairs,
+				MarketSummary = data.Result
+			});
 		}
 
 		[HttpPost]
@@ -54,7 +60,7 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> CreateTrade(CreateTradeModel model)
 		{
 			var result = await TradeWriter.CreateTrade(User.Id(), model);
-			if (!result.Data)
+			if (result.HasErrors)
 				return JsonError();
 
 			return JsonSuccess();
@@ -65,7 +71,7 @@ namespace TradeSatoshi.Web.Controllers
 		public async Task<ActionResult> CancelTrade(CancelTradeModel model)
 		{
 			var result = await TradeWriter.CancelTrade(User.Id(), model);
-			if (!result.Data)
+			if (result.HasErrors)
 				return JsonError();
 
 			return JsonSuccess();
@@ -83,16 +89,16 @@ namespace TradeSatoshi.Web.Controllers
 			return DataTable(await TradeReader.GetTradePairTradeHistoryDataTable(param, tradePairId));
 		}
 
+		[HttpPost]
+		public async Task<ActionResult> GetOpenOrders(DataTablesModel param, int tradePairId)
+		{
+			return DataTable(await TradeReader.GetTradePairUserOpenOrdersDataTable(param, tradePairId, User.Id()));
+		}
+
 		[HttpGet]
 		public async Task<ActionResult> GetTradePairChart(int tradePairId)
 		{
 			return Json(await TradeReader.GetTradePairChart(tradePairId), JsonRequestBehavior.AllowGet);
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> GetTradePairDepth(int tradePairId)
-		{
-			return Json(await TradeReader.GetTradePairDepth(tradePairId), JsonRequestBehavior.AllowGet);
 		}
 	}
 }

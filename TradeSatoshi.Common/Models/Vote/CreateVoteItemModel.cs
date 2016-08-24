@@ -31,6 +31,6 @@ namespace TradeSatoshi.Common.Vote
 		public string Description { get; set; }
 
 		[Display(Name = "Algo Type")]
-		public AlgoType AlgoType { get; set; }
+		public string AlgoType { get; set; }
 	}
 }

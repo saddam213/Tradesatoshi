@@ -8,10 +8,12 @@ namespace TradeSatoshi.Common.Withdraw
 	{
 		Task<CreateWithdrawModel> GetCreateWithdraw(string userId, int currencyId);
 
-		Task<List<WithdrawModel>> GetWithdrawals(string userId);
-		Task<List<WithdrawModel>> GetWithdrawals(string userId, int currencyId);
+		Task<string> GetWithdrawalToken(string userId, int withdrawId);
+		//Task<List<WithdrawModel>> GetWithdrawals(string userId);
+		//Task<List<WithdrawModel>> GetWithdrawals(string userId, int currencyId);
 
 		Task<DataTablesResponse> GetWithdrawDataTable(DataTablesModel model);
 		Task<DataTablesResponse> GetUserWithdrawDataTable(DataTablesModel model, string userId);
+		
 	}
 }

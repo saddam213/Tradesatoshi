@@ -5,7 +5,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
+			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="onClose();$.modal.close();">×</button>
 			<h3 class="modal-title">Update Vote Settings</h3>
 			<small>Update the sites vote settings.</small>
 		</div>
@@ -24,21 +24,52 @@
 						@Html.TextBoxFor(m => m.Next, new { @class = "form-control" })
 						@Html.ValidationMessageFor(m => m.Next)
 					</div>
+					<div class="col-md-3">
+						<div class="checkbox" style="padding-top: 25px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsFreeEnabled)
+								@Html.Resource("IsFreeEnabled")
+							</label>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="checkbox" style="padding-top: 25px">
+							<label>
+								@Html.CheckBoxFor(model => model.IsPaidEnabled)
+								@Html.Resource("IsPaidEnabled")
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-md-6">
-						@Html.LabelFor(m => m.Period, new { @class = "control-label" })
-						@Html.TextBoxFor(m => m.Period, new { @class = "form-control" })
-						@Html.ValidationMessageFor(m => m.Period)
+						@Html.LabelFor(m => m.CurrencyId, new { @class = "control-label" })
+						@Html.DropDownListFor(m => m.CurrencyId, new SelectList(Model.Currencies, "Id", "Symbol"), new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.CurrencyId)
+					</div>
+					<div class="col-md-6">
+						@Html.LabelFor(m => m.Price, new { @class = "control-label" })
+						@Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.Price)
 					</div>
 				</div>
 			</div>
 
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary">Update</button>
-				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
+				<button onclick="onClose()" type="submit" class="btn btn-primary">Update</button>
+				<button onclick="onClose();$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
 			</div>
 		}
 	</div>
 </div>
 
-@Scripts.Render("~/bundles/jqueryval")
+<script>
+	$("#Next").datetimepicker({
+		format: "m/d/Y H:i", startDate: "@Model.Next.ToString()"
+	});
+
+	function onClose() {
+		$("#Next").datetimepicker('destroy')
+	};
+</script>
 

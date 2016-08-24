@@ -5,58 +5,90 @@ using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.VoteService;
 using System.Data.Entity;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Base.Queueing;
+using TradeSatoshi.Data.DataContext;
 
 namespace TradeSatoshi.Core.Services
 {
 	public class VoteService : IVoteService
 	{
+		private static readonly ProcessorQueueVoid<bool> VoteProcessor = new ProcessorQueueVoid<bool>(VoteService.Processor());
+		private static Func<Task<bool>> Processor()
+		{
+			var service = new VoteService();
+			return service.CalculateVoteStatus;
+		}
+
+		public VoteService()
+		{
+			DataContextFactory = new DataContextFactory();
+		}
+
+		public async Task<bool> CheckVoteItems()
+		{
+			return await VoteProcessor.QueueItem().ConfigureAwait(false);
+		}
+
 		public IDataContextFactory DataContextFactory { get; set; }
 
-		public async Task CheckVoteItems()
+		private async Task<bool> CalculateVoteStatus()
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var settings = await context.VoteSetting.FirstOrDefaultNoLockAsync();
 				if (settings == null)
-					return;
+					return false;
 
-				if (DateTime.UtcNow >= settings.Next)
+				if (!settings.IsFreeEnabled && !settings.IsPaidEnabled)
+					return false;
+
+				if (DateTime.UtcNow >= settings.Next && (settings.IsFreeEnabled || settings.IsPaidEnabled))
 				{
-					settings.Next = settings.Next.AddDays(settings.Period);
-					var votes = await context.VoteItem
-						.Include(vi => vi.Votes)
-						.Where(vi => vi.Status == VoteItemStatus.Voting)
-						.Select(voteItem => new
-						{
-							voteItem.Id,
-							FreeVoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
-							PaidVoteCount = (int?) voteItem.Votes.Where(x => x.Status == VoteStatus.Live && x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
-						}).ToListAsync();
-
-					var winningPaid = votes.OrderByDescending(x => x.PaidVoteCount).FirstOrDefault();
-					var winningFree = votes.OrderByDescending(x => x.FreeVoteCount).FirstOrDefault();
-					if (winningPaid == null || winningFree == null)
-						return;
-
-					var paid = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == winningPaid.Id);
-					var free = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == winningFree.Id);
-					if (paid == null || free == null)
-						return;
-
-					paid.Status = VoteItemStatus.Listed;
-					settings.LastPaidId = free.Id;
-
-					free.Status = VoteItemStatus.Listed;
-					settings.LastFreeId = free.Id;
-
-					foreach (var vote in context.Vote.Where(x => x.Status == VoteStatus.Live).ToList())
+					var roundVotes = await context.Vote.Where(x => x.VoteItem.Status == VoteItemStatus.Voting && x.Status == VoteStatus.Live && x.Created <= settings.Next).ToListNoLockAsync();
+					var voteGroups = roundVotes
+					.GroupBy(v => v.VoteItemId)
+					.Select(votes => new
 					{
-						vote.Status = VoteStatus.Archived;
+						Id = votes.Key,
+						FreeVoteCount = (int?)votes.Where(x => x.Type == VoteType.Free).Sum(x => x.Count) ?? 0,
+						PaidVoteCount = (int?)votes.Where(x => x.Type == VoteType.Paid).Sum(x => x.Count) ?? 0
+					}).ToList();
+
+					if (settings.IsFreeEnabled)
+					{
+						var winningFree = voteGroups.OrderByDescending(x => x.FreeVoteCount).FirstOrDefault();
+						if (winningFree != null)
+						{
+							var free = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == winningFree.Id);
+							if (free != null)
+							{
+								settings.LastFreeId = free.Id;
+								free.Status = VoteItemStatus.Listed;
+							}
+						}
 					}
 
+					if (settings.IsPaidEnabled)
+					{
+						var winningPaid = voteGroups.OrderByDescending(x => x.PaidVoteCount).FirstOrDefault();
+						if (winningPaid != null)
+						{
+							var paid = await context.VoteItem.FirstOrDefaultAsync(x => x.Id == winningPaid.Id);
+							if (paid != null)
+							{
+								settings.LastPaidId = paid.Id;
+								paid.Status = VoteItemStatus.Listed;
+							}
+						}
+					}
+
+					settings.IsFreeEnabled = false;
+					settings.IsPaidEnabled = false;
 					await context.SaveChangesWithLoggingAsync();
+					return false;
 				}
 			}
+			return true;
 		}
 	}
 }

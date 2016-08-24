@@ -33,6 +33,7 @@ namespace TradeSatoshi.Web
 				"~/Content/dataTables.bootstrap.css",
 				"~/Content/whhg.css",
 				"~/Content/notification.css",
+				"~/Content/jquery.datetimepicker.css",
 				"~/Content/Site.css",
 				"~/Content/Site-theme.css"));
 		}

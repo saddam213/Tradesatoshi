@@ -168,14 +168,15 @@ namespace TradeSatoshi.Core.Trade
 					.Select(x => new TradeOpenOrderModel
 					{
 						Id = x.Id,
+						Timestamp = x.Timestamp,
 						TradeType = x.TradeType,
 						Rate = x.Rate,
 						Amount = x.Amount,
 						Remaining = x.Remaining,
-						Timestamp = x.Timestamp
-					}).OrderByDescending(x => x.Id);
-
-				return await query.GetDataTableResultNoLockAsync(model);
+						Status = x.Status
+						
+					}).OrderByDescending(x => x.Id).Take(500);
+					return await query.GetDataTableResultNoLockAsync(model);
 			}
 		}
 
@@ -265,7 +266,7 @@ namespace TradeSatoshi.Core.Trade
 
 		public async Task<ChartDataViewModel> GetTradePairChart(int tradePairId)
 		{
-			var cacheResult = await CacheService.GetOrSetASync(TradeCacheKeys.GetTradePairChartKey(tradePairId), TimeSpan.FromMinutes(5), async () =>
+			var cacheResult = await CacheService.GetOrSetASync(TradeCacheKeys.GetTradePairChartKey(tradePairId), TimeSpan.FromMinutes(1), async () =>
 			{
 				using (var context = DataContextFactory.CreateContext())
 				{
@@ -284,13 +285,13 @@ namespace TradeSatoshi.Core.Trade
 					var chartData = new List<ChartDataModel>();
 					var start = tradePairData.Min(x => x.Timestamp);
 					var finish = DateTime.UtcNow;
-					var totalhours = (finish - start).TotalHours;
+					var totalhours = (finish - start).TotalHours * 4;
 					var lastClose = 0m;
-					var interval = TimeSpan.FromHours(1);
+					var interval = TimeSpan.FromMinutes(15);
 					var tickData = tradePairData.GroupBy(s => s.Timestamp.Ticks / interval.Ticks);
 					for (int i = 0; i < totalhours; i++)
 					{
-						var date = start.AddHours(i);
+						var date = start.AddMinutes(15 * i);
 						var data = tickData.FirstOrDefault(x => x.Any(c => c.Timestamp > date && c.Timestamp < date.Add(interval)));
 						if (data.IsNullOrEmpty())
 						{
@@ -313,45 +314,7 @@ namespace TradeSatoshi.Core.Trade
 			});
 			return cacheResult;
 		}
-
-		public async Task<ChartDepthDataViewModel> GetTradePairDepth(int tradePairId)
-		{
-			var cacheResult = await CacheService.GetOrSetASync(TradeCacheKeys.GetTradePairDepthKey(tradePairId), TimeSpan.FromMinutes(5), async () =>
-			{
-				using (var context = DataContextFactory.CreateContext())
-				{
-					var trades = await context.Trade.Where(x => x.TradePairId == tradePairId && (x.Status == TradeStatus.Partial || x.Status == TradeStatus.Pending)).ToListAsync();
-					var buyTrades = trades.Where(x => x.TradeType == TradeType.Buy).ToList();
-					var sellTrades = trades.Where(x => x.TradeType == TradeType.Sell).ToList();
-					var sellData = new List<decimal[]>();
-					var buyData = new List<decimal[]>();
-
-
-					var buyTotal = 0m;
-					foreach (var group in buyTrades.GroupBy(x => x.Rate).OrderByDescending(x => x.Key))
-					{
-						buyTotal += group.Sum(t => t.Remaining * t.Rate);
-						buyData.Insert(0, new[] { group.Key, buyTotal });
-					}
-
-					var sellTotal = 0m;
-					foreach (var group in sellTrades.GroupBy(x => x.Rate).OrderBy(x => x.Key))
-					{
-						sellTotal += group.Sum(t => t.Remaining * t.Rate);
-						sellData.Add(new[] { group.Key, sellTotal });
-					}
-
-					return new ChartDepthDataViewModel
-					{
-						BuyDepth = new List<decimal[]>(buyData),
-						SellDepth = new List<decimal[]>(sellData)
-					};
-				}
-			});
-			return cacheResult;
-		}
-
-
+	
 		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData)
 		{
 			return new ChartDataViewModel
@@ -372,13 +335,4 @@ namespace TradeSatoshi.Core.Trade
 			};
 		}
 	}
-
-	//series: [{
-	//	name: 'Buy',
-	//	data: [[0.001, 0], [0.001, 0], [0.001, 0], [0.001, 0], [0.001, 4000.00000000], [0.002, 3000.00000000], [0.003, 2000.00000000], [0.004, 1000.00000000], [0.0045, 100.00000000]]
-	//},
-	//{
-	//	name: 'Sell',
-	//	data: [[0.008, 4000.00000000], [0.007, 3000.00000000], [0.006, 2000.00000000], [0.005, 1000.00000000], [0.0045, 100.00000000],[0.005, 0], [0.005, 0], [0.005, 0], [0.005, 0]]
-	//}]
 }

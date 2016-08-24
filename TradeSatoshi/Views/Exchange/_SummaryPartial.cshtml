@@ -1,7 +1,11 @@
-﻿@model TradeSatoshi.Common.Validation.IApiResult<List<TradeSatoshi.Common.Repositories.Api.ApiMarketSummary>>
+﻿@model TradeSatoshi.Common.Exchange.ExchangeSummaryModel
 @{
-	var baseMarkets = Model.Result.Select(x => x.Market.Split('_')[1]).Distinct();
-	var hasMultipleBaseMarkets = baseMarkets.Count() > 1;
+	var basemarkets = Model.TradePairs
+		.Where(x => x.Status != TradePairStatus.Closed)
+		.OrderBy(x => x.MarketSortOrder)
+		.Select(x => x.BaseSymbol)
+		.Distinct();
+	var hasMultipleBaseMarkets = basemarkets.Count() > 1;
 }
 
 <style>
@@ -18,9 +22,9 @@
 		<div class="panel-body">
 			@if (hasMultipleBaseMarkets)
 			{
-			<div style="padding:2px;padding-bottom:0;max-width:@(80 * baseMarkets.Count())px">
+			<div style="padding:2px;padding-bottom:0;max-width:@(80 * basemarkets.Count())px">
 				<div class="btn-group btn-group-justified">
-					@foreach (var baseMarket in baseMarkets)
+					@foreach (var baseMarket in basemarkets)
 					{
 					<a class="btn btn-xs btn-default summary-btn summary-btn-@baseMarket" aria-selected="false" data-base="@baseMarket">@baseMarket</a>
 					}
@@ -30,7 +34,7 @@
 			<table id="table-summary" class="table">
 				<thead>
 					<tr>
-						<th>Currency</th>
+						<th class="hidden-sm hidden-xs" >Currency</th>
 						<th>Market</th>
 						<th>BTC Volume</th>
 						<th>Volume</th>
@@ -39,12 +43,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (var market in Model.Result)
+					@foreach (var market in Model.MarketSummary)
 					{
 						var marketSymbol = market.Market.Split('_')[0];
 						var baseMarketSymbol = market.Market.Split('_')[1];
 						<tr class="summary-row summary-row-@baseMarketSymbol" style="display:@(hasMultipleBaseMarkets ? "none" : "")">
-							<td>@Helpers.CoinLogoWithSymbol(marketSymbol)</td>
+							<td class="hidden-sm hidden-xs" >@Helpers.CoinLogoWithSymbol(marketSymbol)</td>
 							<td><a href="@Url.Action("Index", new { market = market.Market})">@market.Market.Replace("_", "/")</a></td>
 							<td>@market.BaseVolume</td>
 							<td>@market.Volume</td>
@@ -60,7 +64,7 @@
 
 
 <div id="main-footer" class="main-footer">
-	<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+	<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
 </div>
 
 <script>
@@ -83,7 +87,7 @@
 		$(".summary-btn-selected").removeClass("summary-btn-selected");
 		selectedBaseMarket.addClass("summary-btn-selected");
 		$("#table-summary >  tbody > .summary-row").hide();
-		$("#table-summary >  tbody > .summary-row-" + selectedBaseMarket.data("base")).show();
+		$("#table-summary >  tbody > .summary-row-" + selectedBaseMarket.data("base").replace("$", "\\$")).show();
 	});
 	$(".summary-btn-BTC").trigger("click");
 </script>

@@ -31,6 +31,9 @@ namespace TradeSatoshi.Common.Currency
 		public decimal MaxWithdraw { get; set; }
 		public WithdrawFeeType WithdrawFeeType { get; set; }
 		public decimal ColdBalance { get; set; }
-
+		public int MarketSortOrder { get; set; }
+		public string Algo { get; set; }
+		public CurrencyInterfaceType InterfaceType { get; set; }
+		public CurrencyType Type { get; set; }
 	}
 }

@@ -7,12 +7,15 @@ using System.Web.Mvc;
 using TradeSatoshi.Common.Address;
 using TradeSatoshi.Common.Balance;
 using TradeSatoshi.Common.DataTables;
+using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.TradePair;
 using TradeSatoshi.Common.User;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
 {
+	[AuthorizeSecurityRole(SecurityRole.Standard)]
 	public class BalanceController : BaseController
 	{
 		public IBalanceReader BalanceReader { get; set; }

@@ -12,7 +12,6 @@
 	$("#newApiKey").on("click", function () {
 		var action = $(this).data("action");
 		postJson(action, {}, function (data) {
-			alert(data.Key)
 			$("#Key").val(data.Key);
 			$("#Secret").val(data.Secret);
 		});

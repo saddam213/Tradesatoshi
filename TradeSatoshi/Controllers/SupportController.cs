@@ -153,7 +153,7 @@ namespace TradeSatoshi.Web.Controllers
 		#region AdminSupport
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminViewTicket(int ticketId)
 		{
 			var model = await SupportReader.GetSupportTicket(User.Id(), ticketId, true);
@@ -164,7 +164,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminViewRequest(int requestId)
 		{
 			var model = await SupportReader.AdminGetSupportRequest(requestId);
@@ -176,7 +176,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateTicketStatus(int ticketId, SupportTicketStatus status)
 		{
 			var result = await SupportWriter.UpdateSupportTicketStatus(User.Id(), new UpdateSupportTicketStatusModel
@@ -193,7 +193,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public ActionResult AdminReplyTicket(int ticketId, string userName)
 		{
 			return View("ReplyTicketModal", new CreateSupportTicketReplyModel { IsAdmin = true, TicketId = ticketId, Message = string.Format("Hi {0},\r\n\r\n", userName) });
@@ -201,7 +201,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminReplyTicket(CreateSupportTicketReplyModel model)
 		{
 			if (!ModelState.IsValid)
@@ -215,7 +215,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateReplyStatus(UpdateSupportReplyStatusModel model)
 		{
 			var result = await SupportWriter.AdminUpdateSupportReplyStatus(User.Id(), model);
@@ -223,7 +223,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public ActionResult AdminReplyRequest(int requestId, string email)
 		{
 			return View("AdminReplyRequestModal", new CreateSupportRequestReplyModel { RequestId = requestId, Email = email });
@@ -231,7 +231,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminReplyRequest(CreateSupportRequestReplyModel model)
 		{
 			if (!ModelState.IsValid)
@@ -245,7 +245,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public ActionResult AdminCreateCategory()
 		{
 			return View("AdminCreateCategoryModal", new CreateSupportCategoryModel());
@@ -253,7 +253,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminCreateCategory(CreateSupportCategoryModel model)
 		{
 			if (!ModelState.IsValid)
@@ -267,7 +267,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateCategory(int categoryId)
 		{
 			var category = await SupportReader.AdminGetSupportCategory(categoryId);
@@ -284,7 +284,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateCategory(UpdateSupportCategoryModel model)
 		{
 			if (!ModelState.IsValid)
@@ -298,7 +298,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public ActionResult AdminCreateFaq()
 		{
 			return View("AdminCreateFaqModal", new CreateSupportFaqModel());
@@ -306,7 +306,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminCreateFaq(CreateSupportFaqModel model)
 		{
 			if (!ModelState.IsValid)
@@ -320,7 +320,7 @@ namespace TradeSatoshi.Web.Controllers
 		}
 
 		[HttpGet]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateFaq(int faqId)
 		{
 			var faq = await SupportReader.AdminGetSupportFaq(faqId);
@@ -339,7 +339,7 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[AuthorizeSecurityRole(SecurityRole.Administrator)]
+		[AuthorizeSecurityRole(SecurityRole.Administrator, SecurityRole.Moderator1, SecurityRole.Moderator2)]
 		public async Task<ActionResult> AdminUpdateFaq(UpdateSupportFaqModel model)
 		{
 			if (!ModelState.IsValid)

@@ -35,7 +35,7 @@ namespace TradeSatoshi.Common.Vote
 		public VoteItemStatus Status { get; set; }
 
 		[Display(Name = "Algo Type")]
-		public AlgoType AlgoType { get; set; }
+		public string AlgoType { get; set; }
 
 		[StringLength(500, MinimumLength = 50)]
 		[Display(Name = "Coin Description")]

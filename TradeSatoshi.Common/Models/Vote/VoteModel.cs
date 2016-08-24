@@ -19,5 +19,9 @@ namespace TradeSatoshi.Common.Vote
 		public List<Balance.BalanceModel> Balances { get; set; }
 
 		public List<TradePair.TradePairModel> TradePairs { get; set; }
+		public decimal Price { get; set; }
+		public bool IsFreeEnabled { get; set; }
+		public bool IsPaidEnabled { get; set; }
+		public int CurrencyId { get; set; }
 	}
 }

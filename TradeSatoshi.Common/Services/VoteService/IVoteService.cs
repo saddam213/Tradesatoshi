@@ -4,6 +4,6 @@ namespace TradeSatoshi.Common.Services.VoteService
 {
 	public interface IVoteService
 	{
-		Task CheckVoteItems();
+		Task<bool> CheckVoteItems();
 	}
 }

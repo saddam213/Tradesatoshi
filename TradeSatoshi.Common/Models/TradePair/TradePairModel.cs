@@ -13,5 +13,6 @@ namespace TradeSatoshi.Common.TradePair
 		public decimal LastTrade { get; set; }
 		public string BaseSymbol{ get; set; }
 		public string Symbol { get; set; }
+		public int MarketSortOrder { get; set; }
 	}
 }

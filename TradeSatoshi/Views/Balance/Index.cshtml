@@ -2,7 +2,13 @@
 @{
 	bool authenticated = User.Identity.IsAuthenticated;
 }
-
+<style>
+.simplemodal-container{
+left:0;
+width:100%;
+height:300px;
+}
+</style>
 <div id="wrapper">
 
 	@* LeftSidebar Content*@
@@ -24,34 +30,29 @@
 						<table id="table-balance" class="table">
 							<thead>
 								<tr>
-									@if (authenticated)
-									{<th></th>}
+									<th></th>
 									<th>Coin</th>
-									@if (authenticated)
-									{<th>Address</th>}
+									<th class="hidden-xs">Address</th>
 									<th>Avaliable</th>
 									<th>Total</th>
-									<th>Unconfirmed</th>
-									<th>Held for orders</th>
-									<th>Pending withdraw</th>
+									<th class="hidden-sm hidden-xs">Unconfirmed</th>
+									<th class="hidden-sm hidden-xs">Held for orders</th>
+									<th class="hidden-sm hidden-xs">Pending withdraw</th>
 								</tr>
 							</thead>
 							<tbody>
 								@for (int i = 0; i < Model.Balances.Count; i++)
 								{
 									var balance = Model.Balances[i];
-									var menuOrientation = (i> 8 && i >= (Model.Balances.Count / 2) ? "up" : "down");
 									<tr>
-										@if (authenticated)
-										{<td>@GetBalanceMenu(balance, menuOrientation)</td>}
+										<td>@GetBalanceMenu(balance)</td>
 										<td title="@balance.Currency">@Helpers.CoinLogoWithSymbol(balance.Symbol)</td>
-										@if (authenticated)
-										{<td>@GetBalanceAddress(balance)</td>}
+										<td class="hidden-xs">@GetBalanceAddress(balance)</td>
 										<td>@balance.Avaliable</td>
 										<td>@balance.Total</td>
-										<td>@balance.Unconfirmed</td>
-										<td>@balance.HeldForTrades</td>
-										<td>@balance.PendingWithdraw</td>
+										<td class="hidden-sm hidden-xs">@balance.Unconfirmed</td>
+										<td class="hidden-sm hidden-xs">@balance.HeldForTrades</td>
+										<td class="hidden-sm hidden-xs">@balance.PendingWithdraw</td>
 									</tr>
 								}
 
@@ -65,7 +66,7 @@
 
 
 			<div id="main-footer" class="main-footer">
-				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeAstoshi</span>
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
 			</div>
 		</div>
 	</div>
@@ -77,16 +78,23 @@
 </div>
 
 
-@helper GetBalanceMenu(TradeSatoshi.Common.Balance.BalanceModel balance, string orientation = "down")
+@helper GetBalanceMenu(TradeSatoshi.Common.Balance.BalanceModel balance)
 {
-	<div class="btn-group drop@(orientation)">
+	<div class="btn-group dropdown">
 		<a class="btn btn-xs btn-info dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-bars" style="margin-right: 5px"></i><span class="caret"></span></a>
 		<ul class="dropdown-menu">
 			<li><b style="margin-left:20px;font-size:larger">@Helpers.CoinLogoWithSymbol(balance.Symbol) Menu</b></li>
 			<li class="divider" style="padding-top:0px;margin-top:0px"></li>
 			<li><a onclick="createTransfer('@balance.CurrencyId');">Transfer</a></li>
 			<li><a onclick="createWithdraw('@balance.CurrencyId');">Withdraw</a></li>
+			@if (string.IsNullOrEmpty(balance.Address))
+			{
 			<li><a class="address-generate" data-currency="@balance.CurrencyId">Create Address</a></li>
+			}
+			else
+			{
+			<li><a class="address-show" data-currency="@balance.Symbol" data-address="@balance.Address">Show Address</a></li>
+			}
 			<li class="divider"></li>
 			@*	<li class="dropdown-header"></li>*@
 			<li><a href="@Url.Action("Index", "History", new { coin = balance.Symbol, area = "Deposit" })">Deposits</a></li>
@@ -105,7 +113,7 @@
 		}
 		else
 		{
-		@balance.Address
+		<span style="font-size:11px">@balance.Address</span>
 		}
 	</div>
 }
@@ -130,7 +138,10 @@
 			"columnDefs": [
 				{ "targets": 0, "searchable": false, "orderable": false, "sort": false },
 				{ "targets": 3, "searchable": false, "orderable": false }
-			]
+			],
+			"fnDrawCallback": function (oSettings) {
+				updateArrows();
+			}
 		});
 
 		$(".address-generate").on("click", function () {
@@ -150,6 +161,15 @@
 			}
 		});
 
+		$(".address-show").on("click", function () {
+			var button = $(this);
+			var currency = button.data("currency");
+			var address = button.data("address");
+			if (address) {
+				notifyModal(currency + " Address", address);
+			}
+		});
+
 		function createWithdraw(currencyId) {
 			openModal('@Url.Action("Create", "Withdraw")', { currencyId: currencyId }, function(data) {
 				// reload
@@ -159,6 +179,14 @@
 		function createTransfer(currencyId) {
 			openModal('@Url.Action("Create", "Transfer")', { currencyId: currencyId }, function(data) {
 				// reload
+			});
+		}
+
+		function updateArrows() {
+			$('#table-balance > tbody > tr').each(function (index, row) {
+				var orientation = index > 8 ? "dropup" : "dropdown";
+				var button = $(this).find("td:first > .btn-group");
+				button.removeClass("dropup dropdown").addClass(orientation)
 			});
 		}
 	</script>

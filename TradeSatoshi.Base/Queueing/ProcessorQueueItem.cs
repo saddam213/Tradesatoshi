@@ -33,4 +33,21 @@ namespace TradeSatoshi.Base.Queueing
 		/// </summary>
 		public TaskCompletionSource<U> CompletionSource { get; set; }
 	}
+
+
+	public class ProcessorQueueItem<T>
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ProcessorQueueItem"/> class.
+		/// </summary>
+		public ProcessorQueueItem()
+		{
+			CompletionSource = new TaskCompletionSource<T>();
+		}
+
+		/// <summary>
+		/// Gets or sets the completion source to return the result from the Process function.
+		/// </summary>
+		public TaskCompletionSource<T> CompletionSource { get; set; }
+	}
 }

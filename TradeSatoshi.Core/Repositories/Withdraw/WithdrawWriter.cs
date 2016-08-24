@@ -20,7 +20,7 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == model.CurrencyId);
-				if (currency == null || currency.IsEnabled || currency.Status != CurrencyStatus.OK)
+				if (currency == null || !currency.IsEnabled || currency.Status != CurrencyStatus.OK)
 					return WriterResult<int>.ErrorResult("Currency not found or is currently disabled.");
 
 				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);

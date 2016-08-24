@@ -1,5 +1,6 @@
 ﻿<div class="row">
 	<div class="col-md-12">
+		@Helpers.AlertResultSection()
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Site Withdrawals</h3>
@@ -9,7 +10,7 @@
 					<thead>
 						<tr>
 							<th>Id</th>
-							<th>Currency</th>
+							<th>User</th>
 							<th>Symbol</th>
 							<th>Amount</th>
 							<th>Fee</th>
@@ -21,17 +22,24 @@
 							<th>TimeStamp</th>
 						</tr>
 					</thead>
-					<tbody>
-					</tbody>
+					<tbody></tbody>
 				</table>
 			</div>
 		</div>
 	</div>
 </div>
 
+<script id="menuTemplate" type="text/html">
+	<span>
+		<a onclick="cancelWithdraw('{{username}}',{{id}});" title="Cancel Withdrawal">Cancel...</a>
+		<a onclick="resendEmail('{{username}}',{{id}});" title="Resend withdrawal confirmation email" style="margin-left:10px">Resend Email...</a>
+	</span>
+</script>
+
 <script>
-	$('#table-withdraw').dataTable({
-		"order": [[1, "asc"]],
+	var menuTemplate = $('#menuTemplate').html();
+	var table = $('#table-withdraw').dataTable({
+		"order": [[0, "desc"]],
 		"lengthChange": false,
 		"processing": true,
 		"bServerSide": true,
@@ -44,6 +52,31 @@
 		"info": true,
 		"language": { "emptyTable": "No data avaliable." },
 		"sAjaxSource": '@Url.Action("GetWithdrawals")',
-		"sServerMethod": "POST"
+		"sServerMethod": "POST",
+		"columnDefs": [{
+			"targets": 8,
+			"searchable": false,
+			"orderable": false,
+			"render": function (data, type, full, meta) {
+				if (full[6] === 'Unconfirmed') {
+					return Mustache.render(menuTemplate, { username:full[1], id: full[0] });
+				}
+				return data;
+			}
+		}]
 	});
+
+	function cancelWithdraw(username, id) {
+		postJson('@Url.Action("CancelWithdraw")', { username: username, withdrawId: id }, function (data) {
+			showAlertResult(data);
+			table.fnDraw();
+		});
+	}
+
+	function resendEmail(username, id) {
+		postJson('@Url.Action("ResendConfirmationEmail")', { username: username, withdrawId: id }, function (data) {
+			showAlertResult(data);
+			table.fnDraw();
+		});
+	}
 </script>

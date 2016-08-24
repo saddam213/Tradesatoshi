@@ -2,15 +2,18 @@
 using System.Web.Mvc;
 using TradeSatoshi.Common;
 using TradeSatoshi.Common.Modal;
+using TradeSatoshi.Common.Security;
 using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.Withdraw;
 using TradeSatoshi.Data;
 using TradeSatoshi.Entity;
 using TradeSatoshi.Enums;
+using TradeSatoshi.Web.Attributes;
 using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
 {
+	[AuthorizeSecurityRole(SecurityRole.Standard)]
 	public class WithdrawController : BaseController
 	{
 		#region Properties
