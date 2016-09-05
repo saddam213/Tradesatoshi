@@ -16,4 +16,17 @@
 			$("#Secret").val(data.Secret);
 		});
 	});
+
+	$("#account-tab").on("click", function () {
+		History.pushState({}, "TradeSatoshi - Account", "Account");
+	});
+
+	$("#security-tab").on("click", function () {
+		History.pushState({}, "TradeSatoshi - Security", "Security");
+	});
+
+	$("#settings-tab").on("click", function () {
+		History.pushState({}, "TradeSatoshi - Settings", "Settings");
+	});
+
 });

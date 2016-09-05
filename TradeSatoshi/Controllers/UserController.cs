@@ -21,9 +21,9 @@ namespace TradeSatoshi.Web.Controllers
 		public IEncryptionService EncryptionService { get; set; }
 
 		[HttpGet]
-		public async Task<ActionResult> Index()
+		public async Task<ActionResult> Index(string section = "Account")
 		{
-
+			ViewBag.Section = section;
 			var tradePairs = await TradePairReader.GetTradePairs();
 			var balances = await BalanceReader.GetBalances(User.Id());
 

@@ -6,11 +6,14 @@ using System.Web.Routing;
 using Newtonsoft.Json.Serialization;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.DependencyInjection;
+using System.Configuration;
 
 namespace TradeSatoshi.Web
 {
 	public class MvcApplication : System.Web.HttpApplication
 	{
+		private readonly string _ReCaptchaPublicKey = ConfigurationManager.AppSettings["ReCaptchaPublicKey"];
+		private readonly string _ReCaptchaPrivateKey = ConfigurationManager.AppSettings["ReCaptchaPrivateKey"];
 		protected void Application_Start()
 		{
 			DependencyRegistrar.Register();
@@ -23,9 +26,7 @@ namespace TradeSatoshi.Web
 			DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof (RequiredIfAttribute), typeof (RequiredAttributeAdapter));
 			DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof (RequiredToBeTrueAttribute), typeof (RequiredAttributeAdapter));
 			ModelBinders.Binders.Add(typeof (TradeSatoshi.Common.DataTables.DataTablesModel), new TradeSatoshi.Web.ModelBinder.DataTablesModelBinder());
-			string publicKey = "6LdfdBETAAAAAILHIQ4yjZST5zbTPEhcIBSPA8Ld";
-			string secretKey = "6LdfdBETAAAAAI1d_wuXstow54r4eR4AKVWLRZle";
-			ReCaptcha.Configure(publicKey, secretKey);
+			ReCaptcha.Configure(_ReCaptchaPublicKey, _ReCaptchaPrivateKey);
 		}
 
 		protected void Application_End()
