@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using TradeSatoshi.Common.Validation;
 //using TradeSatoshi.Web.Validation;
 
@@ -29,8 +30,16 @@ namespace TradeSatoshi.Common.Account
 		[RequiredToBeTrue(ErrorMessage = "You must accept the terms and conditions to register.")]
 		public bool AcceptTerms { get; set; }
 
-		[RequiredToBeTrue(ErrorMessage = "You must be at least 18 years of age to register.")]
-		[Display(Name = "I am older that 18 years of age.")]
-		public bool AgeRestriction { get; set; }
+		[Required]
+		[Display(Name = "First name")]
+		public string FirstName { get; set; }
+
+		[Required]
+		[Display(Name = "Last Name")]
+		public string LastName { get; set; }
+
+		[Required]
+		[Display(Name = "Date of Birth")]
+		public DateTime BirthDate { get; set; }
 	}
 }

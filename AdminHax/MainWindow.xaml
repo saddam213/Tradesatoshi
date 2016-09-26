@@ -1,0 +1,95 @@
+﻿<Window x:Class="AdminHax.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+         xmlns:walletApi="clr-namespace:Cryptopia.WalletAPI.DataObjects;assembly=Cryptopia.WalletAPI"
+        xmlns:common="clr-namespace:AdminHax.Common"
+        Title="Cryptopia AdminHax" Height="500" Width="900" Name="UI">
+	<Grid DataContext="{Binding ElementName=UI}">
+		<Grid.Resources>
+			<ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="TransactionTypes">
+				<ObjectDataProvider.MethodParameters>
+					<x:Type TypeName="walletApi:TransactionDataType" />
+				</ObjectDataProvider.MethodParameters>
+			</ObjectDataProvider>
+		</Grid.Resources>
+
+		<TabControl>
+			<TabItem Header="Wallet Browser">
+				<DockPanel>
+					<Grid DockPanel.Dock="Top">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="4*" />
+							<ColumnDefinition Width="2*" />
+							<ColumnDefinition Width="2*" />
+							<ColumnDefinition Width="4*" />
+						</Grid.ColumnDefinitions>
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Wallets:"/>
+							<ComboBox x:Name="wallets" ItemsSource="{Binding Currencies}" DisplayMemberPath="Name"/>
+						</StackPanel>
+						<StackPanel Grid.Column="1">
+							<TextBlock Text="Transaction Type:"/>
+							<ComboBox  ItemsSource="{Binding Source={StaticResource TransactionTypes}}" SelectedItem="{Binding SelectedTransactionType}" />
+						</StackPanel>
+						<StackPanel  Grid.Column="2">
+							<TextBlock Text=" "/>
+							<Button Command="{Binding LoadWalletTransactionsCommand}" CommandParameter="{Binding ElementName=wallets, Path=SelectedItem}" Content="Get"/>
+						</StackPanel>
+						<StackPanel Grid.Column="3">
+							<TextBlock Text="Find:"/>
+							<TextBox  Name="WalletBrowserSearchBox" />
+						</StackPanel>
+					</Grid>
+					<DataGrid ItemsSource="{Binding WalletTransactions}" common:DataGridTextSearch.SearchValue="{Binding ElementName=WalletBrowserSearchBox, Path=Text, UpdateSourceTrigger=PropertyChanged}">
+
+						<DataGrid.Resources>
+							<common:SearchValueConverter x:Key="SearchValueConverter" />
+							<Style TargetType="{x:Type DataGridCell}">
+								<Setter Property="common:DataGridTextSearch.IsTextMatch">
+									<Setter.Value>
+										<MultiBinding Converter="{StaticResource SearchValueConverter}">
+											<Binding RelativeSource="{RelativeSource Self}" Path="Content.Text" />
+											<Binding RelativeSource="{RelativeSource Self}" Path="(common:DataGridTextSearch.SearchValue)" />
+										</MultiBinding>
+									</Setter.Value>
+								</Setter>
+								<Style.Triggers>
+									<Trigger Property="common:DataGridTextSearch.IsTextMatch" Value="True">
+										<Setter Property="Background" Value="Orange" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</DataGrid.Resources>
+					</DataGrid>
+				</DockPanel>
+			</TabItem>
+
+			<TabItem Header="Wallet Tools">
+				<DockPanel>
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock Text="Username:"/>
+            <TextBox x:Name="username"  Text="cryptopiarpc"/>
+            <TextBlock Text="Password"/>
+            <TextBox x:Name="password" Text="cryptopiarpc123"/>
+            <TextBlock Text="Host"/>
+            <TextBox x:Name="host" Text="192.168.100.110" />
+            <TextBlock Text="Port"/>
+            <TextBox x:Name="port" Text="9998" />
+            <Button Click="Button_Click">Test</Button>
+          </StackPanel>
+
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+						<TextBlock Text="Wallets:"/>
+						<ComboBox x:Name="toolsWallet" ItemsSource="{Binding Currencies}" DisplayMemberPath="Name"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+						<Button Command="{Binding WalletBackupCommand}" CommandParameter="{Binding ElementName=toolsWallet, Path=SelectedItem}" Content="Backup Wallet"/>
+						<Button Command="{Binding WalletRestoreCommand}" CommandParameter="{Binding ElementName=toolsWallet, Path=SelectedItem}" Content="Restore Wallet"/>
+					</StackPanel>
+					<ListBox ItemsSource="{Binding WalletBackupRestoreResults}" DockPanel.Dock="Top"/>
+				</DockPanel>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>

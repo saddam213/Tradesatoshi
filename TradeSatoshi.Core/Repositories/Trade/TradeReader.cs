@@ -312,7 +312,10 @@ namespace TradeSatoshi.Core.Trade
 					return MapChartData(chartData);
 				}
 			});
-			return cacheResult;
+
+
+			var result = await SetTickerData(cacheResult, tradePairId);
+			return result;
 		}
 	
 		private ChartDataViewModel MapChartData(IEnumerable<ChartDataModel> chartData)
@@ -333,6 +336,35 @@ namespace TradeSatoshi.Core.Trade
 					x.Volume
 				}).ToList()
 			};
+		}
+
+		private async Task<ChartDataViewModel> SetTickerData(ChartDataViewModel model, int tradePairId)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				var timeLast = DateTime.UtcNow.AddHours(-24);
+				var query = from tradepair in context.TradePair.Where(t => t.Id == tradePairId)
+										from history in context.TradeHistory.Where(t => t.TradePairId == tradepair.Id && t.Timestamp > timeLast)
+														.DefaultIfEmpty()
+														.GroupBy(g => g.TradePairId)
+														.Select(x => new
+														{
+															High = x.Max(j => j.Rate),
+															Low = x.Min(j => j.Rate),
+															Last = tradepair.LastTrade
+														})
+										select new
+										{
+											High = (decimal?)history.High ?? tradepair.LastTrade,
+											Low = (decimal?)history.Low ?? tradepair.LastTrade,
+											Last = tradepair.LastTrade
+										};
+				var data = await query.FirstOrDefaultNoLockAsync();
+				model.High = data.High;
+				model.Low = data.Low;
+				model.Last = data.Last;
+				return model;
+			}
 		}
 	}
 }

@@ -32,7 +32,7 @@
 								</ul>
 								<div class="tab-content" id="myTabContent">
 									<div class="tab-pane fade @(ViewBag.Section == "Account" ? "active in" : "")" id="account">
-										@{Html.RenderPartial("_ProfilePartial", Model.UserProfile);}
+										@{Html.RenderAction("GetUserProfile");}
 									</div>
 									<div class="tab-pane fade @(ViewBag.Section == "Security" ? "active in" : "")" id="security">
 										<div class="col-md-12">

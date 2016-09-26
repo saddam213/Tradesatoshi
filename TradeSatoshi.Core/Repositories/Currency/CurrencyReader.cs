@@ -79,7 +79,7 @@ namespace TradeSatoshi.Core.Currency
 		{
 			using (var context = DataContextFactory.CreateContext())
 			{
-				return await context.Currency.Select(MapCurrencyStatus).ToListNoLockAsync();
+				return await context.Currency.Where(c => c.IsEnabled).Select(MapCurrencyStatus).ToListNoLockAsync();
 			}
 		}
 

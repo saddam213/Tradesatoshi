@@ -7,6 +7,7 @@ using TradeSatoshi.Common.Data;
 using TradeSatoshi.Common.Services.AuditService;
 using TradeSatoshi.Enums;
 using System.Linq;
+using TradeSatoshi.Common.Services.WalletService;
 
 namespace TradeSatoshi.Core.Withdraw
 {
@@ -14,6 +15,7 @@ namespace TradeSatoshi.Core.Withdraw
 	{
 		public IDataContextFactory DataContextFactory { get; set; }
 		public IAuditService AuditService { get; set; }
+		public IWalletService WalletService { get; set; }
 
 		public async Task<IWriterResult<int>> CreateWithdraw(string userId, CreateWithdrawModel model)
 		{
@@ -23,6 +25,10 @@ namespace TradeSatoshi.Core.Withdraw
 				if (currency == null || !currency.IsEnabled || currency.Status != CurrencyStatus.OK)
 					return WriterResult<int>.ErrorResult("Currency not found or is currently disabled.");
 
+				var isValidAddress = await WalletService.ValidateAddress(model.Address, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
+				if (!isValidAddress)
+					return WriterResult<int>.ErrorResult($"Invalid {currency.Symbol} address.");
+
 				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 				if (user == null || !user.IsWithdrawEnabled)
 					return WriterResult<int>.ErrorResult("Your withdrawals are currently disabled.");
@@ -30,7 +36,7 @@ namespace TradeSatoshi.Core.Withdraw
 				var auditResult = await AuditService.AuditUserCurrency(context, userId, model.CurrencyId);
 				if (!auditResult.Success || model.Amount > auditResult.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
-		
+
 				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = false,
@@ -57,8 +63,12 @@ namespace TradeSatoshi.Core.Withdraw
 			using (var context = DataContextFactory.CreateContext())
 			{
 				var currencyEntity = await context.Currency.Where(w => w.Symbol == currency).FirstOrDefaultNoLockAsync();
-				if(currencyEntity == null)
+				if (currencyEntity == null)
 					return WriterResult<int>.ErrorResult("Currency not found.");
+
+				var isValidAddress = await WalletService.ValidateAddress(address, currencyEntity.WalletHost, currencyEntity.WalletPort, currencyEntity.WalletUser, currencyEntity.WalletPass);
+				if (!isValidAddress)
+					return WriterResult<int>.ErrorResult($"Invalid {currencyEntity.Symbol} address.");
 
 				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
 				if (user == null || !user.IsWithdrawEnabled)
@@ -67,7 +77,7 @@ namespace TradeSatoshi.Core.Withdraw
 				var auditResult = await AuditService.AuditUserCurrency(context, userId, currencyEntity.Id);
 				if (!auditResult.Success || amount > auditResult.Avaliable)
 					return WriterResult<int>.ErrorResult("Failed to audit balance.");
-			
+
 				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = true,
@@ -131,5 +141,7 @@ namespace TradeSatoshi.Core.Withdraw
 				return WriterResult<bool>.SuccessResult();
 			}
 		}
+
+
 	}
 }

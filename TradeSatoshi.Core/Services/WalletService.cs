@@ -26,5 +26,18 @@ namespace TradeSatoshi.Core.Services
 				return null;
 			}
 		}
+
+		public async Task<bool> ValidateAddress(string address, string ipAddress, int port, string username, string password)
+		{
+			try
+			{
+				var wallerConnector = new WalletConnector(ipAddress, port, username, password);
+				return await wallerConnector.ValidateAddressAsync(address);
+			}
+			catch (Exception)
+			{
+				return true;
+			}
+		}
 	}
 }

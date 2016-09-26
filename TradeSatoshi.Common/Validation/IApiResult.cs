@@ -35,10 +35,10 @@ namespace TradeSatoshi.Common.Validation
 		public ApiResult(Exception exception)
 		{
 			Success = false;
-			Message = "An unexpected error occured.";
-#if DEBUG
+//			Message = "An unexpected error occured.";
+//#if DEBUG
 			Message = exception.ToString();
-#endif
+//#endif
 		}
 
 		public bool Success { get; set; }

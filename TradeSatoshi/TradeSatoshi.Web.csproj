@@ -33,7 +33,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-	 <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
+    <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -41,7 +41,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-	 <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
+    <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

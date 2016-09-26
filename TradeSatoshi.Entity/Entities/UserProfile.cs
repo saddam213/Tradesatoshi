@@ -39,10 +39,5 @@ namespace TradeSatoshi.Entity
 
 		[MaxLength(50)]
 		public string PostCode { get; set; }
-
-		public bool CanUpdate()
-		{
-			return string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName);
-		}
 	}
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using TradeSatoshi.Common.Services.EncryptionService;
 using TradeSatoshi.Web.Api.Authentication;
 using System.Linq;
+using Microsoft.AspNet.Identity;
 
 namespace TradeSatoshi.Web.Controllers
 {
@@ -39,9 +40,9 @@ namespace TradeSatoshi.Web.Controllers
 		#region Profile
 
 		[HttpGet]
-		public async Task<ActionResult> UserProfile()
+		public ActionResult GetUserProfile()
 		{
-			var user = await UserManager.FindByIdAsync(User.Id());
+			var user = UserManager.FindById(User.Id());
 			var model = new UserProfileModel
 			{
 				BirthDate = user.Profile.BirthDate,
@@ -51,8 +52,7 @@ namespace TradeSatoshi.Web.Controllers
 				FirstName = user.Profile.FirstName,
 				LastName = user.Profile.LastName,
 				PostCode = user.Profile.PostCode,
-				State = user.Profile.State,
-				CanUpdate = user.Profile.CanUpdate()
+				State = user.Profile.State
 			};
 			return PartialView("_ProfilePartial", model);
 		}
@@ -65,20 +65,12 @@ namespace TradeSatoshi.Web.Controllers
 				return PartialView("_ProfilePartial", model);
 
 			var user = await UserManager.FindByIdAsync(User.Id());
-			if (user.Profile.CanUpdate())
-			{
-				user.Profile.Address = model.Address;
-				user.Profile.BirthDate = model.BirthDate;
-				user.Profile.City = model.City;
-				user.Profile.Country = model.Country;
-				user.Profile.FirstName = model.FirstName;
-				user.Profile.LastName = model.LastName;
-				user.Profile.PostCode = model.PostCode;
-				user.Profile.State = model.State;
-
-				await UserManager.UpdateAsync(user);
-				model.CanUpdate = user.Profile.CanUpdate();
-			}
+			user.Profile.Address = model.Address;
+			user.Profile.City = model.City;
+			user.Profile.Country = model.Country;
+			user.Profile.PostCode = model.PostCode;
+			user.Profile.State = model.State;
+			await UserManager.UpdateAsync(user);
 
 			return PartialView("_ProfilePartial", model);
 		}

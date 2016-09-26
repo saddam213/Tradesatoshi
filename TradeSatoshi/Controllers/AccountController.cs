@@ -140,6 +140,13 @@ namespace TradeSatoshi.Web.Controllers
 					return View(model);
 				}
 
+				if(model.BirthDate.AddYears(18) > DateTime.UtcNow)
+				{
+					ModelState.AddModelError("", "You must be 18 or older to register at Tradesatoshi.com");
+					return View(model);
+				}
+
+
 				var user = new User()
 				{
 					UserName = model.UserName,
@@ -150,7 +157,13 @@ namespace TradeSatoshi.Web.Controllers
 					IsTransferEnabled = true,
 					RegisterDate = DateTime.UtcNow
 				};
-				user.Profile = new UserProfile { Id = user.Id };
+				user.Profile = new UserProfile
+				{
+					Id = user.Id,
+					BirthDate = model.BirthDate,
+					FirstName = model.FirstName,
+					LastName = model.LastName
+				};
 				user.Settings = new UserSettings { Id = user.Id };
 
 				var result = await UserManager.CreateAsync(user, model.Password);
@@ -161,11 +174,11 @@ namespace TradeSatoshi.Web.Controllers
 					var callbackUrl = Url.Action("RegisterConfirmEmail", "Account", new { username = user.UserName, confirmationToken = confirmationToken }, protocol: Request.Url.Scheme);
 					if (await EmailService.Send(EmailType.Registration, user, Request.GetIPAddress(), new EmailParam("[CONFIRMLINK]", callbackUrl)))
 					{
-						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
+						return ViewMessage(new ViewMessageModel(ViewMessageType.Info, "Confirmation Email Sent.", string.Format("An email has been sent to {0}, please click the activation link in the email to complete your registration process. <br /><br />", user.Email, callbackUrl)));
 					}
 
 					ModelState.AddModelError("", "Failed to send registration confirmation email, if problem persists please contact Support.");
-					return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Email Send Failed.", string.Format("Failed to send email to {0}, please contact <a href='/Support'>Support</a>. <br /><br /><strong>DEBUG ACTIVATION LINK: </strong> <a href='{1}'>Confirm Email</a>", user.Email, callbackUrl)));
+					return ViewMessage(new ViewMessageModel(ViewMessageType.Danger, "Email Send Failed.", string.Format("Failed to send email to {0}, please contact <a href='/Support'>Support</a>. <br /><br />", user.Email, callbackUrl)));
 				}
 				else
 				{

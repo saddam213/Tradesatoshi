@@ -22,6 +22,7 @@ namespace TradeSatoshi.Core.Repositories.Email
 				return WriterResult<bool>.ErrorResult($"Email template '{model.Type}' not found.");
 
 				template.Subject = model.Subject;
+				template.From = model.From;
 				template.Template = model.Template;
 				template.IsHtml = model.IsHtml;
 				template.IsEnabled = model.IsEnabled;
