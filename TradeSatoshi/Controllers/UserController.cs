@@ -121,20 +121,9 @@ namespace TradeSatoshi.Web.Controllers
 			var user = await UserManager.FindByIdAsync(User.Id());
 			var oldKey = user.ApiKey;
 
-			if (model.IsEnabled)
-			{
-				user.ApiKey = model.Key;
-				user.ApiSecret = model.Secret;
-				user.IsApiEnabled = model.IsEnabled;
-			}
-			else
-			{
-				user.ApiKey = string.Empty;
-				user.ApiSecret = string.Empty;
-				user.IsApiEnabled = model.IsEnabled;
-			}
-			var newKey = EncryptionService.GenerateEncryptionKeyPair();
-
+			user.ApiKey = model.Key;
+			user.ApiSecret = model.Secret;
+			user.IsApiEnabled = model.IsEnabled;
 
 			await UserManager.UpdateAsync(user);
 			ApiKeyStore.InvalidateApiKey(oldKey);

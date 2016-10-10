@@ -21,7 +21,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Key, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Key, new { @class = "form-control", @readonly = "readonly", disabled = "disabled" })
+			@Html.TextBoxFor(model => model.Key, new { @class = "form-control", @readonly = "readonly" })
 			@Html.ValidationMessageFor(model => model.Key)
 		</div>
 	</div>
@@ -29,7 +29,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Secret, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Secret, new { @class = "form-control", @readonly = "readonly", disabled = "disabled" })
+			@Html.TextBoxFor(model => model.Secret, new { @class = "form-control", @readonly = "readonly" })
 			@Html.ValidationMessageFor(model => model.Secret)
 		</div>
 	</div>

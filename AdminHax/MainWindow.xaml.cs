@@ -12,6 +12,7 @@ using TradeSatoshi.Data.DataContext;
 using TradeSatoshi.Entity;
 using System.Data.Entity;
 using Cryptopia.WalletAPI.Helpers;
+using TradeSatoshi.Base.Extensions;
 
 namespace AdminHax
 {
