@@ -260,12 +260,14 @@
     <Compile Include="Services\NotificationService\INotificationService.cs" />
     <Compile Include="Services\TradeService\ITradeService.cs" />
     <Compile Include="Services\VoteService\IVoteService.cs" />
+    <Compile Include="Services\WithdrawService\CreateWithdraw.cs" />
     <Compile Include="Services\WalletService\IWalletService.cs" />
     <Compile Include="Repositories\Support\ISupportWriter.cs" />
     <Compile Include="Repositories\Support\ISupportReader.cs" />
     <Compile Include="Repositories\Trade\ITradeReader.cs" />
     <Compile Include="Repositories\Trade\ITradeWriter.cs" />
     <Compile Include="Repositories\Transfer\ITransferReader.cs" />
+    <Compile Include="Services\WithdrawService\IWithdrawService.cs" />
     <Compile Include="Validation\IApiResult.cs" />
     <Compile Include="Validation\IWriterResult.cs" />
     <Compile Include="Validation\RequiredIfAttribute.cs" />

@@ -17,12 +17,18 @@
 				$('#netamount').addClass('text-success');
 			}
 		}
+		$('#submit').removeAttr('disabled');
 	});
 
 	$('#balance').on("click", function () {
 		var balance = +$('#Balance').val();
 		$('#Amount').val(balance.toFixed(8));
 		$('#Amount').trigger('keyup');
+		$('#submit').removeAttr('disabled');
+	});
+
+	$('#submit').on("click", function () {
+		$(this).attr('disabled', 'disabled');
 	});
 
 });

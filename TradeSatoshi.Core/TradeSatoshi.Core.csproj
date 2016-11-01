@@ -99,6 +99,7 @@
     <Compile Include="Repositories\Vote\VoteWriter.cs" />
     <Compile Include="Services\AuditService.cs" />
     <Compile Include="Services\CacheService.cs" />
+    <Compile Include="Services\WithdrawService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
