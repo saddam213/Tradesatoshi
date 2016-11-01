@@ -143,6 +143,7 @@ namespace TradeSatoshi.WalletService.Implementation
 							continue; // no deposits
 						}
 
+						var addresses = await context.Address.Where(x => x.CurrencyId == currency.Id).ToListAsync();
 						var existingDeposits = await context.Deposit.Where(x => x.CurrencyId == currency.Id).ToListAsync();
 						foreach (var walletDeposit in walletTransactions.OrderBy(x => x.Time))
 						{
@@ -150,7 +151,13 @@ namespace TradeSatoshi.WalletService.Implementation
 							{
 								var userId = userIds.FirstOrDefault(id => id == walletDeposit.Account);
 								if (string.IsNullOrEmpty(userId))
-									continue; // user not found
+								{
+									var address = addresses.FirstOrDefault(x => x.AddressHash == walletDeposit.Address);
+									if(address == null)
+										continue; // user not found
+
+									userId = address.UserId;
+								}
 
 								var existingDeposit = existingDeposits.FirstOrDefault(x => x.Txid == walletDeposit.Txid && x.UserId == userId);
 								if (existingDeposit == null)
