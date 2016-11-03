@@ -13,7 +13,7 @@ namespace TradeSatoshi.Core.Services
 			try
 			{
 				var wallerConnector = new WalletConnector(ipAddress, port, username, password);
-				var address = await wallerConnector.GenerateAddressAsync(userId);
+				var address = wallerConnector.GenerateAddress(userId, true);
 				var privateKey = await wallerConnector.DumpPrivKeyAsync(address);
 				return new AddressModel
 				{

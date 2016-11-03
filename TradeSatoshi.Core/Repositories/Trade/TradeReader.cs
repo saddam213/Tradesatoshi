@@ -57,7 +57,7 @@ namespace TradeSatoshi.Core.Trade
 						IsApi = x.IsApi,
 						Rate = x.Rate,
 						Timestamp = x.Timestamp,
-						TradeHistoryType = x.TradeHistoryType,
+						TradeHistoryType = x.ToUserId == userId ? TradeType.Sell : TradeType.Buy,
 						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
 					});
 				return await query.GetDataTableResultNoLockAsync(model);
@@ -194,7 +194,7 @@ namespace TradeSatoshi.Core.Trade
 						IsApi = x.IsApi,
 						Rate = x.Rate,
 						Timestamp = x.Timestamp,
-						TradeHistoryType = x.TradeHistoryType,
+						TradeHistoryType = x.ToUserId == userId ? TradeType.Sell : TradeType.Buy,
 						TradePair = x.TradePair.Currency1.Symbol + "/" + x.TradePair.Currency2.Symbol
 					}).OrderByDescending(x => x.Id);
 				return await query.GetDataTableResultNoLockAsync(model);
