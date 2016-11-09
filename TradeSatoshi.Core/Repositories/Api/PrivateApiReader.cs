@@ -35,7 +35,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 												Unconfirmed = (decimal?)balance.Unconfirmed ?? 0m
 											};
 					var result = await query.FirstOrDefaultNoLockAsync();
-					return new ApiResult<ApiBalanceResponse>(false, result);
+					return new ApiResult<ApiBalanceResponse>(true, result);
 				}
 			}
 			catch (Exception ex)
@@ -66,7 +66,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 												Unconfirmed = (decimal?)balance.Unconfirmed ?? 0m
 											};
 					var results = await query.ToListNoLockAsync();
-					return new ApiResult<List<ApiBalanceResponse>>(false, results);
+					return new ApiResult<List<ApiBalanceResponse>>(true, results);
 				}
 			}
 			catch (Exception ex)
@@ -128,7 +128,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 							Remaining = x.Remaining,
 							Type = x.TradeType.ToString()
 						}).ToListNoLockAsync();
-					return new ApiResult<List<ApiOrderResponse>>(false, results);
+					return new ApiResult<List<ApiOrderResponse>>(true, results);
 				}
 			}
 			catch (Exception ex)
@@ -158,7 +158,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 							Type = x.TradeHistoryType.ToString(),
 							Market = x.TradePair.Name
 						}).ToListNoLockAsync();
-					return new ApiResult<List<ApiTradeResponse>>(false, results);
+					return new ApiResult<List<ApiTradeResponse>>(true, results);
 				}
 			}
 			catch (Exception ex)
@@ -224,7 +224,7 @@ namespace TradeSatoshi.Core.Repositories.Api
 							Status = withdraw.WithdrawStatus.ToString(),
 							IsApi = withdraw.IsApi
 						}).ToListNoLockAsync();
-					return new ApiResult<List<ApiWithdrawResponse>>(false, results);
+					return new ApiResult<List<ApiWithdrawResponse>>(true, results);
 				}
 			}
 			catch (Exception ex)
