@@ -41,7 +41,7 @@ $("#balance-search").on("keyup change paste", function () {
 	var searchText = $(this).val();
 	if (searchText) {
 		$.each($("#table-balancemenu").find(".balance-row"), function () {
-			if ($(this).data('search').toLowerCase().indexOf(searchText.toLowerCase()) == -1)
+			if ($(this).data('search').toString().toLowerCase().indexOf(searchText.toLowerCase()) == -1)
 				$(this).hide();
 			else
 				$(this).show();
@@ -57,7 +57,7 @@ $("#market-search").on("keyup change paste", function () {
 	var baseMarket = $(".basemarket-btn-selected").data("base") || "BTC";
 	if (searchText) {
 		$.each($("#table-tradepair").find(".tradepair-row-" + baseMarket.replace("$", "\\$")), function () {
-			if ($(this).data('search').toLowerCase().indexOf(searchText.toLowerCase()) == -1)
+			if ($(this).data('search').toString().toLowerCase().indexOf(searchText.toLowerCase()) == -1)
 				$(this).hide();
 			else
 				$(this).show();

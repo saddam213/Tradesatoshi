@@ -11,7 +11,7 @@ namespace TradeSatoshi.Data.Migrations
             AddColumn("dbo.VoteItem", "Website", c => c.String(maxLength: 128));
             AddColumn("dbo.VoteItem", "Source", c => c.String(maxLength: 128));
             AddColumn("dbo.VoteItem", "Description", c => c.String(maxLength: 500));
-            AddColumn("dbo.VoteItem", "AlgoType", c => c.Int(nullable: false));
+            AddColumn("dbo.VoteItem", "AlgoType", c => c.String(maxLength: 128));
         }
         
         public override void Down()

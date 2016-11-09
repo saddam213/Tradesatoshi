@@ -9,31 +9,31 @@ namespace TradeSatoshi.Web.Helpers
 	{
 		public static string GetIPAddress(this HttpRequestBase request)
 		{
-			string szRemoteAddr = request.UserHostAddress;
-			string szXForwardedFor = request.ServerVariables["X_FORWARDED_FOR"];
-			string szIP = "0.0.0.0";
+			string defaultHostAddress = request.UserHostAddress;
+			string cloudfareHostAddress = request.ServerVariables["HTTP_CF_CONNECTING_IP"];
+			string proxyHostAddress = request.ServerVariables["X_FORWARDED_FOR"];
+		
+			if (!string.IsNullOrEmpty(cloudfareHostAddress))
+				return cloudfareHostAddress;
 
-			if (szXForwardedFor == null)
+			if (!string.IsNullOrEmpty(proxyHostAddress))
 			{
-				szIP = szRemoteAddr;
-			}
-			else
-			{
-				szIP = szXForwardedFor;
-				if (szIP.IndexOf(",") > 0)
+				if (proxyHostAddress.IndexOf(",") > 0)
 				{
-					string[] arIPs = szIP.Split(',');
-
-					foreach (string item in arIPs)
+					var ips = proxyHostAddress.Split(',');
+					foreach (string ip in ips)
 					{
-						if (!IsLocalHost(item))
-						{
-							return item;
-						}
+						if (!IsLocalHost(ip))
+							return ip;
 					}
 				}
+				return proxyHostAddress;
 			}
-			return szIP;
+
+			if (!string.IsNullOrEmpty(defaultHostAddress))
+				return defaultHostAddress;
+
+			return "0.0.0.0";
 		}
 
 		private static bool IsLocalHost(string input)

@@ -514,6 +514,9 @@ function setVisibleChart() {
 
 function updateChart(chartData) {
 	setVisibleChart();
+	$(".chart-last").html(chartData ? chartData.Last.toFixed(8) : 0.00000000);
+	$(".chart-high").html(chartData ? chartData.High.toFixed(8) : 0.00000000);
+	$(".chart-low").html(chartData ? chartData.Low.toFixed(8) : 0.00000000);
 	var cdata = chartData ? chartData.Candle : [[0, 0, 0, 0, 0, 0]];
 	var vdata = chartData ? chartData.Volume : [[0, 0]];
 	var chart = $('#chartdata').highcharts();

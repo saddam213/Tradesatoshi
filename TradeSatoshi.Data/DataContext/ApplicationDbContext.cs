@@ -56,7 +56,7 @@ namespace TradeSatoshi.Data.DataContext
 		{
 			modelBuilder.Conventions.Remove<DecimalPropertyConvention>();
 			modelBuilder.Conventions.Add(new DecimalPropertyConvention(38, 8));
-
+		
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 			modelBuilder.Entity<UserLogon>().HasRequired(p => p.User).WithMany(b => b.Logons).HasForeignKey(p => p.UserId);
 			modelBuilder.Entity<User>().HasRequired(p => p.Settings).WithRequiredDependent();

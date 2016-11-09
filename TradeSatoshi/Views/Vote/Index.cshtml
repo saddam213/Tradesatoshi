@@ -302,7 +302,7 @@
 		}
 
 		$('.vote-countdown').countdown({
-			until: new Date('@Model.NextVote.Year', '@(Model.NextVote.Month - 1)', '@Model.NextVote.Day', '@Model.NextVote.Hour', 0, 0, 0),
+			until: new Date('@Model.NextVote.Year', '@(Model.NextVote.Month - 1)', '@Model.NextVote.Day', '@Model.NextVote.Hour', '@Model.NextVote.Minute', 0, 0),
 			significant: 4,
 			timezone: +0,
 			layout: '{d<}{dn} {dl} {d>}{h<}{hn} {hl} {h>}{m<}{mn} {ml} {m>}{s<}{sn} {sl}{s>}',

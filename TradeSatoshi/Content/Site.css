@@ -17,7 +17,7 @@ textarea {
 }
 
 .table-container {
-	overflow-x: auto;
+	overflow-x: hidden;
 }
 
 .table {
@@ -99,6 +99,10 @@ input[type="checkbox"].input-validation-error {
 .form-horizontal {
 	padding: 15px;
 }
+
+/*.simplemodal-container{
+	height: 90% !important;
+}*/
 
 .modal-dialog {
 	overflow: hidden !important;

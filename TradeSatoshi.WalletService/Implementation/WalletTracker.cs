@@ -143,6 +143,7 @@ namespace TradeSatoshi.WalletService.Implementation
 							continue; // no deposits
 						}
 
+						var addresses = await context.Address.Where(x => x.CurrencyId == currency.Id).ToListAsync();
 						var existingDeposits = await context.Deposit.Where(x => x.CurrencyId == currency.Id).ToListAsync();
 						foreach (var walletDeposit in walletTransactions.OrderBy(x => x.Time))
 						{
@@ -150,7 +151,13 @@ namespace TradeSatoshi.WalletService.Implementation
 							{
 								var userId = userIds.FirstOrDefault(id => id == walletDeposit.Account);
 								if (string.IsNullOrEmpty(userId))
-									continue; // user not found
+								{
+									var address = addresses.FirstOrDefault(x => x.AddressHash == walletDeposit.Address);
+									if(address == null)
+										continue; // user not found
+
+									userId = address.UserId;
+								}
 
 								var existingDeposit = existingDeposits.FirstOrDefault(x => x.Txid == walletDeposit.Txid && x.UserId == userId);
 								if (existingDeposit == null)
@@ -160,7 +167,7 @@ namespace TradeSatoshi.WalletService.Implementation
 									var newDeposit = new Deposit
 									{
 										Amount = walletDeposit.Amount,
-										Confirmations = walletDeposit.Confirmations,
+										Confirmations = Math.Min(walletDeposit.Confirmations, currency.MinConfirmations),
 										DepositType = DepositType.Normal,
 										TimeStamp = walletDeposit.Time.ToDateTime(),
 										Txid = walletDeposit.Txid,
@@ -170,6 +177,10 @@ namespace TradeSatoshi.WalletService.Implementation
 											? DepositStatus.Confirmed
 											: DepositStatus.UnConfirmed
 									};
+
+									if(newDeposit.DepositStatus == DepositStatus.Confirmed)
+										currency.LastBlockHash = walletDeposit.Blockhash;
+
 									context.Deposit.Add(newDeposit);
 									await context.SaveChangesAsync();
 									notifications.Add(GetBalanceNotification(await AuditUser(context, currency.Id, userId)));
@@ -193,10 +204,10 @@ namespace TradeSatoshi.WalletService.Implementation
 										continue; // no new confirms
 
 									Log.Message(LogLevel.Info, "Processing existing {0} deposit. DepositId: {1}, Confirms: {2}", currency.Symbol, existingDeposit.Id, walletDeposit.Confirmations);
-									existingDeposit.Confirmations = walletDeposit.Confirmations;
+									existingDeposit.Confirmations = Math.Min(walletDeposit.Confirmations, currency.MinConfirmations);
 									if (existingDeposit.Confirmations >= currency.MinConfirmations)
 									{
-
+										currency.LastBlockHash = walletDeposit.Blockhash;
 										existingDeposit.DepositStatus = DepositStatus.Confirmed;
 									}
 
@@ -257,7 +268,8 @@ namespace TradeSatoshi.WalletService.Implementation
 				if (currency.Status == CurrencyStatus.Maintenance || currency.Status == CurrencyStatus.Offline)
 					return; // currency is skipped
 
-				var walletTransactions = await GetTransactions(currency, TransactionDataType.Withdraw).ConfigureAwait(false);
+				var connector = new WalletConnector(currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
+				var walletTransactions = await connector.GetTransactionsAsync(currency.LastBlockHash, TransactionDataType.Withdraw);
 				if (walletTransactions.IsNullOrEmpty())
 				{
 					Log.Message(LogLevel.Info, "No {0} withdrawals.", currency.Symbol);
@@ -268,9 +280,11 @@ namespace TradeSatoshi.WalletService.Implementation
 				foreach (var walletWithdraw in walletTransactions.OrderBy(x => x.Time))
 				{
 					var existingWithdraw = existingWithdraws.FirstOrDefault(x => x.Txid == walletWithdraw.Txid);
-					if (existingWithdraw == null)
+					if (existingWithdraw != null && existingWithdraw.Confirmations != walletWithdraw.Confirmations)
 					{
 						existingWithdraw.Confirmations = walletWithdraw.Confirmations;
+						if (existingWithdraw.Confirmations >= 20)
+							currency.LastWithdrawBlockHash = walletWithdraw.Blockhash;
 					}
 				}
 				await context.SaveChangesAsync();

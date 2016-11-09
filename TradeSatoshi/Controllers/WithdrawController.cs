@@ -126,7 +126,15 @@ namespace TradeSatoshi.Web.Controllers
 			var cancelWithdrawToken = await UserManager.GenerateUserTwoFactorTokenAsync(TwoFactorTokenType.WithdrawCancel, user.Id);
 			var confirmlink = Url.Action("ConfirmWithdraw", "Withdraw", new { username = user.UserName, secureToken = confirmToken, withdrawid = withdrawId }, protocol: Request.Url.Scheme);
 			var cancellink = Url.Action("CancelWithdraw", "Withdraw", new { username = user.UserName, secureToken = cancelWithdrawToken, withdrawid = withdrawId }, protocol: Request.Url.Scheme);
-			return await EmailService.Send(EmailType.WithdrawConfirmation, user, Request.GetIPAddress(), new EmailParam("[CONFIRMLINK]", confirmlink), new EmailParam("[CANCELLINK]", cancellink));
+			return await EmailService.Send(EmailType.WithdrawConfirmation, user, Request.GetIPAddress()
+				, new EmailParam("[CONFIRMLINK]", confirmlink)
+				, new EmailParam("[CANCELLINK]", cancellink)
+				, new EmailParam("[WITHDRAWID]", withdrawId)
+				, new EmailParam("[CURRENCY]", model.Symbol)
+				, new EmailParam("[AMOUNT]", model.Amount)
+				, new EmailParam("[ADDRESS]", model.Address)
+				, new EmailParam("[FEE]", model.Fee)
+				);
 		}
 
 		#endregion

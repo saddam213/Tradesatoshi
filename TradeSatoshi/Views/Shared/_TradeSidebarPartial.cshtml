@@ -111,7 +111,7 @@
 						<div class="col-xs-12 nopad tradepair-row tradepair-row-@tradePair.Id tradepair-row-@tradePair.BaseSymbol" style="border-top: solid 1px #ddd; padding: 5px;display:@(tradePair.BaseSymbol == "BTC" ? "":"none")" data-tradepair="@tradePair.Id" data-action="@Url.Action("TradePair", new { tradepairId = tradePair.Id })" data-marketurl="@tradePair.MarketUrl()" data-externallink="@Url.Action("Index", "Exchange", new { market = tradePair.MarketUrl() })" data-search="@tradePair.Symbol">
 							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">
 								<div class="">
-									@Helpers.CoinLogoWithText(tradePair.Symbol(), tradePair.Symbol)
+									@Helpers.CoinLogoWithText(tradePair.Symbol, tradePair.Symbol)
 								</div>
 							</div>
 							<div class="col-xs-12 col-md-6 nopad col-lg-5 nopad">

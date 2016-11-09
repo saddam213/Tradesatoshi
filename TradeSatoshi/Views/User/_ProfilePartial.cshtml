@@ -1,8 +1,6 @@
 ﻿@model TradeSatoshi.Common.User.UserProfileModel
 @{
-	object attribs = Model.CanUpdate
-			? (object)new { @class = "form-control" }
-			: (object)new { @class = "form-control", @readonly = "readonly" };
+
 }
 
 @using (Ajax.BeginForm("UserProfile", "User", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "changeProfileTarget" }, new { @class = "form-horizontal", role = "form" }))
@@ -10,12 +8,11 @@
 	@Html.AntiForgeryToken()
 	<h4>@Html.Resource("Account Profile")</h4>
 	<hr />
-	@Html.HiddenFor(m => m.CanUpdate)
 	@Html.ValidationSummary(true)
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.FirstName, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.FirstName, attribs)
+			@Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", @readonly = "readonly" })
 			@Html.ValidationMessageFor(model => model.FirstName)
 		</div>
 	</div>
@@ -23,7 +20,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.LastName, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.LastName, attribs)
+			@Html.TextBoxFor(model => model.LastName, new { @class = "form-control", @readonly = "readonly" })
 			@Html.ValidationMessageFor(model => model.LastName)
 		</div>
 	</div>
@@ -31,7 +28,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.BirthDate, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.BirthDate, attribs)
+			@Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control", @readonly = "readonly" })
 			@Html.ValidationMessageFor(model => model.BirthDate)
 		</div>
 	</div>
@@ -39,7 +36,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Address, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Address, attribs)
+			@Html.TextBoxFor(model => model.Address, new { @class = "form-control"})
 			@Html.ValidationMessageFor(model => model.Address)
 		</div>
 	</div>
@@ -47,7 +44,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.City, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.City, attribs)
+			@Html.TextBoxFor(model => model.City, new { @class = "form-control" })
 			@Html.ValidationMessageFor(model => model.City)
 		</div>
 	</div>
@@ -55,7 +52,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.State, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.State, attribs)
+			@Html.TextBoxFor(model => model.State, new { @class = "form-control" })
 			@Html.ValidationMessageFor(model => model.State)
 		</div>
 	</div>
@@ -63,7 +60,7 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.Country, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.Country, attribs)
+			@Html.TextBoxFor(model => model.Country, new { @class = "form-control" })
 			@Html.ValidationMessageFor(model => model.Country)
 		</div>
 	</div>
@@ -71,19 +68,17 @@
 	<div class="form-group">
 		@Html.ResourceLabelFor(model => model.PostCode, new { @class = "control-label col-md-2" })
 		<div class="col-md-10">
-			@Html.TextBoxFor(model => model.PostCode, attribs)
+			@Html.TextBoxFor(model => model.PostCode, new { @class = "form-control" })
 			@Html.ValidationMessageFor(model => model.PostCode)
 		</div>
 	</div>
 
-	if (Model.CanUpdate)
-	{
-		<div class="form-group">
-			<div class="col-md-offset-2 col-md-10">
-				<input type="submit" value="@Html.Resource("Update Profile")" class="btn btn-default" />
-			</div>
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="@Html.Resource("Update Profile")" class="btn btn-default" />
 		</div>
-	}
+	</div>
 }
+
 
 

@@ -31,6 +31,30 @@
 		</div>
 	</div>
 	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.FirstName, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.LastName, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.ResourceLabelFor(model => model.BirthDate, new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.BirthDate, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
 		@Html.ResourceLabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
 		<div class="col-md-10">
 			@Html.PasswordFor(m => m.Password, new { @class = "form-control" })
@@ -44,15 +68,11 @@
 			@Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
 		</div>
 	</div>
-	
+
 	<div class="form-group">
 		<div class="col-md-2">
 		</div>
 		<div class="col-md-10">
-			@Html.CheckBoxFor(m => m.AgeRestriction, true)
-			<small class="control-label">@Html.Resource("I am 18 years of age or older.")</small>
-			@Html.ValidationMessageFor(model => model.AgeRestriction, "", new { @class = "text-danger" })
-			<br />
 			@Html.CheckBoxFor(m => m.AcceptTerms, true)
 			<small class="control-label">@Html.Resource("I agree to the ")<a href="/Terms">@Html.Resource("Terms & conditions")</a>.</small><br />
 			@Html.ValidationMessageFor(model => model.AcceptTerms, "", new { @class = "text-danger" })
@@ -74,4 +94,10 @@
 
 @section Scripts {
 	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/jquery.datetimepicker.js")
+	<script>
+		$("#BirthDate").datetimepicker({
+			format: "d/m/Y", startDate: "@DateTime.UtcNow"
+		});
+	</script>
 }

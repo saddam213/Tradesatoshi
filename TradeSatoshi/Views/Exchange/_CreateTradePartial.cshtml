@@ -10,144 +10,183 @@
 }
 
 <style>
-	.order-input{
-	padding:3px 5px;
-	height:22px;
+	.order-input {
+		padding: 3px 5px;
+		height: 22px;
 	}
 </style>
 
 
 
-@using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST"}, new { @class = "form-horizontal" , style="padding:5px;"}))
+@using (Ajax.BeginForm("CreateTrade", "Exchange", new AjaxOptions { HttpMethod = "POST" }, new { @class = "form-horizontal", style = "padding:5px;" }))
 {
 	@Html.HiddenFor(m => m.TradeType);
-	@Html.HiddenFor(m => m.TradePairId);
-	@Html.HiddenFor(m => m.BaseSymbol);
-	@Html.HiddenFor(m => m.Symbol);
-	@Html.HiddenFor(m => m.MinTrade);
-	@Html.HiddenFor(m => m.Fee);
-	
-	<table class="buySell-table-layout">
-		<tbody>
-			<tr>
-				<td class="row-title">
-					<span>Amount</span>
-				</td>
-				<td>
-					<div class="row-content">
-						@Html.TextBoxFor(m => m.Amount, "{0:F8}", new { @class = "row-content-input form-control order-input", id = "amount-" + Model.TradeType })
-						<div class="row-content-addon"><div style="margin-top:3px">@Model.Symbol</div></div>
-					</div>
-				</td>
+																	@Html.HiddenFor(m => m.TradePairId);
+																		@Html.HiddenFor(m => m.BaseSymbol);
+																		@Html.HiddenFor(m => m.Symbol);
+																@Html.HiddenFor(m => m.MinTrade);
+																	@Html.HiddenFor(m => m.Fee);
 
-			</tr>
-			<tr>
-				<td class="row-header">
-					<span>Rate</span>
-				</td>
-				<td>
-					<div class="row-content">
-						@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "row-content-input form-control order-input", id = "rate-" + Model.TradeType })
-						<div class="row-content-addon"><div style="margin-top:3px">@Model.BaseSymbol</div></div>
-					</div>
-				</td>
+														<table class="buySell-table-layout">
+															<tbody>
+																<tr>
+																	<td class="row-title">
+																		<span>Amount</span>
+																	</td>
+																	<td>
+																		<div class="row-content">
+																			@Html.TextBoxFor(m => m.Amount, "{0:F8}", new { @class = "row-content-input form-control order-input", id = "amount-" + Model.TradeType })
+																			<div class="row-content-addon"><div style="margin-top:3px">@Model.Symbol</div></div>
+																		</div>
+																	</td>
 
-			</tr>
+																</tr>
+																<tr>
+																	<td class="row-header">
+																		<span>Rate</span>
+																	</td>
+																	<td>
+																		<div class="row-content">
+																			@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "row-content-input form-control order-input", id = "rate-" + Model.TradeType })
+																			<div class="row-content-addon"><div style="margin-top:3px">@Model.BaseSymbol</div></div>
+																		</div>
+																	</td>
 
-			<tr>
-				<td class="row-header">
-					<span>Total</span>
-				</td>
-				<td>
-					<div class="row-content">
-						<span id="total-@Model.TradeType" class="row-content-input">0.00000000</span>
-						<span class="row-content-addon">@Model.BaseSymbol</span>
-					</div>
-				</td>
+																</tr>
 
-			</tr>
-			<tr>
-				<td class="row-header">
-					<span>
-						<span>Fee </span>
-						<small>
-							<i>(@Model.Fee.ToString("F2")%)</i>
-						</small>
-					</span>
-				</td>
-				<td>
-					<div class="row-content">
-						<span id="fee-@Model.TradeType" class="row-content-input">0.00000000</span>
-						<span class="row-content-addon">@Model.BaseSymbol</span>
-					</div>
+																<tr>
+																	<td class="row-header">
+																		<span>Total</span>
+																	</td>
+																	<td>
+																		<div class="row-content">
+																			@Html.TextBoxFor(m => m.Rate, "{0:F8}", new { @class = "row-content-input form-control order-input", id = "total-" + Model.TradeType })
+																			<span class="row-content-addon">@Model.BaseSymbol</span>
+																		</div>
+																	</td>
 
-				</td>
+																</tr>
+																<tr>
+																	<td class="row-header">
+																		<span>
+																			<span>Fee </span>
+																			<small>
+																				<i>(@Model.Fee.ToString("F2")%)</i>
+																			</small>
+																		</span>
+																	</td>
+																	<td>
+																		<div class="row-content">
+																			<span id="fee-@Model.TradeType" class="row-content-input">0.00000000</span>
+																			<span class="row-content-addon">@Model.BaseSymbol</span>
+																		</div>
 
-			</tr>
-			<tr>
-				<td class="row-header">
-					<span>Net Total</span>
-				</td>
-				<td>
-					<div class="row-content">
-						<span id="net-@Model.TradeType" class="row-content-input">0.00000000</span>
-						<span class="row-content-addon">@Model.BaseSymbol</span>
-					</div>
+																	</td>
 
-				</td>
+																</tr>
+																<tr>
+																	<td class="row-header">
+																		<span>Net Total</span>
+																	</td>
+																	<td>
+																		<div class="row-content">
+																			<span id="net-@Model.TradeType" class="row-content-input">0.00000000</span>
+																			<span class="row-content-addon">@Model.BaseSymbol</span>
+																		</div>
 
-			</tr>
-		</tbody>
-	</table>
-	<hr class="seperator"/>
-	if(User.Identity.IsAuthenticated)
+																	</td>
+
+																</tr>
+															</tbody>
+														</table>
+														<hr class="seperator" />
+	if (User.Identity.IsAuthenticated)
 	{
 	<button id="submit-@Model.TradeType" type="submit" disabled="disabled" class="btn btn-info">@Model.TradeType @Model.Symbol</button>
 	}
-	else{
+	else
+	{
 	<a class="btn btn-info" href="@Url.Action("Login", "Account", new{ReturnUrl = Url.Action("Index", "Exchange", new{market = string.Format("{0}_{1}", Model.Symbol, Model.BaseSymbol)})})">Login</a>
 	}
 }
 
 <script>
 
-		$('#rate-Buy, #amount-Buy').on('change paste keyup', function () {
-			var amount = $('#amount-Buy').val();
-			var price = $('#rate-Buy').val();
-			var tradefee = +'@Model.Fee';
-			var minTrade = +'@Model.MinTrade';
-			$('#submit-Buy').attr('disabled', 'disabled');
-			if (!isNaN(amount) && !isNaN(price)) {
-				var total = amount * price;
-				var fee = (total / 100) * tradefee;
-				var nettotal = total + fee;
-				$('#total-Buy').html(total.toFixed(8));
-				$('#fee-Buy').html(fee.toFixed(8));
-				$('#net-Buy').html(nettotal.toFixed(8));
-				if (nettotal >= minTrade) {
-					$('#submit-Buy').removeAttr('disabled');
-				}
+	$('#rate-Buy, #amount-Buy').on('change paste keyup', function () {
+		var amount = $('#amount-Buy').val();
+		var price = $('#rate-Buy').val();
+		var tradefee = +'@Model.Fee';
+		var minTrade = +'@Model.MinTrade';
+		$('#submit-Buy').attr('disabled', 'disabled');
+		if (!isNaN(amount) && !isNaN(price)) {
+			var total = amount * price;
+			var fee = (total / 100) * tradefee;
+			var nettotal = total + fee;
+			$('#total-Buy').val(total.toFixed(8));
+			$('#fee-Buy').html(fee.toFixed(8));
+			$('#net-Buy').html(nettotal.toFixed(8));
+			if (nettotal >= minTrade) {
+				$('#submit-Buy').removeAttr('disabled');
 			}
-		}).trigger("change");
+		}
+	}).trigger("change");
 
+	$("#total-Buy").on('change paste keyup', function () {
+		var total = +$(this).val();
+		var price = +$('#rate-Buy').val();
+		var tradefee = +'@Model.Fee';
+		var minTrade = +'@Model.MinTrade';
+		$('#submit-Buy').attr('disabled', 'disabled');
+		if (!isNaN(total) && !isNaN(price) && total >= 0.00000001 && price >= 0.00000001) {
+			var buyamount = total / price;
+			var buyfee = total / 100 * tradefee;
+			var buynettotal = total + buyfee;
+			$('#amount-Buy').val(buyamount.toFixed(8));
+			$('#fee-Buy').html(buyfee.toFixed(8));
+			$('#net-Buy').html((buynettotal).toFixed(8));
+			$('#submit-Buy').prop('disabled', minTrade > buynettotal);
+		};
+	});
 
-		$('#rate-Sell, #amount-Sell').on('change paste keyup', function () {
-			var amount = $('#amount-Sell').val();
-			var price = $('#rate-Sell').val();
-			var tradefee = +'@Model.Fee';
-			var minTrade = +'@Model.MinTrade';
-			$('#submit-Sell').attr('disabled', 'disabled');
-			if (!isNaN(amount) && !isNaN(price)) {
-				var total = amount * price;
-				var fee = (total / 100) * tradefee;
-				var nettotal = total - fee;
-				$('#total-Sell').html(total.toFixed(8));
-				$('#fee-Sell').html(fee.toFixed(8));
-				$('#net-Sell').html(nettotal.toFixed(8));
-				if (nettotal >= minTrade) {
-					$('#submit-Sell').removeAttr('disabled');
-				}
+	$('#rate-Sell, #amount-Sell').on('change paste keyup', function () {
+		var amount = $('#amount-Sell').val();
+		var price = $('#rate-Sell').val();
+		var tradefee = +'@Model.Fee';
+		var minTrade = +'@Model.MinTrade';
+		$('#submit-Sell').attr('disabled', 'disabled');
+		if (!isNaN(amount) && !isNaN(price)) {
+			var total = amount * price;
+			var fee = (total / 100) * tradefee;
+			var nettotal = total - fee;
+			$('#total-Sell').val(total.toFixed(8));
+			$('#fee-Sell').html(fee.toFixed(8));
+			$('#net-Sell').html(nettotal.toFixed(8));
+			if (nettotal >= minTrade) {
+				$('#submit-Sell').removeAttr('disabled');
 			}
-		}).trigger("change");;
+		}
+	}).trigger("change");
+	
+	$("#total-Sell").on('change paste keyup', function () {
+			var total = +$(this).val();
+			var price = +$('#rate-Sell').val();
+		var tradefee = +'@Model.Fee';
+		var minTrade = +'@Model.MinTrade';
+		$('#submit-Sell').attr('disabled', 'disabled');
+		if (!isNaN(total) && !isNaN(price) && total >= 0.00000001 && price >= 0.00000001) {
+			var sellamount = total / price;
+			var sellfee = total / 100 * tradefee;
+			var sellnettotal = total - sellfee;
+			$('#amount-Sell').val(sellamount.toFixed(8));
+			$('#fee-Sell').html(sellfee.toFixed(8));
+			$('#net-Sell').html((sellnettotal).toFixed(8));
+			$('#submit-Sell').prop('disabled', minTrade > sellnettotal);
+		};
+	});
+
+	$("#total-Sell, #rate-Sell, #amount-Sell, #total-Buy, #rate-Buy, #amount-Buy").on('blur', function () {
+		var total = +$(this).val();
+		$(this).val(total.toFixed(8));
+	});
 
 </script>

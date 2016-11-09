@@ -23,7 +23,8 @@ namespace TradeSatoshi.Core.Address
 				if (currency == null)
 					return WriterResult<string>.ErrorResult("Currency not found.");
 
-				var newAddress = await WalletService.GenerateAddress(userId, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
+				var addressAccount = currency.InterfaceType == Enums.CurrencyInterfaceType.NoAccount ? string.Empty : userId;
+				var newAddress = await WalletService.GenerateAddress(addressAccount, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currency.Name);
 

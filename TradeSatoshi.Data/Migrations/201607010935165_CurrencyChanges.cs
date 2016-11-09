@@ -11,14 +11,12 @@ namespace TradeSatoshi.Data.Migrations
 			AddColumn("dbo.Currency", "Algo", c => c.String(maxLength: 128));
 			AddColumn("dbo.Currency", "Type", c => c.Int(nullable: false));
 			AddColumn("dbo.Currency", "InterfaceType", c => c.Int(nullable: false));
-			AlterColumn("dbo.VoteItem", "AlgoType", c => c.String(maxLength: 128));
 			CreateIndex("dbo.Currency", "Symbol", unique: true);
 		}
 
 		public override void Down()
 		{
 			DropIndex("dbo.Currency", new[] { "Symbol" });
-			AlterColumn("dbo.VoteItem", "AlgoType", c => c.Int(nullable: false));
 			DropColumn("dbo.Currency", "InterfaceType");
 			DropColumn("dbo.Currency", "Type");
 			DropColumn("dbo.Currency", "Algo");

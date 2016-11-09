@@ -95,25 +95,25 @@ namespace TradeSatoshi.Data.Migrations
 			//adminUser.Roles.Add(new IdentityUserRole() { UserId = "4a6347c2-2c93-46e9-80d3-cbe064cb8491", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Administrator).Id });
 			//context.Users.AddOrUpdate(u => u.UserName, adminUser);
 
-			//var moderator1User = new User
-			//{
-			//	Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F",
-			//	Email = "vote@admin.com",
-			//	UserName = "Vote",
-			//	PasswordHash = "AKkENJo+TaEed4we8iBt81GjHM/Wu+4CCM2EKz/KmeGW4Il5JTDZTjFEwaepKY/3SQ==",
-			//	SecurityStamp = "8b03ec82-5ea3-406e-bfd6-97036e7fa3ba",
-			//	EmailConfirmed = true,
-			//	IsTradeEnabled = false,
-			//	IsWithdrawEnabled = false,
-			//	IsTransferEnabled = true,
-			//	IsEnabled = true,
-			//	RegisterDate = DateTime.UtcNow,
-			//	Profile = new UserProfile { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
-			//	Settings = new UserSettings { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
-			//};
+			////var moderator1User = new User
+			////{
+			////	Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F",
+			////	Email = "vote@admin.com",
+			////	UserName = "Vote",
+			////	PasswordHash = "AKkENJo+TaEed4we8iBt81GjHM/Wu+4CCM2EKz/KmeGW4Il5JTDZTjFEwaepKY/3SQ==",
+			////	SecurityStamp = "8b03ec82-5ea3-406e-bfd6-97036e7fa3ba",
+			////	EmailConfirmed = true,
+			////	IsTradeEnabled = false,
+			////	IsWithdrawEnabled = false,
+			////	IsTransferEnabled = true,
+			////	IsEnabled = true,
+			////	RegisterDate = DateTime.UtcNow,
+			////	Profile = new UserProfile { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
+			////	Settings = new UserSettings { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
+			////};
 
-			//moderator1User.Roles.Add(new IdentityUserRole() { UserId = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Standard).Id });
-			//context.Users.AddOrUpdate(u => u.UserName, moderator1User);
+			////moderator1User.Roles.Add(new IdentityUserRole() { UserId = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F", RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Standard).Id });
+			////context.Users.AddOrUpdate(u => u.UserName, moderator1User);
 
 			////var moderator2Id = Guid.NewGuid();
 			////var moderator2User = new User
@@ -136,48 +136,38 @@ namespace TradeSatoshi.Data.Migrations
 			//////moderator2User.Roles.Add(new IdentityUserRole() { UserId = moderator2Id.ToString(), RoleId = context.Roles.FirstOrDefault(x => x.Name == SecurityRoles.Moderator2).Id });
 			////context.Users.AddOrUpdate(u => u.UserName, moderator2User);
 
-			////var voteUser = new User
-			////{
-			////	Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F",
-			////	Email = "vote@vote.com",
-			////	UserName = "Vote",
-			////	PasswordHash = "AKkENJo+TaEed4we8iBt81GjHM/Wu+4CCM2EKz/KmeGW4Il5JTDZTjFEwaepKY/3SQ==",
-			////	SecurityStamp = "8b03ec82-5ea3-406e-bfd6-97036e7fa3ba",
-			////	EmailConfirmed = false,
-			////	IsTradeEnabled = false,
-			////	IsWithdrawEnabled = true,
-			////	IsEnabled = true,
-			////	RegisterDate = DateTime.UtcNow,
-			////	Profile = new UserProfile { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
-			////	Settings = new UserSettings { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
-			////};
-			////context.Users.AddOrUpdate(u => u.UserName, voteUser);
+			//var voteUser = new User
+			//{
+			//	Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F",
+			//	Email = "vote@vote.com",
+			//	UserName = "Vote",
+			//	PasswordHash = "AKkENJo+TaEed4we8iBt81GjHM/Wu+4CCM2EKz/KmeGW4Il5JTDZTjFEwaepKY/3SQ==",
+			//	SecurityStamp = "8b03ec82-5ea3-406e-bfd6-97036e7fa3ba",
+			//	EmailConfirmed = false,
+			//	IsTradeEnabled = false,
+			//	IsWithdrawEnabled = true,
+			//	IsEnabled = true,
+			//	RegisterDate = DateTime.UtcNow,
+			//	Profile = new UserProfile { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
+			//	Settings = new UserSettings { Id = "033CE02D-A6FD-4FC3-8C2C-16B7D9B48D5F" },
+			//};
+			//context.Users.AddOrUpdate(u => u.UserName, voteUser);
 
-			////context.Currency.AddOrUpdate(c => c.Id,
-			////	new TradeSatoshi.Entity.Currency
-			////	{
-			////		Id = 1,
-			////		Symbol = "BTC",
-			////		Name = "Bitcoin",
-			////		IsEnabled = true,
-			////		TradeFee = 0.2m,
-			////	},
-			////	new TradeSatoshi.Entity.Currency
-			////	{
-			////		Id = 2,
-			////		Symbol = "DOT",
-			////		Name = "Dotcoin",
-			////		IsEnabled = true,
-			////		TradeFee = 0.2m,
-			////	}
-			////);
+			//context.Currency.AddOrUpdate(c => c.Id,
+			//	new TradeSatoshi.Entity.Currency
+			//	{
+			//		Id = 1,
+			//		Symbol = "BTC",
+			//		Name = "Bitcoin",
+			//		IsEnabled = true,
+			//		TradeFee = 0.2m,
+			//	}
+			//);
 
-			////context.TradePair.Add(new TradePair { CurrencyId1 = 2, CurrencyId2 = 1 });
-
-			////foreach (var item in new[] { "General", "Deposit", "Withdraw", "Account", "Chat" })
-			////{
-			////	context.SupportCategory.AddOrUpdate(x => x.Name, new SupportCategory { Name = item, IsEnabled = true });
-			////}
+			//foreach (var item in new[] { "General", "Deposit", "Withdraw", "Account", "Chat" })
+			//{
+			//	context.SupportCategory.AddOrUpdate(x => x.Name, new SupportCategory { Name = item, IsEnabled = true });
+			//}
 		}
 	}
 }

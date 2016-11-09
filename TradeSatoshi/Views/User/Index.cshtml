@@ -23,39 +23,45 @@
 					</div>
 					<div class="panel-body">
 						<div class="row">
-							<div class="col-md-6 col-lg-4">
-								<div id="changePasswordTarget" >
-									@Html.Partial("_PasswordPartial", Model.SecurityModel)
-								</div>
-								<div id="apiSettingsTarget">
-									@{Html.RenderAction("GetUserApiSettings");}
+
+							<div class="col-xs-12">
+								<ul class="nav nav-tabs">
+									<li id="account-tab" class="@(ViewBag.Section == "Account" ? "active" : "")"><a href="#account" data-toggle="tab">Account</a></li>
+									<li id="security-tab" class="@(ViewBag.Section == "Security" ? "active" : "")"><a href="#security" data-toggle="tab">Security</a></li>
+									<li id="settings-tab" class="@(ViewBag.Section == "Settings" ? "active" : "")"><a href="#settings" data-toggle="tab">Settings</a></li>
+								</ul>
+								<div class="tab-content" id="myTabContent">
+									<div class="tab-pane fade @(ViewBag.Section == "Account" ? "active in" : "")" id="account">
+										@{Html.RenderAction("GetUserProfile");}
+									</div>
+									<div class="tab-pane fade @(ViewBag.Section == "Security" ? "active in" : "")" id="security">
+										<div class="col-md-12">
+											@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Login });}
+										</div>
+										<div class="col-md-12">
+											@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Withdraw });}
+										</div>
+										<div class="col-md-12">
+											@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Transfer });}
+										</div>
+									</div>
+									<div class="tab-pane fade @(ViewBag.Section == "Settings" ? "active in" : "")" id="settings">
+										<div class="col-md-12">
+											<div id="changePasswordTarget">
+												@Html.Partial("_PasswordPartial", Model.SecurityModel)
+											</div>
+											<div id="apiSettingsTarget">
+												@{Html.RenderAction("GetUserApiSettings");}
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
-
-							<div class="col-md-6 col-lg-4">
-								<div class="col-md-12">
-									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Login });}
-								</div>
-								<div class="col-md-12">
-									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Withdraw });}
-								</div>
-								<div class="col-md-12">
-									@{ Html.RenderAction("GetTwoFactor", "TwoFactor", new { component = TradeSatoshi.Enums.TwoFactorComponentType.Transfer });}
-								</div>
-							</div>
-
-							<div id="changeProfileTarget" class="col-md-6 col-lg-4">
-								@{Html.RenderPartial("_ProfilePartial", Model.UserProfile);}
-							</div>
-
-						
 
 						</div>
 					</div>
 				</div>
 			</div>
-
-
 
 			<div id="main-footer" class="main-footer">
 				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>

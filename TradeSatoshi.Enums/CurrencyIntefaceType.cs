@@ -4,6 +4,7 @@
 	{
 		Bitcoin = 0,
 		Fiat = 1,
-		Proxy = 2
+		Proxy = 2,
+		NoAccount = 3
 	}
 }

@@ -51,9 +51,9 @@ namespace TradeSatoshi.Core.Repositories.Admin
 					{
 						Name = "Open Orders",
 						AllTime = await context.Trade.CountNoLockAsync(x => x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending),
-						Today = await context.Trade.CountNoLockAsync(x => x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending && x.Timestamp > last24),
-						Month = await context.Trade.CountNoLockAsync(x => x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending && x.Timestamp > lastMonth),
-						Year = await context.Trade.CountNoLockAsync(x => x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending && x.Timestamp > lastYear),
+						Today = await context.Trade.CountNoLockAsync(x => (x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending) && x.Timestamp > last24),
+						Month = await context.Trade.CountNoLockAsync(x => (x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending) && x.Timestamp > lastMonth),
+						Year = await context.Trade.CountNoLockAsync(x => (x.Status == Enums.TradeStatus.Partial || x.Status == Enums.TradeStatus.Pending) && x.Timestamp > lastYear),
 					},
 					new SiteStatisticModel
 					{
