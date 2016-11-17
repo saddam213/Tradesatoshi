@@ -312,12 +312,9 @@ namespace TradeSatoshi.Core.Services
 
 						// Send notification ans invalidate cache
 						await TradeNotificationService.SendNotificationCollection(notifications);
-						foreach (var tradePairId in orders.Where(x => x.TradeType == TradeType.Buy).Select(x => x.TradePairId).Distinct())
+						foreach (var tradePairId in orders.Select(x => x.TradePairId).Distinct())
 						{
 							CacheService.Invalidate(TradeCacheKeys.GetOpenBuyOrdersKey(tradePairId));
-						}
-						foreach (var tradePairId in orders.Where(x => x.TradeType == TradeType.Sell).Select(x => x.TradePairId).Distinct())
-						{
 							CacheService.Invalidate(TradeCacheKeys.GetOpenSellOrdersKey(tradePairId));
 						}
 

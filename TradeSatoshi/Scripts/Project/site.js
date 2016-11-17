@@ -149,7 +149,7 @@ function openModal(url, data, callback) {
 }
 
 function confirmModal(header, message, callback) {
-	var data = '<div style="width:100%;height:100%"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button class="close simplemodal-close" aria-hidden="true" type="button">×</button><h4 class="modal-title header"></h4></div><div class="modal-body"><span class="message" ></span></div><div class="modal-footer"><button style="width:70px" class="btn btn-info yes " type="button">Yes</button><button style="width:70px" class="btn btn-info simplemodal-close no" type="button">No</button></div></div></div></div>';
+	var data = '<div style="width:100% !important;height:100%"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button class="close simplemodal-close" aria-hidden="true" type="button">×</button><h4 class="modal-title header"></h4></div><div class="modal-body"><span  class="message" ></span></div><div class="modal-footer"><button style="width:70px" class="btn btn-info yes " type="button">Yes</button><button style="width:70px" class="btn btn-info simplemodal-close no" type="button">No</button></div></div></div></div>';
 	$.modal(data, {
 		onShow: function (dialog) {
 			var modal = this;
@@ -184,7 +184,7 @@ function confirmModal(header, message, callback) {
 }
 
 function notifyModal(header, message, callback) {
-	var data = '<div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button class="close simplemodal-close" aria-hidden="true" type="button">×</button><h4 class="modal-title header"></h4></div><div class="modal-body"><span class="message" ></span></div><div class="modal-footer"><button style="width:70px" class="btn btn-info ok" type="button">Ok</button></div></div></div>';
+	var data = '<div style="min-width:300px"  class="modal-dialog"><div class="modal-content"><div class="modal-header"><button class="close simplemodal-close" aria-hidden="true" type="button">×</button><h4 class="modal-title header"></h4></div><div class="modal-body text-center"><span class="message" ></span></div><div class="modal-footer"><button style="width:70px" class="btn btn-info ok" type="button">Ok</button></div></div></div>';
 	$.modal(data, {
 		onShow: function (dialog) {
 			var modal = this;

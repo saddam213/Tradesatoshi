@@ -40,6 +40,37 @@ namespace TradeSatoshi.Core.Services
 			}
 		}
 
+		public async Task<bool> SendRaw(string subject, string body, string toAddress)
+		{
+			try
+			{
+				using (var context = DataContextFactory.CreateContext())
+				{
+					var emailTemplate = await context.EmailTemplates.FirstOrDefaultNoLockAsync(x => x.IsEnabled && !string.IsNullOrEmpty(x.From));
+					if (emailTemplate == null)
+						return false;
+
+					using (var email = new MailMessage(new MailAddress(emailTemplate.From, _emailDisplayName), new MailAddress(toAddress)))
+					{
+						email.Body = body;
+						email.Subject = subject;
+						email.IsBodyHtml = false;
+						using (var mailClient = new SmtpClient(_emailServer, _emailPort))
+						{
+							mailClient.Credentials = new NetworkCredential(emailTemplate.From, _emailPassword);
+							mailClient.EnableSsl = true;
+							await mailClient.SendMailAsync(email);
+							return true;
+						}
+					}
+				}
+			}
+			catch (System.Exception)
+			{
+				return false;
+			}
+		}
+
 		private async Task<bool> SendAsync(EmailTemplate template, IdentityUser user, string ipaddress, params EmailParam[] formatParameters)
 		{
 			using (var email = new MailMessage(new MailAddress(template.From, _emailDisplayName), new MailAddress(user.Email)))

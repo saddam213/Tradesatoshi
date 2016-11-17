@@ -36,7 +36,7 @@
 					<tr>
 						<th class="hidden-sm hidden-xs" >Currency</th>
 						<th>Market</th>
-						<th>BTC Volume</th>
+						<th><span class="baseid">BTC</span> Volume</th>
 						<th>Volume</th>
 						<th>High</th>
 						<th>Low</th>
@@ -88,6 +88,7 @@
 		selectedBaseMarket.addClass("summary-btn-selected");
 		$("#table-summary >  tbody > .summary-row").hide();
 		$("#table-summary >  tbody > .summary-row-" + selectedBaseMarket.data("base").replace("$", "\\$")).show();
+		$('.baseid').text(selectedBaseMarket.data('base'));
 	});
 	$(".summary-btn-BTC").trigger("click");
 </script>

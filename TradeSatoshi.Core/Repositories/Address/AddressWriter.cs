@@ -57,7 +57,8 @@ namespace TradeSatoshi.Core.Address
 				if (currencyEntity == null)
 					return WriterResult<string>.ErrorResult("Currency not found.");
 
-				var newAddress = await WalletService.GenerateAddress(userId, currencyEntity.WalletHost, currencyEntity.WalletPort, currencyEntity.WalletUser, currencyEntity.WalletPass);
+				var addressAccount = currencyEntity.InterfaceType == Enums.CurrencyInterfaceType.NoAccount ? string.Empty : userId;
+				var newAddress = await WalletService.GenerateAddress(addressAccount, currencyEntity.WalletHost, currencyEntity.WalletPort, currencyEntity.WalletUser, currencyEntity.WalletPass);
 				if (newAddress == null)
 					return WriterResult<string>.ErrorResult("Failed to generate address for {0}.", currencyEntity.Name);
 
@@ -78,7 +79,7 @@ namespace TradeSatoshi.Core.Address
 
 				context.Address.Add(addressEntity);
 				await context.SaveChangesAsync();
-				return WriterResult<string>.SuccessResult(newAddress.Address);
+				return WriterResult<string>.SuccessResult(data: newAddress.Address, message: "Successfully generated address");
 			}
 		}
 	}

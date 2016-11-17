@@ -12,6 +12,7 @@
 		@using (Ajax.BeginForm("AdminReplyRequest", "Support", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-horizontal" }))
 		{
 			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Email)
 			@Html.HiddenFor(m => m.RequestId)
 			<div class="row">
 				<div class="col-md-12">

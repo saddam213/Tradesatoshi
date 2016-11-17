@@ -4,7 +4,7 @@ namespace TradeSatoshi.Common.Repositories.Api
 	{
 		public string Currency { get; set; }
 		public string CurrencyLong { get; set; }
-		public decimal Avaliable
+		public decimal Available
 		{
 			get { return Total - (Unconfirmed + HeldForTrades + PendingWithdraw); }
 		}
