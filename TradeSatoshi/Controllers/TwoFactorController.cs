@@ -169,7 +169,7 @@ namespace TradeSatoshi.Web.Controllers
 				return JsonError("Unauthorized");
 
 			if (!ValidationHelpers.IsValidEmailAddress(dataEmail))
-				return JsonError(string.Format("'{0} is an invalid email address.'"));
+				return JsonError($"'{dataEmail}' is an invalid email address.");
 
 			var twofactorCode = await UserManager.GenerateUserTwoFactorCodeAsync(TwoFactorType.EmailCode, User.Id());
 			if (await EmailService.Send(EmailType.TwoFactorUnlockCode, user, Request.GetIPAddress(), new EmailParam("[TFACODE]", twofactorCode), new EmailParam("[TFATYPE]", componentType)))
