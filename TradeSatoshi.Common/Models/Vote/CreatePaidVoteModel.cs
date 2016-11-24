@@ -7,6 +7,9 @@ namespace TradeSatoshi.Common.Vote
 	public class CreatePaidVoteModel : ITwoFactorEntry
 	{
 		public decimal Balance { get; set; }
+		public decimal Price { get; set; }
+
+		[Range(1, int.MaxValue)]
 		public int VoteCount { get; set; }
 		public int VoteItemId { get; set; }
 		public string Symbol { get; set; }
@@ -20,7 +23,6 @@ namespace TradeSatoshi.Common.Vote
 
 		public TwoFactorType TwoFactorType { get; set; }
 		public TwoFactorComponentType TwoFactorComponentType { get; set; }
-		public decimal Price { get; set; }
 
 		#endregion
 	}

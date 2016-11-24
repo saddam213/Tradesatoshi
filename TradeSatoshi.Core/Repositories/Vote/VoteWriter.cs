@@ -81,7 +81,7 @@ namespace TradeSatoshi.Core.Vote
 
 		public async Task<IWriterResult<bool>> CreatePaidVote(string userId, CreatePaidVoteModel model)
 		{
-			if(!await VoteService.CheckVoteItems())
+			if (!await VoteService.CheckVoteItems())
 				return WriterResult<bool>.ErrorResult("The current vote round has ended.");
 
 			using (var context = DataContextFactory.CreateContext())
@@ -89,6 +89,9 @@ namespace TradeSatoshi.Core.Vote
 				var settings = await context.VoteSetting.FirstOrDefaultNoLockAsync();
 				if (settings == null)
 					return WriterResult<bool>.ErrorResult("VoteItem not found.");
+
+				if (model.VoteCount <= 0 || (settings.Price * model.VoteCount) <= 0)
+					return WriterResult<bool>.ErrorResult("Invalid vote amount.");
 
 				var voteItem = await context.VoteItem.FirstOrDefaultNoLockAsync(x => x.Id == model.VoteItemId);
 				if (voteItem == null)

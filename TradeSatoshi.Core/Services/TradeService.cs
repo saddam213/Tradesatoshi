@@ -395,17 +395,19 @@ namespace TradeSatoshi.Core.Services
 						{
 							// Fetch any trades that can be filled for this request
 							trades = await context.Trade
-								.Where(o => o.TradePairId == tradeRequest.TradePairId && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Sell && o.Rate <= tradeRate)
+								.Where(o => o.TradePairId == tradePair.Id && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Sell && o.Rate <= tradeRate)
 								.OrderBy(o => o.Rate)
-								.ThenBy(o => o.Timestamp).ToListAsync();
+								.ThenBy(o => o.Timestamp)
+								.ToListAsync();
 						}
 						else
 						{
 							// Fetch any trades that can be filled for this request
 							trades = await context.Trade
-								.Where(o => o.TradePairId == tradeRequest.TradePairId && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Buy && o.Rate >= tradeRate)
+								.Where(o => o.TradePairId == tradePair.Id && (o.Status == TradeStatus.Pending || o.Status == TradeStatus.Partial) && o.TradeType == TradeType.Buy && o.Rate >= tradeRate)
 								.OrderByDescending(o => o.Rate)
-								.ThenBy(o => o.Timestamp).ToListAsync();
+								.ThenBy(o => o.Timestamp)
+								.ToListAsync();
 						}
 
 						if (trades.IsNullOrEmpty())
@@ -616,7 +618,7 @@ namespace TradeSatoshi.Core.Services
 							// Update tradepair stats
 							var hours = DateTime.UtcNow.AddHours(-24);
 							var lastTrade = await context.TradeHistory
-								.Where(x => x.TradePairId == tradeRequest.TradePairId && x.Timestamp >= hours)
+								.Where(x => x.TradePairId == tradePair.Id && x.Timestamp >= hours)
 								.OrderBy(x => x.Id)
 								.FirstOrDefaultAsync();
 							tradePair.Change = GetChangePercent(lastTrade?.Rate ?? 0, tradePair.LastTrade);
