@@ -91,6 +91,8 @@
     <Compile Include="Helpers\DataTableHelpers.cs" />
     <Compile Include="Repositories\Email\EmailTemplateReader.cs" />
     <Compile Include="Repositories\Email\EmailTemplateWriter.cs" />
+    <Compile Include="Repositories\Faucet\FaucetReader.cs" />
+    <Compile Include="Repositories\Faucet\FaucetWriter.cs" />
     <Compile Include="Repositories\Logger\Logger.cs" />
     <Compile Include="Repositories\TradePair\TradePairReader.cs" />
     <Compile Include="Repositories\TradePair\TradePairWriter.cs" />

@@ -1,0 +1,83 @@
+﻿@model TradeSatoshi.Common.Faucet.FaucetViewModel
+@{
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+		<div id="main">
+
+
+			<div style="padding: 2px; padding-top: 5px;">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Faucets</h3>
+					</div>
+					<div class="panel-body">
+						<table id="table-faucets" class="table">
+							<thead>
+								<tr>
+									<th>Coin</th>
+									<th>LastBlock</th>
+									<th>Peers</th>
+									<th>Status</th>
+									<th>Status Message</th>
+								</tr>
+							</thead>
+							<tbody>
+								@*@foreach (var currency in Model.CurrencyStatus)
+								{
+								<tr class="@GetCurrencyStatusClass(currency.Status)">
+									<td>@Helpers.CoinLogoWithSymbol(currency.Symbol)</td>
+									<td>@currency.LastBlock</td>
+									<td>@currency.Connections</td>
+									<td>@currency.Status</td>
+									<td>@(currency.StatusMessage)</td>
+								</tr>
+								}*@
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+			<div id="main-footer" class="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/Faucet/faucet.js")
+	@Scripts.Render("~/Scripts/Project/tradeSidebar.js")
+	<script>
+		$('#table-faucets').dataTable({
+			"order": [[1, "asc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": false,
+			"searching": true,
+			"scrollCollapse": false,
+			"sort": true,
+			"paging": false,
+			"info": false,
+			"language": { "emptyTable": "No data avaliable.", "search": "", searchPlaceholder: "Search coins" },
+		});
+	</script>
+}

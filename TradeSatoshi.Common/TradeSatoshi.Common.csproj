@@ -110,6 +110,7 @@
     <Compile Include="Models\Chat\ChatUserModel.cs" />
     <Compile Include="Models\Address\AddressModel.cs" />
     <Compile Include="Models\Currency\CurrencyStatusModel.cs" />
+    <Compile Include="Models\Faucet\FaucetViewModel.cs" />
     <Compile Include="Models\History\HistoryViewModel.cs" />
     <Compile Include="Models\ITradeSidebarModel.cs" />
     <Compile Include="Models\Currency\CurrencyModel.cs" />
@@ -217,6 +218,8 @@
     <Compile Include="Repositories\Email\EmailTemplateModel.cs" />
     <Compile Include="Repositories\Email\IEmailTemplateWriter.cs" />
     <Compile Include="Repositories\Email\IEmailTemplateReader.cs" />
+    <Compile Include="Repositories\Faucet\IFaucetReader.cs" />
+    <Compile Include="Repositories\Faucet\IFaucetWriter.cs" />
     <Compile Include="Repositories\Logging\ILogger.cs" />
     <Compile Include="Models\Vote\CreateVoteItemModel.cs" />
     <Compile Include="Models\Vote\CreatePaidVoteModel.cs" />
