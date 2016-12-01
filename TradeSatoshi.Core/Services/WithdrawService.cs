@@ -47,10 +47,6 @@ namespace TradeSatoshi.Core.Services
 				if (currency == null || !currency.IsEnabled || currency.Status != CurrencyStatus.OK)
 					return WriterResult<int>.ErrorResult("Currency not found or is currently disabled.");
 
-				var isValidAddress = await WalletService.ValidateAddress(model.Address, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
-				if (!isValidAddress)
-					return WriterResult<int>.ErrorResult($"Invalid {currency.Symbol} address.");
-
 				var user = await context.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
 				if (user == null || !user.IsWithdrawEnabled)
 					return WriterResult<int>.ErrorResult("Your withdrawals are currently disabled.");
@@ -59,6 +55,13 @@ namespace TradeSatoshi.Core.Services
 				if (!auditResult.Success || model.Amount > auditResult.Avaliable)
 					return WriterResult<int>.ErrorResult("Insufficient funds.");
 
+				if (model.Amount < currency.MinWithdraw || model.Amount > currency.MaxWithdraw)
+					return WriterResult<int>.ErrorResult("Withdrawal amount must be between {0} and {1} {2}", currency.MinWithdraw, currency.MaxWithdraw, currency.Symbol);
+
+				var isValidAddress = await WalletService.ValidateAddress(model.Address, currency.WalletHost, currency.WalletPort, currency.WalletUser, currency.WalletPass);
+				if (!isValidAddress)
+					return WriterResult<int>.ErrorResult($"Invalid {currency.Symbol} address.");
+
 				var newWithdraw = new Entity.Withdraw
 				{
 					IsApi = model.IsApi,
@@ -66,7 +69,7 @@ namespace TradeSatoshi.Core.Services
 					TwoFactorToken = model.ConfirmationToken,
 					Address = model.Address,
 					CurrencyId = model.CurrencyId,
-					Amount = model.Amount,
+					Amount = Math.Max(0, model.Amount),
 					Fee = currency.WithdrawFee,
 					WithdrawType = WithdrawType.Normal,
 					WithdrawStatus = model.IsApi

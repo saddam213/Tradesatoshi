@@ -112,7 +112,7 @@ namespace TradeSatoshi.Core.Services
 
 						var transfer = new TransferHistory
 						{
-							Amount = tradeItem.Amount,
+							Amount = Math.Max(0, tradeItem.Amount),
 							Fee = 0,
 							CurrencyId = tradeItem.CurrencyId,
 							Timestamp = DateTime.UtcNow,
