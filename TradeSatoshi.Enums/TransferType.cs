@@ -9,6 +9,7 @@ namespace TradeSatoshi.Enums
 	public enum TransferType
 	{
 		User = 0,
-		Vote = 1
+		Vote = 1,
+		Faucet = 2
 	}
 }

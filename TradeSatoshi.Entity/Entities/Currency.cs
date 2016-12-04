@@ -88,6 +88,7 @@ namespace TradeSatoshi.Entity
 		public CurrencyInterfaceType InterfaceType { get; set; }
 
 		public int MarketSortOrder { get; set; }
+		public decimal FaucetPayment { get; set; }
 	}
 
 }

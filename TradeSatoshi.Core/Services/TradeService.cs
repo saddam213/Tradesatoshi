@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TradeSatoshi.Base.Extensions;
 using TradeSatoshi.Base.Queueing;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Faucet;
 using TradeSatoshi.Common.Logging;
 using TradeSatoshi.Common.Repositories.Trade;
 using TradeSatoshi.Common.Services;
@@ -65,6 +66,12 @@ namespace TradeSatoshi.Core.Services
 			return result as CreateTransferResponse;
 		}
 
+		public async Task<CreateFaucetPaymentResponse> QueueFaucetPayment(CreateFaucetPaymentModel tradeItem)
+		{
+			var result = await TradeProcessor.QueueItem(tradeItem).ConfigureAwait(false);
+			return result as CreateFaucetPaymentResponse;
+		}
+
 		private async Task<ITradeResponse> ProcessTradeItem(ITradeItem tradeItem)
 		{
 			var create = tradeItem as CreateTradeModel;
@@ -84,7 +91,117 @@ namespace TradeSatoshi.Core.Services
 			{
 				return await CreateTransfer(transfer);
 			}
+
+			var faucetPayment = tradeItem as CreateFaucetPaymentModel;
+			if (faucetPayment != null)
+			{
+				return await CreateFaucetPayment(faucetPayment);
+			}
 			return null;
+		}
+
+		private async Task<ITradeResponse> CreateFaucetPayment(CreateFaucetPaymentModel faucetPayment)
+		{
+			using (var context = DataContextFactory.CreateContext())
+			{
+				using (var transaction = context.Database.BeginTransaction())
+				{
+					try
+					{
+						var faucetBot = await context.Users.FirstOrDefaultAsync(x => x.Id == Constants.SystemFaucetUserId);
+						if (faucetBot == null || !faucetBot.IsTransferEnabled)
+							throw new TradeException("Your transfers are currently disabled.");
+
+						var recipient = await context.Users.FirstOrDefaultAsync(x => x.Id == faucetPayment.UserId);
+						if (recipient == null || !recipient.IsTransferEnabled)
+							throw new TradeException("Receiver does not have transfers enabled.");
+
+						var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == faucetPayment.CurrencyId);
+						if (currency == null)
+							throw new TradeException("Currency not found.");
+
+						// TODO: Check payment row
+
+						var auditResult = await AuditService.AuditUserCurrency(context, Constants.SystemFaucetUserId, faucetPayment.CurrencyId);
+						if (!auditResult.Success)
+							throw new Exception($"Failed to audit user balance.");
+
+						if (currency.FaucetPayment <= 0)
+							throw new TradeException("Invalid faucet payment set.");
+
+						if (currency.FaucetPayment > auditResult.Avaliable)
+							throw new TradeException("Faucet is empty.");
+
+						var transfer = new TransferHistory
+						{
+							Amount = currency.FaucetPayment,
+							Fee = 0,
+							CurrencyId = faucetPayment.CurrencyId,
+							Timestamp = DateTime.UtcNow,
+							ToUserId = recipient.Id,
+							TransferType = TransferType.Faucet,
+							UserId = faucetBot.Id,
+						};
+
+						context.TransferHistory.Add(transfer);
+
+						// TODO: Add payment row
+
+						await context.SaveChangesAsync();
+
+
+						var userNotifications = new List<NotifyUser>();
+						var balanceNotifications = new List<NotifyBalanceUpdate>();
+						var faucetBotAudit = await AuditService.AuditUserCurrency(context, faucetBot.Id, faucetPayment.CurrencyId);
+						if (!faucetBotAudit.Success)
+							throw new Exception($"Failed to audit Faucet balance.");
+					
+						var receiverAudit = await AuditService.AuditUserCurrency(context, recipient.Id, faucetPayment.CurrencyId);
+						if (!receiverAudit.Success)
+							throw new Exception($"Failed to audit recipients balance, Currency: {currency.Symbol}");
+
+						balanceNotifications.Add(new NotifyBalanceUpdate
+						{
+							CurrencyId = receiverAudit.CurrencyId,
+							Symbol = receiverAudit.Symbol,
+							HeldForTrades = receiverAudit.HeldForTrades,
+							PendingWithdraw = receiverAudit.PendingWithdraw,
+							Total = receiverAudit.Total,
+							Unconfirmed = receiverAudit.Unconfirmed,
+							UserId = receiverAudit.UserId,
+							Avaliable = receiverAudit.Avaliable
+						});
+						userNotifications.Add(new NotifyUser
+						{
+							UserId = recipient.Id,
+							Type = NotificationType.Info,
+							Title = "Faucet Payment",
+							Message = $"Claimed {currency.FaucetPayment:F8} {currency.Symbol}"
+						});
+
+						transaction.Commit();
+
+						await TradeNotificationService.SendNotification(userNotifications);
+						await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
+
+						return new CreateTransferResponse();
+					}
+					catch (TradeException ex)
+					{
+						await Log.Warn("TradeService", "Rollback database Transaction");
+						transaction.Rollback();
+						await Log.Warn("TradeService", ex.Message);
+						return new CreateTransferResponse { Error = ex.Message };
+					}
+					catch (Exception ex)
+					{
+						await Log.Error("TradeService", "Rollback databaseTransaction");
+						transaction.TryRollback();
+						await Log.Exception("TradeService", ex);
+					}
+				}
+			}
+			return new CreateTransferResponse { Error = "Failed to create transfer." };
 		}
 
 		private async Task<ITradeResponse> CreateTransfer(CreateTransferModel tradeItem)
@@ -859,6 +976,8 @@ namespace TradeSatoshi.Core.Services
 			}
 			return 0.00;
 		}
+
+
 
 		#endregion
 	}
