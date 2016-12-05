@@ -49,7 +49,10 @@ namespace TradeSatoshi.Core.Currency
 					MarketSortOrder = model.MarketSortOrder,
 					Algo = model.Algo,
 					InterfaceType = model.InterfaceType,
-					Type = model.Type
+					Type = model.Type,
+					IsFaucetEnabled = model.IsFaucetEnabled,
+					FaucetMax = model.FaucetMax,
+					FaucetPayment = model.FaucetPayment
 				};
 
 				context.Currency.Add(entity);
@@ -89,6 +92,9 @@ namespace TradeSatoshi.Core.Currency
 				currency.Algo = model.Algo;
 				currency.InterfaceType = model.InterfaceType;
 				currency.Type = model.Type;
+				currency.IsFaucetEnabled = model.IsFaucetEnabled;
+				currency.FaucetPayment = model.FaucetPayment;
+				currency.FaucetMax = model.FaucetMax;
 
 				// Id the symbol has changed update the tradepair names
 				if (currency.Symbol != model.Symbol)

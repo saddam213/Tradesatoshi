@@ -23,20 +23,20 @@
 				<div class="row">
 					<div class="col-xs-12">
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.Name, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.Name, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.Name, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.Name)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.Symbol, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.Symbol, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.Symbol, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.Symbol)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.Status, new { @class = "control-label" })
-								@Html.EnumDropDownListFor(m => m.Status, new { @class = " form-control" })
+								@Html.EnumDropDownListFor(m => m.Status, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.Status)
 							</div>
 							<div class="col-md-3">
@@ -50,30 +50,30 @@
 						</div>
 
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-2">
 								@Html.LabelFor(m => m.MarketSortOrder, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MarketSortOrder, new { @class = "form-control" })
+								@Html.TextBoxFor(m => m.MarketSortOrder, new { @class = "form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MarketSortOrder)
 							</div>
 							<div class="col-md-2">
 								@Html.LabelFor(m => m.Type, new { @class = "control-label" })
-								@Html.EnumDropDownListFor(m => m.Type, new { @class = " form-control" })
+								@Html.EnumDropDownListFor(m => m.Type, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.Type)
 							</div>
 							<div class="col-md-2">
 								@Html.LabelFor(m => m.InterfaceType, new { @class = "control-label" })
-								@Html.EnumDropDownListFor(m => m.InterfaceType, new { @class = " form-control" })
+								@Html.EnumDropDownListFor(m => m.InterfaceType, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.InterfaceType)
 							</div>
 							<div class="col-md-2">
 								@Html.LabelFor(m => m.Algo, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.Algo, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.Algo, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.Algo)
 							</div>
 						</div>
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-12">
 								@Html.LabelFor(m => m.StatusMessage, new { @class = "control-label" })
 								@Html.TextAreaFor(m => m.StatusMessage, new { @class = " form-control form-control-fullwidth", rows = 3 })
@@ -81,72 +81,91 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MinConfirmations, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MinConfirmations, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MinConfirmations, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MinConfirmations)
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-3 ">
 								@Html.LabelFor(m => m.TransferFee, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.TransferFee, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.TransferFee, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.TransferFee)
+							</div>
+							<div class="col-md-3">
+								@Html.LabelFor(m => m.ColdBalance, new { @class = "control-label" })
+								@Html.TextBoxFor(m => m.ColdBalance, new { @class = " form-control input-sm" })
+								@Html.ValidationMessageFor(m => m.ColdBalance)
 							</div>
 						</div>
 
 
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.TradeFee, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.TradeFee, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.TradeFee, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.TradeFee)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MinBaseTrade, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MinBaseTrade, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MinBaseTrade, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MinBaseTrade)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MinTrade, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MinTrade, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MinTrade, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MinTrade)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MaxTrade, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MaxTrade, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MaxTrade, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MaxTrade)
 							</div>
 						</div>
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.WithdrawFeeType, new { @class = "control-label" })
-								@Html.EnumDropDownListFor(m => m.WithdrawFeeType, new { @class = " form-control" })
+								@Html.EnumDropDownListFor(m => m.WithdrawFeeType, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.WithdrawFeeType)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.WithdrawFee, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.WithdrawFee, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.WithdrawFee, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.WithdrawFee)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MinWithdraw, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MinWithdraw, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MinWithdraw, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MinWithdraw)
 							</div>
 							<div class="col-md-3">
 								@Html.LabelFor(m => m.MaxWithdraw, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.MaxWithdraw, new { @class = " form-control" })
+								@Html.TextBoxFor(m => m.MaxWithdraw, new { @class = " form-control input-sm" })
 								@Html.ValidationMessageFor(m => m.MaxWithdraw)
 							</div>
+							
 						</div>
 
-						<div class="form-group">
+						<div class="row">
 							<div class="col-md-3">
-								@Html.LabelFor(m => m.ColdBalance, new { @class = "control-label" })
-								@Html.TextBoxFor(m => m.ColdBalance, new { @class = " form-control" })
-								@Html.ValidationMessageFor(m => m.ColdBalance)
+								<div class="checkbox" style="padding-top: 25px">
+									<label>
+										@Html.CheckBoxFor(model => model.IsFaucetEnabled)
+										@Html.Resource("IsFaucetEnabled")
+									</label>
+								</div>
+							</div>
+							<div class="col-md-3">
+								@Html.LabelFor(m => m.FaucetPayment, new { @class = "control-label" })
+								@Html.TextBoxFor(m => m.FaucetPayment, new { @class = " form-control input-sm" })
+								@Html.ValidationMessageFor(m => m.FaucetPayment)
+							</div>
+							<div class="col-md-3">
+								@Html.LabelFor(m => m.FaucetMax, new { @class = "control-label" })
+								@Html.TextBoxFor(m => m.FaucetMax, new { @class = " form-control input-sm" })
+								@Html.ValidationMessageFor(m => m.FaucetMax)
 							</div>
 						</div>
 					</div>

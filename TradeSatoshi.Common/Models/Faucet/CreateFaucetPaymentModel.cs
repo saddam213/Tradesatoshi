@@ -11,6 +11,7 @@ namespace TradeSatoshi.Common.Faucet
 	public class CreateFaucetPaymentModel : ITradeItem
 	{
 		public int CurrencyId { get; set; }
+		public string IPAddress { get; set; }
 
 		#region ITradeItem
 

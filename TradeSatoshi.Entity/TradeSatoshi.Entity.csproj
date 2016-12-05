@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Address.cs" />
+    <Compile Include="Entities\FaucetPayment.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\Balance.cs" />
     <Compile Include="Entities\ChatMessage.cs" />

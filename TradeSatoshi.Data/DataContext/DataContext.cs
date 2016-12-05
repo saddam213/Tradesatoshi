@@ -57,6 +57,7 @@ namespace TradeSatoshi.Data.DataContext
 		public DbSet<ChatMessage> ChatMessage { get; set; }
 
 		public DbSet<Log> Log { get; set; }
+		public DbSet<FaucetPayment> FaucetPayments { get; set; }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
@@ -109,6 +110,10 @@ namespace TradeSatoshi.Data.DataContext
 			modelBuilder.Entity<VoteSettings>().HasOptional(p => p.LastPaid);
 
 			modelBuilder.Entity<ChatMessage>().HasRequired(p => p.User);
+
+
+			modelBuilder.Entity<FaucetPayment>().HasRequired(p => p.User);
+			modelBuilder.Entity<FaucetPayment>().HasRequired(p => p.Currency);
 
 			base.OnModelCreating(modelBuilder);
 		}

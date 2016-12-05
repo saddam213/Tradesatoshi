@@ -110,7 +110,7 @@
     <Compile Include="Models\Chat\ChatUserModel.cs" />
     <Compile Include="Models\Address\AddressModel.cs" />
     <Compile Include="Models\Currency\CurrencyStatusModel.cs" />
-    <Compile Include="Models\Faucet\Class1.cs" />
+    <Compile Include="Models\Faucet\CreateFaucetPaymentModel.cs" />
     <Compile Include="Models\Faucet\CreateFaucetPaymentResponse.cs" />
     <Compile Include="Models\Faucet\FaucetViewModel.cs" />
     <Compile Include="Models\History\HistoryViewModel.cs" />

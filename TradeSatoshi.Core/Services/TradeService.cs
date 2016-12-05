@@ -45,7 +45,7 @@ namespace TradeSatoshi.Core.Services
 			Log = new DatabaseLogger(DataContextFactory);
 			AuditService = new AuditService(Log);
 			CacheService = new CacheService();
-		  TradeNotificationService = new NotificationService();
+			TradeNotificationService = new NotificationService();
 		}
 
 		public async Task<CreateTradeResponse> QueueTrade(CreateTradeModel tradeItem)
@@ -116,11 +116,21 @@ namespace TradeSatoshi.Core.Services
 						if (recipient == null || !recipient.IsTransferEnabled)
 							throw new TradeException("Receiver does not have transfers enabled.");
 
-						var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == faucetPayment.CurrencyId);
+						var currency = await context.Currency.FirstOrDefaultAsync(x => x.Id == faucetPayment.CurrencyId && x.IsFaucetEnabled);
 						if (currency == null)
-							throw new TradeException("Currency not found.");
+							throw new TradeException("Faucet not enabled for Currency.");
 
 						// TODO: Check payment row
+						var latPayment = DateTime.UtcNow.AddHours(-24);
+						var faucetPayments = await context.FaucetPayments.Where(x => x.CurrencyId == currency.Id && x.Timestamp > latPayment).ToListAsync();
+						if (faucetPayments.Sum(x => x.Amount) > currency.FaucetMax)
+							throw new TradeException($"Maximum faucet payments for {currency.Symbol} have been reached today.");
+
+						if (faucetPayments.Any(x => x.UserId == faucetPayment.UserId))
+							throw new TradeException($"You have already claimed the {currency.Symbol} faucet payment today.");
+
+						if (faucetPayments.Any(x => x.IPAddress == faucetPayment.IPAddress))
+							throw new TradeException($"IPAddress {faucetPayment.IPAddress} has already claimed the {currency.Symbol} faucet payment today.");
 
 						var auditResult = await AuditService.AuditUserCurrency(context, Constants.SystemFaucetUserId, faucetPayment.CurrencyId);
 						if (!auditResult.Success)
@@ -130,7 +140,7 @@ namespace TradeSatoshi.Core.Services
 							throw new TradeException("Invalid faucet payment set.");
 
 						if (currency.FaucetPayment > auditResult.Avaliable)
-							throw new TradeException("Faucet is empty.");
+							throw new TradeException($"The {currency.Symbol} faucet is empty.");
 
 						var transfer = new TransferHistory
 						{
@@ -142,10 +152,17 @@ namespace TradeSatoshi.Core.Services
 							TransferType = TransferType.Faucet,
 							UserId = faucetBot.Id,
 						};
-
 						context.TransferHistory.Add(transfer);
 
-						// TODO: Add payment row
+						var payment = new Entity.FaucetPayment
+						{
+							CurrencyId = currency.Id,
+							UserId = recipient.Id,
+							Amount = currency.FaucetPayment,
+							IPAddress = faucetPayment.IPAddress,
+							Timestamp = DateTime.UtcNow
+						};
+						context.FaucetPayments.Add(payment);
 
 						await context.SaveChangesAsync();
 
@@ -155,7 +172,7 @@ namespace TradeSatoshi.Core.Services
 						var faucetBotAudit = await AuditService.AuditUserCurrency(context, faucetBot.Id, faucetPayment.CurrencyId);
 						if (!faucetBotAudit.Success)
 							throw new Exception($"Failed to audit Faucet balance.");
-					
+
 						var receiverAudit = await AuditService.AuditUserCurrency(context, recipient.Id, faucetPayment.CurrencyId);
 						if (!receiverAudit.Success)
 							throw new Exception($"Failed to audit recipients balance, Currency: {currency.Symbol}");
@@ -184,14 +201,14 @@ namespace TradeSatoshi.Core.Services
 						await TradeNotificationService.SendNotification(userNotifications);
 						await TradeNotificationService.SendBalanceUpdate(balanceNotifications);
 
-						return new CreateTransferResponse();
+						return new CreateFaucetPaymentResponse {  Message = $"Successfully claimed {currency.FaucetPayment:F8} {currency.Symbol} from faucet." };
 					}
 					catch (TradeException ex)
 					{
 						await Log.Warn("TradeService", "Rollback database Transaction");
 						transaction.Rollback();
 						await Log.Warn("TradeService", ex.Message);
-						return new CreateTransferResponse { Error = ex.Message };
+						return new CreateFaucetPaymentResponse { Error = ex.Message };
 					}
 					catch (Exception ex)
 					{
@@ -732,7 +749,7 @@ namespace TradeSatoshi.Core.Services
 								// Update trade limiter
 								tradesLimit--;
 							}
-							
+
 							// Update tradepair stats
 							var hours = DateTime.UtcNow.AddHours(-24);
 							var lastTrade = await context.TradeHistory
@@ -740,7 +757,7 @@ namespace TradeSatoshi.Core.Services
 								.OrderBy(x => x.Id)
 								.FirstOrDefaultAsync();
 							tradePair.Change = GetChangePercent(lastTrade?.Rate ?? 0, tradePair.LastTrade);
-						
+
 							// If the remaining is not 0 create an trade for the rest
 							if (Math.Round(tradeRemaining, 8) > 0 && tradesLimit > 0)
 							{

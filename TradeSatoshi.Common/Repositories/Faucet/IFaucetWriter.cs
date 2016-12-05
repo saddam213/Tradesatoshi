@@ -9,6 +9,6 @@ namespace TradeSatoshi.Common.Faucet
 {
 	public interface IFaucetWriter
 	{
-		Task<WriterResult<bool>> Claim(string userId, int faucetId);
+		Task<WriterResult<bool>> Claim(string userId, string ipaddress, int faucetId);
 	}
 }

@@ -15,6 +15,8 @@ namespace TradeSatoshi.Common.Faucet
 		{
 			get { return !string.IsNullOrEmpty(Error); }
 		}
+
+		public string Message { get; set; }
 	}
 
 }
