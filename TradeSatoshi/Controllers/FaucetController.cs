@@ -16,7 +16,7 @@ using TradeSatoshi.Web.Helpers;
 
 namespace TradeSatoshi.Web.Controllers
 {
-	[AuthorizeSecurityRole(SecurityRole.Standard)]
+	
 	public class FaucetController : BaseController
 	{
 		public IBalanceReader BalanceReader { get; set; }
@@ -44,13 +44,14 @@ namespace TradeSatoshi.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[AuthorizeSecurityRole(SecurityRole.Standard)]
 		public async Task<ActionResult> Claim(int id)
 		{
 			var result = await FaucetWriter.Claim(User.Id(), Request.GetIPAddress(), id);
 			if (!ModelState.IsWriterResultValid(result))
-				return JsonError(result.FirstError, "Claim Failed", AlertType.Warning);
+				return JsonError(result.FirstError, "Faucet Claim Failed", AlertType.Warning);
 
-			return JsonSuccess(result.Message, "Claim Success");
+			return JsonSuccess(result.Message, "Faucet Claim Success");
 		}
 	}
 }
