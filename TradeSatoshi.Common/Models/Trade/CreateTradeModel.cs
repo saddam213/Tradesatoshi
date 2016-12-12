@@ -12,8 +12,13 @@ namespace TradeSatoshi.Common.Trade
 		public decimal Fee { get; set; }
 		public decimal MinTrade { get; set; }
 		public TradeType TradeType { get; set; }
+
+		[Range(typeof(decimal), "0.00000001", "9999999999")]
 		public decimal Rate { get; set; }
+
+		[Range(typeof(decimal), "0.00000001", "9999999999")]
 		public decimal Amount { get; set; }
+
 		public bool IsApi { get; set; }
 		public string Market { get; set; }
 	}

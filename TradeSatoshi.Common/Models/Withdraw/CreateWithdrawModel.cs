@@ -20,6 +20,7 @@ namespace TradeSatoshi.Common.Withdraw
 		public string Address { get; set; }
 
 		[Required]
+		[Range(typeof(decimal), "0.00000001", "9999999999")]
 		public decimal Amount { get; set; }
 
 		public string ConfirmationToken { get; set; }

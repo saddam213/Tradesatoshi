@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using TradeSatoshi.Common.Data;
+using TradeSatoshi.Common.Services.EmailService;
 using TradeSatoshi.Common.Support;
 using TradeSatoshi.Common.Validation;
 using TradeSatoshi.Entity;
@@ -12,6 +13,7 @@ namespace TradeSatoshi.Core.Support
 {
 	public class SupportWriter : ISupportWriter
 	{
+		public IEmailService EmailService { get; set; }
 		public IDataContextFactory DataContextFactory { get; set; }
 
 		public async Task<IWriterResult<int>> CreateSupportTicket(string userId, CreateSupportTicketModel model)
@@ -130,6 +132,10 @@ namespace TradeSatoshi.Core.Support
 				var ticket = await context.SupportRequest.FirstOrDefaultNoLockAsync(x => x.Id == model.RequestId);
 				if (ticket == null)
 					return WriterResult<bool>.ErrorResult("Support request #{0} not found", model.RequestId);
+
+				var sentEmail = await EmailService.SendRaw($"RE: Support request #{model.RequestId}", model.Message, model.Email);
+				if(!sentEmail)
+					return WriterResult<bool>.ErrorResult($"Failed to send email to {model.Email}");
 
 				ticket.Replied = true;
 				await context.SaveChangesAsync();
