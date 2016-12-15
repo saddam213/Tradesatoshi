@@ -351,6 +351,7 @@
     <Content Include="Views\Admin\_EmailTemplateUpdatePartial.cshtml" />
     <Content Include="Views\Exchange\_TradeTemplates.cshtml" />
     <Content Include="Views\Faucet\Index.cshtml" />
+    <Content Include="Views\Faucet\DonateModal.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

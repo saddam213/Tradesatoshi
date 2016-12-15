@@ -102,9 +102,9 @@
 						{
 							<text>
 						if (full[5] == true) {
-							return "<button class='btn btn-info btn-xs' style='width:100%' disabled='disabled'>Claimed!</button>";
+							return "<button onclick='donateFaucet(\"" + full[0] + "\");' class='btn btn-info btn-xs' style='width:50%'>Donate</button><button class='btn btn-info btn-xs' style='width:50%' disabled='disabled'>Claimed!</button>";
 						}
-						return "<button class='btn btn-info btn-xs claim-" + full[0] + "' style='width:100%' onclick='claimFaucet(\"" + full[0] + "\");'>Claim</button>";
+						return "<button onclick='donateFaucet(\"" + full[0] + "\");' class='btn btn-info btn-xs' style='width:50%'>Donate</button><button class='btn btn-info btn-xs claim-" + full[0] + "' style='width:50%' onclick='claimFaucet(\"" + full[0] + "\");'>Claim</button>";
 						</text>
 						}
 						else
@@ -124,6 +124,12 @@
 				else {
 					showAlertResult(data);
 				}
+			});
+		}
+
+		function donateFaucet(id) {
+			openModal('@Url.Action("Donate")', { currencyId: id }, function (data) {
+				$('#table-faucets').dataTable().fnDraw();
 			});
 		}
 	</script>
