@@ -53,7 +53,10 @@ namespace TradeSatoshi.Core.Currency
 					MarketSortOrder = currency.MarketSortOrder,
 					Algo = currency.Algo,
 					InterfaceType = currency.InterfaceType,
-					Type = currency.Type
+					Type = currency.Type,
+					FaucetMax = currency.FaucetMax,
+					FaucetPayment = currency.FaucetPayment,
+					IsFaucetEnabled = currency.IsFaucetEnabled
 				};
 			}
 		}

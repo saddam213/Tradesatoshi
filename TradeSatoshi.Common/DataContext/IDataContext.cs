@@ -52,5 +52,6 @@ namespace TradeSatoshi.Common.Data
 		DbSet<Entity.ChatMessage> ChatMessage { get; set; }
 
 		DbSet<Entity.Log> Log { get; set; }
+		DbSet<Entity.FaucetPayment> FaucetPayments { get; set; }
 	}
 }

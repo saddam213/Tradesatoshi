@@ -37,5 +37,8 @@ namespace TradeSatoshi.Common.Currency
 		public string Algo { get; set; }
 		public CurrencyInterfaceType InterfaceType { get; set; }
 		public CurrencyType Type { get; set; }
+		public bool IsFaucetEnabled { get; set; }
+		public decimal FaucetMax { get; set; }
+		public decimal FaucetPayment { get; set; }
 	}
 }

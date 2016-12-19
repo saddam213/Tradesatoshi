@@ -1,0 +1,137 @@
+﻿@model TradeSatoshi.Common.Faucet.FaucetViewModel
+@{
+	ViewBag.Title = Html.Resource("Faucets");
+}
+
+<div id="wrapper">
+
+	@* LeftSidebar Content*@
+	<div id="leftSidebar-wrapper" class="col-xs-3 col-sm-2">
+		@{Html.RenderPartial("_TradeSidebarPartial");}
+	</div>
+
+	@* Main Content*@
+	<div id="main-wrapper" class="col-xs-9 col-sm-10 col-md-10 col-lg-8">
+
+		<div id="main">
+
+
+			<div style="padding: 2px; padding-top: 5px;">
+				@Helpers.AlertResultSection()
+				<div class="clearfix"></div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Faucets</h3>
+					</div>
+					<div class="panel-body">
+						<table id="table-faucets" class="table">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Symbol</th>
+									<th>Faucet Balance</th>
+									<th>Claim Amount</th>
+									<th>Next Claim</th>
+									<th>Claimed</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+
+			<div id="main-footer" class="main-footer">
+				<span class="pull-right" style="padding-right: 5px; padding-top: 20px">© @DateTime.UtcNow.Year TradeSatoshi</span>
+			</div>
+		</div>
+	</div>
+
+	@* RightSidebar Content*@
+	<div id="rightSidebar-wrapper" class="col-xs-2 hidden-xs hidden-sm hidden-md">
+		@{Html.RenderPartial("_ChatSidebarPartial");}
+	</div>
+</div>
+
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/Project/chat.js")
+	@Scripts.Render("~/Scripts/Project/Faucet/faucet.js")
+	@Scripts.Render("~/Scripts/Project/tradeSidebar.js")
+	<script>
+		$('#table-faucets').dataTable({
+			"order": [[0, "desc"]],
+			"lengthChange": false,
+			"processing": true,
+			"bServerSide": true,
+			"searching": true,
+			"scrollCollapse": false,
+			"sPaginationType": "simple_numbers",
+			"pageLength": 15,
+			"sort": true,
+			"paging": false,
+			"info": true,
+			"language": { "emptyTable": "No data avaliable." },
+			"sAjaxSource": '@Url.Action("GetFaucets")',
+			"sServerMethod": "POST",
+			"columnDefs": [{ "targets": [0, 5], "visible": false },
+				{
+					"targets": 1,
+					"render": function (data, type, full, meta) {
+						return '<div style="display: inline-block; white-space: nowrap;"><img height="16" src="/Content/Images/' + data + '-small.png"> ' + data + '</div>'
+					}
+				},
+				{
+					"targets": 4,
+					"searchable": false,
+					"orderable": false,
+					"render": function (data, type, full, meta) {
+						if (full[5] == false) {
+							return "Ready!";
+						}
+						return moment.utc(data, 'DD/MM/YYYY HH:mm').add(24, 'h').local().fromNow();
+					}
+				}, {
+					"targets": 6,
+					"searchable": false,
+					"orderable": false,
+					"render": function (data, type, full, meta) {
+						@if (User.Identity.IsAuthenticated)
+						{
+							<text>
+						if (full[5] == true) {
+							return "<button onclick='donateFaucet(\"" + full[0] + "\");' class='btn btn-info btn-xs' style='width:50%'>Donate</button><button class='btn btn-info btn-xs' style='width:50%' disabled='disabled'>Claimed!</button>";
+						}
+						return "<button onclick='donateFaucet(\"" + full[0] + "\");' class='btn btn-info btn-xs' style='width:50%'>Donate</button><button class='btn btn-info btn-xs claim-" + full[0] + "' style='width:50%' onclick='claimFaucet(\"" + full[0] + "\");'>Claim</button>";
+						</text>
+						}
+						else
+						{
+							@:return "<a class='btn btn-info btn-xs' style='width:100%' href='@Url.Action("Login", "Account", new { ReturnUrl = "/Faucet"})'>Login To Claim!</a>";
+						}
+					}
+				}]
+		});
+
+		function claimFaucet(id) {
+			$(".claim-" + id).attr("disabled", "disabled");
+			postJson('@Url.Action("Claim")', { id: id }, function (data) {
+				if (data.Success) {
+					$(".claim-" + id).text("Claimed!");
+				}
+				else {
+					showAlertResult(data);
+				}
+			});
+		}
+
+		function donateFaucet(id) {
+			openModal('@Url.Action("Donate")', { currencyId: id }, function (data) {
+				$('#table-faucets').dataTable().fnDraw();
+			});
+		}
+	</script>
+}

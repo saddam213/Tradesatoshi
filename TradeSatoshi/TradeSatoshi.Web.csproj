@@ -293,6 +293,7 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Project\Admin\admin.js" />
     <Content Include="Scripts\Project\Balance\balance.js" />
+    <Content Include="Scripts\Project\Faucet\faucet.js" />
     <Content Include="Scripts\Project\tradeSidebar.js" />
     <Content Include="Scripts\Project\chat.js" />
     <Content Include="Scripts\Project\exporting.js" />
@@ -349,6 +350,8 @@
     <Content Include="Views\Admin\_EmailTemplatePartial.cshtml" />
     <Content Include="Views\Admin\_EmailTemplateUpdatePartial.cshtml" />
     <Content Include="Views\Exchange\_TradeTemplates.cshtml" />
+    <Content Include="Views\Faucet\Index.cshtml" />
+    <Content Include="Views\Faucet\DonateModal.cshtml" />
     <None Include="Views\Home\Terms.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -377,6 +380,7 @@
     <Compile Include="Controllers\BalanceController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
+    <Compile Include="Controllers\FaucetController.cs" />
     <Compile Include="Controllers\HistoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\StatusController.cs" />

@@ -6,16 +6,17 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<button class="close simplemodal-close" aria-hidden="true" type="button" onclick="$.modal.close();">×</button>
-			<h3 class="modal-title">Transfer @Model.Symbol</h3>
-			<small>Transfer @Model.Symbol to another TradeSatoshi user account.</small>
+			<h3 class="modal-title">Donate @Model.Symbol</h3>
+			<small>Donate funds to the Tradesatoshi @Model.Symbol faucet.</small>
 		</div>
-		@using (Ajax.BeginForm("Create", "Transfer", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
+		@using (Ajax.BeginForm("Donate", "Faucet", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }, new { @class = "form-vertical" }))
 		{
 			@Html.AntiForgeryToken()
 			@Html.HiddenFor(m => m.CurrencyId)
 			@Html.HiddenFor(m => m.Balance)
 			@Html.HiddenFor(m => m.Fee)
 			@Html.HiddenFor(m => m.Symbol)
+			@Html.HiddenFor(m => m.Recipient)
 			<div class="row">
 				<div class="col-md-12 ">
 					@Html.ValidationSummary("", htmlAttributes: new { @class = "alert alert-danger text-center" })
@@ -28,31 +29,12 @@
 							<span><strong>Balance: </strong><span id="balance" class="btn-link text-info">@Model.Balance.ToString("F8")</span> @Model.Symbol</span>
 						</div>
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-12">
 								@Html.LabelFor(m => m.Amount, new { @class = "form-label" })
 								@Html.TextBoxFor(m => m.Amount, new { @class = "form-control", min = 0.00000001m, max = 1000000000 })
 							</div>
-							<div class="col-md-6" style="margin-top: 20px">
-								<div><strong>Fee: </strong><span class="feeamount">@Model.Fee.ToString("F8")</span> @Model.Symbol</div>
-								<div><strong>Net: </strong><span><span id="netamount">0.00000000</span> @Model.Symbol</span></div>
-							</div>
 							<div class="col-xs-12">
 								@Html.ValidationMessageFor(m => m.Amount)
-							</div>
-							<div class="col-md-6">
-								<div id="Recipient-group" class="form-group" style="margin-bottom:0px">
-									@Html.LabelFor(m => m.Recipient, new { @class = "form-label" })
-									<div class="input-group">
-										@Html.TextBoxFor(m => m.Recipient, new { @class = "form-control" })
-										<span class="input-group-btn">
-											<button id="Recipient-search" class="btn btn-default" type="button" data-action="@Url.Action("UserSearch")"><i class="fa fa-search"></i></button>
-										</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-12">
-								@Html.ValidationMessageFor(m => m.Recipient)
-								<span id="Recipient-msg"></span>
 							</div>
 						</div>
 
@@ -64,7 +46,7 @@
 			</div>
 
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary">Transfer</button>
+				<button type="submit" class="btn btn-primary">Donate</button>
 				<button onclick="$.modal.close();" type="button" class="btn btn-primary simplemodal-close">Cancel</button>
 			</div>
 		}
