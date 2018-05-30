@@ -35,3 +35,4 @@ _ReSharper*/
 *.dbmdl
 WE-settings.xml
 .vs/
+packages/
